@@ -1,5 +1,8 @@
 import snowflake from 'snowflake-sdk';
 
+// Disable Snowflake SDK logging
+snowflake.configure({ logLevel: 'OFF' });
+
 export function createSnowflakeConnection() {
   return snowflake.createConnection({
     account: process.env.SNOWFLAKE_ACCOUNT!,
