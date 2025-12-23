@@ -1,0 +1,640 @@
+{"level":"INFO","message":"[6:40:17.204 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:40:17.221 AM]: Creating Connection[id: 901edbea-d33b-4715-87ad-4efc3784bdb7] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:40:17.222 AM]: Connection[id: 901edbea-d33b-4715-87ad-4efc3784bdb7] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:40:17.223 AM]: Connection[id: 901edbea-d33b-4715-87ad-4efc3784bdb7] - connection object created successfully."}
+{"level":"INFO","message":"[6:40:17.223 AM]: Connection[id: 901edbea-d33b-4715-87ad-4efc3784bdb7] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:40:17.230 AM]: Connection[id: 901edbea-d33b-4715-87ad-4efc3784bdb7] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:40:17.231 AM]: Trying to initialize Easy Logging"}
+{"level":"INFO","message":"[6:40:17.244 AM]: No client config detected."}
+{"level":"INFO","message":"[6:40:17.245 AM]: No config file path found. Client config will not be used."}
+{"level":"INFO","message":"[6:40:17.245 AM]: Easy Logging is disabled as no config has been found"}
+{"level":"INFO","message":"[6:40:17.926 AM]: Connection[id: 901edbea-d33b-4715-87ad-4efc3784bdb7] - connection established successfully after 702.85 milliseconds"}
+{"level":"INFO","message":"[6:42:24.132 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:42:24.149 AM]: Creating Connection[id: bde9c54b-d5d0-4aa5-aff3-7cb1e5d38b0c] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:42:24.150 AM]: Connection[id: bde9c54b-d5d0-4aa5-aff3-7cb1e5d38b0c] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:42:24.151 AM]: Connection[id: bde9c54b-d5d0-4aa5-aff3-7cb1e5d38b0c] - connection object created successfully."}
+{"level":"INFO","message":"[6:42:24.152 AM]: Connection[id: bde9c54b-d5d0-4aa5-aff3-7cb1e5d38b0c] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:42:24.158 AM]: Connection[id: bde9c54b-d5d0-4aa5-aff3-7cb1e5d38b0c] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:42:24.158 AM]: Trying to initialize Easy Logging"}
+{"level":"INFO","message":"[6:42:24.162 AM]: No client config detected."}
+{"level":"INFO","message":"[6:42:24.162 AM]: No config file path found. Client config will not be used."}
+{"level":"INFO","message":"[6:42:24.162 AM]: Easy Logging is disabled as no config has been found"}
+{"level":"INFO","message":"[6:42:24.836 AM]: Connection[id: bde9c54b-d5d0-4aa5-aff3-7cb1e5d38b0c] - connection established successfully after 683.84 milliseconds"}
+{"level":"INFO","message":"[6:42:33.489 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:42:33.491 AM]: Creating Connection[id: 5133d55e-c3fe-4295-b72a-972f837989f4] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:42:33.491 AM]: Connection[id: 5133d55e-c3fe-4295-b72a-972f837989f4] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:42:33.492 AM]: Connection[id: 5133d55e-c3fe-4295-b72a-972f837989f4] - connection object created successfully."}
+{"level":"INFO","message":"[6:42:33.492 AM]: Connection[id: 5133d55e-c3fe-4295-b72a-972f837989f4] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:42:33.498 AM]: Connection[id: 5133d55e-c3fe-4295-b72a-972f837989f4] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:42:33.602 AM]: Connection[id: 5133d55e-c3fe-4295-b72a-972f837989f4] - connection established successfully after 109.81 milliseconds"}
+{"level":"INFO","message":"[6:43:02.167 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:43:02.169 AM]: Creating Connection[id: 12fc8c73-015c-4f6f-a771-9094c6c5166b] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:43:02.169 AM]: Connection[id: 12fc8c73-015c-4f6f-a771-9094c6c5166b] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:43:02.169 AM]: Connection[id: 12fc8c73-015c-4f6f-a771-9094c6c5166b] - connection object created successfully."}
+{"level":"INFO","message":"[6:43:02.169 AM]: Connection[id: 12fc8c73-015c-4f6f-a771-9094c6c5166b] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:43:02.175 AM]: Connection[id: 12fc8c73-015c-4f6f-a771-9094c6c5166b] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:43:02.261 AM]: Connection[id: 12fc8c73-015c-4f6f-a771-9094c6c5166b] - connection established successfully after 91.25 milliseconds"}
+{"level":"INFO","message":"[6:43:12.598 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:43:12.599 AM]: Creating Connection[id: f10902f1-e94b-4a75-a52e-af8f8ecdcdfc] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:43:12.599 AM]: Connection[id: f10902f1-e94b-4a75-a52e-af8f8ecdcdfc] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:43:12.600 AM]: Connection[id: f10902f1-e94b-4a75-a52e-af8f8ecdcdfc] - connection object created successfully."}
+{"level":"INFO","message":"[6:43:12.600 AM]: Connection[id: f10902f1-e94b-4a75-a52e-af8f8ecdcdfc] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:43:12.604 AM]: Connection[id: f10902f1-e94b-4a75-a52e-af8f8ecdcdfc] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:43:12.683 AM]: Connection[id: f10902f1-e94b-4a75-a52e-af8f8ecdcdfc] - connection established successfully after 83.32 milliseconds"}
+{"level":"INFO","message":"[6:43:18.367 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:43:18.369 AM]: Creating Connection[id: 6f2e14f4-38c1-4fd0-a0f1-8a4cc7d49352] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:43:18.369 AM]: Connection[id: 6f2e14f4-38c1-4fd0-a0f1-8a4cc7d49352] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:43:18.370 AM]: Connection[id: 6f2e14f4-38c1-4fd0-a0f1-8a4cc7d49352] - connection object created successfully."}
+{"level":"INFO","message":"[6:43:18.370 AM]: Connection[id: 6f2e14f4-38c1-4fd0-a0f1-8a4cc7d49352] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:43:18.374 AM]: Connection[id: 6f2e14f4-38c1-4fd0-a0f1-8a4cc7d49352] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:43:18.470 AM]: Connection[id: 6f2e14f4-38c1-4fd0-a0f1-8a4cc7d49352] - connection established successfully after 100.35 milliseconds"}
+{"level":"INFO","message":"[6:43:24.153 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:43:24.154 AM]: Creating Connection[id: 8a0287f8-d84a-4a45-8550-97ec70f89d93] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:43:24.154 AM]: Connection[id: 8a0287f8-d84a-4a45-8550-97ec70f89d93] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:43:24.154 AM]: Connection[id: 8a0287f8-d84a-4a45-8550-97ec70f89d93] - connection object created successfully."}
+{"level":"INFO","message":"[6:43:24.154 AM]: Connection[id: 8a0287f8-d84a-4a45-8550-97ec70f89d93] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:43:24.158 AM]: Connection[id: 8a0287f8-d84a-4a45-8550-97ec70f89d93] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:43:24.218 AM]: Connection[id: 8a0287f8-d84a-4a45-8550-97ec70f89d93] - connection established successfully after 63.82 milliseconds"}
+{"level":"INFO","message":"[6:43:33.163 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:43:33.165 AM]: Creating Connection[id: b1626187-e11f-4249-ae9c-f895835b17fe] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:43:33.165 AM]: Connection[id: b1626187-e11f-4249-ae9c-f895835b17fe] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:43:33.165 AM]: Connection[id: b1626187-e11f-4249-ae9c-f895835b17fe] - connection object created successfully."}
+{"level":"INFO","message":"[6:43:33.165 AM]: Connection[id: b1626187-e11f-4249-ae9c-f895835b17fe] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:43:33.170 AM]: Connection[id: b1626187-e11f-4249-ae9c-f895835b17fe] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:43:33.253 AM]: Connection[id: b1626187-e11f-4249-ae9c-f895835b17fe] - connection established successfully after 87.75 milliseconds"}
+{"level":"INFO","message":"[6:43:37.332 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:43:37.333 AM]: Creating Connection[id: c4f39443-434b-4595-a52a-7deda1d4ec16] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:43:37.333 AM]: Connection[id: c4f39443-434b-4595-a52a-7deda1d4ec16] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:43:37.333 AM]: Connection[id: c4f39443-434b-4595-a52a-7deda1d4ec16] - connection object created successfully."}
+{"level":"INFO","message":"[6:43:37.333 AM]: Connection[id: c4f39443-434b-4595-a52a-7deda1d4ec16] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:43:37.337 AM]: Connection[id: c4f39443-434b-4595-a52a-7deda1d4ec16] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:43:37.406 AM]: Connection[id: c4f39443-434b-4595-a52a-7deda1d4ec16] - connection established successfully after 72.28 milliseconds"}
+{"level":"INFO","message":"[6:43:43.747 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:43:43.764 AM]: Creating Connection[id: ec784f10-9350-43c5-b482-4dde76cbecc1] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:43:43.765 AM]: Connection[id: ec784f10-9350-43c5-b482-4dde76cbecc1] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:43:43.766 AM]: Connection[id: ec784f10-9350-43c5-b482-4dde76cbecc1] - connection object created successfully."}
+{"level":"INFO","message":"[6:43:43.766 AM]: Connection[id: ec784f10-9350-43c5-b482-4dde76cbecc1] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:43:43.772 AM]: Connection[id: ec784f10-9350-43c5-b482-4dde76cbecc1] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:43:43.773 AM]: Trying to initialize Easy Logging"}
+{"level":"INFO","message":"[6:43:43.785 AM]: No client config detected."}
+{"level":"INFO","message":"[6:43:43.786 AM]: No config file path found. Client config will not be used."}
+{"level":"INFO","message":"[6:43:43.786 AM]: Easy Logging is disabled as no config has been found"}
+{"level":"INFO","message":"[6:43:44.508 AM]: Connection[id: ec784f10-9350-43c5-b482-4dde76cbecc1] - connection established successfully after 741.8 milliseconds"}
+{"level":"INFO","message":"[6:43:51.120 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:43:51.121 AM]: Creating Connection[id: 50f91121-5a95-4b66-a4bc-e82a933fd4a8] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:43:51.122 AM]: Connection[id: 50f91121-5a95-4b66-a4bc-e82a933fd4a8] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:43:51.122 AM]: Connection[id: 50f91121-5a95-4b66-a4bc-e82a933fd4a8] - connection object created successfully."}
+{"level":"INFO","message":"[6:43:51.122 AM]: Connection[id: 50f91121-5a95-4b66-a4bc-e82a933fd4a8] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:43:51.126 AM]: Connection[id: 50f91121-5a95-4b66-a4bc-e82a933fd4a8] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:43:51.202 AM]: Connection[id: 50f91121-5a95-4b66-a4bc-e82a933fd4a8] - connection established successfully after 80.26 milliseconds"}
+{"level":"INFO","message":"[6:43:53.073 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:43:53.075 AM]: Creating Connection[id: 03e606de-091e-45b5-9db6-1dc26f7b8ae3] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:43:53.076 AM]: Connection[id: 03e606de-091e-45b5-9db6-1dc26f7b8ae3] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:43:53.076 AM]: Connection[id: 03e606de-091e-45b5-9db6-1dc26f7b8ae3] - connection object created successfully."}
+{"level":"INFO","message":"[6:43:53.076 AM]: Connection[id: 03e606de-091e-45b5-9db6-1dc26f7b8ae3] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:43:53.081 AM]: Connection[id: 03e606de-091e-45b5-9db6-1dc26f7b8ae3] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:43:53.162 AM]: Connection[id: 03e606de-091e-45b5-9db6-1dc26f7b8ae3] - connection established successfully after 85.25 milliseconds"}
+{"level":"INFO","message":"[6:45:27.065 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:45:27.066 AM]: Creating Connection[id: 3eae5be9-4316-4256-b0d3-8bb2e3f539be] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:45:27.066 AM]: Connection[id: 3eae5be9-4316-4256-b0d3-8bb2e3f539be] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:45:27.067 AM]: Connection[id: 3eae5be9-4316-4256-b0d3-8bb2e3f539be] - connection object created successfully."}
+{"level":"INFO","message":"[6:45:27.067 AM]: Connection[id: 3eae5be9-4316-4256-b0d3-8bb2e3f539be] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:45:27.071 AM]: Connection[id: 3eae5be9-4316-4256-b0d3-8bb2e3f539be] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:45:27.093 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:45:27.094 AM]: Creating Connection[id: f7275582-0efd-43a5-96cc-69842b24d439] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:45:27.095 AM]: Connection[id: f7275582-0efd-43a5-96cc-69842b24d439] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:45:27.095 AM]: Connection[id: f7275582-0efd-43a5-96cc-69842b24d439] - connection object created successfully."}
+{"level":"INFO","message":"[6:45:27.095 AM]: Connection[id: f7275582-0efd-43a5-96cc-69842b24d439] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:45:27.099 AM]: Connection[id: f7275582-0efd-43a5-96cc-69842b24d439] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:45:27.204 AM]: Connection[id: 3eae5be9-4316-4256-b0d3-8bb2e3f539be] - connection established successfully after 136.76 milliseconds"}
+{"level":"INFO","message":"[6:45:27.219 AM]: Connection[id: f7275582-0efd-43a5-96cc-69842b24d439] - connection established successfully after 123.52 milliseconds"}
+{"level":"INFO","message":"[6:46:10.820 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:46:10.822 AM]: Creating Connection[id: 4f58212f-6de3-462d-9cdd-d24f5f3540c5] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:46:10.822 AM]: Connection[id: 4f58212f-6de3-462d-9cdd-d24f5f3540c5] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:46:10.822 AM]: Connection[id: 4f58212f-6de3-462d-9cdd-d24f5f3540c5] - connection object created successfully."}
+{"level":"INFO","message":"[6:46:10.822 AM]: Connection[id: 4f58212f-6de3-462d-9cdd-d24f5f3540c5] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:46:10.826 AM]: Connection[id: 4f58212f-6de3-462d-9cdd-d24f5f3540c5] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:46:10.888 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:46:10.889 AM]: Creating Connection[id: 9bf688d2-0751-4829-b02d-88a61dd50ec1] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:46:10.889 AM]: Connection[id: 9bf688d2-0751-4829-b02d-88a61dd50ec1] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:46:10.890 AM]: Connection[id: 9bf688d2-0751-4829-b02d-88a61dd50ec1] - connection object created successfully."}
+{"level":"INFO","message":"[6:46:10.890 AM]: Connection[id: 9bf688d2-0751-4829-b02d-88a61dd50ec1] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:46:10.893 AM]: Connection[id: 9bf688d2-0751-4829-b02d-88a61dd50ec1] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:46:10.910 AM]: Connection[id: 4f58212f-6de3-462d-9cdd-d24f5f3540c5] - connection established successfully after 88.33 milliseconds"}
+{"level":"INFO","message":"[6:46:10.988 AM]: Connection[id: 9bf688d2-0751-4829-b02d-88a61dd50ec1] - connection established successfully after 98.2 milliseconds"}
+{"level":"INFO","message":"[6:48:07.387 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:48:07.404 AM]: Creating Connection[id: 59f5c53d-36b6-4a5b-b0d4-968daae89ed5] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:48:07.404 AM]: Connection[id: 59f5c53d-36b6-4a5b-b0d4-968daae89ed5] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:48:07.405 AM]: Connection[id: 59f5c53d-36b6-4a5b-b0d4-968daae89ed5] - connection object created successfully."}
+{"level":"INFO","message":"[6:48:07.405 AM]: Connection[id: 59f5c53d-36b6-4a5b-b0d4-968daae89ed5] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:48:07.411 AM]: Connection[id: 59f5c53d-36b6-4a5b-b0d4-968daae89ed5] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:48:07.411 AM]: Trying to initialize Easy Logging"}
+{"level":"INFO","message":"[6:48:07.427 AM]: No client config detected."}
+{"level":"INFO","message":"[6:48:07.427 AM]: No config file path found. Client config will not be used."}
+{"level":"INFO","message":"[6:48:07.428 AM]: Easy Logging is disabled as no config has been found"}
+{"level":"INFO","message":"[6:48:07.481 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:48:07.482 AM]: Creating Connection[id: ce6e1cad-e9b0-4d9e-a2b7-dfbb9d50e3c5] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:48:07.482 AM]: Connection[id: ce6e1cad-e9b0-4d9e-a2b7-dfbb9d50e3c5] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:48:07.482 AM]: Connection[id: ce6e1cad-e9b0-4d9e-a2b7-dfbb9d50e3c5] - connection object created successfully."}
+{"level":"INFO","message":"[6:48:07.482 AM]: Connection[id: ce6e1cad-e9b0-4d9e-a2b7-dfbb9d50e3c5] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:48:07.486 AM]: Connection[id: ce6e1cad-e9b0-4d9e-a2b7-dfbb9d50e3c5] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:48:07.957 AM]: Connection[id: 59f5c53d-36b6-4a5b-b0d4-968daae89ed5] - connection established successfully after 551.75 milliseconds"}
+{"level":"INFO","message":"[6:48:07.998 AM]: Connection[id: ce6e1cad-e9b0-4d9e-a2b7-dfbb9d50e3c5] - connection established successfully after 515.18 milliseconds"}
+{"level":"INFO","message":"[6:48:16.546 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:48:16.563 AM]: Creating Connection[id: b5283b2c-a7cb-4a05-bcd1-4fcbc7374e14] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:48:16.564 AM]: Connection[id: b5283b2c-a7cb-4a05-bcd1-4fcbc7374e14] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:48:16.565 AM]: Connection[id: b5283b2c-a7cb-4a05-bcd1-4fcbc7374e14] - connection object created successfully."}
+{"level":"INFO","message":"[6:48:16.565 AM]: Connection[id: b5283b2c-a7cb-4a05-bcd1-4fcbc7374e14] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:48:16.571 AM]: Connection[id: b5283b2c-a7cb-4a05-bcd1-4fcbc7374e14] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:48:16.573 AM]: Trying to initialize Easy Logging"}
+{"level":"INFO","message":"[6:48:16.623 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:48:16.624 AM]: Creating Connection[id: ed7dcfc5-af6f-4752-aca8-49504b807320] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:48:16.624 AM]: Connection[id: ed7dcfc5-af6f-4752-aca8-49504b807320] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:48:16.625 AM]: Connection[id: ed7dcfc5-af6f-4752-aca8-49504b807320] - connection object created successfully."}
+{"level":"INFO","message":"[6:48:16.625 AM]: Connection[id: ed7dcfc5-af6f-4752-aca8-49504b807320] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:48:16.629 AM]: Connection[id: ed7dcfc5-af6f-4752-aca8-49504b807320] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:48:16.630 AM]: Trying to initialize Easy Logging"}
+{"level":"INFO","message":"[6:48:16.632 AM]: No client config detected."}
+{"level":"INFO","message":"[6:48:16.632 AM]: No config file path found. Client config will not be used."}
+{"level":"INFO","message":"[6:48:16.633 AM]: Easy Logging is disabled as no config has been found"}
+{"level":"INFO","message":"[6:48:16.668 AM]: No client config detected."}
+{"level":"INFO","message":"[6:48:16.668 AM]: No config file path found. Client config will not be used."}
+{"level":"INFO","message":"[6:48:16.668 AM]: Easy Logging is disabled as no config has been found"}
+{"level":"INFO","message":"[6:48:17.131 AM]: Connection[id: b5283b2c-a7cb-4a05-bcd1-4fcbc7374e14] - connection established successfully after 565.41 milliseconds"}
+{"level":"INFO","message":"[6:48:17.142 AM]: Connection[id: ed7dcfc5-af6f-4752-aca8-49504b807320] - connection established successfully after 517.03 milliseconds"}
+{"level":"INFO","message":"[6:48:21.729 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:48:21.730 AM]: Creating Connection[id: d577b696-0302-4362-a057-cfff5274e4db] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:48:21.731 AM]: Connection[id: d577b696-0302-4362-a057-cfff5274e4db] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:48:21.731 AM]: Connection[id: d577b696-0302-4362-a057-cfff5274e4db] - connection object created successfully."}
+{"level":"INFO","message":"[6:48:21.731 AM]: Connection[id: d577b696-0302-4362-a057-cfff5274e4db] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:48:21.735 AM]: Connection[id: d577b696-0302-4362-a057-cfff5274e4db] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:48:21.771 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:48:21.772 AM]: Creating Connection[id: 0cf1a2ca-142d-4e11-b55c-70513faaf2e5] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:48:21.772 AM]: Connection[id: 0cf1a2ca-142d-4e11-b55c-70513faaf2e5] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:48:21.772 AM]: Connection[id: 0cf1a2ca-142d-4e11-b55c-70513faaf2e5] - connection object created successfully."}
+{"level":"INFO","message":"[6:48:21.773 AM]: Connection[id: 0cf1a2ca-142d-4e11-b55c-70513faaf2e5] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:48:21.776 AM]: Connection[id: 0cf1a2ca-142d-4e11-b55c-70513faaf2e5] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:48:22.470 AM]: Connection[id: d577b696-0302-4362-a057-cfff5274e4db] - connection established successfully after 739.04 milliseconds"}
+{"level":"INFO","message":"[6:48:22.475 AM]: Connection[id: 0cf1a2ca-142d-4e11-b55c-70513faaf2e5] - connection established successfully after 702.29 milliseconds"}
+{"level":"INFO","message":"[6:48:27.100 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:48:27.102 AM]: Creating Connection[id: 2f6e4318-eeed-44ac-a49f-25eacb296984] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:48:27.102 AM]: Connection[id: 2f6e4318-eeed-44ac-a49f-25eacb296984] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:48:27.102 AM]: Connection[id: 2f6e4318-eeed-44ac-a49f-25eacb296984] - connection object created successfully."}
+{"level":"INFO","message":"[6:48:27.102 AM]: Connection[id: 2f6e4318-eeed-44ac-a49f-25eacb296984] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:48:27.107 AM]: Connection[id: 2f6e4318-eeed-44ac-a49f-25eacb296984] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:48:27.128 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:48:27.129 AM]: Creating Connection[id: 2c87669f-3596-4887-b845-071c1ace07d7] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:48:27.129 AM]: Connection[id: 2c87669f-3596-4887-b845-071c1ace07d7] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:48:27.129 AM]: Connection[id: 2c87669f-3596-4887-b845-071c1ace07d7] - connection object created successfully."}
+{"level":"INFO","message":"[6:48:27.129 AM]: Connection[id: 2c87669f-3596-4887-b845-071c1ace07d7] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:48:27.132 AM]: Connection[id: 2c87669f-3596-4887-b845-071c1ace07d7] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:48:27.169 AM]: Connection[id: 2f6e4318-eeed-44ac-a49f-25eacb296984] - connection established successfully after 66.53 milliseconds"}
+{"level":"INFO","message":"[6:48:27.186 AM]: Connection[id: 2c87669f-3596-4887-b845-071c1ace07d7] - connection established successfully after 57.33 milliseconds"}
+{"level":"INFO","message":"[6:49:04.865 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:49:04.867 AM]: Creating Connection[id: b8ccb411-1cba-4613-bff9-365368c9b854] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:49:04.867 AM]: Connection[id: b8ccb411-1cba-4613-bff9-365368c9b854] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:49:04.867 AM]: Connection[id: b8ccb411-1cba-4613-bff9-365368c9b854] - connection object created successfully."}
+{"level":"INFO","message":"[6:49:04.869 AM]: Connection[id: b8ccb411-1cba-4613-bff9-365368c9b854] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:49:04.873 AM]: Connection[id: b8ccb411-1cba-4613-bff9-365368c9b854] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:49:04.919 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:49:04.920 AM]: Creating Connection[id: 0450193b-f095-49b4-a514-b4261517117b] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:49:04.921 AM]: Connection[id: 0450193b-f095-49b4-a514-b4261517117b] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:49:04.921 AM]: Connection[id: 0450193b-f095-49b4-a514-b4261517117b] - connection object created successfully."}
+{"level":"INFO","message":"[6:49:04.921 AM]: Connection[id: 0450193b-f095-49b4-a514-b4261517117b] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:49:04.925 AM]: Connection[id: 0450193b-f095-49b4-a514-b4261517117b] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:49:04.950 AM]: Connection[id: b8ccb411-1cba-4613-bff9-365368c9b854] - connection established successfully after 80.62 milliseconds"}
+{"level":"INFO","message":"[6:49:04.990 AM]: Connection[id: 0450193b-f095-49b4-a514-b4261517117b] - connection established successfully after 68.86 milliseconds"}
+{"level":"INFO","message":"[6:49:18.730 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:49:18.732 AM]: Creating Connection[id: c854cb8e-f33d-4d93-9aff-cf849f574c89] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:49:18.732 AM]: Connection[id: c854cb8e-f33d-4d93-9aff-cf849f574c89] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:49:18.732 AM]: Connection[id: c854cb8e-f33d-4d93-9aff-cf849f574c89] - connection object created successfully."}
+{"level":"INFO","message":"[6:49:18.733 AM]: Connection[id: c854cb8e-f33d-4d93-9aff-cf849f574c89] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:49:18.736 AM]: Connection[id: c854cb8e-f33d-4d93-9aff-cf849f574c89] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:49:18.811 AM]: Connection[id: c854cb8e-f33d-4d93-9aff-cf849f574c89] - connection established successfully after 78.6 milliseconds"}
+{"level":"INFO","message":"[6:49:23.429 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:49:23.431 AM]: Creating Connection[id: d164562e-194c-4dce-b967-ea144e938644] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:49:23.431 AM]: Connection[id: d164562e-194c-4dce-b967-ea144e938644] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:49:23.431 AM]: Connection[id: d164562e-194c-4dce-b967-ea144e938644] - connection object created successfully."}
+{"level":"INFO","message":"[6:49:23.432 AM]: Connection[id: d164562e-194c-4dce-b967-ea144e938644] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:49:23.435 AM]: Connection[id: d164562e-194c-4dce-b967-ea144e938644] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:49:23.511 AM]: Connection[id: d164562e-194c-4dce-b967-ea144e938644] - connection established successfully after 79.73 milliseconds"}
+{"level":"INFO","message":"[6:49:26.603 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:49:26.604 AM]: Creating Connection[id: fbafc1e1-f4e7-4851-909b-7b53e3f8a0df] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:49:26.605 AM]: Connection[id: fbafc1e1-f4e7-4851-909b-7b53e3f8a0df] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:49:26.605 AM]: Connection[id: fbafc1e1-f4e7-4851-909b-7b53e3f8a0df] - connection object created successfully."}
+{"level":"INFO","message":"[6:49:26.605 AM]: Connection[id: fbafc1e1-f4e7-4851-909b-7b53e3f8a0df] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:49:26.609 AM]: Connection[id: fbafc1e1-f4e7-4851-909b-7b53e3f8a0df] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:49:26.682 AM]: Connection[id: fbafc1e1-f4e7-4851-909b-7b53e3f8a0df] - connection established successfully after 76.7 milliseconds"}
+{"level":"INFO","message":"[6:49:27.909 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:49:27.911 AM]: Creating Connection[id: b07211e3-fecf-45cb-9c25-5a7825c3452f] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:49:27.911 AM]: Connection[id: b07211e3-fecf-45cb-9c25-5a7825c3452f] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:49:27.911 AM]: Connection[id: b07211e3-fecf-45cb-9c25-5a7825c3452f] - connection object created successfully."}
+{"level":"INFO","message":"[6:49:27.911 AM]: Connection[id: b07211e3-fecf-45cb-9c25-5a7825c3452f] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:49:27.915 AM]: Connection[id: b07211e3-fecf-45cb-9c25-5a7825c3452f] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:49:27.983 AM]: Connection[id: b07211e3-fecf-45cb-9c25-5a7825c3452f] - connection established successfully after 71.35 milliseconds"}
+{"level":"INFO","message":"[6:49:30.104 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:49:30.106 AM]: Creating Connection[id: 08cf8766-056f-4612-a6ac-7b8fbfccb5f7] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:49:30.106 AM]: Connection[id: 08cf8766-056f-4612-a6ac-7b8fbfccb5f7] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:49:30.106 AM]: Connection[id: 08cf8766-056f-4612-a6ac-7b8fbfccb5f7] - connection object created successfully."}
+{"level":"INFO","message":"[6:49:30.107 AM]: Connection[id: 08cf8766-056f-4612-a6ac-7b8fbfccb5f7] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:49:30.111 AM]: Connection[id: 08cf8766-056f-4612-a6ac-7b8fbfccb5f7] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:49:30.190 AM]: Connection[id: 08cf8766-056f-4612-a6ac-7b8fbfccb5f7] - connection established successfully after 83.43 milliseconds"}
+{"level":"INFO","message":"[6:49:31.345 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:49:31.347 AM]: Creating Connection[id: b21db112-5ec6-4686-b5f7-a096687ab080] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:49:31.347 AM]: Connection[id: b21db112-5ec6-4686-b5f7-a096687ab080] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:49:31.347 AM]: Connection[id: b21db112-5ec6-4686-b5f7-a096687ab080] - connection object created successfully."}
+{"level":"INFO","message":"[6:49:31.347 AM]: Connection[id: b21db112-5ec6-4686-b5f7-a096687ab080] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:49:31.352 AM]: Connection[id: b21db112-5ec6-4686-b5f7-a096687ab080] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:49:31.603 AM]: Connection[id: b21db112-5ec6-4686-b5f7-a096687ab080] - connection established successfully after 255.28 milliseconds"}
+{"level":"INFO","message":"[6:49:33.501 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:49:33.503 AM]: Creating Connection[id: 26383655-1dc5-4273-9ac4-b8efc2855bd6] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:49:33.503 AM]: Connection[id: 26383655-1dc5-4273-9ac4-b8efc2855bd6] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:49:33.503 AM]: Connection[id: 26383655-1dc5-4273-9ac4-b8efc2855bd6] - connection object created successfully."}
+{"level":"INFO","message":"[6:49:33.504 AM]: Connection[id: 26383655-1dc5-4273-9ac4-b8efc2855bd6] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:49:33.507 AM]: Connection[id: 26383655-1dc5-4273-9ac4-b8efc2855bd6] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:49:33.596 AM]: Connection[id: 26383655-1dc5-4273-9ac4-b8efc2855bd6] - connection established successfully after 92.66 milliseconds"}
+{"level":"INFO","message":"[6:49:34.772 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:49:34.773 AM]: Creating Connection[id: 67638b36-a0e2-4212-b278-f833111e6f70] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:49:34.773 AM]: Connection[id: 67638b36-a0e2-4212-b278-f833111e6f70] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:49:34.773 AM]: Connection[id: 67638b36-a0e2-4212-b278-f833111e6f70] - connection object created successfully."}
+{"level":"INFO","message":"[6:49:34.773 AM]: Connection[id: 67638b36-a0e2-4212-b278-f833111e6f70] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:49:34.777 AM]: Connection[id: 67638b36-a0e2-4212-b278-f833111e6f70] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:49:34.940 AM]: Connection[id: 67638b36-a0e2-4212-b278-f833111e6f70] - connection established successfully after 166.9 milliseconds"}
+{"level":"INFO","message":"[6:50:14.892 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:50:14.893 AM]: Creating Connection[id: e172a790-b64c-4afe-a38f-a82931b49c05] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:50:14.894 AM]: Connection[id: e172a790-b64c-4afe-a38f-a82931b49c05] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:50:14.894 AM]: Connection[id: e172a790-b64c-4afe-a38f-a82931b49c05] - connection object created successfully."}
+{"level":"INFO","message":"[6:50:14.894 AM]: Connection[id: e172a790-b64c-4afe-a38f-a82931b49c05] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:50:14.898 AM]: Connection[id: e172a790-b64c-4afe-a38f-a82931b49c05] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:50:14.985 AM]: Connection[id: e172a790-b64c-4afe-a38f-a82931b49c05] - connection established successfully after 90.75 milliseconds"}
+{"level":"INFO","message":"[6:50:16.168 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:50:16.169 AM]: Creating Connection[id: ca81c537-db4b-421e-976f-a52816cccab5] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:50:16.169 AM]: Connection[id: ca81c537-db4b-421e-976f-a52816cccab5] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:50:16.170 AM]: Connection[id: ca81c537-db4b-421e-976f-a52816cccab5] - connection object created successfully."}
+{"level":"INFO","message":"[6:50:16.170 AM]: Connection[id: ca81c537-db4b-421e-976f-a52816cccab5] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:50:16.174 AM]: Connection[id: ca81c537-db4b-421e-976f-a52816cccab5] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:50:16.254 AM]: Connection[id: ca81c537-db4b-421e-976f-a52816cccab5] - connection established successfully after 83.91 milliseconds"}
+{"level":"INFO","message":"[6:51:44.798 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:51:44.799 AM]: Creating Connection[id: f7acab0e-ed8c-4dae-8171-82e2b9ae175e] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:51:44.799 AM]: Connection[id: f7acab0e-ed8c-4dae-8171-82e2b9ae175e] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:51:44.799 AM]: Connection[id: f7acab0e-ed8c-4dae-8171-82e2b9ae175e] - connection object created successfully."}
+{"level":"INFO","message":"[6:51:44.799 AM]: Connection[id: f7acab0e-ed8c-4dae-8171-82e2b9ae175e] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:51:44.803 AM]: Connection[id: f7acab0e-ed8c-4dae-8171-82e2b9ae175e] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:51:44.894 AM]: Connection[id: f7acab0e-ed8c-4dae-8171-82e2b9ae175e] - connection established successfully after 94.21 milliseconds"}
+{"level":"INFO","message":"[6:51:50.391 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:51:50.392 AM]: Creating Connection[id: d5b33ba8-6a3a-4671-8831-55985b67d024] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:51:50.393 AM]: Connection[id: d5b33ba8-6a3a-4671-8831-55985b67d024] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:51:50.393 AM]: Connection[id: d5b33ba8-6a3a-4671-8831-55985b67d024] - connection object created successfully."}
+{"level":"INFO","message":"[6:51:50.393 AM]: Connection[id: d5b33ba8-6a3a-4671-8831-55985b67d024] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:51:50.397 AM]: Connection[id: d5b33ba8-6a3a-4671-8831-55985b67d024] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:51:50.523 AM]: Connection[id: d5b33ba8-6a3a-4671-8831-55985b67d024] - connection established successfully after 129.54 milliseconds"}
+{"level":"INFO","message":"[6:51:55.487 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:51:55.489 AM]: Creating Connection[id: 191efc85-57a5-473b-8b72-84e7486b55f8] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:51:55.489 AM]: Connection[id: 191efc85-57a5-473b-8b72-84e7486b55f8] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:51:55.489 AM]: Connection[id: 191efc85-57a5-473b-8b72-84e7486b55f8] - connection object created successfully."}
+{"level":"INFO","message":"[6:51:55.489 AM]: Connection[id: 191efc85-57a5-473b-8b72-84e7486b55f8] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:51:55.493 AM]: Connection[id: 191efc85-57a5-473b-8b72-84e7486b55f8] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:51:55.599 AM]: Connection[id: 191efc85-57a5-473b-8b72-84e7486b55f8] - connection established successfully after 109.69 milliseconds"}
+{"level":"INFO","message":"[6:52:25.785 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:52:25.787 AM]: Creating Connection[id: 06175417-0ea9-4935-b71c-7c9bbb36d0af] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:52:25.787 AM]: Connection[id: 06175417-0ea9-4935-b71c-7c9bbb36d0af] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:52:25.788 AM]: Connection[id: 06175417-0ea9-4935-b71c-7c9bbb36d0af] - connection object created successfully."}
+{"level":"INFO","message":"[6:52:25.788 AM]: Connection[id: 06175417-0ea9-4935-b71c-7c9bbb36d0af] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:52:25.793 AM]: Connection[id: 06175417-0ea9-4935-b71c-7c9bbb36d0af] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:52:25.881 AM]: Connection[id: 06175417-0ea9-4935-b71c-7c9bbb36d0af] - connection established successfully after 93.24 milliseconds"}
+{"level":"INFO","message":"[6:54:26.612 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:54:26.614 AM]: Creating Connection[id: 8c5b1e5f-3115-43b8-b0a7-25821fbc185d] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:54:26.614 AM]: Connection[id: 8c5b1e5f-3115-43b8-b0a7-25821fbc185d] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:54:26.614 AM]: Connection[id: 8c5b1e5f-3115-43b8-b0a7-25821fbc185d] - connection object created successfully."}
+{"level":"INFO","message":"[6:54:26.614 AM]: Connection[id: 8c5b1e5f-3115-43b8-b0a7-25821fbc185d] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:54:26.618 AM]: Connection[id: 8c5b1e5f-3115-43b8-b0a7-25821fbc185d] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:54:26.713 AM]: Connection[id: 8c5b1e5f-3115-43b8-b0a7-25821fbc185d] - connection established successfully after 98.45 milliseconds"}
+{"level":"INFO","message":"[6:55:00.725 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:55:00.727 AM]: Creating Connection[id: 2b3d9149-568a-4839-a981-e71a2d2e6fc4] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:55:00.727 AM]: Connection[id: 2b3d9149-568a-4839-a981-e71a2d2e6fc4] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:55:00.727 AM]: Connection[id: 2b3d9149-568a-4839-a981-e71a2d2e6fc4] - connection object created successfully."}
+{"level":"INFO","message":"[6:55:00.727 AM]: Connection[id: 2b3d9149-568a-4839-a981-e71a2d2e6fc4] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:55:00.733 AM]: Connection[id: 2b3d9149-568a-4839-a981-e71a2d2e6fc4] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:55:00.858 AM]: Connection[id: 2b3d9149-568a-4839-a981-e71a2d2e6fc4] - connection established successfully after 130.67 milliseconds"}
+{"level":"INFO","message":"[6:55:02.899 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:55:02.900 AM]: Creating Connection[id: 0fe86ff0-be78-40a2-a873-540d659d8a85] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:55:02.900 AM]: Connection[id: 0fe86ff0-be78-40a2-a873-540d659d8a85] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:55:02.901 AM]: Connection[id: 0fe86ff0-be78-40a2-a873-540d659d8a85] - connection object created successfully."}
+{"level":"INFO","message":"[6:55:02.901 AM]: Connection[id: 0fe86ff0-be78-40a2-a873-540d659d8a85] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:55:02.904 AM]: Connection[id: 0fe86ff0-be78-40a2-a873-540d659d8a85] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:55:03.301 AM]: Connection[id: 0fe86ff0-be78-40a2-a873-540d659d8a85] - connection established successfully after 400.08 milliseconds"}
+{"level":"INFO","message":"[6:55:04.890 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:55:04.891 AM]: Creating Connection[id: ccf62f9d-2237-44ab-9309-78a98e3a156a] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:55:04.892 AM]: Connection[id: ccf62f9d-2237-44ab-9309-78a98e3a156a] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:55:04.892 AM]: Connection[id: ccf62f9d-2237-44ab-9309-78a98e3a156a] - connection object created successfully."}
+{"level":"INFO","message":"[6:55:04.892 AM]: Connection[id: ccf62f9d-2237-44ab-9309-78a98e3a156a] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:55:04.897 AM]: Connection[id: ccf62f9d-2237-44ab-9309-78a98e3a156a] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:55:05.022 AM]: Connection[id: ccf62f9d-2237-44ab-9309-78a98e3a156a] - connection established successfully after 129.78 milliseconds"}
+{"level":"INFO","message":"[6:56:30.306 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:56:30.307 AM]: Creating Connection[id: 9f715790-2bee-4952-9e27-a3bb7b3eb3ee] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:56:30.307 AM]: Connection[id: 9f715790-2bee-4952-9e27-a3bb7b3eb3ee] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:56:30.307 AM]: Connection[id: 9f715790-2bee-4952-9e27-a3bb7b3eb3ee] - connection object created successfully."}
+{"level":"INFO","message":"[6:56:30.307 AM]: Connection[id: 9f715790-2bee-4952-9e27-a3bb7b3eb3ee] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:56:30.311 AM]: Connection[id: 9f715790-2bee-4952-9e27-a3bb7b3eb3ee] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:56:30.381 AM]: Connection[id: 9f715790-2bee-4952-9e27-a3bb7b3eb3ee] - connection established successfully after 73.94 milliseconds"}
+{"level":"INFO","message":"[6:56:33.585 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:56:33.589 AM]: Creating Connection[id: b0cb160b-1b68-44fd-b7c6-4e47320f1577] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:56:33.589 AM]: Connection[id: b0cb160b-1b68-44fd-b7c6-4e47320f1577] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:56:33.589 AM]: Connection[id: b0cb160b-1b68-44fd-b7c6-4e47320f1577] - connection object created successfully."}
+{"level":"INFO","message":"[6:56:33.589 AM]: Connection[id: b0cb160b-1b68-44fd-b7c6-4e47320f1577] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:56:33.594 AM]: Connection[id: b0cb160b-1b68-44fd-b7c6-4e47320f1577] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:56:33.653 AM]: Connection[id: b0cb160b-1b68-44fd-b7c6-4e47320f1577] - connection established successfully after 63.89 milliseconds"}
+{"level":"INFO","message":"[6:56:37.275 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:56:37.276 AM]: Creating Connection[id: 8c910dcf-c487-4528-b492-5bb1f70c6712] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:56:37.276 AM]: Connection[id: 8c910dcf-c487-4528-b492-5bb1f70c6712] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:56:37.277 AM]: Connection[id: 8c910dcf-c487-4528-b492-5bb1f70c6712] - connection object created successfully."}
+{"level":"INFO","message":"[6:56:37.277 AM]: Connection[id: 8c910dcf-c487-4528-b492-5bb1f70c6712] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:56:37.280 AM]: Connection[id: 8c910dcf-c487-4528-b492-5bb1f70c6712] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:56:37.387 AM]: Connection[id: 8c910dcf-c487-4528-b492-5bb1f70c6712] - connection established successfully after 110.12 milliseconds"}
+{"level":"INFO","message":"[6:56:40.830 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:56:40.831 AM]: Creating Connection[id: 65e1f1ac-eba8-4c30-90a7-735d000c9d0f] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:56:40.831 AM]: Connection[id: 65e1f1ac-eba8-4c30-90a7-735d000c9d0f] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:56:40.832 AM]: Connection[id: 65e1f1ac-eba8-4c30-90a7-735d000c9d0f] - connection object created successfully."}
+{"level":"INFO","message":"[6:56:40.832 AM]: Connection[id: 65e1f1ac-eba8-4c30-90a7-735d000c9d0f] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:56:40.835 AM]: Connection[id: 65e1f1ac-eba8-4c30-90a7-735d000c9d0f] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:56:40.913 AM]: Connection[id: 65e1f1ac-eba8-4c30-90a7-735d000c9d0f] - connection established successfully after 81.64 milliseconds"}
+{"level":"INFO","message":"[6:57:23.715 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:57:23.716 AM]: Creating Connection[id: e326e1b7-3f14-4cf8-93bd-02f144db4a07] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:57:23.716 AM]: Connection[id: e326e1b7-3f14-4cf8-93bd-02f144db4a07] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:57:23.716 AM]: Connection[id: e326e1b7-3f14-4cf8-93bd-02f144db4a07] - connection object created successfully."}
+{"level":"INFO","message":"[6:57:23.716 AM]: Connection[id: e326e1b7-3f14-4cf8-93bd-02f144db4a07] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:57:23.720 AM]: Connection[id: e326e1b7-3f14-4cf8-93bd-02f144db4a07] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:57:23.804 AM]: Connection[id: e326e1b7-3f14-4cf8-93bd-02f144db4a07] - connection established successfully after 87.23 milliseconds"}
+{"level":"INFO","message":"[6:57:26.161 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:57:26.178 AM]: Creating Connection[id: 8b87fc06-6812-4282-9f2f-f7269f13f94b] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:57:26.179 AM]: Connection[id: 8b87fc06-6812-4282-9f2f-f7269f13f94b] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:57:26.179 AM]: Connection[id: 8b87fc06-6812-4282-9f2f-f7269f13f94b] - connection object created successfully."}
+{"level":"INFO","message":"[6:57:26.180 AM]: Connection[id: 8b87fc06-6812-4282-9f2f-f7269f13f94b] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:57:26.185 AM]: Connection[id: 8b87fc06-6812-4282-9f2f-f7269f13f94b] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:57:26.186 AM]: Trying to initialize Easy Logging"}
+{"level":"INFO","message":"[6:57:26.200 AM]: No client config detected."}
+{"level":"INFO","message":"[6:57:26.201 AM]: No config file path found. Client config will not be used."}
+{"level":"INFO","message":"[6:57:26.201 AM]: Easy Logging is disabled as no config has been found"}
+{"level":"INFO","message":"[6:57:26.856 AM]: Connection[id: 8b87fc06-6812-4282-9f2f-f7269f13f94b] - connection established successfully after 676.25 milliseconds"}
+{"level":"INFO","message":"[6:57:33.969 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:57:33.971 AM]: Creating Connection[id: b3f30700-d04b-4c36-b862-ca1dd752c941] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:57:33.971 AM]: Connection[id: b3f30700-d04b-4c36-b862-ca1dd752c941] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:57:33.971 AM]: Connection[id: b3f30700-d04b-4c36-b862-ca1dd752c941] - connection object created successfully."}
+{"level":"INFO","message":"[6:57:33.972 AM]: Connection[id: b3f30700-d04b-4c36-b862-ca1dd752c941] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:57:33.975 AM]: Connection[id: b3f30700-d04b-4c36-b862-ca1dd752c941] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:57:34.050 AM]: Connection[id: b3f30700-d04b-4c36-b862-ca1dd752c941] - connection established successfully after 78.41 milliseconds"}
+{"level":"INFO","message":"[6:57:47.117 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:57:47.118 AM]: Creating Connection[id: 7edc4caa-ea4f-4d9a-ada3-9b70d186d815] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:57:47.118 AM]: Connection[id: 7edc4caa-ea4f-4d9a-ada3-9b70d186d815] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:57:47.119 AM]: Connection[id: 7edc4caa-ea4f-4d9a-ada3-9b70d186d815] - connection object created successfully."}
+{"level":"INFO","message":"[6:57:47.119 AM]: Connection[id: 7edc4caa-ea4f-4d9a-ada3-9b70d186d815] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:57:47.122 AM]: Connection[id: 7edc4caa-ea4f-4d9a-ada3-9b70d186d815] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:57:47.218 AM]: Connection[id: 7edc4caa-ea4f-4d9a-ada3-9b70d186d815] - connection established successfully after 98.84 milliseconds"}
+{"level":"INFO","message":"[6:57:50.502 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:57:50.504 AM]: Creating Connection[id: 26b08974-aa60-4189-b191-e6debc3aa68f] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:57:50.505 AM]: Connection[id: 26b08974-aa60-4189-b191-e6debc3aa68f] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:57:50.505 AM]: Connection[id: 26b08974-aa60-4189-b191-e6debc3aa68f] - connection object created successfully."}
+{"level":"INFO","message":"[6:57:50.505 AM]: Connection[id: 26b08974-aa60-4189-b191-e6debc3aa68f] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:57:50.509 AM]: Connection[id: 26b08974-aa60-4189-b191-e6debc3aa68f] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:57:50.573 AM]: Connection[id: 26b08974-aa60-4189-b191-e6debc3aa68f] - connection established successfully after 68.23 milliseconds"}
+{"level":"INFO","message":"[6:57:52.224 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:57:52.225 AM]: Creating Connection[id: de6b003c-464d-4491-8a2c-92c3b24cbf7f] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:57:52.225 AM]: Connection[id: de6b003c-464d-4491-8a2c-92c3b24cbf7f] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:57:52.225 AM]: Connection[id: de6b003c-464d-4491-8a2c-92c3b24cbf7f] - connection object created successfully."}
+{"level":"INFO","message":"[6:57:52.226 AM]: Connection[id: de6b003c-464d-4491-8a2c-92c3b24cbf7f] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:57:52.230 AM]: Connection[id: de6b003c-464d-4491-8a2c-92c3b24cbf7f] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:57:52.289 AM]: Connection[id: de6b003c-464d-4491-8a2c-92c3b24cbf7f] - connection established successfully after 63.52 milliseconds"}
+{"level":"INFO","message":"[6:59:12.608 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:59:12.609 AM]: Creating Connection[id: ef954b2b-e7e1-491b-9ab0-7c7bcff03784] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:59:12.610 AM]: Connection[id: ef954b2b-e7e1-491b-9ab0-7c7bcff03784] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:59:12.610 AM]: Connection[id: ef954b2b-e7e1-491b-9ab0-7c7bcff03784] - connection object created successfully."}
+{"level":"INFO","message":"[6:59:12.610 AM]: Connection[id: ef954b2b-e7e1-491b-9ab0-7c7bcff03784] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:59:12.613 AM]: Connection[id: ef954b2b-e7e1-491b-9ab0-7c7bcff03784] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:59:12.688 AM]: Connection[id: ef954b2b-e7e1-491b-9ab0-7c7bcff03784] - connection established successfully after 78.09 milliseconds"}
+{"level":"INFO","message":"[6:59:16.212 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:59:16.214 AM]: Creating Connection[id: 20d5cac7-be48-4f78-889a-9d188aafab84] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:59:16.214 AM]: Connection[id: 20d5cac7-be48-4f78-889a-9d188aafab84] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:59:16.214 AM]: Connection[id: 20d5cac7-be48-4f78-889a-9d188aafab84] - connection object created successfully."}
+{"level":"INFO","message":"[6:59:16.214 AM]: Connection[id: 20d5cac7-be48-4f78-889a-9d188aafab84] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:59:16.218 AM]: Connection[id: 20d5cac7-be48-4f78-889a-9d188aafab84] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:59:16.300 AM]: Connection[id: 20d5cac7-be48-4f78-889a-9d188aafab84] - connection established successfully after 85.41 milliseconds"}
+{"level":"INFO","message":"[6:59:18.249 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:59:18.251 AM]: Creating Connection[id: fc899a30-7f28-423a-8c20-8e39ca7a7622] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:59:18.251 AM]: Connection[id: fc899a30-7f28-423a-8c20-8e39ca7a7622] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:59:18.251 AM]: Connection[id: fc899a30-7f28-423a-8c20-8e39ca7a7622] - connection object created successfully."}
+{"level":"INFO","message":"[6:59:18.251 AM]: Connection[id: fc899a30-7f28-423a-8c20-8e39ca7a7622] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:59:18.256 AM]: Connection[id: fc899a30-7f28-423a-8c20-8e39ca7a7622] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:59:18.337 AM]: Connection[id: fc899a30-7f28-423a-8c20-8e39ca7a7622] - connection established successfully after 85.72 milliseconds"}
+{"level":"INFO","message":"[6:59:28.910 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:59:28.911 AM]: Creating Connection[id: 04ab4c85-9677-4b74-8fa0-020ce65d1cbe] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:59:28.911 AM]: Connection[id: 04ab4c85-9677-4b74-8fa0-020ce65d1cbe] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:59:28.911 AM]: Connection[id: 04ab4c85-9677-4b74-8fa0-020ce65d1cbe] - connection object created successfully."}
+{"level":"INFO","message":"[6:59:28.912 AM]: Connection[id: 04ab4c85-9677-4b74-8fa0-020ce65d1cbe] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:59:28.915 AM]: Connection[id: 04ab4c85-9677-4b74-8fa0-020ce65d1cbe] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:59:29.006 AM]: Connection[id: 04ab4c85-9677-4b74-8fa0-020ce65d1cbe] - connection established successfully after 93.93 milliseconds"}
+{"level":"INFO","message":"[6:59:39.038 AM]: Creating new connection object"}
+{"level":"INFO","message":"[6:59:39.039 AM]: Creating Connection[id: f61ed50c-f841-4e4e-bd60-521ce666342c] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[6:59:39.039 AM]: Connection[id: f61ed50c-f841-4e4e-bd60-521ce666342c] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[6:59:39.039 AM]: Connection[id: f61ed50c-f841-4e4e-bd60-521ce666342c] - connection object created successfully."}
+{"level":"INFO","message":"[6:59:39.039 AM]: Connection[id: f61ed50c-f841-4e4e-bd60-521ce666342c] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[6:59:39.043 AM]: Connection[id: f61ed50c-f841-4e4e-bd60-521ce666342c] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[6:59:39.099 AM]: Connection[id: f61ed50c-f841-4e4e-bd60-521ce666342c] - connection established successfully after 59.6 milliseconds"}
+{"level":"INFO","message":"[4:53:08.195 AM]: Creating new connection object"}
+{"level":"INFO","message":"[4:53:08.213 AM]: Creating Connection[id: 4c840d76-5f1b-4901-bb87-f68088a30ed4] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[4:53:08.214 AM]: Connection[id: 4c840d76-5f1b-4901-bb87-f68088a30ed4] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[4:53:08.215 AM]: Connection[id: 4c840d76-5f1b-4901-bb87-f68088a30ed4] - connection object created successfully."}
+{"level":"INFO","message":"[4:53:08.216 AM]: Connection[id: 4c840d76-5f1b-4901-bb87-f68088a30ed4] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[4:53:08.223 AM]: Connection[id: 4c840d76-5f1b-4901-bb87-f68088a30ed4] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[4:53:08.223 AM]: Trying to initialize Easy Logging"}
+{"level":"INFO","message":"[4:53:08.227 AM]: No client config detected."}
+{"level":"INFO","message":"[4:53:08.228 AM]: No config file path found. Client config will not be used."}
+{"level":"INFO","message":"[4:53:08.228 AM]: Easy Logging is disabled as no config has been found"}
+{"level":"INFO","message":"[4:53:09.297 AM]: Connection[id: 4c840d76-5f1b-4901-bb87-f68088a30ed4] - connection established successfully after 1081.52 milliseconds"}
+{"level":"INFO","message":"[4:58:18.624 AM]: Creating new connection object"}
+{"level":"INFO","message":"[4:58:18.626 AM]: Creating Connection[id: fad8171e-709d-4076-93a4-6f9d7c7988b5] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[4:58:18.626 AM]: Connection[id: fad8171e-709d-4076-93a4-6f9d7c7988b5] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[4:58:18.626 AM]: Connection[id: fad8171e-709d-4076-93a4-6f9d7c7988b5] - connection object created successfully."}
+{"level":"INFO","message":"[4:58:18.627 AM]: Connection[id: fad8171e-709d-4076-93a4-6f9d7c7988b5] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[4:58:18.630 AM]: Connection[id: fad8171e-709d-4076-93a4-6f9d7c7988b5] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[4:58:18.845 AM]: Connection[id: fad8171e-709d-4076-93a4-6f9d7c7988b5] - connection established successfully after 218.38 milliseconds"}
+{"level":"INFO","message":"[5:00:05.086 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:00:05.088 AM]: Creating Connection[id: 8a680635-b0c3-407c-885a-5edb4dd3c00d] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[5:00:05.088 AM]: Connection[id: 8a680635-b0c3-407c-885a-5edb4dd3c00d] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[5:00:05.089 AM]: Connection[id: 8a680635-b0c3-407c-885a-5edb4dd3c00d] - connection object created successfully."}
+{"level":"INFO","message":"[5:00:05.089 AM]: Connection[id: 8a680635-b0c3-407c-885a-5edb4dd3c00d] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[5:00:05.093 AM]: Connection[id: 8a680635-b0c3-407c-885a-5edb4dd3c00d] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[5:00:05.328 AM]: Connection[id: 8a680635-b0c3-407c-885a-5edb4dd3c00d] - connection established successfully after 239.45 milliseconds"}
+{"level":"INFO","message":"[5:02:13.365 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:02:13.387 AM]: Creating Connection[id: 16ec5444-2e88-437e-bc5e-e3c7ac3350bf] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: undefined, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[5:02:13.388 AM]: Connection[id: 16ec5444-2e88-437e-bc5e-e3c7ac3350bf] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[5:02:13.389 AM]: Connection[id: 16ec5444-2e88-437e-bc5e-e3c7ac3350bf] - connection object created successfully."}
+{"level":"INFO","message":"[5:02:13.390 AM]: Connection[id: 16ec5444-2e88-437e-bc5e-e3c7ac3350bf] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[5:02:13.399 AM]: Connection[id: 16ec5444-2e88-437e-bc5e-e3c7ac3350bf] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[5:02:13.400 AM]: Trying to initialize Easy Logging"}
+{"level":"INFO","message":"[5:02:13.406 AM]: No client config detected."}
+{"level":"INFO","message":"[5:02:13.406 AM]: No config file path found. Client config will not be used."}
+{"level":"INFO","message":"[5:02:13.407 AM]: Easy Logging is disabled as no config has been found"}
+{"level":"INFO","message":"[5:02:13.966 AM]: Connection[id: 16ec5444-2e88-437e-bc5e-e3c7ac3350bf] - connection established successfully after 575.71 milliseconds"}
+{"level":"INFO","message":"[5:02:28.086 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:02:28.087 AM]: Creating Connection[id: 9212c7b3-fbf1-41a7-9674-3111c6dbdb67] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: undefined, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[5:02:28.088 AM]: Connection[id: 9212c7b3-fbf1-41a7-9674-3111c6dbdb67] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[5:02:28.088 AM]: Connection[id: 9212c7b3-fbf1-41a7-9674-3111c6dbdb67] - connection object created successfully."}
+{"level":"INFO","message":"[5:02:28.088 AM]: Connection[id: 9212c7b3-fbf1-41a7-9674-3111c6dbdb67] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[5:02:28.092 AM]: Connection[id: 9212c7b3-fbf1-41a7-9674-3111c6dbdb67] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[5:02:28.157 AM]: Connection[id: 9212c7b3-fbf1-41a7-9674-3111c6dbdb67] - connection established successfully after 68.5 milliseconds"}
+{"level":"INFO","message":"[5:03:29.506 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:03:29.508 AM]: Creating Connection[id: 0d571d7c-a6f0-441c-a57b-6ec8fb9473d6] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: undefined, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[5:03:29.509 AM]: Connection[id: 0d571d7c-a6f0-441c-a57b-6ec8fb9473d6] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[5:03:29.509 AM]: Connection[id: 0d571d7c-a6f0-441c-a57b-6ec8fb9473d6] - connection object created successfully."}
+{"level":"INFO","message":"[5:03:29.509 AM]: Connection[id: 0d571d7c-a6f0-441c-a57b-6ec8fb9473d6] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[5:03:29.513 AM]: Connection[id: 0d571d7c-a6f0-441c-a57b-6ec8fb9473d6] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[5:03:29.611 AM]: Connection[id: 0d571d7c-a6f0-441c-a57b-6ec8fb9473d6] - connection established successfully after 101.31 milliseconds"}
+{"level":"INFO","message":"[5:05:19.096 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:05:19.098 AM]: Creating Connection[id: cc27cb05-7d17-4cca-a281-3309648932b5] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: undefined, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[5:05:19.098 AM]: Connection[id: cc27cb05-7d17-4cca-a281-3309648932b5] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[5:05:19.098 AM]: Connection[id: cc27cb05-7d17-4cca-a281-3309648932b5] - connection object created successfully."}
+{"level":"INFO","message":"[5:05:19.098 AM]: Connection[id: cc27cb05-7d17-4cca-a281-3309648932b5] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[5:05:19.102 AM]: Connection[id: cc27cb05-7d17-4cca-a281-3309648932b5] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[5:05:19.213 AM]: Connection[id: cc27cb05-7d17-4cca-a281-3309648932b5] - connection established successfully after 114.04 milliseconds"}
+{"level":"INFO","message":"[5:06:07.553 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:06:07.556 AM]: Creating Connection[id: b2bd4c63-4a54-47c1-b23a-ef61c670a397] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: undefined, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[5:06:07.556 AM]: Connection[id: b2bd4c63-4a54-47c1-b23a-ef61c670a397] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[5:06:07.557 AM]: Connection[id: b2bd4c63-4a54-47c1-b23a-ef61c670a397] - connection object created successfully."}
+{"level":"INFO","message":"[5:06:07.557 AM]: Connection[id: b2bd4c63-4a54-47c1-b23a-ef61c670a397] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[5:06:07.563 AM]: Connection[id: b2bd4c63-4a54-47c1-b23a-ef61c670a397] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[5:06:07.651 AM]: Connection[id: b2bd4c63-4a54-47c1-b23a-ef61c670a397] - connection established successfully after 93.77 milliseconds"}
+{"level":"INFO","message":"[5:06:12.727 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:06:12.729 AM]: Creating Connection[id: a3003b89-bd2c-43c0-8103-68adcdcf6c78] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: undefined, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[5:06:12.729 AM]: Connection[id: a3003b89-bd2c-43c0-8103-68adcdcf6c78] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[5:06:12.729 AM]: Connection[id: a3003b89-bd2c-43c0-8103-68adcdcf6c78] - connection object created successfully."}
+{"level":"INFO","message":"[5:06:12.730 AM]: Connection[id: a3003b89-bd2c-43c0-8103-68adcdcf6c78] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[5:06:12.735 AM]: Connection[id: a3003b89-bd2c-43c0-8103-68adcdcf6c78] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[5:06:12.846 AM]: Connection[id: a3003b89-bd2c-43c0-8103-68adcdcf6c78] - connection established successfully after 116.5 milliseconds"}
+{"level":"INFO","message":"[5:06:17.124 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:06:17.125 AM]: Creating Connection[id: a9a67757-8148-444f-ac75-8a06363bf077] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: undefined, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[5:06:17.125 AM]: Connection[id: a9a67757-8148-444f-ac75-8a06363bf077] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[5:06:17.125 AM]: Connection[id: a9a67757-8148-444f-ac75-8a06363bf077] - connection object created successfully."}
+{"level":"INFO","message":"[5:06:17.126 AM]: Connection[id: a9a67757-8148-444f-ac75-8a06363bf077] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[5:06:17.129 AM]: Connection[id: a9a67757-8148-444f-ac75-8a06363bf077] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[5:06:17.235 AM]: Connection[id: a9a67757-8148-444f-ac75-8a06363bf077] - connection established successfully after 109.74 milliseconds"}
+{"level":"INFO","message":"[5:06:35.716 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:06:35.718 AM]: Creating Connection[id: a6bd2da3-2dbb-4d44-8448-e1fd14dae5a8] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: undefined, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[5:06:35.718 AM]: Connection[id: a6bd2da3-2dbb-4d44-8448-e1fd14dae5a8] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[5:06:35.718 AM]: Connection[id: a6bd2da3-2dbb-4d44-8448-e1fd14dae5a8] - connection object created successfully."}
+{"level":"INFO","message":"[5:06:35.718 AM]: Connection[id: a6bd2da3-2dbb-4d44-8448-e1fd14dae5a8] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[5:06:35.723 AM]: Connection[id: a6bd2da3-2dbb-4d44-8448-e1fd14dae5a8] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[5:06:35.797 AM]: Connection[id: a6bd2da3-2dbb-4d44-8448-e1fd14dae5a8] - connection established successfully after 78.73 milliseconds"}
+{"level":"INFO","message":"[5:07:02.342 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:07:03.628 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:09:55.497 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:09:56.710 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:10:34.036 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:10:35.618 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:11:38.646 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:11:40.270 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:11:47.243 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:11:48.566 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:11:57.700 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:11:58.937 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:12:15.351 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:12:16.506 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:12:30.383 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:12:31.579 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:16:57.394 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:17:01.956 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:17:13.714 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:17:14.866 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:17:59.458 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:18:01.125 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:18:04.960 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:18:06.121 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:19:05.765 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:19:06.963 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:19:17.920 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:19:19.071 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:19:42.388 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:19:43.563 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:21:22.917 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:21:24.152 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:21:31.166 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:21:32.324 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:23:07.620 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:23:09.193 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:23:10.912 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:23:12.065 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:23:15.582 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:23:16.748 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:24:09.087 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:24:10.297 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:24:32.419 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:24:33.605 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:25:18.615 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:25:19.946 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:25:24.102 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:25:25.274 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:26:25.043 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:26:26.262 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:26:56.081 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:26:57.315 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:27:48.483 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:27:50.741 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:27:52.934 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:27:54.779 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:28:20.558 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:28:51.824 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:28:53.038 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:29:56.038 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:29:57.336 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:32:01.680 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:32:03.697 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:32:04.854 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:32:10.930 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:32:12.106 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:33:16.212 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:33:17.814 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:33:18.991 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:33:20.142 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:33:29.878 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:33:31.054 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:34:38.730 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:34:39.952 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:35:23.700 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:35:24.865 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:35:31.276 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:35:32.444 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:37:20.565 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:37:21.745 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:38:00.464 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:38:01.659 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:38:05.093 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:38:06.268 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:38:46.471 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:38:47.854 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:39:57.520 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:39:58.994 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:40:00.184 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:40:05.124 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:40:06.292 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:42:32.329 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:42:32.347 AM]: Creating Connection[id: 1f174165-8553-47db-b4a5-ad640af45596] with host: JEMYSUC-JB68013.snowflakecomputing.com, account: JEMYSUC-JB68013, accessUrl: https://JEMYSUC-JB68013.snowflakecomputing.com, user: MORPH_CONNECTION, role: SYSADMIN, database: undefined, schema: undefined, warehouse: COMPUTE_WH, proxy was not configured, password is not provided, region: undefined, authenticator: SNOWFLAKE_JWT, ocsp mode: FAIL_OPEN, os: linux, os version: 6.12.27-fly"}
+{"level":"INFO","message":"[5:42:32.348 AM]: Connection[id: 1f174165-8553-47db-b4a5-ad640af45596] additional details: passcode in password is provided, passcode is not provided, private key is provided, application: undefined, client name: snowflake-sdk, client version: 2.3.3, retry timeout: 300, private key path: undefined, private key pass is not provided, client store temporary credential: false, browser response timeout: 120000"}
+{"level":"INFO","message":"[5:42:32.349 AM]: Connection[id: 1f174165-8553-47db-b4a5-ad640af45596] - connection object created successfully."}
+{"level":"INFO","message":"[5:42:32.349 AM]: Connection[id: 1f174165-8553-47db-b4a5-ad640af45596] - connecting. Associated Snowflake domain: GLOBAL"}
+{"level":"INFO","message":"[5:42:32.358 AM]: Connection[id: 1f174165-8553-47db-b4a5-ad640af45596] - authentication successful using: SNOWFLAKE_JWT"}
+{"level":"INFO","message":"[5:42:32.358 AM]: Trying to initialize Easy Logging"}
+{"level":"INFO","message":"[5:42:32.368 AM]: No client config detected."}
+{"level":"INFO","message":"[5:42:32.368 AM]: No config file path found. Client config will not be used."}
+{"level":"INFO","message":"[5:42:32.369 AM]: Easy Logging is disabled as no config has been found"}
+{"level":"INFO","message":"[5:42:32.895 AM]: Connection[id: 1f174165-8553-47db-b4a5-ad640af45596] - connection established successfully after 546.02 milliseconds"}
+{"level":"INFO","message":"[5:43:01.666 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:43:02.948 AM]: Creating new connection object"}
+{"level":"INFO","message":"[5:16:26.309 PM]: Creating new connection object"}
+{"level":"INFO","message":"[5:16:27.460 PM]: Creating new connection object"}
+{"level":"INFO","message":"[5:18:10.270 PM]: Creating new connection object"}
+{"level":"INFO","message":"[5:18:11.364 PM]: Creating new connection object"}
+{"level":"INFO","message":"[5:18:18.762 PM]: Creating new connection object"}
+{"level":"INFO","message":"[5:18:19.871 PM]: Creating new connection object"}
+{"level":"INFO","message":"[5:20:54.380 PM]: Creating new connection object"}
+{"level":"INFO","message":"[5:20:55.462 PM]: Creating new connection object"}
+{"level":"INFO","message":"[5:21:02.035 PM]: Creating new connection object"}
+{"level":"INFO","message":"[5:21:03.141 PM]: Creating new connection object"}

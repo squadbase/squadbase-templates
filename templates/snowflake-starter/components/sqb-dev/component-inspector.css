@@ -1,0 +1,121 @@
+/* Component inspector (development only) */
+/* Only highlight elements with .highlightable class (managed by JS) */
+/* Exclude layout and page components from hover highlighting */
+[data-dev-mode="true"][data-select-mode="true"]
+  [data-component-id].highlightable:not([data-component-id$="/layout"]):not(
+    [data-component-id$="/page"]
+  ):not([data-component-id$="/layout.tsx"]):not(
+    [data-component-id$="/layout.ts"]
+  ):not([data-component-id$="/layout.jsx"]):not(
+    [data-component-id$="/layout.js"]
+  ):not([data-component-id$="/page.tsx"]):not(
+    [data-component-id$="/page.ts"]
+  ):not([data-component-id$="/page.jsx"]):not(
+    [data-component-id$="/page.js"]
+  ):hover {
+  box-shadow: 0 0 0 2px orange, 0 0 0 4px rgba(255, 165, 0, 0.2);
+  position: relative;
+  z-index: 10001 !important;
+}
+
+[data-dev-mode="true"][data-select-mode="true"]
+  [data-component-id].highlightable:not([data-component-id$="/layout"]):not(
+    [data-component-id$="/page"]
+  ):not([data-component-id$="/layout.tsx"]):not(
+    [data-component-id$="/layout.ts"]
+  ):not([data-component-id$="/layout.jsx"]):not(
+    [data-component-id$="/layout.js"]
+  ):not([data-component-id$="/page.tsx"]):not(
+    [data-component-id$="/page.ts"]
+  ):not([data-component-id$="/page.jsx"]):not(
+    [data-component-id$="/page.js"]
+  ):hover::before {
+  content: attr(data-component-id);
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: orange;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: monospace;
+  white-space: nowrap;
+  z-index: 10002;
+  pointer-events: none;
+  max-width: calc(100% - 16px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Selected component state (persistent) */
+/* Exclude layout and page components from selection */
+[data-dev-mode="true"][data-select-mode="true"]
+  [data-component-id].highlightable.component-selected:not(
+    [data-component-id$="/layout"]
+  ):not([data-component-id$="/page"]):not(
+    [data-component-id$="/layout.tsx"]
+  ):not([data-component-id$="/layout.ts"]):not(
+    [data-component-id$="/layout.jsx"]
+  ):not([data-component-id$="/layout.js"]):not(
+    [data-component-id$="/page.tsx"]
+  ):not([data-component-id$="/page.ts"]):not(
+    [data-component-id$="/page.jsx"]
+  ):not([data-component-id$="/page.js"]) {
+  box-shadow: 0 0 0 2px orange, 0 0 0 4px rgba(255, 165, 0, 0.2);
+  position: relative;
+  z-index: 9999;
+}
+
+[data-dev-mode="true"][data-select-mode="true"]
+  [data-component-id].highlightable.component-selected:not(
+    [data-component-id$="/layout"]
+  ):not([data-component-id$="/page"]):not(
+    [data-component-id$="/layout.tsx"]
+  ):not([data-component-id$="/layout.ts"]):not(
+    [data-component-id$="/layout.jsx"]
+  ):not([data-component-id$="/layout.js"]):not(
+    [data-component-id$="/page.tsx"]
+  ):not([data-component-id$="/page.ts"]):not(
+    [data-component-id$="/page.jsx"]
+  ):not([data-component-id$="/page.js"])::before {
+  content: attr(data-component-id);
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: orange;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: monospace;
+  white-space: nowrap;
+  z-index: 10000;
+  pointer-events: none;
+  max-width: calc(100% - 16px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Disable all interactions in select mode */
+[data-dev-mode="true"][data-select-mode="true"] body {
+  user-select: none; /* Prevent text selection */
+}
+
+/* Disable pointer events on all interactive elements */
+[data-dev-mode="true"][data-select-mode="true"] a,
+[data-dev-mode="true"][data-select-mode="true"] button,
+[data-dev-mode="true"][data-select-mode="true"] input,
+[data-dev-mode="true"][data-select-mode="true"] textarea,
+[data-dev-mode="true"][data-select-mode="true"] select,
+[data-dev-mode="true"][data-select-mode="true"] [role="button"],
+[data-dev-mode="true"][data-select-mode="true"] [onclick] {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+}
+
+/* Re-enable pointer events for component selection targets */
+[data-dev-mode="true"][data-select-mode="true"] [data-component-id] {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}

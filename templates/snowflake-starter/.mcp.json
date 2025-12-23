@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "context7": {
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "next-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "next-devtools-mcp@latest"
+      ]
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": [
+        "shadcn@latest",
+        "mcp"
+      ]
+    },
+    "snowflake": {
+      "type": "stdio",
+      "command": "mcp-run",
+      "args": [
+        "--stdio",
+        "-c",
+        "SNOWFLAKE_PRIVATE_KEY=\"$(echo \"$SNOWFLAKE_PRIVATE_KEY_BASE64\" | base64 -d | openssl pkcs8 -topk8 -inform PEM -outform DER -nocrypt | base64 -w 0)\" uvx snowflake-labs-mcp --service-config-file ./.squadbase/snowflake_tools_config.yaml"
+      ]
+    }
+  }
+}
