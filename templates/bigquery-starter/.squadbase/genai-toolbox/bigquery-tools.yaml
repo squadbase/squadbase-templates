@@ -1,0 +1,22 @@
+sources:
+  bigquery-source:
+    kind: 'bigquery'
+    project: ${BIGQUERY_PROJECT_ID}
+    writeMode: 'blocked' # only SELECT statements are allowed
+tools:
+  bigquery_execute_sql:
+    kind: bigquery-execute-sql
+    source: bigquery-source
+    description: Use this tool to execute sql statement.
+  bigquery_list_table_ids:
+    kind: bigquery-list-table-ids
+    source: bigquery-source
+    description: Use this tool to get table metadata.
+  bigquery_get_dataset_info:
+    kind: bigquery-get-dataset-info
+    source: bigquery-source
+    description: Use this tool to get dataset metadata.
+  bigquery_get_table_info:
+    kind: bigquery-get-table-info
+    source: bigquery-source
+    description: Use this tool to get table metadata.
