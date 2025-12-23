@@ -1,40 +1,30 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  output: 'standalone',
   experimental: {
     turbopackFileSystemCacheForDev: true,
     swcPlugins: [
       [
-        "@squadbase/swc-plugin-component-annotate",
+        '@squadbase/swc-plugin-component-annotate',
         {
-          "source-file-attr": "data-component-id",
-          "filepath-attr": "data-component-filepath",
-          "ignored-components": [
-            "components/ui/**",
-            "app/**/layout.tsx",
-            "app/**/page.tsx",
-            "**/component-selector.tsx",
+          'source-file-attr': 'data-component-id',
+          'filepath-attr': 'data-component-filepath',
+          'ignored-components': [
+            'components/ui/**',
+            'app/**/layout.tsx',
+            'app/**/page.tsx',
+            '**/component-selector.tsx',
           ],
         },
       ],
     ],
   },
   reactCompiler: true,
-  distDir: process.env.NODE_ENV === "development" ? ".next-dev" : ".next",
-  serverExternalPackages: [
-    "@duckdb/node-api",
-    "@duckdb/node-bindings",
-    "@duckdb/node-bindings-darwin-arm64",
-    "@duckdb/node-bindings-darwin-x64",
-    "snowflake-sdk",
-  ],
+  distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
+  serverExternalPackages: ['snowflake-sdk'],
   outputFileTracingIncludes: {
-    "/*": [
-      "node_modules/@duckdb/node-bindings-*",
-      "node_modules/lightningcss/**",
-      "node_modules/@tailwindcss/**",
-    ],
+    '/*': ['node_modules/lightningcss/**', 'node_modules/@tailwindcss/**'],
   },
 };
 

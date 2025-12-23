@@ -21,17 +21,6 @@ Do not change major versions unless explicitly requested by the user.
 
 `@/components` for shared, `app/[page-name]/components/` for page-specific
 
-Example:
-
-```
-app/
-  sample-titanic/
-    page.tsx
-    components/
-      age-filter.tsx
-      survival-rate-chart.tsx
-```
-
 ### Data Fetching Strategy
 
 **CRITICAL: Call data fetching hooks INSIDE components, NOT in page.tsx**
@@ -147,13 +136,3 @@ All rules below MUST be followed when implementing data queries for dashboard me
 2. Use parameterized SQL queries to prevent SQL injection.
 3. Create route handler (e.g., `app/api/weekly_active_users/route.ts`, `app/api/unique_customer_count/route.ts`) for each SQL query to execute the query and return results as JSON.
 4. Generate client-side hooks for data fetching with Tanstack Query in `hooks/` directory.
-
-**Example**
-
-SQL queries, route handlers and hooks to analyze passenger data from titanic dataset with DuckDB.
-
-- `sql/passengers.sql` for SQL file example.
-- `app/api/passengers/route.ts` for route handler example.
-- `hooks/use-passengers.ts` for client-side data management hook example.
-
-See `sql/CLAUDE.md` for SQL syntax.
