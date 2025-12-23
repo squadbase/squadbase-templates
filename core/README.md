@@ -1,6 +1,6 @@
-# Next.js 15 Dashboard Starter
+# Next.js 16 Dashboard Starter
 
-A modern dashboard starter template built with Next.js 15, TypeScript, and Tailwind CSS 4. Perfect for users new to Next.js who want to quickly build rich, interactive dashboards.
+A modern dashboard starter template built with Next.js 16, TypeScript, and Tailwind CSS 4. Perfect for users new to Next.js who want to quickly build rich, interactive dashboards.
 
 ![Thumbnail](./assets/top.gif)
 
@@ -65,7 +65,7 @@ This template is optimized for pair programming with [Claude Code](https://claud
 
 ## Stack
 
-- **Next.js 15** with App Router
+- **Next.js 16** with App Router
 - **TypeScript** with strict configuration
 - **Tailwind CSS 4** with dark mode support
 - **Turbopack** for fast development

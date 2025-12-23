@@ -1,79 +1,138 @@
-# CLAUDE.md
+## Key dependencies
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Do not change major versions unless explicitly requested by the user.
 
-## Project Purpose
+- Next.js 16.x (standalone mode)
+- Tailwind CSS v4
 
-This is a Next.js 15 dashboard starter template designed for users who are new to Next.js to easily fork and build rich, interactive dashboards using live coding with Claude Code. The template provides a solid foundation with modern Next.js conventions, TypeScript, and Tailwind CSS 4.
+## Strict rules
 
-## Target Use Case
+- NEVER use server actions. Always use route handlers instead.
+- ALWAYS use React Query (TanStack Query) for client-side API fetching.
+- NEVER run build for testing purposes. Use `npm run lint` instead.
+- NEVER run `npm run dev`. There is always a development server running in the background.
+- For Next.js implementation, use the `mcp__next-devtools__nextjs_docs` tool to gather accurate information.
+- After implementation, use the `mcp__next-devtools__nextjs_runtime` tool to verify and check for errors.
+- ALWAYS add new pages to the side menu navigation. Every implemented page MUST be accessible from the sidebar.
 
-- **For beginners**: Users unfamiliar with Next.js can fork this repository and start building immediately
-- **Live coding friendly**: Optimized for pair programming sessions with Claude Code
-- **Dashboard focused**: Structured to support common dashboard patterns and components
-- **Production ready**: Includes proper TypeScript configuration and build setup
+## Component Organization
 
-## Development Commands
+### Directory Structure
 
-- `npm run dev` - Start development server with Turbopack enabled
-- `npm run build` - Build production version
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint with Next.js configuration
+`@/components` for shared, `app/[page-name]/components/` for page-specific
 
-## Architecture & Structure
+### Data Fetching Strategy
 
-**App Router Structure:**
-- Uses Next.js 15 app router (not pages router)
-- Main application code in `/app` directory
-- Layout component in `app/layout.tsx` with global metadata and font configuration
-- Homepage in `app/page.tsx`
+**CRITICAL: Call data fetching hooks INSIDE components, NOT in page.tsx**
 
-**Styling & UI:**
-- Tailwind CSS 4 with PostCSS configuration
-- CSS custom properties for fonts: `--font-geist-sans` and `--font-geist-mono`
-- Dark mode support built into components via Tailwind classes
-- Global styles in `app/globals.css`
+- **page.tsx responsibilities:**
+  - Layout and component composition ONLY
+  - Page-wide shared state (e.g., filter values like `minAge`, `maxAge`)
+  - Pass filter/parameter values as props to components
+  - ❌ NO data fetching hooks
+  - ❌ NO loading/error state aggregation
 
-**TypeScript Configuration:**
-- Strict TypeScript enabled
-- Path alias `@/*` maps to project root
-- Next.js plugin integration for optimal TypeScript experience
+- **Component responsibilities:**
+  - Call data fetching hooks internally (e.g., `usePassengers(minAge, maxAge)`)
+  - Handle own loading/error states
+  - Transform API data to display format
+  - Add "use client" directive when using hooks
 
-**Font Management:**
-- Uses Next.js `next/font/google` for optimized Geist fonts
-- Font variables defined in root layout and applied globally
+- **Hook structure:** One hook per component/feature in `hooks/use-[component-name].ts`
+- **Type reuse:** `import type { XxxRecord } from "@/app/api/xxx/route"`
 
-## Key Configuration Files
+**Pattern:**
 
-- `tsconfig.json` - TypeScript configuration with strict mode and Next.js plugin
-- `eslint.config.mjs` - ESLint with Next.js core web vitals and TypeScript rules
-- `next.config.ts` - Next.js configuration (currently minimal)
-- `postcss.config.mjs` - PostCSS setup for Tailwind CSS 4
-- `package.json` - Uses npm, includes Turbopack for development
+```tsx
+// ✅ page.tsx - State management only
+export default function DashboardPage() {
+  const [filters, setFilters] = useState({...});
+  return <Chart filters={filters} />;
+}
 
-## Dashboard Development Guidelines
+// ✅ Component - Data fetching inside
+"use client";
+export function Chart({ filters }) {
+  const { data, isLoading, error } = useChartData(filters);
+  if (isLoading) return <Skeleton />;
+  if (error) return <ErrorCard />;
+  return <ChartUI data={data} />;
+}
 
-**Getting Started for New Users:**
-- Fork this repository to begin building your dashboard
-- Run `npm install` followed by `npm run dev` to start developing
-- Modify `app/page.tsx` to begin building your dashboard interface
-- Use the existing Tailwind classes for consistent styling
+// ❌ WRONG - Don't fetch in page.tsx
+export default function DashboardPage() {
+  const { data } = useChartData(); // ❌ NO!
+  return <Chart data={data} />; // ❌ NO!
+}
+```
 
-**Common Dashboard Patterns:**
-- Add new pages by creating folders in `/app` directory (e.g., `/app/analytics/page.tsx`)
-- Create reusable components in a `/components` directory when needed
-- Use Tailwind's grid and flexbox utilities for responsive layouts
-- Leverage built-in dark mode support via `dark:` prefixes
+**Benefits:**
 
-**Live Coding Best Practices:**
-- Keep components small and focused for easier iteration
-- Use TypeScript interfaces for props and data structures
-- Utilize Tailwind's utility classes for rapid styling
-- Take advantage of hot reload for immediate feedback
+- Progressive loading (components load independently)
+- Isolated errors (one failed API doesn't block others)
+- Better component testability and reusability
 
-## Development Notes
+### Component Breakdown Guidelines
 
-- Development server uses Turbopack for faster builds and hot reload
-- Static assets in `/public` directory
-- Ready for dashboard component development
-- Easily extensible with additional UI libraries or state management as needed
+- Break down: Clear responsibility (chart, form, table), testable independently
+- Keep together: Tightly coupled logic, minimal splitting benefit
+- **State:** Lift to parent (multiple components, triggers API calls), keep local (single component, UI state)
+
+### "use client" Directive Guidelines
+
+- Add when: Using hooks, browser APIs, or event handlers with state
+- Omit when: Pure props-to-JSX transformation (presentation components)
+
+### Component Selector Support (CRITICAL)
+
+**ALWAYS start components with native HTML elements (div, section), NOT React components (Card, etc.)**
+
+**❌ Bad (won't be selectable):**
+
+```tsx
+export function MyChart() {
+  return <Card>...</Card>;
+}
+```
+
+**✅ Good (selectable):**
+
+```tsx
+export function MyChart() {
+  return (
+    <div>
+      <Card>...</Card>
+    </div>
+  );
+}
+```
+
+**Why:** React components don't forward unknown props to DOM; native HTML elements do. This ensures `data-component-id` reaches the browser.
+
+## Development tips
+
+- Use next-devtools MCP for Next.js docs and runtime information.
+- Use shadcn MCP for finding documentation and code examples for shadcn components.
+- Use context7 MCP for finding documentation and code examples for other packages/libraries.
+- For chart implementation, see @docs/chart-implementation.md for best practices and checklist.
+
+## Chart Implementation (Critical Rules)
+
+1. **ALWAYS use shadcn/ui Chart components (`@/components/ui/chart`)**
+2. **Chart colors: Use ONLY `--color-chart-1` through `--color-chart-5`. Example: `var(--color-chart-1)`**
+3. **Data type handling: API/DB fields often return as strings, Always check SQL query for comparison type guidance**
+   - For numeric equality: Use `==` (e.g., `p.Survived == 1`)
+   - For numeric range: Use `Number()` (e.g., `Number(p.Age) >= 18`)
+   - For strings: Use `===` (e.g., `p.Sex === "male"`)
+4. **Pie Chart: MUST include `label` prop or chart won't render**
+   - Example: `<Pie data={data} dataKey="count" label nameKey="category" />`
+5. **Make all the charts responsive and mobile-friendly**
+
+## Data Query Implementation(Critical Rules)
+
+All rules below MUST be followed when implementing data queries for dashboard metrics and charts:
+
+1. Store SQL queries in `sql/` directory e.g., `sql/weekly_active_users.sql`, `sql/unique_customer_count.sql`. Only one query per file.
+2. Use parameterized SQL queries to prevent SQL injection.
+3. Create route handler (e.g., `app/api/weekly_active_users/route.ts`, `app/api/unique_customer_count/route.ts`) for each SQL query to execute the query and return results as JSON.
+4. Generate client-side hooks for data fetching with Tanstack Query in `hooks/` directory.

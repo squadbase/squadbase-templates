@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import { Providers } from "@/components/providers";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SiteHeader } from "@/components/site-header";
+import { ComponentSelector } from "@/components/sqb-dev/component-selector";
+import "@/components/sqb-dev/component-inspector.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,16 +29,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      data-dev-mode={
+        process.env.NODE_ENV === "development" ? "true" : undefined
+      }
+    >
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning={process.env.NODE_ENV === "development"}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <Providers>
           <SidebarProvider>
             <AppSidebar />
             <SidebarInset>
@@ -48,7 +52,12 @@ export default function RootLayout({
               </div>
             </SidebarInset>
           </SidebarProvider>
-        </ThemeProvider>
+        </Providers>
+        {process.env.NODE_ENV === "development" && (
+          <>
+            <ComponentSelector />
+          </>
+        )}
       </body>
     </html>
   );
