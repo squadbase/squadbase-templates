@@ -1,30 +1,29 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  output: "standalone",
   experimental: {
     turbopackFileSystemCacheForDev: true,
     swcPlugins: [
       [
-        '@squadbase/swc-plugin-component-annotate',
+        "@squadbase/swc-plugin-component-annotate",
         {
-          'source-file-attr': 'data-component-id',
-          'filepath-attr': 'data-component-filepath',
-          'ignored-components': [
-            'components/ui/**',
-            'app/**/layout.tsx',
-            'app/**/page.tsx',
-            '**/component-selector.tsx',
+          "source-file-attr": "data-component-id",
+          "filepath-attr": "data-component-filepath",
+          "ignored-components": [
+            "components/ui/**",
+            "app/**/layout.tsx",
+            "app/**/page.tsx",
+            "**/component-selector.tsx",
           ],
         },
       ],
     ],
   },
   reactCompiler: true,
-  distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
-  serverExternalPackages: ['snowflake-sdk'],
+  distDir: process.env.NODE_ENV === "development" ? ".next-dev" : ".next",
   outputFileTracingIncludes: {
-    '/*': ['node_modules/lightningcss/**', 'node_modules/@tailwindcss/**'],
+    "/*": ["node_modules/lightningcss/**", "node_modules/@tailwindcss/**"],
   },
 };
 
