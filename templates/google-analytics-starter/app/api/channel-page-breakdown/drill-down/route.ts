@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createGoogleAnalyticsClient, getGAPropertyId } from '@/lib/connections/google-analytics';
+import { createGoogleAnalyticsClient, getGAPropertyId } from '@/lib/google-analytics';
 
 export type DrillDownDetailData = {
   channel: string;
