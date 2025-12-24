@@ -1,4 +1,4 @@
-import { createGoogleAnalyticsClient, getGAPropertyId } from '@/lib/connections/google-analytics';
+import { createGoogleAnalyticsClient, getGAPropertyId } from '@/lib/google-analytics';
 
 export interface TopEngagementPageData {
   page: string;
