@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Next.js Dashboard Starter",
-  description: "Next.js Dashboard Starter",
+  title: "Google Analytics Dashboard Starter",
+  description: "Google Analytics Dashboard Starter",
 };
 
 export default function RootLayout({
