@@ -198,6 +198,6 @@ Update the `version` field in `.squadbase/template.json` to `'4'`.
 ```json .squadbase/template.json
 {
   "version": "4",
-  "template-name": "nextjs-dashboard-starter"
+  "template-name": "<template-name>"
 }
 ```
