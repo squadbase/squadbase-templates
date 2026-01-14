@@ -16,7 +16,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { ModeToggle } from "./theme-toggle";
+import { UserInfo } from "./user-info";
+import { UserInfoFallback } from "./user-info-fallback";
 import { BarChart3, TrendingUp, Layers, Home } from "lucide-react";
+import type { User } from "@squadbase/nextjs";
 
 const allMenuItems = [
   {
@@ -41,7 +44,11 @@ const allMenuItems = [
   },
 ];
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type Props = React.ComponentProps<typeof Sidebar> & {
+  user: User | null;
+};
+
+export function AppSidebar({ user, ...props }: Props) {
   const pathname = usePathname();
   const isConfigured = !!process.env.GA_SERVICE_ACCOUNT_JSON_BASE64;
   const menuItems = isConfigured
@@ -81,8 +88,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter>
-          <div className="flex items-center justify-end">
-            <ModeToggle />
+          <div>
+            <div className="flex items-center justify-end mb-2">
+              <ModeToggle />
+            </div>
+            <div className="border-t pt-2">
+              {user ? <UserInfo user={user} /> : <UserInfoFallback />}
+            </div>
           </div>
         </SidebarFooter>
       </Sidebar>
