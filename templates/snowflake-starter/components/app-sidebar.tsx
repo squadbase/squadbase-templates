@@ -1,5 +1,8 @@
+"use client";
+
 import * as React from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 import {
   Sidebar,
@@ -24,6 +27,8 @@ const menuItems = [
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
+
   return (
     <div>
       <Sidebar collapsible="offcanvas" {...props}>
@@ -44,7 +49,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenu>
                 {menuItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={item.title}>
+                    <SidebarMenuButton asChild tooltip={item.title} isActive={pathname === item.url}>
                       <a href={item.url}>
                         {item.icon && <item.icon />}
                         <span>{item.title}</span>

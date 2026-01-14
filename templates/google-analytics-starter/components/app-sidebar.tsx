@@ -1,5 +1,8 @@
+"use client";
+
 import * as React from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 import {
   Sidebar,
@@ -39,6 +42,7 @@ const allMenuItems = [
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
   const isConfigured = !!process.env.GA_SERVICE_ACCOUNT_JSON_BASE64;
   const menuItems = isConfigured
     ? allMenuItems.filter(item => item.url !== "/home")
@@ -64,7 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenu>
                 {menuItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild tooltip={item.title}>
+                    <SidebarMenuButton asChild tooltip={item.title} isActive={pathname === item.url}>
                       <a href={item.url}>
                         {item.icon && <item.icon />}
                         <span>{item.title}</span>
