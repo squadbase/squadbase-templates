@@ -128,11 +128,3 @@ export function MyChart() {
    - Example: `<Pie data={data} dataKey="count" label nameKey="category" />`
 5. **Make all the charts responsive and mobile-friendly**
 
-## Data Query Implementation(Critical Rules)
-
-All rules below MUST be followed when implementing data queries for dashboard metrics and charts:
-
-1. Store SQL queries in `sql/` directory e.g., `sql/weekly_active_users.sql`, `sql/unique_customer_count.sql`. Only one query per file.
-2. Use parameterized SQL queries to prevent SQL injection.
-3. Create route handler (e.g., `app/api/weekly_active_users/route.ts`, `app/api/unique_customer_count/route.ts`) for each SQL query to execute the query and return results as JSON.
-4. Generate client-side hooks for data fetching with Tanstack Query in `hooks/` directory.
