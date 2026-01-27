@@ -10,10 +10,8 @@ Do not change major versions unless explicitly requested by the user.
 - NEVER use server actions. Always use route handlers instead.
 - ALWAYS use React Query (TanStack Query) for client-side API fetching.
 - NEVER run build for testing purposes. Use `npm run lint` instead.
-- NEVER run `npm run dev`. There is always a development server running in the background.
-- For Next.js implementation, use the `mcp__next-devtools__nextjs_docs` tool to gather accurate information.
-- After implementation, use the `mcp__next-devtools__nextjs_runtime` tool to verify and check for errors.
-- ALWAYS add new pages to the side menu navigation. Every implemented page MUST be accessible from the sidebar.
+- NEVER run `npm run dev`. There is alway s a development server running in the background.
+- Every implemented page MUST be accessible from the sidebar.
 
 ## Component Organization
 
@@ -66,12 +64,6 @@ export default function DashboardPage() {
 }
 ```
 
-**Benefits:**
-
-- Progressive loading (components load independently)
-- Isolated errors (one failed API doesn't block others)
-- Better component testability and reusability
-
 ### Component Breakdown Guidelines
 
 - Break down: Clear responsibility (chart, form, table), testable independently
@@ -106,25 +98,3 @@ export function MyChart() {
   );
 }
 ```
-
-**Why:** React components don't forward unknown props to DOM; native HTML elements do. This ensures `data-component-id` reaches the browser.
-
-## Development tips
-
-- Use next-devtools MCP for Next.js docs and runtime information.
-- Use shadcn MCP for finding documentation and code examples for shadcn components.
-- Use context7 MCP for finding documentation and code examples for other packages/libraries.
-- For chart implementation, see @docs/chart-implementation.md for best practices and checklist.
-
-## Chart Implementation (Critical Rules)
-
-1. **ALWAYS use shadcn/ui Chart components (`@/components/ui/chart`)**
-2. **Chart colors: Use ONLY `--color-chart-1` through `--color-chart-5`. Example: `var(--color-chart-1)`**
-3. **Data type handling: API/DB fields often return as strings, Always check SQL query for comparison type guidance**
-   - For numeric equality: Use `==` (e.g., `p.Survived == 1`)
-   - For numeric range: Use `Number()` (e.g., `Number(p.Age) >= 18`)
-   - For strings: Use `===` (e.g., `p.Sex === "male"`)
-4. **Pie Chart: MUST include `label` prop or chart won't render**
-   - Example: `<Pie data={data} dataKey="count" label nameKey="category" />`
-5. **Make all the charts responsive and mobile-friendly**
-
