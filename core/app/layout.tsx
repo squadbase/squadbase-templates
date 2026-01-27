@@ -38,7 +38,6 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      suppressHydrationWarning
       data-dev-mode={
         process.env.NODE_ENV === "development" ? "true" : undefined
       }

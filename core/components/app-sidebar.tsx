@@ -14,7 +14,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ModeToggle } from "./theme-toggle";
 import { UserInfo } from "./user-info";
 import { UserInfoFallback } from "./user-info-fallback";
 import { LucideHome } from "lucide-react";
@@ -61,12 +60,7 @@ export function AppSidebar({ user, ...props }: Props) {
         </SidebarContent>
         <SidebarFooter>
           <div>
-            <div className="flex items-center justify-end mb-2">
-              <ModeToggle />
-            </div>
-            <div className="border-t pt-2">
-              {user ? <UserInfo user={user} /> : <UserInfoFallback />}
-            </div>
+            {user ? <UserInfo user={user} /> : <UserInfoFallback />}
           </div>
         </SidebarFooter>
       </Sidebar>
