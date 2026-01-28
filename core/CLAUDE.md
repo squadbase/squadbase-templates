@@ -53,3 +53,15 @@ export function MyChart() {
   );
 }
 ```
+
+## Chart Implementation (Critical Rules)
+
+1. **ALWAYS use shadcn/ui Chart components (`@/components/ui/chart`)**
+2. **Chart colors: Use ONLY `--color-chart-1` through `--color-chart-5`. Example: `var(--color-chart-1)`**
+3. **Data type handling: API/DB fields often return as strings, Always check SQL query for comparison type guidance**
+   - For numeric equality: Use `==` (e.g., `p.Survived == 1`)
+   - For numeric range: Use `Number()` (e.g., `Number(p.Age) >= 18`)
+   - For strings: Use `===` (e.g., `p.Sex === "male"`)
+4. **Pie Chart: MUST include `label` prop or chart won't render**
+   - Example: `<Pie data={data} dataKey="count" label nameKey="category" />`
+5. **Make all the charts responsive and mobile-friendly**
