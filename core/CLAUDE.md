@@ -10,7 +10,7 @@ Do not change major versions unless explicitly requested by the user.
 - NEVER use server actions. Always use route handlers instead.
 - ALWAYS use React Query (TanStack Query) for client-side API fetching.
 - NEVER run build for testing purposes. Use `npm run lint` instead.
-- NEVER run `npm run dev`. There is alway s a development server running in the background.
+- NEVER run `npm run dev`. There is always a development server running in the background.
 - Every implemented page MUST be accessible from the sidebar.
 
 ## Component Organization
