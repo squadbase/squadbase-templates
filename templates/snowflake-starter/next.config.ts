@@ -21,7 +21,6 @@ const nextConfig: NextConfig = {
     ],
   },
   reactCompiler: true,
-  distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
   serverExternalPackages: ['snowflake-sdk'],
   outputFileTracingIncludes: {
     '/*': ['node_modules/lightningcss/**', 'node_modules/@tailwindcss/**'],

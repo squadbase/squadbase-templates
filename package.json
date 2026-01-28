@@ -1,0 +1,11 @@
+{
+  "name": "squadbase-templates",
+  "private": true,
+  "scripts": {
+    "build:all": "node scripts/build-all.js",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}

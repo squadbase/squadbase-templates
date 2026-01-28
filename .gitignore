@@ -1,2 +1,5 @@
-.claude
+.claude/*
+!.claude/commands
 .idea/
+.DS_Store
+node_modules/

@@ -7,6 +7,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { ComponentSelector } from "@/components/sqb-dev/component-selector";
 import "@/components/sqb-dev/component-inspector.css";
+import { getSquadbaseSdkClient } from "@/lib/squadbaseSdk";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,11 +24,17 @@ export const metadata: Metadata = {
   description: "Snowflake Dashboard Starter",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const client = getSquadbaseSdkClient();
+  const user = await client.getUser().catch((e) => {
+    console.error("Failed to fetch user:", e);
+    return null;
+  });
+
   return (
     <html
       lang="en"
@@ -42,7 +49,7 @@ export default function RootLayout({
       >
         <Providers>
           <SidebarProvider>
-            <AppSidebar />
+            <AppSidebar user={user} />
             <SidebarInset>
               <SiteHeader />
               <div className="flex flex-1 flex-col">
