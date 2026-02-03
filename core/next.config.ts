@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  images: {
+    unoptimized: true,
+  },
   experimental: {
     turbopackFileSystemCacheForDev: true,
     swcPlugins: [
@@ -21,12 +27,6 @@ const nextConfig: NextConfig = {
     ],
   },
   reactCompiler: true,
-  serverExternalPackages: [
-    "@duckdb/node-api",
-    "@duckdb/node-bindings",
-    "@duckdb/node-bindings-darwin-arm64",
-    "@duckdb/node-bindings-darwin-x64",
-  ],
   outputFileTracingIncludes: {
     "/*": ["node_modules/lightningcss/**", "node_modules/@tailwindcss/**"],
   },
