@@ -1,0 +1,5 @@
+# squadbase.yml
+version: "1"
+build:
+  framework: squadbase-vite-react
+  runtime: node20
