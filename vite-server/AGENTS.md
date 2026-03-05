@@ -184,8 +184,13 @@ interface DataSourceResponse {
 | `defaultContentType = "text/csv"` | `text/csv` with CSV body |
 
 #### `connectorType` (string, optional)
-Database engine type. Supported values: `"postgresql"`, `"bigquery"`, `"snowflake"`.
-When omitted, defaults to PostgreSQL via `SQUADBASE_POSTGRESQL_URL`.
+Database engine type. When omitted, defaults to PostgreSQL via `SQUADBASE_POSTGRESQL_URL`.
+
+**SQL connectors** (used in data source JSON `query` field):
+`"postgresql"`, `"squadbase-db"`, `"mysql"`, `"bigquery"`, `"snowflake"`, `"athena"`, `"redshift"`, `"databricks"`
+
+**Non-SQL connectors** (used in TypeScript handlers via client utilities):
+`"airtable"`, `"google-analytics"`, `"kintone"`, `"wix-store"`, `"dbt"`
 
 #### `connectorSlug` (string, optional)
 Key in `.squadbase/connections.json` identifying the database connection.
@@ -205,10 +210,13 @@ interface DataSourceCacheConfig {
 
 Parameters are embedded in SQL using `{{paramName}}` placeholders.
 
-### PostgreSQL
+### PostgreSQL / squadbase-db
 Placeholders are converted to `$1, $2, ...` positional parameters with proper parameterized query binding.
 
-### Snowflake / BigQuery
+### MySQL
+Placeholders are converted to `?` style positional parameters with parameterized query binding.
+
+### Snowflake / BigQuery / Athena / Redshift / Databricks
 Placeholders are replaced with **literal values** inline (these connectors don't support parameterized queries).
 
 ### Auto-Quoting (Critical!)
@@ -258,6 +266,78 @@ Require a `.squadbase/connections.json` file at the project root:
     "connectorType": "postgresql",
     "envVars": {
       "connection-url": "EXTERNAL_PG_URL"
+    }
+  },
+  "my-mysql": {
+    "connectorType": "mysql",
+    "envVars": {
+      "connection-url": "MYSQL_URL"
+    }
+  },
+  "my-athena": {
+    "connectorType": "athena",
+    "envVars": {
+      "aws-region": "ATHENA_AWS_REGION",
+      "aws-access-key-id": "ATHENA_AWS_ACCESS_KEY_ID",
+      "aws-secret-access-key": "ATHENA_AWS_SECRET_ACCESS_KEY",
+      "workgroup": "ATHENA_WORKGROUP",
+      "output-location": "ATHENA_OUTPUT_LOCATION"
+    }
+  },
+  "my-redshift": {
+    "connectorType": "redshift",
+    "envVars": {
+      "aws-region": "REDSHIFT_AWS_REGION",
+      "aws-access-key-id": "REDSHIFT_AWS_ACCESS_KEY_ID",
+      "aws-secret-access-key": "REDSHIFT_AWS_SECRET_ACCESS_KEY",
+      "database": "REDSHIFT_DATABASE",
+      "cluster-identifier": "REDSHIFT_CLUSTER_IDENTIFIER",
+      "workgroup-name": "REDSHIFT_WORKGROUP_NAME"
+    }
+  },
+  "my-databricks": {
+    "connectorType": "databricks",
+    "envVars": {
+      "host": "DATABRICKS_HOST",
+      "http-path": "DATABRICKS_HTTP_PATH",
+      "token": "DATABRICKS_TOKEN"
+    }
+  },
+  "my-airtable": {
+    "connectorType": "airtable",
+    "envVars": {
+      "base-id": "AIRTABLE_BASE_ID",
+      "api-key": "AIRTABLE_API_KEY"
+    }
+  },
+  "my-ga": {
+    "connectorType": "google-analytics",
+    "envVars": {
+      "service-account-json-base64": "GA_SERVICE_ACCOUNT_JSON_BASE64",
+      "property-id": "GA_PROPERTY_ID"
+    }
+  },
+  "my-kintone": {
+    "connectorType": "kintone",
+    "envVars": {
+      "base-url": "KINTONE_BASE_URL",
+      "username": "KINTONE_USERNAME",
+      "password": "KINTONE_PASSWORD"
+    }
+  },
+  "my-wix": {
+    "connectorType": "wix-store",
+    "envVars": {
+      "site-id": "WIX_SITE_ID",
+      "api-key": "WIX_API_KEY"
+    }
+  },
+  "my-dbt": {
+    "connectorType": "dbt",
+    "envVars": {
+      "host": "DBT_HOST",
+      "prod-env-id": "DBT_PROD_ENV_ID",
+      "token": "DBT_TOKEN"
     }
   }
 }
@@ -336,17 +416,13 @@ All endpoints are under the `/api` prefix.
 
 ## SQL Dialect Guide per Connector
 
-| Feature | PostgreSQL | BigQuery (GoogleSQL) | Snowflake |
-|---------|-----------|---------------------|-----------|
-| Table reference | `schema.table` | `` `project.dataset.table` `` (backticks required) | `DATABASE.SCHEMA.TABLE` (fully qualified recommended) |
-| Date truncate | `DATE_TRUNC('month', d)` | `DATE_TRUNC(d, MONTH)` | `DATE_TRUNC('MONTH', d)` |
-| Date format | `TO_CHAR(d, 'YYYY-MM')` | `FORMAT_DATE('%Y-%m', d)` | `TO_CHAR(d, 'YYYY-MM')` |
-| Current timestamp | `NOW()` | `CURRENT_TIMESTAMP()` | `CURRENT_TIMESTAMP()` |
-| Date subtraction | `d - INTERVAL '30 days'` | `DATE_SUB(d, INTERVAL 30 DAY)` | `DATEADD('DAY', -30, d)` |
-| String concat | `\|\|` or `CONCAT` | `CONCAT` or `\|\|` | `\|\|` or `CONCAT` |
-| LIMIT | `LIMIT n` | `LIMIT n` | `LIMIT n` |
-| Parameter binding | `$1, $2` (server converts `{{param}}`) | Literal replacement (server inlines values) | Literal replacement (server inlines values) |
-| QUALIFY clause | Not available | Not available | `QUALIFY ROW_NUMBER() OVER(...) = 1` |
+| Feature | PostgreSQL | MySQL | BigQuery (GoogleSQL) | Snowflake | Athena (Trino/Presto) | Redshift | Databricks (Spark SQL) |
+|---------|-----------|-------|---------------------|-----------|----------------------|----------|----------------------|
+| Table reference | `schema.table` | `database.table` | `` `project.dataset.table` `` | `DATABASE.SCHEMA.TABLE` | `database.table` | `schema.table` | `catalog.schema.table` |
+| Date truncate | `DATE_TRUNC('month', d)` | `DATE_FORMAT(d, '%Y-%m-01')` | `DATE_TRUNC(d, MONTH)` | `DATE_TRUNC('MONTH', d)` | `DATE_TRUNC('month', d)` | `DATE_TRUNC('month', d)` | `DATE_TRUNC('MONTH', d)` |
+| Current timestamp | `NOW()` | `NOW()` | `CURRENT_TIMESTAMP()` | `CURRENT_TIMESTAMP()` | `NOW()` | `GETDATE()` | `CURRENT_TIMESTAMP()` |
+| LIMIT | `LIMIT n` | `LIMIT n` | `LIMIT n` | `LIMIT n` | `LIMIT n` | `LIMIT n` | `LIMIT n` |
+| Parameter binding | `$1, $2` | `?` placeholders | Literal replacement | Literal replacement | Literal replacement | Literal replacement | Literal replacement |
 
 ---
 
@@ -490,6 +566,44 @@ Filename: `bq-daily-pageviews.json`
   }
 }
 ```
+
+---
+
+## Using Non-SQL Connectors in TypeScript Handlers
+
+Non-SQL connectors (Airtable, Google Analytics, Kintone, Wix Store, dbt) are used via TypeScript data source handlers. Import client factories from `@squadbase/vite-server`.
+
+### Example: Airtable handler (`data-source/airtable-records.ts`)
+
+```typescript
+import type { Context } from "hono";
+import { createAirtableClient, loadConnections } from "@squadbase/vite-server";
+
+export default async function handler(c: Context): Promise<unknown> {
+  const body = await c.req.json().catch(() => ({}));
+  const tableName = (body.params?.table as string) ?? "Tasks";
+
+  const connections = loadConnections();
+  const entry = connections["my-airtable"];
+  if (!entry) throw new Error("Airtable connection not configured");
+
+  const client = createAirtableClient(entry, "my-airtable");
+  const { records } = await client.listRecords(tableName, { maxRecords: 100 });
+  return records.map((r) => ({ id: r.id, ...r.fields }));
+}
+```
+
+### Available client factories
+
+| Factory | Connector Type | Methods |
+|---------|---------------|---------|
+| `createAirtableClient(entry, slug)` | airtable | `listRecords()`, `getRecord()` |
+| `createGoogleAnalyticsClient(entry, slug)` | google-analytics | `runReport()` |
+| `createKintoneClient(entry, slug)` | kintone | `getRecords()`, `getRecord()`, `listApps()` |
+| `createWixStoreClient(entry, slug)` | wix-store | `queryProducts()`, `queryOrders()` |
+| `createDbtClient(entry, slug)` | dbt | `query()`, `getModels()`, `getModelByName()` |
+
+Use `loadConnections()` to get the connections map, then pass the entry and slug to the factory function.
 
 ---
 

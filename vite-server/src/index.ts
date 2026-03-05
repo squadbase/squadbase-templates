@@ -8,6 +8,28 @@ import dataSourceMetaRoutes from "./routes/data-source-meta.ts";
 import cacheRoutes from "./routes/cache.ts";
 import pagesRoutes from "./routes/pages.ts";
 
+// Re-export non-SQL client factories and types for TypeScript handlers
+export {
+  createAirtableClient,
+  createGoogleAnalyticsClient,
+  createKintoneClient,
+  createWixStoreClient,
+  createDbtClient,
+  getClient,
+  loadConnections,
+} from "./connector-client/index.ts";
+export type {
+  DatabaseClient,
+  ConnectionEntry,
+  ConnectionsMap,
+  AirtableClient,
+  AirtableRecord,
+  GoogleAnalyticsClient,
+  KintoneClient,
+  WixStoreClient,
+  DbtClient,
+} from "./connector-client/index.ts";
+
 const apiApp = new Hono();
 apiApp.use("/*", cors());
 apiApp.route("/data-source", dataSourceRoutes);

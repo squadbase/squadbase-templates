@@ -11,3 +11,9 @@ export function resolveEnvVar(entry: ConnectionEntry, key: string, slug: string)
   }
   return value;
 }
+
+export function resolveEnvVarOptional(entry: ConnectionEntry, key: string): string | undefined {
+  const envVarName = entry.envVars[key];
+  if (!envVarName) return undefined;
+  return process.env[envVarName] || undefined;
+}

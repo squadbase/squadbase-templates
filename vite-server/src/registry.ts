@@ -148,15 +148,19 @@ export async function initialize(): Promise<void> {
           handler: async (runtimeParams: Record<string, unknown>) => {
             const client = await getClient(sqlDef.connectorSlug, sqlDef.connectorType);
 
-            const isExternalConnector =
+            // Connectors that do not support parameterized queries
+            const isLiteralConnector =
               sqlDef.connectorType === "snowflake" ||
-              sqlDef.connectorType === "bigquery";
+              sqlDef.connectorType === "bigquery" ||
+              sqlDef.connectorType === "athena" ||
+              sqlDef.connectorType === "redshift" ||
+              sqlDef.connectorType === "databricks";
 
             let queryText: string;
             let queryValues: unknown[];
 
-            if (isExternalConnector) {
-              // Snowflake/BigQuery: replace {{paramName}} with literal values (parameter binding not supported)
+            if (isLiteralConnector) {
+              // Replace {{paramName}} with literal values (parameter binding not supported)
               const defaults = new Map(
                 (sqlDef.parameters ?? []).map((p) => [p.name, p.default ?? null]),
               );
@@ -176,8 +180,17 @@ export async function initialize(): Promise<void> {
                 },
               );
               queryValues = [];
+            } else if (sqlDef.connectorType === "mysql") {
+              // MySQL: use ? style parameter binding
+              const built = buildQuery(
+                sqlDef.query,
+                sqlDef.parameters ?? [],
+                runtimeParams,
+              );
+              queryText = built.text.replace(/\$(\d+)/g, "?");
+              queryValues = built.values;
             } else {
-              // PostgreSQL: $1, $2 parameter binding (existing logic)
+              // PostgreSQL/squadbase-db: $1, $2 parameter binding (existing logic)
               const built = buildQuery(
                 sqlDef.query,
                 sqlDef.parameters ?? [],

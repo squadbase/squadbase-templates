@@ -19,7 +19,7 @@ Consolidates logic previously split between `packages/data-api` and `packages/ap
 | `src/main.ts` | Adds `serveStatic` + SPA fallback for production builds |
 | `src/registry.ts` | Loads JSON data source files, watches directory, builds query handlers |
 | `src/cache.ts` | In-process LRU cache (max 100 entries) with stale-while-revalidate |
-| `src/connector-client.ts` | Database client factory (PostgreSQL / Snowflake / BigQuery) |
+| `src/connector-client/` | Database client factory (PostgreSQL, MySQL, Snowflake, BigQuery, Athena, Redshift, Databricks) + non-SQL client utilities (Airtable, Google Analytics, Kintone, Wix Store, dbt) |
 | `src/routes/data-source.ts` | `POST /api/data-source/:slug` — execute queries |
 | `src/routes/data-source-meta.ts` | `GET /api/data-source-meta` — list/get metadata |
 | `src/routes/cache.ts` | Cache stats and invalidation endpoints |

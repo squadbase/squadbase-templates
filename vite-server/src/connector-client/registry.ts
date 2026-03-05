@@ -4,6 +4,11 @@ import type { ConnectionsMap, DatabaseClient } from "./types.ts";
 import { createPostgreSQLClient } from "./postgresql.ts";
 import { createBigQueryClient } from "./bigquery.ts";
 import { createSnowflakeClient } from "./snowflake.ts";
+import { createMySQLClient } from "./mysql.ts";
+import { createAthenaClient } from "./aws-athena.ts";
+import { createRedshiftClient } from "./redshift.ts";
+import { createDatabricksClient } from "./databricks.ts";
+
 
 export function createConnectorRegistry() {
   let connectionsCache: ConnectionsMap | null = null;
@@ -60,14 +65,28 @@ export function createConnectorRegistry() {
       );
     }
 
+    // Stateless connectors (no caching)
     if (resolvedType === "snowflake") {
-      // Stateless, so do not cache
       return createSnowflakeClient(entry, connectorSlug);
     }
-
     if (resolvedType === "bigquery") {
-      // Stateless, so do not cache
       return createBigQueryClient(entry, connectorSlug);
+    }
+    if (resolvedType === "athena") {
+      return createAthenaClient(entry, connectorSlug);
+    }
+    if (resolvedType === "redshift") {
+      return createRedshiftClient(entry, connectorSlug);
+    }
+    if (resolvedType === "databricks") {
+      return createDatabricksClient(entry, connectorSlug);
+    }
+
+    // Cached connectors (connection pool / singleton)
+    if (resolvedType === "mysql") {
+      const client = createMySQLClient(entry, connectorSlug);
+      clientCache.set(connectorSlug, client);
+      return client;
     }
 
     if (resolvedType === "postgresql" || resolvedType === "squadbase-db") {
@@ -87,8 +106,9 @@ export function createConnectorRegistry() {
     }
 
     throw new Error(
-      `connector type '${resolvedType}' is not supported. ` +
-      `Supported: "snowflake", "bigquery", "postgresql", "squadbase-db"`,
+      `connector type '${resolvedType}' is not supported as a SQL connector. ` +
+      `Supported SQL types: "postgresql", "squadbase-db", "mysql", "snowflake", "bigquery", "athena", "redshift", "databricks". ` +
+      `Non-SQL types (airtable, google-analytics, kintone, wix-store, dbt) should be used via TypeScript handlers.`,
     );
   }
 
@@ -126,5 +146,5 @@ export function createConnectorRegistry() {
     }
   }
 
-  return { getClient, reloadEnvFile, watchConnectionsFile };
+  return { getClient, loadConnections, reloadEnvFile, watchConnectionsFile };
 }
