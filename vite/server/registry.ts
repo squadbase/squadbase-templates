@@ -50,7 +50,7 @@ export async function initialize(): Promise<void> {
   dataSources.clear();
   const dirPath = process.env.DATA_SOURCE_DIR || defaultDataSourceDir;
 
-  // ディレクトリがなければ作成（watcher が機能するよう）
+  // Create directory if it doesn't exist (so the watcher can function)
   await mkdir(dirPath, { recursive: true });
   const files = await readdir(dirPath);
 
@@ -86,7 +86,7 @@ export async function initialize(): Promise<void> {
           let queryValues: unknown[];
 
           if (isExternalConnector) {
-            // Snowflake/BigQuery: {{paramName}} をリテラル値に置換（パラメータバインド非対応）
+            // Snowflake/BigQuery: replace {{paramName}} with literal values (parameter binding not supported)
             const defaults = new Map(
               (def.parameters ?? []).map((p) => [p.name, p.default ?? null]),
             );
@@ -107,7 +107,7 @@ export async function initialize(): Promise<void> {
             );
             queryValues = [];
           } else {
-            // PostgreSQL: $1, $2 パラメータバインド（既存ロジック）
+            // PostgreSQL: $1, $2 parameter binding (existing logic)
             const built = buildQuery(
               def.query,
               def.parameters ?? [],

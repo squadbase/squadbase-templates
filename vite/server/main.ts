@@ -7,7 +7,7 @@ import fs from "node:fs";
 const STATIC_DIR =
   process.env.STATIC_DIR ?? path.join(import.meta.dirname, "../client");
 
-// ハッシュ付きアセット（長期キャッシュ）
+// Hashed assets (long-term cache)
 app.use(
   "/assets/*",
   serveStatic({
@@ -18,10 +18,10 @@ app.use(
   }),
 );
 
-// その他の静的ファイル
+// Other static files
 app.use("/*", serveStatic({ root: STATIC_DIR }));
 
-// SPA フォールバック
+// SPA fallback
 app.get("*", (c) => {
   const indexPath = path.join(STATIC_DIR, "index.html");
   if (!fs.existsSync(indexPath)) return c.text("index.html not found", 404);
@@ -29,4 +29,4 @@ app.get("*", (c) => {
 });
 
 export default app;
-// @hono/vite-build/node が serve({ fetch: app.fetch, port: 3280 }) を自動注入
+// @hono/vite-build/node automatically injects serve({ fetch: app.fetch, port: 3280 })

@@ -2,9 +2,9 @@
 
 export interface CacheEntry {
   data: unknown;
-  cachedAt: number;   // Unix ミリ秒
-  ttl: number;        // 秒 (0 = キャッシュなし)
-  hits: number;       // キャッシュヒット回数（統計用）
+  cachedAt: number;   // Unix milliseconds
+  ttl: number;        // seconds (0 = no cache)
+  hits: number;       // cache hit count (for stats)
 }
 
 interface CacheStats {
@@ -24,17 +24,17 @@ interface CacheStats {
 
 const MAX_SIZE = 100;
 
-// Map はキーの挿入順序を保持する。
-// get 時に delete→set を行うことで、最近アクセスしたものが末尾に来る。
-// エビクション時は先頭（最も古くアクセスされた）キーを削除する。
+// Map preserves insertion order of keys.
+// On get, delete→set moves the accessed entry to the end.
+// On eviction, the first (least recently accessed) key is deleted.
 const cache = new Map<string, CacheEntry>();
 
 let totalHits = 0;
 let totalMisses = 0;
 
 /**
- * キャッシュからエントリを取得する。
- * TTL が切れていても staleWhileRevalidate のためにエントリは返す（呼び出し側が判断）。
+ * Get an entry from the cache.
+ * Returns the entry even if TTL has expired (caller decides what to do for staleWhileRevalidate).
  */
 export function cacheGet(key: string): CacheEntry | undefined {
   const entry = cache.get(key);
@@ -43,7 +43,7 @@ export function cacheGet(key: string): CacheEntry | undefined {
     return undefined;
   }
 
-  // LRU: アクセスされたエントリを末尾に移動する
+  // LRU: move accessed entry to the end
   cache.delete(key);
   cache.set(key, entry);
 
@@ -51,7 +51,7 @@ export function cacheGet(key: string): CacheEntry | undefined {
 }
 
 /**
- * エントリが有効（TTL 範囲内）かどうかを判定する。
+ * Check whether an entry is still valid (within TTL).
  */
 export function isFresh(entry: CacheEntry): boolean {
   if (entry.ttl <= 0) return false;
@@ -60,17 +60,17 @@ export function isFresh(entry: CacheEntry): boolean {
 }
 
 /**
- * キャッシュにエントリを保存する。
- * MAX_SIZE を超える場合は最も古いエントリ（Map の先頭）を削除する（LRU エビクション）。
+ * Store an entry in the cache.
+ * If MAX_SIZE is exceeded, evicts the oldest entry (front of Map) via LRU.
  */
 export function cacheSet(key: string, data: unknown, ttl: number): void {
-  if (ttl <= 0) return; // ttl=0 はキャッシュしない
+  if (ttl <= 0) return; // ttl=0 means do not cache
 
-  // 既存エントリを更新する場合は一度削除して末尾に再挿入する
+  // When updating an existing entry, delete and re-insert at the end
   if (cache.has(key)) {
     cache.delete(key);
   } else if (cache.size >= MAX_SIZE) {
-    // LRU エビクション: Map の最初のキー（最も古くアクセス）を削除
+    // LRU eviction: delete the first key in Map (least recently accessed)
     const oldestKey = cache.keys().next().value;
     if (oldestKey !== undefined) {
       cache.delete(oldestKey);
@@ -87,7 +87,7 @@ export function cacheSet(key: string, data: unknown, ttl: number): void {
 }
 
 /**
- * キャッシュヒット数をインクリメントする（統計用）。
+ * Increment the hit count for a cache entry (for stats).
  */
 export function recordHit(key: string): void {
   totalHits++;
@@ -98,8 +98,8 @@ export function recordHit(key: string): void {
 }
 
 /**
- * 特定スラッグに関連する全エントリを削除する。
- * キーの形式は "{slug}:{paramsJson}" なので、プレフィックス一致で削除する。
+ * Delete all entries associated with a specific slug.
+ * Keys have the format "{slug}:{paramsJson}", so deletion is done by prefix match.
  */
 export function invalidateSlug(slug: string): number {
   const prefix = `${slug}:`;
@@ -115,7 +115,7 @@ export function invalidateSlug(slug: string): number {
 }
 
 /**
- * キャッシュ全体を削除する。
+ * Clear the entire cache.
  */
 export function invalidateAll(): number {
   const count = cache.size;
@@ -127,7 +127,7 @@ export function invalidateAll(): number {
 }
 
 /**
- * キャッシュの統計情報を取得する。
+ * Get cache statistics.
  */
 export function getStats(): CacheStats {
   const now = Date.now();
@@ -150,12 +150,12 @@ export function getStats(): CacheStats {
 }
 
 /**
- * キャッシュキーを生成する。
- * params は JSON.stringify でシリアライズする。
- * オブジェクトのキー順序による不整合を避けるため、ソートしてからシリアライズする。
+ * Build a cache key from slug and params.
+ * Params are serialized with JSON.stringify.
+ * Keys are sorted before serialization to avoid inconsistencies due to object key ordering.
  */
 export function buildCacheKey(slug: string, params: Record<string, unknown>): string {
-  // キー順序を正規化して同じパラメータが異なるキーにならないようにする
+  // Normalize key order so the same params never produce different keys
   const sortedParams = Object.fromEntries(
     Object.entries(params).sort(([a], [b]) => a.localeCompare(b)),
   );

@@ -171,7 +171,7 @@ export async function getClient(
   connectorSlug?: string,
   connectorType?: string,
 ): Promise<DatabaseClient> {
-  // Squadbase DB (default): connectorSlug 未指定時は常に Squadbase DB を使用
+  // Squadbase DB (default): always use Squadbase DB when connectorSlug is not specified
   if (!connectorSlug) {
     const cacheKey = "__squadbase-db__";
     const cached = clientCache.get(cacheKey);
@@ -212,11 +212,11 @@ export async function getClient(
   let client: DatabaseClient;
 
   if (resolvedType === "snowflake") {
-    // Snowflake: ステートレス（接続ごと）なのでキャッシュしない
+    // Snowflake: stateless (per-connection), so do not cache
     client = createSnowflakeClient(entry, connectorSlug);
     return client;
   } else if (resolvedType === "bigquery") {
-    // BigQuery: ステートレス（リクエストごと）なのでキャッシュしない
+    // BigQuery: stateless (per-request), so do not cache
     client = createBigQueryClient(entry, connectorSlug);
     return client;
   } else if (resolvedType === "postgresql" || resolvedType === "squadbase-db") {
@@ -261,7 +261,7 @@ function reloadEnvFile(envPath: string): void {
     }
     console.log("[connector-client] .env reloaded");
   } catch {
-    // .env が存在しない場合は無視
+    // Ignore if .env does not exist
   }
 }
 
@@ -273,10 +273,10 @@ export function watchConnectionsFile(): void {
       console.log("[connector-client] connections.json changed, clearing cache");
       connectionsCache = null;
       clientCache.clear();
-      // editor が connections.json → .env の順で書くため、setImmediate で待つ
+      // Wait with setImmediate because the editor writes connections.json before .env
       setImmediate(() => reloadEnvFile(envPath));
     });
   } catch {
-    // ファイルが存在しない場合は監視しない
+    // Do not watch if the file does not exist
   }
 }

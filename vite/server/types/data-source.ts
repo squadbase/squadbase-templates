@@ -14,17 +14,17 @@ export interface SchemaField {
   items?: SchemaField[];
 }
 
-// --- キャッシュ設定 ---
+// --- Cache configuration ---
 export interface DataSourceCacheConfig {
   /**
-   * キャッシュの有効期間（秒）。
-   * 0 または未指定の場合はキャッシュしない（後方互換性を保つデフォルト動作）。
+   * Cache TTL in seconds.
+   * 0 or unset means no caching (default behavior for backward compatibility).
    */
   ttl: number;
   /**
-   * true の場合、TTL 期限切れ後も古いデータを即座に返しつつ、
-   * バックグラウンドで新しいデータを非同期取得してキャッシュを更新する。
-   * デフォルト: false
+   * When true, stale data is returned immediately after TTL expiry
+   * while fresh data is fetched asynchronously in the background to update the cache.
+   * Default: false
    */
   staleWhileRevalidate?: boolean;
 }

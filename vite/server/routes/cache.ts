@@ -11,7 +11,7 @@ const app = new Hono();
 
 /**
  * GET /cache/stats
- * キャッシュの統計情報を返す。
+ * Returns cache statistics.
  */
 app.get("/stats", (c) => {
   const stats = getStats();
@@ -25,7 +25,7 @@ app.get("/stats", (c) => {
 
 /**
  * POST /cache/invalidate
- * キャッシュ全体を削除する。
+ * Clears the entire cache.
  */
 app.post("/invalidate", (c) => {
   const count = invalidateAll();
@@ -34,7 +34,7 @@ app.post("/invalidate", (c) => {
 
 /**
  * POST /cache/invalidate/:slug
- * 特定スラッグのキャッシュエントリをすべて削除する。
+ * Deletes all cache entries for a specific slug.
  */
 app.post("/invalidate/:slug", (c) => {
   const slug = c.req.param("slug");

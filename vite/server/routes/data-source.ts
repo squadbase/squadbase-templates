@@ -25,20 +25,20 @@ app.post("/:slug", async (c) => {
     const cacheConfig = ds.cacheConfig;
     const ttl = cacheConfig?.ttl ?? 0;
 
-    // --- キャッシュが無効な場合（ttl=0 またはキャッシュ未設定）---
-    // 後方互換性: 既存の動作と完全に同一。
+    // --- Cache disabled (ttl=0 or no cache config) ---
+    // Backward-compatible: identical to the existing behavior.
     if (ttl <= 0) {
       const result = await ds.handler(params);
       return c.json({ data: result });
     }
 
-    // --- キャッシュが有効な場合 ---
+    // --- Cache enabled ---
     const cacheKey = buildCacheKey(slug, params);
     const cached = cacheGet(cacheKey);
 
     if (cached) {
       if (isFresh(cached)) {
-        // キャッシュヒット（TTL 有効）: そのまま返す
+        // Cache hit (TTL valid): return as-is
         recordHit(cacheKey);
         const ageSeconds = Math.floor((Date.now() - cached.cachedAt) / 1000);
         c.header("X-Cache", "HIT");
@@ -47,16 +47,16 @@ app.post("/:slug", async (c) => {
         return c.json({ data: cached.data });
       }
 
-      // キャッシュヒット（TTL 期限切れ）
+      // Cache hit (TTL expired)
       if (cacheConfig?.staleWhileRevalidate) {
-        // staleWhileRevalidate: 古いデータを即座に返し、バックグラウンドでリフレッシュ
+        // staleWhileRevalidate: return stale data immediately and refresh in the background
         recordHit(cacheKey);
         const ageSeconds = Math.floor((Date.now() - cached.cachedAt) / 1000);
         c.header("X-Cache", "STALE");
         c.header("X-Cache-Age", String(ageSeconds));
         c.header("Cache-Control", `max-age=0, stale-while-revalidate=${ttl}`);
 
-        // バックグラウンドでリフレッシュ（レスポンスをブロックしない）
+        // Background refresh (does not block the response)
         void (async () => {
           try {
             const freshData = await ds.handler(params);
@@ -70,11 +70,11 @@ app.post("/:slug", async (c) => {
         return c.json({ data: cached.data });
       }
 
-      // staleWhileRevalidate=false: 期限切れなのでブロッキングで再取得
-      // （MISS と同じフローへ落ちる）
+      // staleWhileRevalidate=false: expired, so fetch synchronously
+      // (falls through to the MISS flow below)
     }
 
-    // キャッシュミス（またはキャッシュ有効だが TTL 期限切れかつ staleWhileRevalidate=false）
+    // Cache miss (or cache enabled but TTL expired and staleWhileRevalidate=false)
     const result = await ds.handler(params);
     cacheSet(cacheKey, result, ttl);
 
