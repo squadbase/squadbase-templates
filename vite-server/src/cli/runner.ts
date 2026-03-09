@@ -3,9 +3,10 @@ import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { getClient } from "../connector-client/index.ts";
 import { buildQuery } from "../registry.ts";
+import { anyJsonDataSourceSchema } from "../types/data-source.ts";
 import type {
   AnyJsonDataSourceDefinition,
-  JsonDataSourceDefinition,
+  JsonSqlDataSourceDefinition,
   ParameterMeta,
 } from "../types/data-source.ts";
 
@@ -49,7 +50,7 @@ function createStubContext(params: Record<string, unknown>): import("hono").Cont
 
 async function runSqlDataSource(
   slug: string,
-  def: JsonDataSourceDefinition,
+  def: JsonSqlDataSourceDefinition,
   params: Record<string, unknown>,
   limit: number,
 ): Promise<RunResult> {
@@ -165,7 +166,17 @@ export async function runDataSource(
   let def: AnyJsonDataSourceDefinition;
   try {
     const raw = await readFile(jsonPath, "utf-8");
-    def = JSON.parse(raw) as AnyJsonDataSourceDefinition;
+    const parsed = anyJsonDataSourceSchema.safeParse(JSON.parse(raw));
+    if (!parsed.success) {
+      return {
+        slug,
+        rows: [],
+        rowCount: 0,
+        durationMs: 0,
+        error: new Error(`Invalid data source definition: ${parsed.error.message}`),
+      };
+    }
+    def = parsed.data;
   } catch {
     return {
       slug,
@@ -181,7 +192,7 @@ export async function runDataSource(
     return runTypescriptDataSource(slug, absolutePath, params);
   }
 
-  return runSqlDataSource(slug, def as JsonDataSourceDefinition, params, limit);
+  return runSqlDataSource(slug, def as JsonSqlDataSourceDefinition, params, limit);
 }
 
 export async function listSlugs(dirPath: string): Promise<string[]> {

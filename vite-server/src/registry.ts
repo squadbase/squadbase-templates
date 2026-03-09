@@ -2,11 +2,11 @@ import { readdir, readFile, mkdir } from "node:fs/promises";
 import { watch as fsWatch } from "node:fs";
 import path from "node:path";
 import { getClient } from "./connector-client/index.ts";
+import { anyJsonDataSourceSchema } from "./types/data-source.ts";
 import type {
-  AnyJsonDataSourceDefinition,
   DataSourceDefinition,
   DataSourceMeta,
-  JsonDataSourceDefinition,
+  JsonSqlDataSourceDefinition,
   ParameterMeta,
 } from "./types/data-source.ts";
 
@@ -102,32 +102,23 @@ export async function initialize(): Promise<void> {
     jsonFiles.map(async (file) => {
       const slug = file.replace(/\.json$/, "");
       const raw = await readFile(`${dirPath}/${file}`, "utf-8");
-      const def: AnyJsonDataSourceDefinition = JSON.parse(raw);
+      const parsed = anyJsonDataSourceSchema.safeParse(JSON.parse(raw));
 
-      if (!def.description) {
-        console.warn(`[registry] Skipping ${file}: missing description`);
+      if (!parsed.success) {
+        console.warn(`[registry] Skipping ${file}: ${parsed.error.message}`);
         return;
       }
 
-      if (!def.connectionId) {
-        console.warn(`[registry] Skipping ${file}: missing connectionId`);
-        return;
-      }
+      const def = parsed.data;
 
       if (def.type === "typescript") {
         // TypeScript function data source
-        if (!def.handlerPath) {
-          console.warn(`[registry] Skipping ${file}: missing handlerPath`);
-          return;
-        }
-
         const absoluteHandlerPath = validateHandlerPath(dirPath, def.handlerPath);
 
         const dataSourceDef: DataSourceDefinition = {
           description: def.description,
           parameters: def.parameters ?? [],
           response: def.response,
-          connectionId: def.connectionId,
           cacheConfig: def.cache,
           handler: async () => {
             throw new Error("TypeScript handler must be called via _tsHandlerPath");
@@ -139,13 +130,8 @@ export async function initialize(): Promise<void> {
         dataSources.set(slug, dataSourceDef);
         console.log(`[registry] registered (typescript): ${slug}`);
       } else {
-        // SQL data source (existing logic)
-        const sqlDef = def as JsonDataSourceDefinition;
-
-        if (!sqlDef.query) {
-          console.warn(`[registry] Skipping ${file}: missing query`);
-          return;
-        }
+        // SQL data source
+        const sqlDef = def as JsonSqlDataSourceDefinition;
 
         const dataSourceDef: DataSourceDefinition = {
           description: sqlDef.description,
@@ -258,18 +244,27 @@ export function getDataSource(slug: string): DataSourceDefinition | undefined {
 }
 
 function buildMeta(slug: string, def: DataSourceDefinition): DataSourceMeta {
-  return {
+  const base = {
     slug,
     description: def.description,
-    type: def._isTypescript ? "typescript" : "sql",
     parameters: def.parameters,
     response: def.response,
-    query: def._query,
-    connectionId: def.connectionId,
-    handlerPath: def._tsHandlerPath
-      ? path.relative(currentDirPath, def._tsHandlerPath)
-      : undefined,
     cache: def.cacheConfig,
+  };
+
+  if (def._isTypescript) {
+    return {
+      ...base,
+      type: "typescript" as const,
+      handlerPath: path.relative(currentDirPath, def._tsHandlerPath),
+    };
+  }
+
+  return {
+    ...base,
+    type: "sql" as const,
+    connectionId: def.connectionId,
+    query: def._query,
   };
 }
 

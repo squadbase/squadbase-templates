@@ -11,7 +11,7 @@ import {
   displayJson,
   displayError,
 } from "./display.ts";
-import type { AnyJsonDataSourceDefinition } from "../types/data-source.ts";
+import { anyJsonDataSourceSchema } from "../types/data-source.ts";
 
 const HELP = `
 Usage: squadbase-ds-test [options]
@@ -136,8 +136,8 @@ async function main() {
       let paramMeta: import("../types/data-source.ts").ParameterMeta[] = [];
       try {
         const raw = await readFile(jsonPath, "utf-8");
-        const def = JSON.parse(raw) as AnyJsonDataSourceDefinition;
-        paramMeta = def.parameters ?? [];
+        const parsed = anyJsonDataSourceSchema.safeParse(JSON.parse(raw));
+        if (parsed.success) paramMeta = parsed.data.parameters ?? [];
       } catch {
         // ignore — run with empty params
       }
