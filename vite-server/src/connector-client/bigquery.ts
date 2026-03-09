@@ -1,9 +1,9 @@
 import type { ConnectionEntry, DatabaseClient } from "./types.ts";
 import { resolveEnvVar } from "./env.ts";
 
-export function createBigQueryClient(entry: ConnectionEntry, slug: string): DatabaseClient {
-  const projectId = resolveEnvVar(entry, "project-id", slug);
-  const serviceAccountJsonBase64 = resolveEnvVar(entry, "service-account-json-base64", slug);
+export function createBigQueryClient(entry: ConnectionEntry, connectionId: string): DatabaseClient {
+  const projectId = resolveEnvVar(entry, "project-id", connectionId);
+  const serviceAccountJsonBase64 = resolveEnvVar(entry, "service-account-key-json-base64", connectionId);
 
   const serviceAccountJson = Buffer.from(serviceAccountJsonBase64, "base64").toString("utf-8");
   let gcpCredentials: Record<string, unknown>;
@@ -11,7 +11,7 @@ export function createBigQueryClient(entry: ConnectionEntry, slug: string): Data
     gcpCredentials = JSON.parse(serviceAccountJson) as Record<string, unknown>;
   } catch {
     throw new Error(
-      `BigQuery service account JSON (decoded from base64) is not valid JSON for slug "${slug}"`,
+      `BigQuery service account JSON (decoded from base64) is not valid JSON for connectionId "${connectionId}"`,
     );
   }
 

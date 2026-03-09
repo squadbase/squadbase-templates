@@ -1,4 +1,5 @@
 import { readFileSync, watch as fsWatch } from "node:fs";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { ConnectionsMap, DatabaseClient } from "./types.ts";
 import { createPostgreSQLClient } from "./postgresql.ts";
@@ -11,102 +12,79 @@ import { createDatabricksClient } from "./databricks.ts";
 
 
 export function createConnectorRegistry() {
-  let connectionsCache: ConnectionsMap | null = null;
   const clientCache = new Map<string, DatabaseClient>();
 
   function getConnectionsFilePath(): string {
     return (
       process.env.CONNECTIONS_PATH ??
-      path.join(process.cwd(), "../../.squadbase/connections.json")
+      path.join(process.cwd(), ".squadbase/connections.json")
     );
   }
 
-  function loadConnections(): ConnectionsMap {
-    if (connectionsCache !== null) return connectionsCache;
+  async function loadConnections(): Promise<ConnectionsMap> {
     const filePath = getConnectionsFilePath();
     try {
-      const raw = readFileSync(filePath, "utf-8");
-      connectionsCache = JSON.parse(raw) as ConnectionsMap;
+      const raw = await readFile(filePath, "utf-8");
+      return JSON.parse(raw) as ConnectionsMap;
     } catch {
-      connectionsCache = {};
+      return {};
     }
-    return connectionsCache;
   }
 
-  async function getClient(connectorSlug?: string, connectorType?: string): Promise<DatabaseClient> {
-    if (!connectorSlug) {
-      const cacheKey = "__squadbase-db__";
-      const cached = clientCache.get(cacheKey);
-      if (cached) return cached;
-
-      const url = process.env.SQUADBASE_POSTGRESQL_URL;
-      if (!url) throw new Error("SQUADBASE_POSTGRESQL_URL environment variable is not set");
-
-      const client = createPostgreSQLClient(url);
-      clientCache.set(cacheKey, client);
-      return client;
-    }
-
-    const cached = clientCache.get(connectorSlug);
-    if (cached) return cached;
-
-    const connections = loadConnections();
-    const entry = connections[connectorSlug];
+  async function getClient(connectionId: string): Promise<{ client: DatabaseClient; connectorSlug: string }> {
+    const connections = await loadConnections();
+    const entry = connections[connectionId];
     if (!entry) {
-      throw new Error(`connector slug '${connectorSlug}' not found in .squadbase/connections.json`);
+      throw new Error(`connection '${connectionId}' not found in .squadbase/connections.json`);
     }
 
-    const resolvedType = connectorType ?? entry.connectorType;
+    const connectorSlug = entry.connector.slug;
 
-    if (!resolvedType) {
-      throw new Error(
-        `connector type could not be determined for slug '${connectorSlug}'. ` +
-        `Specify connectorType in the data-source JSON or in .squadbase/connections.json.`,
-      );
-    }
+    const cached = clientCache.get(connectionId);
+    if (cached) return { client: cached, connectorSlug };
 
     // Stateless connectors (no caching)
-    if (resolvedType === "snowflake") {
-      return createSnowflakeClient(entry, connectorSlug);
+    if (connectorSlug === "snowflake") {
+      return { client: createSnowflakeClient(entry, connectionId), connectorSlug };
     }
-    if (resolvedType === "bigquery") {
-      return createBigQueryClient(entry, connectorSlug);
+    if (connectorSlug === "bigquery") {
+      return { client: createBigQueryClient(entry, connectionId), connectorSlug };
     }
-    if (resolvedType === "athena") {
-      return createAthenaClient(entry, connectorSlug);
+    if (connectorSlug === "athena") {
+      return { client: createAthenaClient(entry, connectionId), connectorSlug };
     }
-    if (resolvedType === "redshift") {
-      return createRedshiftClient(entry, connectorSlug);
+    if (connectorSlug === "redshift") {
+      return { client: createRedshiftClient(entry, connectionId), connectorSlug };
     }
-    if (resolvedType === "databricks") {
-      return createDatabricksClient(entry, connectorSlug);
+    if (connectorSlug === "databricks") {
+      return { client: createDatabricksClient(entry, connectionId), connectorSlug };
     }
 
     // Cached connectors (connection pool / singleton)
-    if (resolvedType === "mysql") {
-      const client = createMySQLClient(entry, connectorSlug);
-      clientCache.set(connectorSlug, client);
-      return client;
+    if (connectorSlug === "mysql") {
+      const client = createMySQLClient(entry, connectionId);
+      clientCache.set(connectionId, client);
+      return { client, connectorSlug };
     }
 
-    if (resolvedType === "postgresql" || resolvedType === "squadbase-db") {
+    if (connectorSlug === "postgresql" || connectorSlug === "squadbase-db") {
       const urlEnvName = entry.envVars["connection-url"];
       if (!urlEnvName) {
-        throw new Error(`'connection-url' is not defined in envVars for connector '${connectorSlug}'`);
+        throw new Error(`'connection-url' is not defined in envVars for connection '${connectionId}'`);
       }
       const connectionUrl = process.env[urlEnvName];
       if (!connectionUrl) {
         throw new Error(
-          `environment variable '${urlEnvName}' (mapped from connector '${connectorSlug}') is not set`,
+          `environment variable '${urlEnvName}' (mapped from connection '${connectionId}') is not set`,
         );
       }
       const client = createPostgreSQLClient(connectionUrl);
-      clientCache.set(connectorSlug, client);
-      return client;
+      clientCache.set(connectionId, client);
+      return { client, connectorSlug };
     }
 
     throw new Error(
-      `connector type '${resolvedType}' is not supported as a SQL connector. ` +
+      `connector type '${connectorSlug}' is not supported as a SQL connector. ` +
       `Supported SQL types: "postgresql", "squadbase-db", "mysql", "snowflake", "bigquery", "athena", "redshift", "databricks". ` +
       `Non-SQL types (airtable, google-analytics, kintone, wix-store, dbt) should be used via TypeScript handlers.`,
     );
@@ -132,11 +110,10 @@ export function createConnectorRegistry() {
 
   function watchConnectionsFile(): void {
     const filePath = getConnectionsFilePath();
-    const envPath = path.join(process.cwd(), "..", "..", ".env");
+    const envPath = path.join(process.cwd(), ".env");
     try {
       fsWatch(filePath, { persistent: false }, () => {
-        console.log("[connector-client] connections.json changed, clearing cache");
-        connectionsCache = null;
+        console.log("[connector-client] connections.json changed, clearing client cache");
         clientCache.clear();
         // Wait with setImmediate because the editor writes connections.json before .env
         setImmediate(() => reloadEnvFile(envPath));

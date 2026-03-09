@@ -55,14 +55,20 @@ async function runSqlDataSource(
 ): Promise<RunResult> {
   const start = Date.now();
   try {
-    const client = await getClient(def.connectorSlug, def.connectorType);
-    const isExternal =
-      def.connectorType === "snowflake" || def.connectorType === "bigquery";
+    const { client, connectorSlug } = await getClient(def.connectionId);
+
+    // Connectors that do not support parameterized queries
+    const isLiteralConnector =
+      connectorSlug === "snowflake" ||
+      connectorSlug === "bigquery" ||
+      connectorSlug === "athena" ||
+      connectorSlug === "redshift" ||
+      connectorSlug === "databricks";
 
     let queryText: string;
     let queryValues: unknown[];
 
-    if (isExternal) {
+    if (isLiteralConnector) {
       const defaults = new Map(
         (def.parameters ?? []).map((p: ParameterMeta) => [p.name, p.default ?? null]),
       );
@@ -75,6 +81,10 @@ async function runSqlDataSource(
         return String(value);
       });
       queryValues = [];
+    } else if (connectorSlug === "mysql") {
+      const built = buildQuery(def.query, def.parameters ?? [], params);
+      queryText = built.text.replace(/\$(\d+)/g, "?");
+      queryValues = built.values;
     } else {
       const built = buildQuery(def.query, def.parameters ?? [], params);
       queryText = built.text;

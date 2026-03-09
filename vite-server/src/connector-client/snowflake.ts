@@ -1,12 +1,12 @@
 import type { ConnectionEntry, DatabaseClient } from "./types.ts";
 import { resolveEnvVar } from "./env.ts";
 
-export function createSnowflakeClient(entry: ConnectionEntry, slug: string): DatabaseClient {
-  const accountIdentifier = resolveEnvVar(entry, "account", slug);
-  const user = resolveEnvVar(entry, "user", slug);
-  const role = resolveEnvVar(entry, "role", slug);
-  const warehouse = resolveEnvVar(entry, "warehouse", slug);
-  const privateKeyBase64 = resolveEnvVar(entry, "private-key-base64", slug);
+export function createSnowflakeClient(entry: ConnectionEntry, connectionId: string): DatabaseClient {
+  const accountIdentifier = resolveEnvVar(entry, "account", connectionId);
+  const user = resolveEnvVar(entry, "user", connectionId);
+  const role = resolveEnvVar(entry, "role", connectionId);
+  const warehouse = resolveEnvVar(entry, "warehouse", connectionId);
+  const privateKeyBase64 = resolveEnvVar(entry, "private-key-base64", connectionId);
   const privateKey = Buffer.from(privateKeyBase64, "base64").toString("utf-8");
 
   return {

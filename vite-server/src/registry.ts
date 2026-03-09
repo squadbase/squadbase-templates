@@ -11,6 +11,7 @@ import type {
 } from "./types/data-source.ts";
 
 const dataSources = new Map<string, DataSourceDefinition>();
+let currentDirPath: string = "";
 
 let viteServer: import("vite").ViteDevServer | null = null;
 
@@ -89,6 +90,7 @@ export async function initialize(): Promise<void> {
   );
   dataSources.clear();
   const dirPath = process.env.DATA_SOURCE_DIR || defaultDataSourceDir;
+  currentDirPath = dirPath;
 
   // Create directory if it doesn't exist (so the watcher can function)
   await mkdir(dirPath, { recursive: true });
@@ -107,6 +109,11 @@ export async function initialize(): Promise<void> {
         return;
       }
 
+      if (!def.connectionId) {
+        console.warn(`[registry] Skipping ${file}: missing connectionId`);
+        return;
+      }
+
       if (def.type === "typescript") {
         // TypeScript function data source
         if (!def.handlerPath) {
@@ -120,6 +127,7 @@ export async function initialize(): Promise<void> {
           description: def.description,
           parameters: def.parameters ?? [],
           response: def.response,
+          connectionId: def.connectionId,
           cacheConfig: def.cache,
           handler: async () => {
             throw new Error("TypeScript handler must be called via _tsHandlerPath");
@@ -143,18 +151,19 @@ export async function initialize(): Promise<void> {
           description: sqlDef.description,
           parameters: sqlDef.parameters ?? [],
           response: sqlDef.response,
-          connectorSlug: sqlDef.connectorSlug,
+          connectionId: sqlDef.connectionId,
           cacheConfig: sqlDef.cache,
+          _query: sqlDef.query,
           handler: async (runtimeParams: Record<string, unknown>) => {
-            const client = await getClient(sqlDef.connectorSlug, sqlDef.connectorType);
+            const { client, connectorSlug } = await getClient(sqlDef.connectionId);
 
             // Connectors that do not support parameterized queries
             const isLiteralConnector =
-              sqlDef.connectorType === "snowflake" ||
-              sqlDef.connectorType === "bigquery" ||
-              sqlDef.connectorType === "athena" ||
-              sqlDef.connectorType === "redshift" ||
-              sqlDef.connectorType === "databricks";
+              connectorSlug === "snowflake" ||
+              connectorSlug === "bigquery" ||
+              connectorSlug === "athena" ||
+              connectorSlug === "redshift" ||
+              connectorSlug === "databricks";
 
             let queryText: string;
             let queryValues: unknown[];
@@ -180,7 +189,7 @@ export async function initialize(): Promise<void> {
                 },
               );
               queryValues = [];
-            } else if (sqlDef.connectorType === "mysql") {
+            } else if (connectorSlug === "mysql") {
               // MySQL: use ? style parameter binding
               const built = buildQuery(
                 sqlDef.query,
@@ -248,24 +257,30 @@ export function getDataSource(slug: string): DataSourceDefinition | undefined {
   return dataSources.get(slug);
 }
 
-export function getAllMeta(): DataSourceMeta[] {
-  return Array.from(dataSources.entries()).map(([slug, def]) => ({
+function buildMeta(slug: string, def: DataSourceDefinition): DataSourceMeta {
+  return {
     slug,
     description: def.description,
+    type: def._isTypescript ? "typescript" : "sql",
     parameters: def.parameters,
     response: def.response,
-    connectorSlug: def.connectorSlug,
-  }));
+    query: def._query,
+    connectionId: def.connectionId,
+    handlerPath: def._tsHandlerPath
+      ? path.relative(currentDirPath, def._tsHandlerPath)
+      : undefined,
+    cache: def.cacheConfig,
+  };
+}
+
+export function getAllMeta(): DataSourceMeta[] {
+  return Array.from(dataSources.entries()).map(([slug, def]) =>
+    buildMeta(slug, def),
+  );
 }
 
 export function getMeta(slug: string): DataSourceMeta | undefined {
   const def = dataSources.get(slug);
   if (!def) return undefined;
-  return {
-    slug,
-    description: def.description,
-    parameters: def.parameters,
-    response: def.response,
-    connectorSlug: def.connectorSlug,
-  };
+  return buildMeta(slug, def);
 }

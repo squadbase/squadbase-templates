@@ -2,10 +2,10 @@ import type { ConnectionEntry, DatabaseClient } from "./types.ts";
 import { resolveEnvVar } from "./env.ts";
 import { resolveEnvVarOptional } from "./env.ts";
 
-export function createAthenaClient(entry: ConnectionEntry, slug: string): DatabaseClient {
-  const region = resolveEnvVar(entry, "aws-region", slug);
-  const accessKeyId = resolveEnvVar(entry, "aws-access-key-id", slug);
-  const secretAccessKey = resolveEnvVar(entry, "aws-secret-access-key", slug);
+export function createAthenaClient(entry: ConnectionEntry, connectionId: string): DatabaseClient {
+  const region = resolveEnvVar(entry, "aws-region", connectionId);
+  const accessKeyId = resolveEnvVar(entry, "aws-access-key-id", connectionId);
+  const secretAccessKey = resolveEnvVar(entry, "aws-secret-access-key", connectionId);
   const workgroup = resolveEnvVarOptional(entry, "workgroup") ?? "primary";
   const outputLocation = resolveEnvVarOptional(entry, "output-location");
 

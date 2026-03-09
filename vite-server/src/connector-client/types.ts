@@ -3,7 +3,10 @@ export interface DatabaseClient {
 }
 
 export interface ConnectionEntry {
-  connectorType: string;
+  connector: {
+    slug: string;
+    authType?: string | null;
+  };
   envVars: Record<string, string>;
 }
 

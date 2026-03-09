@@ -27,10 +27,9 @@ interface JsonDataSourceDefinition {
   description: string;              // REQUIRED — human-readable description
   type?: "sql";                     // Optional — defaults to SQL when omitted
   query: string;                    // REQUIRED — SQL query with {{param}} placeholders
+  connectionId: string;             // REQUIRED — key in .squadbase/connections.json
   parameters?: ParameterMeta[];     // Optional — query parameter definitions
   response?: DataSourceResponse;    // Optional — response schema (see below). Omit to return { data: result }
-  connectorType?: string;           // Optional — "postgresql" | "bigquery" | "snowflake"
-  connectorSlug?: string;           // Optional — key in .squadbase/connections.json
   cache?: DataSourceCacheConfig;    // Optional — caching configuration
 }
 ```
@@ -44,6 +43,7 @@ interface JsonTypeScriptDataSourceDefinition {
   description: string;              // REQUIRED — human-readable description
   type: "typescript";               // REQUIRED — must be exactly "typescript"
   handlerPath: string;              // REQUIRED — relative path to .ts handler file (from the JSON file's directory)
+  connectionId: string;             // REQUIRED — key in .squadbase/connections.json
   parameters?: ParameterMeta[];     // Optional — parameter definitions (for metadata only)
   response?: DataSourceResponse;    // Optional — response schema
   cache?: DataSourceCacheConfig;    // Optional — caching configuration
@@ -88,6 +88,7 @@ export default async function handler(c: Context): Promise<unknown> {
   "description": "Fetch user purchase summary from external API",
   "type": "typescript",
   "handlerPath": "./user-summary.ts",
+  "connectionId": "my-api-connection",
   "parameters": [
     { "name": "userId", "type": "string", "description": "Target user ID", "required": true }
   ],
@@ -101,6 +102,7 @@ export default async function handler(c: Context): Promise<unknown> {
   "description": "Combine sales data and trend data from multiple APIs",
   "type": "typescript",
   "handlerPath": "./sales-forecast.ts",
+  "connectionId": "my-api-connection",
   "parameters": [
     { "name": "region", "type": "string", "description": "Region code", "required": true }
   ]
@@ -183,18 +185,16 @@ interface DataSourceResponse {
 | `content["application/json"].schema.type = "object"` with `properties` | raw object (no wrapper) |
 | `defaultContentType = "text/csv"` | `text/csv` with CSV body |
 
-#### `connectorType` (string, optional)
-Database engine type. When omitted, defaults to PostgreSQL via `SQUADBASE_POSTGRESQL_URL`.
+#### `connectionId` (string, **required**)
+Key in `.squadbase/connections.json` identifying the connection. Every data source must specify a connectionId.
+
+The connector type is determined automatically from `connections.json` entry's `connector.slug`:
 
 **SQL connectors** (used in data source JSON `query` field):
 `"postgresql"`, `"squadbase-db"`, `"mysql"`, `"bigquery"`, `"snowflake"`, `"athena"`, `"redshift"`, `"databricks"`
 
 **Non-SQL connectors** (used in TypeScript handlers via client utilities):
 `"airtable"`, `"google-analytics"`, `"kintone"`, `"wix-store"`, `"dbt"`
-
-#### `connectorSlug` (string, optional)
-Key in `.squadbase/connections.json` identifying the database connection.
-When omitted, uses the default Squadbase PostgreSQL database.
 
 #### `cache` (DataSourceCacheConfig, optional)
 ```typescript
@@ -235,25 +235,21 @@ WRONG:     WHERE date >= '{{start_date}}'    ← double-quoting bug!
 
 ---
 
-## Connector Configuration
+## Connection Configuration
 
-### Default (no connectorSlug)
-Uses `SQUADBASE_POSTGRESQL_URL` environment variable for PostgreSQL connection.
-
-### External Connectors
-Require a `.squadbase/connections.json` file at the project root:
+All data sources require a `connectionId` that maps to an entry in `.squadbase/connections.json` (default: `<cwd>/.squadbase/connections.json`).
 
 ```json
 {
   "my-bigquery": {
-    "connectorType": "bigquery",
+    "connector": { "slug": "bigquery" },
     "envVars": {
       "project-id": "GCP_PROJECT_ID",
-      "service-account-json-base64": "GCP_SA_JSON_BASE64"
+      "service-account-key-json-base64": "GCP_SA_JSON_BASE64"
     }
   },
   "my-snowflake": {
-    "connectorType": "snowflake",
+    "connector": { "slug": "snowflake" },
     "envVars": {
       "account": "SNOWFLAKE_ACCOUNT",
       "user": "SNOWFLAKE_USER",
@@ -262,20 +258,20 @@ Require a `.squadbase/connections.json` file at the project root:
       "private-key-base64": "SNOWFLAKE_PRIVATE_KEY_BASE64"
     }
   },
-  "my-external-pg": {
-    "connectorType": "postgresql",
+  "my-pg": {
+    "connector": { "slug": "postgresql" },
     "envVars": {
-      "connection-url": "EXTERNAL_PG_URL"
+      "connection-url": "PG_URL"
     }
   },
   "my-mysql": {
-    "connectorType": "mysql",
+    "connector": { "slug": "mysql" },
     "envVars": {
       "connection-url": "MYSQL_URL"
     }
   },
   "my-athena": {
-    "connectorType": "athena",
+    "connector": { "slug": "athena" },
     "envVars": {
       "aws-region": "ATHENA_AWS_REGION",
       "aws-access-key-id": "ATHENA_AWS_ACCESS_KEY_ID",
@@ -285,7 +281,7 @@ Require a `.squadbase/connections.json` file at the project root:
     }
   },
   "my-redshift": {
-    "connectorType": "redshift",
+    "connector": { "slug": "redshift" },
     "envVars": {
       "aws-region": "REDSHIFT_AWS_REGION",
       "aws-access-key-id": "REDSHIFT_AWS_ACCESS_KEY_ID",
@@ -296,7 +292,7 @@ Require a `.squadbase/connections.json` file at the project root:
     }
   },
   "my-databricks": {
-    "connectorType": "databricks",
+    "connector": { "slug": "databricks" },
     "envVars": {
       "host": "DATABRICKS_HOST",
       "http-path": "DATABRICKS_HTTP_PATH",
@@ -304,21 +300,21 @@ Require a `.squadbase/connections.json` file at the project root:
     }
   },
   "my-airtable": {
-    "connectorType": "airtable",
+    "connector": { "slug": "airtable" },
     "envVars": {
       "base-id": "AIRTABLE_BASE_ID",
       "api-key": "AIRTABLE_API_KEY"
     }
   },
   "my-ga": {
-    "connectorType": "google-analytics",
+    "connector": { "slug": "google-analytics" },
     "envVars": {
       "service-account-json-base64": "GA_SERVICE_ACCOUNT_JSON_BASE64",
       "property-id": "GA_PROPERTY_ID"
     }
   },
   "my-kintone": {
-    "connectorType": "kintone",
+    "connector": { "slug": "kintone" },
     "envVars": {
       "base-url": "KINTONE_BASE_URL",
       "username": "KINTONE_USERNAME",
@@ -326,14 +322,14 @@ Require a `.squadbase/connections.json` file at the project root:
     }
   },
   "my-wix": {
-    "connectorType": "wix-store",
+    "connector": { "slug": "wix-store" },
     "envVars": {
       "site-id": "WIX_SITE_ID",
       "api-key": "WIX_API_KEY"
     }
   },
   "my-dbt": {
-    "connectorType": "dbt",
+    "connector": { "slug": "dbt" },
     "envVars": {
       "host": "DBT_HOST",
       "prod-env-id": "DBT_PROD_ENV_ID",
@@ -393,8 +389,8 @@ All endpoints are under the `/api` prefix.
 
 | Method | Path | Response | Description |
 |--------|------|----------|-------------|
-| GET | `/api/data-source-meta` | `[{ slug, description, parameters, response?, connectorSlug? }]` | List all registered data sources |
-| GET | `/api/data-source-meta/:slug` | `{ slug, description, parameters, response?, connectorSlug? }` | Get metadata for a specific data source |
+| GET | `/api/data-source-meta` | `[{ slug, description, type, parameters, response?, connectionId, query?, handlerPath?, cache? }]` | List all registered data sources |
+| GET | `/api/data-source-meta/:slug` | `{ slug, description, type, parameters, response?, connectionId, query?, handlerPath?, cache? }` | Get metadata for a specific data source |
 
 ### Cache Management
 
@@ -435,6 +431,7 @@ Filename: `active-users.json`
 ```json
 {
   "description": "List of all active users",
+  "connectionId": "my-pg",
   "query": "SELECT id, name, email, role FROM users WHERE active = true ORDER BY name",
   "cache": {
     "ttl": 600,
@@ -452,6 +449,7 @@ Filename: `sales-by-region.json`
 ```json
 {
   "description": "Sales aggregation filtered by region and date range",
+  "connectionId": "my-pg",
   "query": "SELECT DATE(order_date) AS date, region, SUM(amount) AS total_amount, COUNT(*) AS order_count FROM orders WHERE order_date >= {{start_date}} AND order_date <= {{end_date}} AND region = {{region}} GROUP BY date, region ORDER BY date DESC",
   "parameters": [
     { "name": "start_date", "type": "string", "description": "Start date (YYYY-MM-DD)", "required": true },
@@ -494,6 +492,7 @@ Filename: `orders-paginated.json`
 ```json
 {
   "description": "Paginated orders with total count",
+  "connectionId": "my-pg",
   "query": "...",
   "response": {
     "content": {
@@ -520,6 +519,7 @@ Filename: `orders-export.json`
 ```json
 {
   "description": "Export orders as CSV",
+  "connectionId": "my-pg",
   "query": "SELECT id, date, amount FROM orders ORDER BY date DESC",
   "response": {
     "defaultContentType": "text/csv"
@@ -558,8 +558,7 @@ Filename: `bq-daily-pageviews.json`
       }
     }
   },
-  "connectorType": "bigquery",
-  "connectorSlug": "my-bigquery",
+  "connectionId": "my-bigquery",
   "cache": {
     "ttl": 600,
     "staleWhileRevalidate": true
@@ -583,7 +582,7 @@ export default async function handler(c: Context): Promise<unknown> {
   const body = await c.req.json().catch(() => ({}));
   const tableName = (body.params?.table as string) ?? "Tasks";
 
-  const connections = loadConnections();
+  const connections = await loadConnections();
   const entry = connections["my-airtable"];
   if (!entry) throw new Error("Airtable connection not configured");
 
@@ -603,7 +602,7 @@ export default async function handler(c: Context): Promise<unknown> {
 | `createWixStoreClient(entry, slug)` | wix-store | `queryProducts()`, `queryOrders()` |
 | `createDbtClient(entry, slug)` | dbt | `query()`, `getModels()`, `getModelByName()` |
 
-Use `loadConnections()` to get the connections map, then pass the entry and slug to the factory function.
+Use `await loadConnections()` to get the connections map, then pass the entry and slug to the factory function.
 
 ---
 
@@ -615,7 +614,7 @@ Use `loadConnections()` to get the connections map, then pass the entry and slug
 
 3. **String auto-quoting**: String parameters are automatically quoted. Writing `'{{param}}'` in SQL causes double-quoting bugs. Always write `{{param}}` without quotes.
 
-4. **Required fields**: For SQL data sources, `description` and `query` are required. For TypeScript data sources, `description`, `type: "typescript"`, and `handlerPath` are required. Files missing required fields are skipped with a warning.
+4. **Required fields**: All data sources require `description` and `connectionId`. SQL data sources additionally require `query`. TypeScript data sources additionally require `type: "typescript"` and `handlerPath`. Files missing required fields are skipped with a warning.
 
 5. **`response` is optional**: When omitted, the API always returns `{ data: rows[] }`. Add `response` only when you need schema documentation or a different response format (object unwrapping or CSV).
 
@@ -629,6 +628,6 @@ Use `loadConnections()` to get the connections map, then pass the entry and slug
 
 10. **Cache key includes parameters**: Different parameter combinations create separate cache entries. High-cardinality filters reduce cache hit rates.
 
-11. **connections.json**: External connectors require entries in `.squadbase/connections.json`. The `envVars` values are environment variable **names**, not actual secrets.
+11. **connections.json**: All data sources require a `connectionId` that maps to an entry in `.squadbase/connections.json`. Each entry has `connector: { slug }` and `envVars`. The `envVars` values are environment variable **names**, not actual secrets.
 
 12. **`.env` loading**: The server reads the root `.env` file at startup (since Vite doesn't pass non-`VITE_`-prefixed env vars to the server process).

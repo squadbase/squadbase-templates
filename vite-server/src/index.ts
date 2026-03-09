@@ -38,7 +38,7 @@ apiApp.route("/cache", cacheRoutes);
 apiApp.route("/", pagesRoutes);
 
 // Load .env at startup (Vite does not pass env vars without VITE_ prefix to the server)
-reloadEnvFile(path.join(process.cwd(), "..", "..", ".env"));
+reloadEnvFile(path.join(process.cwd(), ".env"));
 await initialize();
 startWatching();
 watchConnectionsFile();
