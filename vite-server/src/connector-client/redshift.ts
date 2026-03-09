@@ -1,11 +1,11 @@
 import type { ConnectionEntry, DatabaseClient } from "./types.ts";
 import { resolveEnvVar, resolveEnvVarOptional } from "./env.ts";
 
-export function createRedshiftClient(entry: ConnectionEntry, slug: string): DatabaseClient {
-  const region = resolveEnvVar(entry, "aws-region", slug);
-  const accessKeyId = resolveEnvVar(entry, "aws-access-key-id", slug);
-  const secretAccessKey = resolveEnvVar(entry, "aws-secret-access-key", slug);
-  const database = resolveEnvVar(entry, "database", slug);
+export function createRedshiftClient(entry: ConnectionEntry, connectionId: string): DatabaseClient {
+  const region = resolveEnvVar(entry, "aws-region", connectionId);
+  const accessKeyId = resolveEnvVar(entry, "aws-access-key-id", connectionId);
+  const secretAccessKey = resolveEnvVar(entry, "aws-secret-access-key", connectionId);
+  const database = resolveEnvVar(entry, "database", connectionId);
   const clusterIdentifier = resolveEnvVarOptional(entry, "cluster-identifier");
   const workgroupName = resolveEnvVarOptional(entry, "workgroup-name");
   const secretArn = resolveEnvVarOptional(entry, "secret-arn");

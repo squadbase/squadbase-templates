@@ -1,10 +1,10 @@
 import type { ConnectionEntry, DatabaseClient } from "./types.ts";
 import { resolveEnvVar } from "./env.ts";
 
-export function createDatabricksClient(entry: ConnectionEntry, slug: string): DatabaseClient {
-  const host = resolveEnvVar(entry, "host", slug);
-  const httpPath = resolveEnvVar(entry, "http-path", slug);
-  const token = resolveEnvVar(entry, "token", slug);
+export function createDatabricksClient(entry: ConnectionEntry, connectionId: string): DatabaseClient {
+  const host = resolveEnvVar(entry, "host", connectionId);
+  const httpPath = resolveEnvVar(entry, "http-path", connectionId);
+  const token = resolveEnvVar(entry, "token", connectionId);
 
   return {
     async query(sql) {
