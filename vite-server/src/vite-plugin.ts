@@ -46,7 +46,17 @@ export function squadbasePlugin(options: SquadbasePluginOptions = {}): Plugin[] 
     buildEntry = "@squadbase/vite-server/main",
     devEntry = "@squadbase/vite-server",
     port = 3285,
-    external = ["pg", "@google-cloud/bigquery", "snowflake-sdk"],
+    external = [
+      "pg",
+      "@google-cloud/bigquery",
+      "snowflake-sdk",
+      "mysql2",
+      "@databricks/sql",
+      "@aws-sdk/client-athena",
+      "@aws-sdk/client-redshift-data",
+      "@google-analytics/data",
+      "@kintone/rest-api-client",
+    ],
     exclude = DEFAULT_EXCLUDE,
   } = options;
 
