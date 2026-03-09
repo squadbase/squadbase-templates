@@ -4,6 +4,7 @@ import path from "node:path";
 import type { ConnectionsMap, DatabaseClient } from "./types.ts";
 import { createPostgreSQLClient } from "./postgresql.ts";
 import { createBigQueryClient } from "./bigquery.ts";
+import { createBigQueryOAuthClient } from "./bigquery-oauth.ts";
 import { createSnowflakeClient } from "./snowflake.ts";
 import { createMySQLClient } from "./mysql.ts";
 import { createAthenaClient } from "./aws-athena.ts";
@@ -48,6 +49,9 @@ export function createConnectorRegistry() {
       return { client: createSnowflakeClient(entry, connectionId), connectorSlug };
     }
     if (connectorSlug === "bigquery") {
+      if (entry.connector.authType === "oauth") {
+        return { client: createBigQueryOAuthClient(entry, connectionId), connectorSlug };
+      }
       return { client: createBigQueryClient(entry, connectionId), connectorSlug };
     }
     if (connectorSlug === "athena") {
