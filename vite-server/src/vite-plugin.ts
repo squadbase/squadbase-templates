@@ -9,7 +9,6 @@ import { setViteServer } from "./registry.ts";
 interface SquadbasePluginOptions {
   buildEntry?: string;
   devEntry?: string;
-  port?: number;
   external?: string[];
   exclude?: RegExp[];
 }
@@ -45,7 +44,6 @@ export function squadbasePlugin(options: SquadbasePluginOptions = {}): Plugin[] 
   const {
     buildEntry = "@squadbase/vite-server/main",
     devEntry = "@squadbase/vite-server",
-    port = 3285,
     external = [
       "pg",
       "@google-cloud/bigquery",
@@ -67,7 +65,6 @@ export function squadbasePlugin(options: SquadbasePluginOptions = {}): Plugin[] 
     entry: resolveEntry(buildEntry),
     outputDir: "./dist/server",
     output: "index.js",
-    port,
     external,
   });
 
