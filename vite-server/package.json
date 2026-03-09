@@ -1,6 +1,6 @@
 {
   "name": "@squadbase/vite-server",
-  "version": "0.0.1-build-3",
+  "version": "0.0.1-build-8",
   "type": "module",
   "exports": {
     ".": {
@@ -20,7 +20,9 @@
       "types": "./dist/vite-plugin.d.ts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -36,7 +38,6 @@
     "@aws-sdk/client-athena": "^3.750.0",
     "@aws-sdk/client-redshift-data": "^3.750.0",
     "@databricks/sql": "^1.8.0",
-
     "@google-analytics/data": "^4.8.0",
     "@google-cloud/bigquery": "^7.9.4",
     "@hono/node-server": "^1.19.9",
