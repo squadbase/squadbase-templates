@@ -55,19 +55,24 @@ export interface DataSourceDefinition {
   description: string;
   parameters: ParameterMeta[];
   response?: DataSourceResponse;
-  connectorSlug?: string;
+  connectionId: string;
   cacheConfig?: DataSourceCacheConfig;
   handler: (params: Record<string, unknown>) => Promise<unknown> | unknown;
   _isTypescript?: boolean;
   _tsHandlerPath?: string;
+  _query?: string;
 }
 
 export interface DataSourceMeta {
   slug: string;
   description: string;
+  type: "sql" | "typescript";
   parameters: ParameterMeta[];
   response?: DataSourceResponse;
-  connectorSlug?: string;
+  query?: string;
+  connectionId: string;
+  handlerPath?: string;
+  cache?: DataSourceCacheConfig;
 }
 
 export interface JsonDataSourceDefinition {
@@ -76,8 +81,7 @@ export interface JsonDataSourceDefinition {
   parameters?: ParameterMeta[];
   response?: DataSourceResponse;   // if omitted, returns { data: result }
   query: string;
-  connectorType?: string;
-  connectorSlug?: string;
+  connectionId: string;
   cache?: DataSourceCacheConfig;
 }
 
@@ -85,6 +89,7 @@ export interface JsonTypeScriptDataSourceDefinition {
   description: string;
   type: "typescript";
   handlerPath: string;
+  connectionId: string;
   parameters?: ParameterMeta[];
   response?: DataSourceResponse;
   cache?: DataSourceCacheConfig;
