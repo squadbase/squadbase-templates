@@ -30,8 +30,7 @@ Consolidates logic previously split between `packages/data-api` and `packages/ap
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `DATA_SOURCE_DIR` | `<cwd>/data-source` | Directory containing data source JSON files |
-| `CONNECTIONS_PATH` | `<cwd>/../../.squadbase/connections.json` | Connector credentials mapping file |
-| `SQUADBASE_POSTGRESQL_URL` | — | Default PostgreSQL connection string |
+| `CONNECTIONS_PATH` | `<cwd>/.squadbase/connections.json` | Connection credentials mapping file (keyed by connectionId) |
 | `DATA_DIR` | `<cwd>/data` | Directory for Puck page JSON files |
 | `STATIC_DIR` | `dist/client` (relative to main.ts) | Static assets directory (production) |
 
