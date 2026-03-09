@@ -582,7 +582,7 @@ export default async function handler(c: Context): Promise<unknown> {
   const body = await c.req.json().catch(() => ({}));
   const tableName = (body.params?.table as string) ?? "Tasks";
 
-  const connections = loadConnections();
+  const connections = await loadConnections();
   const entry = connections["my-airtable"];
   if (!entry) throw new Error("Airtable connection not configured");
 
@@ -602,7 +602,7 @@ export default async function handler(c: Context): Promise<unknown> {
 | `createWixStoreClient(entry, slug)` | wix-store | `queryProducts()`, `queryOrders()` |
 | `createDbtClient(entry, slug)` | dbt | `query()`, `getModels()`, `getModelByName()` |
 
-Use `loadConnections()` to get the connections map, then pass the entry and slug to the factory function.
+Use `await loadConnections()` to get the connections map, then pass the entry and slug to the factory function.
 
 ---
 

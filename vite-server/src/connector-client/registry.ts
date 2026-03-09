@@ -1,4 +1,5 @@
 import { readFileSync, watch as fsWatch } from "node:fs";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { ConnectionsMap, DatabaseClient } from "./types.ts";
 import { createPostgreSQLClient } from "./postgresql.ts";
@@ -11,7 +12,6 @@ import { createDatabricksClient } from "./databricks.ts";
 
 
 export function createConnectorRegistry() {
-  let connectionsCache: ConnectionsMap | null = null;
   const clientCache = new Map<string, DatabaseClient>();
 
   function getConnectionsFilePath(): string {
@@ -21,20 +21,18 @@ export function createConnectorRegistry() {
     );
   }
 
-  function loadConnections(): ConnectionsMap {
-    if (connectionsCache !== null) return connectionsCache;
+  async function loadConnections(): Promise<ConnectionsMap> {
     const filePath = getConnectionsFilePath();
     try {
-      const raw = readFileSync(filePath, "utf-8");
-      connectionsCache = JSON.parse(raw) as ConnectionsMap;
+      const raw = await readFile(filePath, "utf-8");
+      return JSON.parse(raw) as ConnectionsMap;
     } catch {
-      connectionsCache = {};
+      return {};
     }
-    return connectionsCache;
   }
 
   async function getClient(connectionId: string): Promise<{ client: DatabaseClient; connectorSlug: string }> {
-    const connections = loadConnections();
+    const connections = await loadConnections();
     const entry = connections[connectionId];
     if (!entry) {
       throw new Error(`connection '${connectionId}' not found in .squadbase/connections.json`);
@@ -115,8 +113,7 @@ export function createConnectorRegistry() {
     const envPath = path.join(process.cwd(), ".env");
     try {
       fsWatch(filePath, { persistent: false }, () => {
-        console.log("[connector-client] connections.json changed, clearing cache");
-        connectionsCache = null;
+        console.log("[connector-client] connections.json changed, clearing client cache");
         clientCache.clear();
         // Wait with setImmediate because the editor writes connections.json before .env
         setImmediate(() => reloadEnvFile(envPath));
