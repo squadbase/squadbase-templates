@@ -9,7 +9,21 @@ export default defineConfig(({ command, mode }) => {
   if (command === "build" && mode !== "client") {
     return {
       build: { target: "node20" },
-      plugins: [squadbasePlugin()],
+      plugins: [
+        squadbasePlugin({
+          external: [
+            "pg",
+            "@google-cloud/bigquery",
+            "snowflake-sdk",
+            "mysql2",
+            "@databricks/sql",
+            "@aws-sdk/client-athena",
+            "@aws-sdk/client-redshift-data",
+            "@google-analytics/data",
+            "@kintone/rest-api-client",
+          ],
+        }),
+      ],
     };
   }
 
