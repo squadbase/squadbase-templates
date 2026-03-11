@@ -6,6 +6,7 @@ import { createPostgreSQLClient } from "./postgresql.ts";
 import { createBigQueryClient } from "./bigquery.ts";
 import { createBigQueryOAuthClient } from "./bigquery-oauth.ts";
 import { createSnowflakeClient } from "./snowflake.ts";
+import { createSnowflakePatClient } from "./snowflake-pat.ts";
 import { createMySQLClient } from "./mysql.ts";
 import { createAthenaClient } from "./aws-athena.ts";
 import { createRedshiftClient } from "./redshift.ts";
@@ -46,6 +47,9 @@ export function createConnectorRegistry() {
 
     // Stateless connectors (no caching)
     if (connectorSlug === "snowflake") {
+      if (entry.connector.authType === "pat") {
+        return { client: createSnowflakePatClient(entry, connectionId), connectorSlug };
+      }
       return { client: createSnowflakeClient(entry, connectionId), connectorSlug };
     }
     if (connectorSlug === "bigquery") {
