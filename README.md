@@ -13,10 +13,40 @@ While Squadbase comes with several built-in data connections, this repository of
 | Template | Description |
 |----------|-------------|
 | [Core Template](./core/) | A core template for squadbase |
+| [Vite Template](./vite/) | Full-stack template: Vite 6 + React 19 + Hono + TypeScript + Tailwind CSS v4 + shadcn/ui |
+
+### Vite Template
+
+A full-stack template combining a React 19 SPA with a Hono API server. Dev server runs on port **3280** with HMR enabled.
+
+**Stack:** Vite 6 · React 19 · Hono · TypeScript · Tailwind CSS v4 · shadcn/ui · TanStack Query · Apache ECharts
+
+**Commands:**
+
+```bash
+npm run dev      # Start dev server (port 3280, HMR enabled)
+npm run build    # Build client (dist/client/) and server (dist/server/)
+npm run start    # Run production server
+```
+
+**Skills (AI agent guidelines):**
+
+The `vite/skills/` directory contains agent instruction files for AI-assisted development. These are generated automatically from the source AGENTS.md files — do not edit them directly.
+
+| File | Source | Description |
+|------|--------|-------------|
+| `vite/skills/frontend-development.md` | `vite/AGENTS.md` | React frontend development guidelines |
+| `vite/skills/data-source-development.md` | `vite-server/AGENTS.md` | Data source and server development guidelines |
+
+To sync skills files after updating an AGENTS.md:
+
+```bash
+npm run vite-prepublish
+```
 
 ## Documentation
 
-For detailed documentation on each template, refer to the README in the specific template directory.
+For detailed documentation on each template, refer to the AGENTS.md in the specific template directory.
 
 For Squadbase platform documentation, visit [Squadbase Docs](https://www.squadbase.dev/en/docs).
 
