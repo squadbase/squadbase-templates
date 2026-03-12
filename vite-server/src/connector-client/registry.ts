@@ -55,7 +55,9 @@ export function createConnectorRegistry() {
 
     const params = resolveParams(entry, connectionId, plugin);
 
-    return (sql, namedParams) => plugin.query!(params, sql, namedParams);
+    const context = { proxyFetch: createProxyFetch(connectionId) };
+
+    return (sql, namedParams) => plugin.query!(params, sql, namedParams, context);
   }
 
   function reloadEnvFile(envPath: string): void {
@@ -93,6 +95,39 @@ export function createConnectorRegistry() {
   }
 
   return { getQuery, loadConnections, reloadEnvFile, watchConnectionsFile };
+}
+
+function createProxyFetch(connectionId: string): typeof fetch {
+  return async (input, init) => {
+    const token = process.env.INTERNAL_SQUADBASE_OAUTH_MACHINE_CREDENTIAL;
+    const sandboxId = process.env.INTERNAL_SQUADBASE_SANDBOX_ID;
+
+    if (!token || !sandboxId) {
+      throw new Error(
+        "OAuth proxy requires INTERNAL_SQUADBASE_OAUTH_MACHINE_CREDENTIAL and INTERNAL_SQUADBASE_SANDBOX_ID",
+      );
+    }
+
+    const originalUrl = typeof input === "string" ? input : input instanceof URL ? input.href : (input as Request).url;
+    const originalMethod = init?.method ?? "GET";
+    const originalBody = init?.body ? JSON.parse(init.body as string) : undefined;
+
+    const envPrefix = process.env.SQUADBASE_ENV === "prod" ? "" : `${process.env.SQUADBASE_ENV ?? "dev1"}-`;
+    const proxyUrl = `https://${sandboxId}.preview.${envPrefix}app.squadbase.dev/_sqcore/connections/${connectionId}/request`;
+
+    return fetch(proxyUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        url: originalUrl,
+        method: originalMethod,
+        body: originalBody,
+      }),
+    });
+  };
 }
 
 function resolveParams(
