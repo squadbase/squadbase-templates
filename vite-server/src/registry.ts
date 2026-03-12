@@ -1,7 +1,7 @@
 import { readdir, readFile, mkdir } from "node:fs/promises";
 import { watch as fsWatch } from "node:fs";
 import path from "node:path";
-import { getClient } from "./connector-client/index.ts";
+import { getQuery } from "./connector-client/index.ts";
 import { anyJsonDataSourceSchema } from "./types/data-source.ts";
 import type {
   DataSourceDefinition,
@@ -54,32 +54,23 @@ export async function loadTypeScriptHandler(
   return handler as (c: import("hono").Context) => Promise<unknown>;
 }
 
-export function buildQuery(
-  queryTemplate: string,
+export function applyDefaults(
   parameterMeta: ParameterMeta[],
   runtimeParams: Record<string, unknown>,
-): { text: string; values: unknown[] } {
+): Record<string, unknown> {
   const defaults = new Map(
     parameterMeta.map((p) => [p.name, p.default ?? null]),
   );
-  const placeholderToIndex = new Map<string, number>();
-  const values: unknown[] = [];
-
-  const text = queryTemplate.replace(
-    /\{\{(\w+)\}\}/g,
-    (_match, name: string) => {
-      if (!placeholderToIndex.has(name)) {
-        const value = Object.prototype.hasOwnProperty.call(runtimeParams, name)
-          ? runtimeParams[name]
-          : (defaults.get(name) ?? null);
-        values.push(value);
-        placeholderToIndex.set(name, values.length);
-      }
-      return `$${placeholderToIndex.get(name)}`;
-    },
-  );
-
-  return { text, values };
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(runtimeParams)) {
+    result[key] = value;
+  }
+  for (const [key, defaultVal] of defaults) {
+    if (!(key in result)) {
+      result[key] = defaultVal;
+    }
+  }
+  return result;
 }
 
 const defaultDataSourceDir = path.join(process.cwd(), "data-source");
@@ -141,61 +132,12 @@ export async function initialize(): Promise<void> {
           cacheConfig: sqlDef.cache,
           _query: sqlDef.query,
           handler: async (runtimeParams: Record<string, unknown>) => {
-            const { client, connectorSlug } = await getClient(sqlDef.connectionId);
-
-            // Connectors that do not support parameterized queries
-            const isLiteralConnector =
-              connectorSlug === "snowflake" ||
-              connectorSlug === "bigquery" ||
-              connectorSlug === "athena" ||
-              connectorSlug === "redshift" ||
-              connectorSlug === "databricks";
-
-            let queryText: string;
-            let queryValues: unknown[];
-
-            if (isLiteralConnector) {
-              // Replace {{paramName}} with literal values (parameter binding not supported)
-              const defaults = new Map(
-                (sqlDef.parameters ?? []).map((p) => [p.name, p.default ?? null]),
-              );
-              queryText = sqlDef.query.replace(
-                /\{\{(\w+)\}\}/g,
-                (_match, name: string) => {
-                  const value = Object.prototype.hasOwnProperty.call(
-                    runtimeParams,
-                    name,
-                  )
-                    ? runtimeParams[name]
-                    : (defaults.get(name) ?? "");
-                  if (typeof value === "string")
-                    return `'${value.replace(/'/g, "''")}'`;
-                  if (value === null || value === undefined) return "NULL";
-                  return String(value);
-                },
-              );
-              queryValues = [];
-            } else if (connectorSlug === "mysql") {
-              // MySQL: use ? style parameter binding
-              const built = buildQuery(
-                sqlDef.query,
-                sqlDef.parameters ?? [],
-                runtimeParams,
-              );
-              queryText = built.text.replace(/\$(\d+)/g, "?");
-              queryValues = built.values;
-            } else {
-              // PostgreSQL/squadbase-db: $1, $2 parameter binding (existing logic)
-              const built = buildQuery(
-                sqlDef.query,
-                sqlDef.parameters ?? [],
-                runtimeParams,
-              );
-              queryText = built.text;
-              queryValues = built.values;
-            }
-
-            const result = await client.query(queryText, queryValues);
+            const query = await getQuery(sqlDef.connectionId);
+            const namedParams = applyDefaults(
+              sqlDef.parameters ?? [],
+              runtimeParams,
+            );
+            const result = await query(sqlDef.query, namedParams);
             return result.rows;
           },
         };

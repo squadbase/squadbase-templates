@@ -16,11 +16,11 @@ export {
   createKintoneClient,
   createWixStoreClient,
   createDbtClient,
-  getClient,
+  getQuery,
   loadConnections,
 } from "./connector-client/index.ts";
 export type {
-  DatabaseClient,
+  QueryFn,
   ConnectionEntry,
   ConnectionsMap,
   AirtableClient,

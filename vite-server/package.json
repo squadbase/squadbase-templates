@@ -1,6 +1,6 @@
 {
   "name": "@squadbase/vite-server",
-  "version": "0.0.1-build-13",
+  "version": "0.0.1-build-16",
   "type": "module",
   "exports": {
     ".": {
@@ -32,6 +32,8 @@
   "scripts": {
     "cli": "tsx src/cli/index.ts",
     "build": "tsup && pnpm run build:cli",
+    "dev:publish": "./scripts/dev-publish.sh",
+    "release": "npm publish --@squadbase:registry=https://registry.npmjs.org",
     "build:cli": "tsup src/cli/index.ts --out-dir dist/cli --format esm --platform node --no-splitting --external pg --external snowflake-sdk --external @google-cloud/bigquery --external mysql2 --external @aws-sdk/client-athena --external @aws-sdk/client-redshift-data --external @databricks/sql --external @google-analytics/data --external @kintone/rest-api-client --external hono --external @clack/prompts"
   },
   "dependencies": {
@@ -52,6 +54,7 @@
   },
   "devDependencies": {
     "@clack/prompts": "^0.9.1",
+    "@squadbase/connectors": "^0.0.4",
     "@types/node": "^22.15.0",
     "@types/pg": "^8.16.0",
     "@types/snowflake-sdk": "^1.6.24",

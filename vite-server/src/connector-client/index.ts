@@ -1,4 +1,5 @@
-export type { DatabaseClient, ConnectionEntry, ConnectionsMap } from "./types.ts";
+export type { ConnectionEntry, ConnectionsMap } from "./types.ts";
+export type { QueryFn } from "./registry.ts";
 export { createConnectorRegistry } from "./registry.ts";
 
 // Non-SQL client factories for TypeScript handlers
@@ -20,5 +21,5 @@ export type { DbtClient } from "./dbt.ts";
 import { createConnectorRegistry } from "./registry.ts";
 
 // State is held in closure, so destructuring works without bind()
-export const { getClient, loadConnections, reloadEnvFile, watchConnectionsFile } =
+export const { getQuery, loadConnections, reloadEnvFile, watchConnectionsFile } =
   createConnectorRegistry();

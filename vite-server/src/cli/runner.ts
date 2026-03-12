@@ -1,13 +1,12 @@
 import { pathToFileURL } from "node:url";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
-import { getClient } from "../connector-client/index.ts";
-import { buildQuery } from "../registry.ts";
+import { getQuery } from "../connector-client/index.ts";
+import { applyDefaults } from "../registry.ts";
 import { anyJsonDataSourceSchema } from "../types/data-source.ts";
 import type {
   AnyJsonDataSourceDefinition,
   JsonSqlDataSourceDefinition,
-  ParameterMeta,
 } from "../types/data-source.ts";
 
 export interface RunResult {
@@ -56,43 +55,9 @@ async function runSqlDataSource(
 ): Promise<RunResult> {
   const start = Date.now();
   try {
-    const { client, connectorSlug } = await getClient(def.connectionId);
-
-    // Connectors that do not support parameterized queries
-    const isLiteralConnector =
-      connectorSlug === "snowflake" ||
-      connectorSlug === "bigquery" ||
-      connectorSlug === "athena" ||
-      connectorSlug === "redshift" ||
-      connectorSlug === "databricks";
-
-    let queryText: string;
-    let queryValues: unknown[];
-
-    if (isLiteralConnector) {
-      const defaults = new Map(
-        (def.parameters ?? []).map((p: ParameterMeta) => [p.name, p.default ?? null]),
-      );
-      queryText = def.query.replace(/\{\{(\w+)\}\}/g, (_match, name: string) => {
-        const value = Object.prototype.hasOwnProperty.call(params, name)
-          ? params[name]
-          : (defaults.get(name) ?? "");
-        if (typeof value === "string") return `'${value.replace(/'/g, "''")}'`;
-        if (value === null || value === undefined) return "NULL";
-        return String(value);
-      });
-      queryValues = [];
-    } else if (connectorSlug === "mysql") {
-      const built = buildQuery(def.query, def.parameters ?? [], params);
-      queryText = built.text.replace(/\$(\d+)/g, "?");
-      queryValues = built.values;
-    } else {
-      const built = buildQuery(def.query, def.parameters ?? [], params);
-      queryText = built.text;
-      queryValues = built.values;
-    }
-
-    const result = await client.query(queryText, queryValues);
+    const query = await getQuery(def.connectionId);
+    const namedParams = applyDefaults(def.parameters ?? [], params);
+    const result = await query(def.query, namedParams);
     const rows = result.rows.slice(0, limit);
 
     return {
@@ -100,8 +65,7 @@ async function runSqlDataSource(
       rows,
       rowCount: result.rows.length,
       durationMs: Date.now() - start,
-      query: queryText,
-      queryValues,
+      query: def.query,
     };
   } catch (error) {
     return {

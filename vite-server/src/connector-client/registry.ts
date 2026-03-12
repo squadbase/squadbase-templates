@@ -1,21 +1,16 @@
 import { readFileSync, watch as fsWatch } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import type { ConnectionsMap, DatabaseClient } from "./types.ts";
-import { createPostgreSQLClient } from "./postgresql.ts";
-import { createBigQueryClient } from "./bigquery.ts";
-import { createBigQueryOAuthClient } from "./bigquery-oauth.ts";
-import { createSnowflakeClient } from "./snowflake.ts";
-import { createSnowflakePatClient } from "./snowflake-pat.ts";
-import { createMySQLClient } from "./mysql.ts";
-import { createAthenaClient } from "./aws-athena.ts";
-import { createRedshiftClient } from "./redshift.ts";
-import { createDatabricksClient } from "./databricks.ts";
+import { connectors } from "@squadbase/connectors";
+import type { ConnectionEntry, ConnectionsMap } from "./types.ts";
+import { resolveEnvVar, resolveEnvVarOptional } from "./env.ts";
 
+export type QueryFn = (
+  sql: string,
+  namedParams?: Record<string, unknown>,
+) => Promise<{ rows: Record<string, unknown>[] }>;
 
 export function createConnectorRegistry() {
-  const clientCache = new Map<string, DatabaseClient>();
-
   function getConnectionsFilePath(): string {
     return (
       process.env.CONNECTIONS_PATH ??
@@ -33,69 +28,36 @@ export function createConnectorRegistry() {
     }
   }
 
-  async function getClient(connectionId: string): Promise<{ client: DatabaseClient; connectorSlug: string }> {
+  async function getQuery(connectionId: string): Promise<QueryFn> {
     const connections = await loadConnections();
     const entry = connections[connectionId];
     if (!entry) {
-      throw new Error(`connection '${connectionId}' not found in .squadbase/connections.json`);
+      throw new Error(
+        `connection '${connectionId}' not found in .squadbase/connections.json`,
+      );
     }
 
-    const connectorSlug = entry.connector.slug;
+    const { slug, authType } = entry.connector;
+    const plugin = connectors.findByKey(slug, authType);
 
-    const cached = clientCache.get(connectionId);
-    if (cached) return { client: cached, connectorSlug };
-
-    // Stateless connectors (no caching)
-    if (connectorSlug === "snowflake") {
-      if (entry.connector.authType === "pat") {
-        return { client: createSnowflakePatClient(entry, connectionId), connectorSlug };
-      }
-      return { client: createSnowflakeClient(entry, connectionId), connectorSlug };
-    }
-    if (connectorSlug === "bigquery") {
-      if (entry.connector.authType === "oauth") {
-        return { client: createBigQueryOAuthClient(entry, connectionId), connectorSlug };
-      }
-      return { client: createBigQueryClient(entry, connectionId), connectorSlug };
-    }
-    if (connectorSlug === "athena") {
-      return { client: createAthenaClient(entry, connectionId), connectorSlug };
-    }
-    if (connectorSlug === "redshift") {
-      return { client: createRedshiftClient(entry, connectionId), connectorSlug };
-    }
-    if (connectorSlug === "databricks") {
-      return { client: createDatabricksClient(entry, connectionId), connectorSlug };
+    if (!plugin) {
+      throw new Error(
+        `connector "${slug}" (authType: ${authType ?? "none"}) is not registered in @squadbase/connectors`,
+      );
     }
 
-    // Cached connectors (connection pool / singleton)
-    if (connectorSlug === "mysql") {
-      const client = createMySQLClient(entry, connectionId);
-      clientCache.set(connectionId, client);
-      return { client, connectorSlug };
+    if (!plugin.query) {
+      throw new Error(
+        `connector "${plugin.connectorKey}" does not support SQL queries. ` +
+          `Non-SQL connectors (airtable, google-analytics, kintone, wix-store, dbt) should be used via TypeScript handlers.`,
+      );
     }
 
-    if (connectorSlug === "postgresql" || connectorSlug === "squadbase-db") {
-      const urlEnvName = entry.envVars["connection-url"];
-      if (!urlEnvName) {
-        throw new Error(`'connection-url' is not defined in envVars for connection '${connectionId}'`);
-      }
-      const connectionUrl = process.env[urlEnvName];
-      if (!connectionUrl) {
-        throw new Error(
-          `environment variable '${urlEnvName}' (mapped from connection '${connectionId}') is not set`,
-        );
-      }
-      const client = createPostgreSQLClient(connectionUrl);
-      clientCache.set(connectionId, client);
-      return { client, connectorSlug };
-    }
+    const params = resolveParams(entry, connectionId, plugin);
 
-    throw new Error(
-      `connector type '${connectorSlug}' is not supported as a SQL connector. ` +
-      `Supported SQL types: "postgresql", "squadbase-db", "mysql", "snowflake", "bigquery", "athena", "redshift", "databricks". ` +
-      `Non-SQL types (airtable, google-analytics, kintone, wix-store, dbt) should be used via TypeScript handlers.`,
-    );
+    const context = { proxyFetch: createProxyFetch(connectionId) };
+
+    return (sql, namedParams) => plugin.query!(params, sql, namedParams, context);
   }
 
   function reloadEnvFile(envPath: string): void {
@@ -121,8 +83,9 @@ export function createConnectorRegistry() {
     const envPath = path.join(process.cwd(), ".env");
     try {
       fsWatch(filePath, { persistent: false }, () => {
-        console.log("[connector-client] connections.json changed, clearing client cache");
-        clientCache.clear();
+        console.log(
+          "[connector-client] connections.json changed",
+        );
         // Wait with setImmediate because the editor writes connections.json before .env
         setImmediate(() => reloadEnvFile(envPath));
       });
@@ -131,5 +94,55 @@ export function createConnectorRegistry() {
     }
   }
 
-  return { getClient, loadConnections, reloadEnvFile, watchConnectionsFile };
+  return { getQuery, loadConnections, reloadEnvFile, watchConnectionsFile };
+}
+
+function createProxyFetch(connectionId: string): typeof fetch {
+  return async (input, init) => {
+    const token = process.env.INTERNAL_SQUADBASE_OAUTH_MACHINE_CREDENTIAL;
+    const sandboxId = process.env.INTERNAL_SQUADBASE_SANDBOX_ID;
+
+    if (!token || !sandboxId) {
+      throw new Error(
+        "OAuth proxy requires INTERNAL_SQUADBASE_OAUTH_MACHINE_CREDENTIAL and INTERNAL_SQUADBASE_SANDBOX_ID",
+      );
+    }
+
+    const originalUrl = typeof input === "string" ? input : input instanceof URL ? input.href : (input as Request).url;
+    const originalMethod = init?.method ?? "GET";
+    const originalBody = init?.body ? JSON.parse(init.body as string) : undefined;
+
+    const envPrefix = process.env.SQUADBASE_ENV === "prod" ? "" : `${process.env.SQUADBASE_ENV ?? "dev1"}-`;
+    const proxyUrl = `https://${sandboxId}.preview.${envPrefix}app.squadbase.dev/_sqcore/connections/${connectionId}/request`;
+
+    return fetch(proxyUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        url: originalUrl,
+        method: originalMethod,
+        body: originalBody,
+      }),
+    });
+  };
+}
+
+function resolveParams(
+  entry: ConnectionEntry,
+  connectionId: string,
+  plugin: { parameters: Record<string, { slug: string; required: boolean }> },
+): Record<string, string> {
+  const params: Record<string, string> = {};
+  for (const param of Object.values(plugin.parameters)) {
+    if (param.required) {
+      params[param.slug] = resolveEnvVar(entry, param.slug, connectionId);
+    } else {
+      const val = resolveEnvVarOptional(entry, param.slug);
+      if (val !== undefined) params[param.slug] = val;
+    }
+  }
+  return params;
 }
