@@ -3,9 +3,11 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import path from "node:path";
 import fs from "node:fs";
 
+// @hono/node-server/serve-static requires a relative root (absolute paths are not supported).
 // import.meta.dirname = dist/server/ → ../client = dist/client/
 const STATIC_DIR =
-  process.env.STATIC_DIR ?? path.join(import.meta.dirname, "../client");
+  process.env.STATIC_DIR ??
+  path.relative(process.cwd(), path.join(import.meta.dirname, "../client"));
 
 // Hashed assets (long-term cache)
 app.use(
