@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build:all": "node scripts/build-all.js",
+    "vite-prepublish": "node scripts/vite-prepublish.js",
     "prepare": "husky"
   },
   "devDependencies": {

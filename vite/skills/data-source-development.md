@@ -43,6 +43,7 @@ interface JsonTypeScriptDataSourceDefinition {
   description: string;              // REQUIRED — human-readable description
   type: "typescript";               // REQUIRED — must be exactly "typescript"
   handlerPath: string;              // REQUIRED — relative path to .ts handler file (from the JSON file's directory)
+  connectionId: string;             // REQUIRED — key in .squadbase/connections.json
   parameters?: ParameterMeta[];     // Optional — parameter definitions (for metadata only)
   response?: DataSourceResponse;    // Optional — response schema
   cache?: DataSourceCacheConfig;    // Optional — caching configuration
@@ -87,6 +88,7 @@ export default async function handler(c: Context): Promise<unknown> {
   "description": "Fetch user purchase summary from external API",
   "type": "typescript",
   "handlerPath": "./user-summary.ts",
+  "connectionId": "my-api-connection",
   "parameters": [
     { "name": "userId", "type": "string", "description": "Target user ID", "required": true }
   ],
@@ -100,6 +102,7 @@ export default async function handler(c: Context): Promise<unknown> {
   "description": "Combine sales data and trend data from multiple APIs",
   "type": "typescript",
   "handlerPath": "./sales-forecast.ts",
+  "connectionId": "my-api-connection",
   "parameters": [
     { "name": "region", "type": "string", "description": "Region code", "required": true }
   ]
@@ -182,8 +185,8 @@ interface DataSourceResponse {
 | `content["application/json"].schema.type = "object"` with `properties` | raw object (no wrapper) |
 | `defaultContentType = "text/csv"` | `text/csv` with CSV body |
 
-#### `connectionId` (string, **required for SQL data sources**)
-Key in `.squadbase/connections.json` identifying the connection. Required for SQL data sources. TypeScript data sources do not use this field.
+#### `connectionId` (string, **required**)
+Key in `.squadbase/connections.json` identifying the connection. Every data source must specify a connectionId.
 
 The connector type is determined automatically from `connections.json` entry's `connector.slug`:
 
@@ -386,8 +389,8 @@ All endpoints are under the `/api` prefix.
 
 | Method | Path | Response | Description |
 |--------|------|----------|-------------|
-| GET | `/api/data-source-meta` | `[{ slug, description, type, parameters, response?, connectionId?, query?, handlerPath?, cache? }]` | List all registered data sources |
-| GET | `/api/data-source-meta/:slug` | `{ slug, description, type, parameters, response?, connectionId?, query?, handlerPath?, cache? }` | Get metadata for a specific data source |
+| GET | `/api/data-source-meta` | `[{ slug, description, type, parameters, response?, connectionId, query?, handlerPath?, cache? }]` | List all registered data sources |
+| GET | `/api/data-source-meta/:slug` | `{ slug, description, type, parameters, response?, connectionId, query?, handlerPath?, cache? }` | Get metadata for a specific data source |
 
 ### Cache Management
 
@@ -611,7 +614,7 @@ Use `await loadConnections()` to get the connections map, then pass the entry an
 
 3. **String auto-quoting**: String parameters are automatically quoted. Writing `'{{param}}'` in SQL causes double-quoting bugs. Always write `{{param}}` without quotes.
 
-4. **Required fields**: All data sources require `description`. SQL data sources additionally require `connectionId` and `query`. TypeScript data sources additionally require `type: "typescript"` and `handlerPath`. Files missing required fields are skipped with a warning.
+4. **Required fields**: All data sources require `description` and `connectionId`. SQL data sources additionally require `query`. TypeScript data sources additionally require `type: "typescript"` and `handlerPath`. Files missing required fields are skipped with a warning.
 
 5. **`response` is optional**: When omitted, the API always returns `{ data: rows[] }`. Add `response` only when you need schema documentation or a different response format (object unwrapping or CSV).
 
@@ -625,6 +628,6 @@ Use `await loadConnections()` to get the connections map, then pass the entry an
 
 10. **Cache key includes parameters**: Different parameter combinations create separate cache entries. High-cardinality filters reduce cache hit rates.
 
-11. **connections.json**: SQL data sources require a `connectionId` that maps to an entry in `.squadbase/connections.json`. Each entry has `connector: { slug }` and `envVars`. The `envVars` values are environment variable **names**, not actual secrets.
+11. **connections.json**: All data sources require a `connectionId` that maps to an entry in `.squadbase/connections.json`. Each entry has `connector: { slug }` and `envVars`. The `envVars` values are environment variable **names**, not actual secrets.
 
 12. **`.env` loading**: The server reads the root `.env` file at startup (since Vite doesn't pass non-`VITE_`-prefixed env vars to the server process).

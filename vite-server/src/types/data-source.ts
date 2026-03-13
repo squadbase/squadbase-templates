@@ -1,36 +1,55 @@
-export interface ParameterMeta {
-  name: string;
-  type: "string" | "number" | "boolean";
-  description: string;
-  required?: boolean;
-  default?: string | number | boolean;
-}
+import { z } from "zod";
+
+// --- Parameter ---
+
+export const parameterMetaSchema = z.object({
+  name: z.string(),
+  type: z.enum(["string", "number", "boolean"]),
+  description: z.string(),
+  required: z.boolean().optional(),
+  default: z.union([z.string(), z.number(), z.boolean()]).optional(),
+});
+
+export type ParameterMeta = z.infer<typeof parameterMetaSchema>;
 
 // --- Cache configuration ---
-export interface DataSourceCacheConfig {
-  /**
-   * Cache TTL in seconds.
-   * 0 or unset means no caching (default behavior for backward compatibility).
-   */
-  ttl: number;
-  /**
-   * When true, stale data is returned immediately after TTL expiry
-   * while fresh data is fetched asynchronously in the background to update the cache.
-   * Default: false
-   */
-  staleWhileRevalidate?: boolean;
-}
+
+export const dataSourceCacheConfigSchema = z.object({
+  ttl: z.number(),
+  staleWhileRevalidate: z.boolean().optional(),
+});
+
+export type DataSourceCacheConfig = z.infer<typeof dataSourceCacheConfigSchema>;
 
 // --- OpenAPI-inspired response types ---
 
+export const dataSourceSchemaObjectSchema: z.ZodType<DataSourceSchemaObject> = z.lazy(() =>
+  z.object({
+    type: z.enum(["string", "number", "integer", "boolean", "object", "array", "null"]).optional(),
+    format: z.string().optional(),
+    description: z.string().optional(),
+    nullable: z.boolean().optional(),
+    enum: z.array(z.union([z.string(), z.number(), z.boolean(), z.null()])).optional(),
+    items: dataSourceSchemaObjectSchema.optional(),
+    properties: z.record(z.string(), dataSourceSchemaObjectSchema).optional(),
+    required: z.array(z.string()).optional(),
+    additionalProperties: z.union([z.boolean(), dataSourceSchemaObjectSchema]).optional(),
+    minimum: z.number().optional(),
+    maximum: z.number().optional(),
+    minLength: z.number().optional(),
+    maxLength: z.number().optional(),
+    pattern: z.string().optional(),
+  }),
+);
+
 export interface DataSourceSchemaObject {
   type?: "string" | "number" | "integer" | "boolean" | "object" | "array" | "null";
-  format?: string;           // "date" | "date-time" | "uri" | "email" | "uuid" etc.
+  format?: string;
   description?: string;
   nullable?: boolean;
   enum?: (string | number | boolean | null)[];
-  items?: DataSourceSchemaObject;                          // for array
-  properties?: Record<string, DataSourceSchemaObject>;    // for object
+  items?: DataSourceSchemaObject;
+  properties?: Record<string, DataSourceSchemaObject>;
   required?: string[];
   additionalProperties?: boolean | DataSourceSchemaObject;
   minimum?: number;
@@ -40,61 +59,107 @@ export interface DataSourceSchemaObject {
   pattern?: string;
 }
 
-export interface DataSourceMediaType {
-  schema?: DataSourceSchemaObject;
-  example?: unknown;
-}
+export const dataSourceMediaTypeSchema = z.object({
+  schema: dataSourceSchemaObjectSchema.optional(),
+  example: z.unknown().optional(),
+});
 
-export interface DataSourceResponse {
-  description?: string;
-  defaultContentType?: string;   // "application/json" | "text/csv" etc.
-  content?: Record<string, DataSourceMediaType>;
-}
+export type DataSourceMediaType = z.infer<typeof dataSourceMediaTypeSchema>;
 
-export interface DataSourceDefinition {
+export const dataSourceResponseSchema = z.object({
+  description: z.string().optional(),
+  defaultContentType: z.string().optional(),
+  content: z.record(z.string(), dataSourceMediaTypeSchema).optional(),
+});
+
+export type DataSourceResponse = z.infer<typeof dataSourceResponseSchema>;
+
+// --- JSON data source definitions (what's read from .json files) ---
+
+const jsonBaseFields = {
+  description: z.string(),
+  parameters: z.array(parameterMetaSchema).optional(),
+  response: dataSourceResponseSchema.optional(),
+  cache: dataSourceCacheConfigSchema.optional(),
+};
+
+export const jsonSqlDataSourceSchema = z.object({
+  ...jsonBaseFields,
+  type: z.literal("sql").optional(),
+  query: z.string(),
+  connectionId: z.string(),
+});
+
+export type JsonSqlDataSourceDefinition = z.infer<typeof jsonSqlDataSourceSchema>;
+
+export const jsonTypeScriptDataSourceSchema = z.object({
+  ...jsonBaseFields,
+  type: z.literal("typescript"),
+  handlerPath: z.string(),
+});
+
+export type JsonTypeScriptDataSourceDefinition = z.infer<typeof jsonTypeScriptDataSourceSchema>;
+
+export const anyJsonDataSourceSchema = z.union([
+  jsonTypeScriptDataSourceSchema,
+  jsonSqlDataSourceSchema,
+]);
+
+export type AnyJsonDataSourceDefinition = z.infer<typeof anyJsonDataSourceSchema>;
+
+// --- Internal data source definitions (runtime, stored in registry Map) ---
+
+interface BaseDataSourceDefinition {
   description: string;
   parameters: ParameterMeta[];
   response?: DataSourceResponse;
-  connectionId: string;
   cacheConfig?: DataSourceCacheConfig;
   handler: (params: Record<string, unknown>) => Promise<unknown> | unknown;
-  _isTypescript?: boolean;
-  _tsHandlerPath?: string;
-  _query?: string;
 }
 
-export interface DataSourceMeta {
+export interface SqlDataSourceDefinition extends BaseDataSourceDefinition {
+  connectionId: string;
+  _query: string;
+  _isTypescript?: false;
+  _tsHandlerPath?: undefined;
+}
+
+export interface TypeScriptDataSourceDefinition extends BaseDataSourceDefinition {
+  _isTypescript: true;
+  _tsHandlerPath: string;
+  connectionId?: undefined;
+  _query?: undefined;
+}
+
+export type DataSourceDefinition = SqlDataSourceDefinition | TypeScriptDataSourceDefinition;
+
+// --- Metadata (returned by API) ---
+
+interface BaseDataSourceMeta {
   slug: string;
   description: string;
-  type: "sql" | "typescript";
   parameters: ParameterMeta[];
   response?: DataSourceResponse;
-  query?: string;
-  connectionId: string;
-  handlerPath?: string;
   cache?: DataSourceCacheConfig;
 }
 
-export interface JsonDataSourceDefinition {
-  description: string;
-  type?: "sql";
-  parameters?: ParameterMeta[];
-  response?: DataSourceResponse;   // if omitted, returns { data: result }
+export interface SqlDataSourceMeta extends BaseDataSourceMeta {
+  type: "sql";
+  connectionId: string;
   query: string;
-  connectionId: string;
-  cache?: DataSourceCacheConfig;
+  handlerPath?: undefined;
 }
 
-export interface JsonTypeScriptDataSourceDefinition {
-  description: string;
+export interface TypeScriptDataSourceMeta extends BaseDataSourceMeta {
   type: "typescript";
   handlerPath: string;
-  connectionId: string;
-  parameters?: ParameterMeta[];
-  response?: DataSourceResponse;
-  cache?: DataSourceCacheConfig;
+  connectionId?: undefined;
+  query?: undefined;
 }
 
-export type AnyJsonDataSourceDefinition =
-  | JsonDataSourceDefinition
-  | JsonTypeScriptDataSourceDefinition;
+export type DataSourceMeta = SqlDataSourceMeta | TypeScriptDataSourceMeta;
+
+// --- Backward-compatible re-exports ---
+
+/** @deprecated Use JsonSqlDataSourceDefinition */
+export type JsonDataSourceDefinition = JsonSqlDataSourceDefinition;

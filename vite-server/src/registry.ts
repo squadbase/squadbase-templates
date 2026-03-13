@@ -1,12 +1,12 @@
 import { readdir, readFile, mkdir } from "node:fs/promises";
 import { watch as fsWatch } from "node:fs";
 import path from "node:path";
-import { getClient } from "./connector-client/index.ts";
+import { getQuery } from "./connector-client/index.ts";
+import { anyJsonDataSourceSchema } from "./types/data-source.ts";
 import type {
-  AnyJsonDataSourceDefinition,
   DataSourceDefinition,
   DataSourceMeta,
-  JsonDataSourceDefinition,
+  JsonSqlDataSourceDefinition,
   ParameterMeta,
 } from "./types/data-source.ts";
 
@@ -54,32 +54,23 @@ export async function loadTypeScriptHandler(
   return handler as (c: import("hono").Context) => Promise<unknown>;
 }
 
-export function buildQuery(
-  queryTemplate: string,
+export function applyDefaults(
   parameterMeta: ParameterMeta[],
   runtimeParams: Record<string, unknown>,
-): { text: string; values: unknown[] } {
+): Record<string, unknown> {
   const defaults = new Map(
     parameterMeta.map((p) => [p.name, p.default ?? null]),
   );
-  const placeholderToIndex = new Map<string, number>();
-  const values: unknown[] = [];
-
-  const text = queryTemplate.replace(
-    /\{\{(\w+)\}\}/g,
-    (_match, name: string) => {
-      if (!placeholderToIndex.has(name)) {
-        const value = Object.prototype.hasOwnProperty.call(runtimeParams, name)
-          ? runtimeParams[name]
-          : (defaults.get(name) ?? null);
-        values.push(value);
-        placeholderToIndex.set(name, values.length);
-      }
-      return `$${placeholderToIndex.get(name)}`;
-    },
-  );
-
-  return { text, values };
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(runtimeParams)) {
+    result[key] = value;
+  }
+  for (const [key, defaultVal] of defaults) {
+    if (!(key in result)) {
+      result[key] = defaultVal;
+    }
+  }
+  return result;
 }
 
 const defaultDataSourceDir = path.join(process.cwd(), "data-source");
@@ -102,32 +93,23 @@ export async function initialize(): Promise<void> {
     jsonFiles.map(async (file) => {
       const slug = file.replace(/\.json$/, "");
       const raw = await readFile(`${dirPath}/${file}`, "utf-8");
-      const def: AnyJsonDataSourceDefinition = JSON.parse(raw);
+      const parsed = anyJsonDataSourceSchema.safeParse(JSON.parse(raw));
 
-      if (!def.description) {
-        console.warn(`[registry] Skipping ${file}: missing description`);
+      if (!parsed.success) {
+        console.warn(`[registry] Skipping ${file}: ${parsed.error.message}`);
         return;
       }
 
-      if (!def.connectionId) {
-        console.warn(`[registry] Skipping ${file}: missing connectionId`);
-        return;
-      }
+      const def = parsed.data;
 
       if (def.type === "typescript") {
         // TypeScript function data source
-        if (!def.handlerPath) {
-          console.warn(`[registry] Skipping ${file}: missing handlerPath`);
-          return;
-        }
-
         const absoluteHandlerPath = validateHandlerPath(dirPath, def.handlerPath);
 
         const dataSourceDef: DataSourceDefinition = {
           description: def.description,
           parameters: def.parameters ?? [],
           response: def.response,
-          connectionId: def.connectionId,
           cacheConfig: def.cache,
           handler: async () => {
             throw new Error("TypeScript handler must be called via _tsHandlerPath");
@@ -139,13 +121,8 @@ export async function initialize(): Promise<void> {
         dataSources.set(slug, dataSourceDef);
         console.log(`[registry] registered (typescript): ${slug}`);
       } else {
-        // SQL data source (existing logic)
-        const sqlDef = def as JsonDataSourceDefinition;
-
-        if (!sqlDef.query) {
-          console.warn(`[registry] Skipping ${file}: missing query`);
-          return;
-        }
+        // SQL data source
+        const sqlDef = def as JsonSqlDataSourceDefinition;
 
         const dataSourceDef: DataSourceDefinition = {
           description: sqlDef.description,
@@ -155,61 +132,12 @@ export async function initialize(): Promise<void> {
           cacheConfig: sqlDef.cache,
           _query: sqlDef.query,
           handler: async (runtimeParams: Record<string, unknown>) => {
-            const { client, connectorSlug } = await getClient(sqlDef.connectionId);
-
-            // Connectors that do not support parameterized queries
-            const isLiteralConnector =
-              connectorSlug === "snowflake" ||
-              connectorSlug === "bigquery" ||
-              connectorSlug === "athena" ||
-              connectorSlug === "redshift" ||
-              connectorSlug === "databricks";
-
-            let queryText: string;
-            let queryValues: unknown[];
-
-            if (isLiteralConnector) {
-              // Replace {{paramName}} with literal values (parameter binding not supported)
-              const defaults = new Map(
-                (sqlDef.parameters ?? []).map((p) => [p.name, p.default ?? null]),
-              );
-              queryText = sqlDef.query.replace(
-                /\{\{(\w+)\}\}/g,
-                (_match, name: string) => {
-                  const value = Object.prototype.hasOwnProperty.call(
-                    runtimeParams,
-                    name,
-                  )
-                    ? runtimeParams[name]
-                    : (defaults.get(name) ?? "");
-                  if (typeof value === "string")
-                    return `'${value.replace(/'/g, "''")}'`;
-                  if (value === null || value === undefined) return "NULL";
-                  return String(value);
-                },
-              );
-              queryValues = [];
-            } else if (connectorSlug === "mysql") {
-              // MySQL: use ? style parameter binding
-              const built = buildQuery(
-                sqlDef.query,
-                sqlDef.parameters ?? [],
-                runtimeParams,
-              );
-              queryText = built.text.replace(/\$(\d+)/g, "?");
-              queryValues = built.values;
-            } else {
-              // PostgreSQL/squadbase-db: $1, $2 parameter binding (existing logic)
-              const built = buildQuery(
-                sqlDef.query,
-                sqlDef.parameters ?? [],
-                runtimeParams,
-              );
-              queryText = built.text;
-              queryValues = built.values;
-            }
-
-            const result = await client.query(queryText, queryValues);
+            const query = await getQuery(sqlDef.connectionId);
+            const namedParams = applyDefaults(
+              sqlDef.parameters ?? [],
+              runtimeParams,
+            );
+            const result = await query(sqlDef.query, namedParams);
             return result.rows;
           },
         };
@@ -258,18 +186,27 @@ export function getDataSource(slug: string): DataSourceDefinition | undefined {
 }
 
 function buildMeta(slug: string, def: DataSourceDefinition): DataSourceMeta {
-  return {
+  const base = {
     slug,
     description: def.description,
-    type: def._isTypescript ? "typescript" : "sql",
     parameters: def.parameters,
     response: def.response,
-    query: def._query,
-    connectionId: def.connectionId,
-    handlerPath: def._tsHandlerPath
-      ? path.relative(currentDirPath, def._tsHandlerPath)
-      : undefined,
     cache: def.cacheConfig,
+  };
+
+  if (def._isTypescript) {
+    return {
+      ...base,
+      type: "typescript" as const,
+      handlerPath: path.relative(currentDirPath, def._tsHandlerPath),
+    };
+  }
+
+  return {
+    ...base,
+    type: "sql" as const,
+    connectionId: def.connectionId,
+    query: def._query,
   };
 }
 

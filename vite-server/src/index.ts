@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { contextStorage } from "hono/context-storage";
 import { cors } from "hono/cors";
 import path from "node:path";
 import { initialize, startWatching } from "./registry.ts";
@@ -15,11 +16,11 @@ export {
   createKintoneClient,
   createWixStoreClient,
   createDbtClient,
-  getClient,
+  getQuery,
   loadConnections,
 } from "./connector-client/index.ts";
 export type {
-  DatabaseClient,
+  QueryFn,
   ConnectionEntry,
   ConnectionsMap,
   AirtableClient,
@@ -29,8 +30,11 @@ export type {
   WixStoreClient,
   DbtClient,
 } from "./connector-client/index.ts";
+export { connection } from "./connection.ts";
+export type { ConnectionFetchOptions } from "./connection.ts";
 
 const apiApp = new Hono();
+apiApp.use("/*", contextStorage());
 apiApp.use("/*", cors());
 apiApp.route("/data-source", dataSourceRoutes);
 apiApp.route("/data-source-meta", dataSourceMetaRoutes);
