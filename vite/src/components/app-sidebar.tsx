@@ -14,6 +14,7 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
+import { UserCard } from "@/components/user-card";
 
 export function AppSidebar() {
   const location = useLocation();
@@ -53,7 +54,9 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <UserCard />
+      </SidebarFooter>
     </Sidebar>
   );
 }
