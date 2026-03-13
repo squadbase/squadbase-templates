@@ -1,6 +1,6 @@
 {
   "name": "@squadbase/vite-server",
-  "version": "0.0.1-build-17",
+  "version": "0.0.1-build-18",
   "type": "module",
   "exports": {
     ".": {
@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@clack/prompts": "^0.9.1",
-    "@squadbase/connectors": "^0.0.4",
+    "@squadbase/connectors": "^0.0.5",
     "@types/node": "^22.15.0",
     "@types/pg": "^8.16.0",
     "@types/snowflake-sdk": "^1.6.24",
