@@ -31,4 +31,4 @@ app.get("*", (c) => {
 });
 
 export default app;
-// @hono/vite-build/node automatically injects serve({ fetch: app.fetch, port: 3280 })
+// @hono/vite-build/node automatically injects serve({ fetch: app.fetch, port: 3000 })

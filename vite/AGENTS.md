@@ -3,12 +3,12 @@
 ## Stack
 
 Vite 6 + React 19 + Hono + TypeScript + Tailwind CSS v4 + shadcn/ui
-Full-stack: React SPA (client) + Hono API server (Node 20). Dev port: **3280**.
+Full-stack: React SPA (client) + Hono API server (Node 20).
 
 ## Commands
 
 ```
-npm run dev      # Start dev server (port 3280, HMR enabled)
+npm run dev      # Start dev server (HMR enabled)
 npm run build    # tsc -b + vite build client (dist/client/) + server (dist/server/)
 npm run start    # Run production server: node dist/server/index.js
 npm run preview  # Vite preview

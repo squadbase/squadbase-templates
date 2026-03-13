@@ -17,14 +17,14 @@ While Squadbase comes with several built-in data connections, this repository of
 
 ### Vite Template
 
-A full-stack template combining a React 19 SPA with a Hono API server. Dev server runs on port **3280** with HMR enabled.
+A full-stack template combining a React 19 SPA with a Hono API server, with HMR enabled.
 
 **Stack:** Vite 6 · React 19 · Hono · TypeScript · Tailwind CSS v4 · shadcn/ui · TanStack Query · Apache ECharts
 
 **Commands:**
 
 ```bash
-npm run dev      # Start dev server (port 3280, HMR enabled)
+npm run dev      # Start dev server (HMR enabled)
 npm run build    # Build client (dist/client/) and server (dist/server/)
 npm run start    # Run production server
 ```
