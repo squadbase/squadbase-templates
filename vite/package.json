@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@squadbase/vite-server": "0.0.1-build-16",
+    "@squadbase/vite-server": "0.0.1-build-17",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query": "^5.0.0",
     "@tanstack/react-table": "^8.21.3",
