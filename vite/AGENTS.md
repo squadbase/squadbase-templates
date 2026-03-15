@@ -20,8 +20,7 @@ npm run preview  # Vite preview
 src/
   pages/           # File-based routing. Files starting with _ are excluded from routing.
   components/ui/   # shadcn/ui components — DO NOT recreate these
-  hooks/
-    use-data-source-query.ts  # Data fetching hook
+  hooks/           # Place custom hooks here
 server/            # Hono API server (server-side only)
 ```
 
@@ -45,18 +44,48 @@ export default function DashboardPage() {
 
 ## Data Fetching
 
-```tsx
-import { useDataSourceQuery } from "@/hooks/use-data-source-query";
+Use `useQuery` from `@tanstack/react-query` directly.
 
-const { data, isLoading, error } = useDataSourceQuery("slug");
-// With params:
-const { data, isLoading } = useDataSourceQuery("sales-by-region", { region });
+```tsx
+import { useQuery } from "@tanstack/react-query";
+
+// Basic
+const { data, isLoading, error } = useQuery({
+  queryKey: ["data-source", "users"],
+  queryFn: async () => {
+    const res = await fetch("/api/data-source/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ params: {} }),
+    });
+    if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+    const json = await res.json();
+    return json.data as User[];
+  },
+  staleTime: 5 * 60 * 1000,
+});
+
+// With params
+const { data } = useQuery({
+  queryKey: ["data-source", "sales-by-region", { region }],
+  queryFn: async () => {
+    const res = await fetch("/api/data-source/sales-by-region", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ params: { region } }),
+    });
+    if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+    const json = await res.json();
+    return json.data as SalesRow[];
+  },
+  staleTime: 5 * 60 * 1000,
+});
 ```
 
-- 1st arg: data source slug
-- 2nd arg (optional): params object
-- `data` is always an array
+- `queryKey` must include slug and params for correct cache invalidation
+- `staleTime: 5 * 60 * 1000` (5 min) is the standard; adjust as needed
 - Always show `<Skeleton />` while loading; always handle `error`
+- Explicitly type the return value with `as YourType`
 
 ## UI Components — Always Use These
 
@@ -115,7 +144,7 @@ const table = useReactTable({ data, columns, getCoreRowModel: getCoreRowModel() 
 
 ## Component Splitting
 
-Split page into components when creating a **new page** with 3+ sections, multiple `useDataSourceQuery` calls, or complex logic (tables, forms).
+Split page into components when creating a **new page** with 3+ sections, multiple `useQuery` calls, or complex logic (tables, forms).
 
 - Components: `src/components/{pageName}/{component-name}.tsx`
 - Each component uses `default export` and is self-contained (fetches its own data)
@@ -132,6 +161,7 @@ Keep simple 1-2 section pages or partial edits in a single file.
 | `@/components/ui/form` | Individual components: `Input`, `Label`, `Select`, etc. |
 | `@/components/ui/toast` | Does not exist |
 | Named exports for pages/components | `export default function ...` only |
+| `useDataSourceQuery` | `useQuery` from `@tanstack/react-query` directly |
 
 ## Reference
 
