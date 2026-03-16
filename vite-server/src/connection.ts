@@ -29,7 +29,7 @@ function resolveProxyUrl(connectionId: string): string {
   const projectId = process.env["SQUADBASE_PROJECT_ID"];
   if (!projectId) {
     throw new Error(
-      "Project ID is required. Please set SQUADBASE_PROJECT_ID environment variable.",
+      "Connection proxy is not configured. Please check your deployment settings.",
     );
   }
   const baseDomain =
@@ -59,9 +59,7 @@ function resolveAuthHeaders(): Record<string, string> {
   }
 
   throw new Error(
-    "No authentication method available for connection proxy. " +
-      "Expected one of: INTERNAL_SQUADBASE_OAUTH_MACHINE_CREDENTIAL env var, " +
-      "preview session cookie, or app session cookie.",
+    "No authentication method available for connection proxy.",
   );
 }
 

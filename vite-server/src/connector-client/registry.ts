@@ -2,6 +2,8 @@ import { readFileSync, watch as fsWatch } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { connectors } from "@squadbase/connectors";
+import { getContext } from "hono/context-storage";
+import { getCookie } from "hono/cookie";
 import type { ConnectionEntry, ConnectionsMap } from "./types.ts";
 import { resolveEnvVar, resolveEnvVarOptional } from "./env.ts";
 
@@ -97,29 +99,70 @@ export function createConnectorRegistry() {
   return { getQuery, loadConnections, reloadEnvFile, watchConnectionsFile };
 }
 
+const APP_SESSION_COOKIE_NAME = "__Host-squadbase-session";
+const PREVIEW_SESSION_COOKIE_NAME = "squadbase-preview-session";
+
+function resolveProxyUrl(connectionId: string): string {
+  const connectionPath = `/_sqcore/connections/${connectionId}/request`;
+  const sandboxId = process.env.INTERNAL_SQUADBASE_SANDBOX_ID;
+
+  if (sandboxId) {
+    const baseDomain =
+      process.env["SQUADBASE_PREVIEW_BASE_DOMAIN"] ?? "preview.app.squadbase.dev";
+    return `https://${sandboxId}.${baseDomain}${connectionPath}`;
+  }
+
+  const projectId = process.env["SQUADBASE_PROJECT_ID"];
+  if (!projectId) {
+    throw new Error(
+      "Connection proxy is not configured. Please check your deployment settings.",
+    );
+  }
+  const baseDomain =
+    process.env["SQUADBASE_APP_BASE_DOMAIN"] ?? "squadbase.app";
+  return `https://${projectId}.${baseDomain}${connectionPath}`;
+}
+
+function resolveAuthHeaders(): Record<string, string> {
+  const machineCredential = process.env.INTERNAL_SQUADBASE_OAUTH_MACHINE_CREDENTIAL;
+  if (machineCredential) {
+    return { Authorization: `Bearer ${machineCredential}` };
+  }
+
+  const c = getContext();
+  const cookies = getCookie(c);
+
+  const previewSession = cookies[PREVIEW_SESSION_COOKIE_NAME];
+  if (previewSession) {
+    return {
+      Cookie: `${PREVIEW_SESSION_COOKIE_NAME}=${previewSession}`,
+    };
+  }
+
+  const appSession = cookies[APP_SESSION_COOKIE_NAME];
+  if (appSession) {
+    return { Authorization: `Bearer ${appSession}` };
+  }
+
+  throw new Error(
+    "No authentication method available for connection proxy.",
+  );
+}
+
 function createProxyFetch(connectionId: string): typeof fetch {
   return async (input, init) => {
-    const token = process.env.INTERNAL_SQUADBASE_OAUTH_MACHINE_CREDENTIAL;
-    const sandboxId = process.env.INTERNAL_SQUADBASE_SANDBOX_ID;
-
-    if (!token || !sandboxId) {
-      throw new Error(
-        "OAuth proxy requires INTERNAL_SQUADBASE_OAUTH_MACHINE_CREDENTIAL and INTERNAL_SQUADBASE_SANDBOX_ID",
-      );
-    }
-
     const originalUrl = typeof input === "string" ? input : input instanceof URL ? input.href : (input as Request).url;
     const originalMethod = init?.method ?? "GET";
     const originalBody = init?.body ? JSON.parse(init.body as string) : undefined;
 
-    const envPrefix = process.env.SQUADBASE_ENV === "prod" ? "" : `${process.env.SQUADBASE_ENV ?? "dev1"}-`;
-    const proxyUrl = `https://${sandboxId}.preview.${envPrefix}app.squadbase.dev/_sqcore/connections/${connectionId}/request`;
+    const proxyUrl = resolveProxyUrl(connectionId);
+    const authHeaders = resolveAuthHeaders();
 
     return fetch(proxyUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        ...authHeaders,
       },
       body: JSON.stringify({
         url: originalUrl,
