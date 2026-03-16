@@ -102,22 +102,22 @@ export function createConnectorRegistry() {
 const APP_SESSION_COOKIE_NAME = "__Host-squadbase-session";
 
 function createSandboxProxyFetch(connectionId: string): typeof fetch {
-  const token = process.env.INTERNAL_SQUADBASE_OAUTH_MACHINE_CREDENTIAL;
-  const sandboxId = process.env.INTERNAL_SQUADBASE_SANDBOX_ID;
-
-  if (!token || !sandboxId) {
-    throw new Error(
-      "Connection proxy is not configured. Please check your deployment settings.",
-    );
-  }
-
-  const envPrefix = process.env.SQUADBASE_ENV === "prod" ? "" : `${process.env.SQUADBASE_ENV ?? "dev1"}-`;
-  const proxyUrl = `https://${sandboxId}.preview.${envPrefix}app.squadbase.dev/_sqcore/connections/${connectionId}/request`;
-
   return async (input, init) => {
+    const token = process.env.INTERNAL_SQUADBASE_OAUTH_MACHINE_CREDENTIAL;
+    const sandboxId = process.env.INTERNAL_SQUADBASE_SANDBOX_ID;
+
+    if (!token || !sandboxId) {
+      throw new Error(
+        "Connection proxy is not configured. Please check your deployment settings.",
+      );
+    }
+
     const originalUrl = typeof input === "string" ? input : input instanceof URL ? input.href : (input as Request).url;
     const originalMethod = init?.method ?? "GET";
     const originalBody = init?.body ? JSON.parse(init.body as string) : undefined;
+
+    const envPrefix = process.env.SQUADBASE_ENV === "prod" ? "" : `${process.env.SQUADBASE_ENV ?? "dev1"}-`;
+    const proxyUrl = `https://${sandboxId}.preview.${envPrefix}app.squadbase.dev/_sqcore/connections/${connectionId}/request`;
 
     return fetch(proxyUrl, {
       method: "POST",
