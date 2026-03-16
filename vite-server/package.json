@@ -1,6 +1,6 @@
 {
   "name": "@squadbase/vite-server",
-  "version": "0.0.1-build-19",
+  "version": "0.0.1-build-20",
   "type": "module",
   "exports": {
     ".": {
