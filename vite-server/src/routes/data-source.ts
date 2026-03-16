@@ -47,7 +47,7 @@ app.get("/:slug", async (c) => {
       const handler = await loadTypeScriptHandler(ds._tsHandlerPath);
       result = await handler(c);
     } else {
-      result = await ds.handler({});
+      result = { data: await ds.handler({}) }
     }
     return buildResponse(c, result, ds.response);
   } catch (e) {
