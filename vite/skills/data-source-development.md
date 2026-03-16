@@ -29,7 +29,7 @@ interface JsonDataSourceDefinition {
   query: string;                    // REQUIRED — SQL query with {{param}} placeholders
   connectionId: string;             // REQUIRED — key in .squadbase/connections.json
   parameters?: ParameterMeta[];     // Optional — query parameter definitions
-  response?: DataSourceResponse;    // Optional — response schema (see below). Omit to return { data: result }
+  response?: DataSourceResponse;    // Optional — response schema (used by AI agents and UI)
   cache?: DataSourceCacheConfig;    // Optional — caching configuration
 }
 ```
@@ -45,38 +45,39 @@ interface JsonTypeScriptDataSourceDefinition {
   handlerPath: string;              // REQUIRED — relative path to .ts handler file (from the JSON file's directory)
   connectionId: string;             // REQUIRED — key in .squadbase/connections.json
   parameters?: ParameterMeta[];     // Optional — parameter definitions (for metadata only)
-  response?: DataSourceResponse;    // Optional — response schema
+  response?: DataSourceResponse;    // Optional — response schema (used by AI agents and UI)
   cache?: DataSourceCacheConfig;    // Optional — caching configuration
 }
 ```
 
 #### Handler file format
 
-The handler file must export a default async function that receives a Hono `Context` and returns any JSON-serializable value.
+The handler file must export a default async function that receives a Hono `Context` and returns a `Response` using `c.json()`, `c.text()`, etc.
 
 ```typescript
 // data-source/my-handler.ts
 import type { Context } from "hono";
 
-export default async function handler(c: Context): Promise<unknown> {
+export default async function handler(c: Context) {
   const body = await c.req.json().catch(() => ({}));
   const userId = (body.params?.userId as string) ?? "";
 
-  if (!userId) return { error: "userId is required" };
+  if (!userId) return c.json({ error: "userId is required" }, 400);
 
   const res = await fetch(`https://api.example.com/users/${userId}`, {
     headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
   });
 
   if (!res.ok) throw new Error(`API error: ${res.status}`);
-  return res.json();
+  const data = await res.json();
+  return c.json(data);
 }
 ```
 
 **Rules:**
 - Always use `import type { Context } from "hono"` (type-only import)
 - Read request body via `c.req.json().catch(() => ({}))` — params are in `body.params`
-- Return data directly (JSON-serializable value); the server wraps it in `{ data: result }` unless `response` schema overrides this
+- Return a `Response` via `c.json()` — the server passes the handler's response through as-is
 - `handlerPath` must be relative to the JSON file's directory and must point to a `.ts` file within the data-source directory (no path traversal)
 - Handlers run with full Node.js environment access including `process.env`
 
@@ -144,46 +145,12 @@ interface ParameterMeta {
 }
 ```
 
-#### `response` (DataSourceResponse, optional)
+#### Response format
 
-Describes the response schema and format. When omitted, the API returns `{ data: rows[] }`.
-
-```typescript
-interface DataSourceSchemaObject {
-  type?: "string" | "number" | "integer" | "boolean" | "object" | "array" | "null";
-  format?: string;           // "date" | "date-time" | "uri" | "email" | "uuid" etc.
-  description?: string;
-  nullable?: boolean;
-  enum?: (string | number | boolean | null)[];
-  items?: DataSourceSchemaObject;                          // for array type
-  properties?: Record<string, DataSourceSchemaObject>;    // for object type
-  required?: string[];
-  minimum?: number;
-  maximum?: number;
-  minLength?: number;
-  maxLength?: number;
-  pattern?: string;
-}
-
-interface DataSourceMediaType {
-  schema?: DataSourceSchemaObject;
-  example?: unknown;
-}
-
-interface DataSourceResponse {
-  description?: string;
-  defaultContentType?: string;   // "application/json" | "text/csv"
-  content?: Record<string, DataSourceMediaType>;
-}
-```
-
-#### Response format decision table
-
-| `response` config | API response format |
+| Data source type | Response format |
 |---|---|
-| omitted | `{ data: rows[] }` (default, array wrapped) |
-| `content["application/json"].schema.type = "object"` with `properties` | raw object (no wrapper) |
-| `defaultContentType = "text/csv"` | `text/csv` with CSV body |
+| SQL (`type: "sql"` or omitted) | `{ "data": rows[] }` — the server wraps the query result in a `data` property |
+| TypeScript (`type: "typescript"`) | The handler's `Response` is returned as-is — the handler controls the format via `c.json()`, `c.text()`, etc. |
 
 #### `connectionId` (string, **required**)
 Key in `.squadbase/connections.json` identifying the connection. Every data source must specify a connectionId.
@@ -382,8 +349,8 @@ All endpoints are under the `/api` prefix.
 
 | Method | Path | Body | Response | Description |
 |--------|------|------|----------|-------------|
-| GET | `/api/data-source/:slug` | — | see response format table | Execute query with no parameters (debug) |
-| POST | `/api/data-source/:slug` | `{ "params": { ... } }` | see response format table | Execute query with parameters |
+| GET | `/api/data-source/:slug` | — | SQL: `{ data: rows[] }`, TS: handler response | Execute query with no parameters (debug) |
+| POST | `/api/data-source/:slug` | `{ "params": { ... } }` | SQL: `{ data: rows[] }`, TS: handler response | Execute query with parameters |
 
 ### Data Source Metadata
 
@@ -483,53 +450,7 @@ Filename: `sales-by-region.json`
 
 Response: `{ "data": [{ "date": "2025-01-01", ... }, ...] }`
 
-### Example 3: Unwrapped Object Response (Pagination / Summary)
-
-When `schema.type = "object"` with `properties`, the result is returned **without** the `data` wrapper.
-
-Filename: `orders-paginated.json`
-
-```json
-{
-  "description": "Paginated orders with total count",
-  "connectionId": "my-pg",
-  "query": "...",
-  "response": {
-    "content": {
-      "application/json": {
-        "schema": {
-          "type": "object",
-          "properties": {
-            "rows": { "type": "array", "description": "Order rows" },
-            "total": { "type": "integer", "description": "Total count" }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-Response: `{ "rows": [...], "total": 42 }` (no wrapper)
-
-### Example 4: CSV Export
-
-Filename: `orders-export.json`
-
-```json
-{
-  "description": "Export orders as CSV",
-  "connectionId": "my-pg",
-  "query": "SELECT id, date, amount FROM orders ORDER BY date DESC",
-  "response": {
-    "defaultContentType": "text/csv"
-  }
-}
-```
-
-Response: `text/csv` body with CSV content.
-
-### Example 5: BigQuery with Date Range
+### Example 3: BigQuery with Date Range
 
 Filename: `bq-daily-pageviews.json`
 
@@ -578,7 +499,7 @@ Non-SQL connectors (Airtable, Google Analytics, Kintone, Wix Store, dbt) are use
 import type { Context } from "hono";
 import { createAirtableClient, loadConnections } from "@squadbase/vite-server";
 
-export default async function handler(c: Context): Promise<unknown> {
+export default async function handler(c: Context) {
   const body = await c.req.json().catch(() => ({}));
   const tableName = (body.params?.table as string) ?? "Tasks";
 
@@ -588,7 +509,7 @@ export default async function handler(c: Context): Promise<unknown> {
 
   const client = createAirtableClient(entry, "my-airtable");
   const { records } = await client.listRecords(tableName, { maxRecords: 100 });
-  return records.map((r) => ({ id: r.id, ...r.fields }));
+  return c.json(records.map((r) => ({ id: r.id, ...r.fields })));
 }
 ```
 
@@ -616,18 +537,16 @@ Use `await loadConnections()` to get the connections map, then pass the entry an
 
 4. **Required fields**: All data sources require `description` and `connectionId`. SQL data sources additionally require `query`. TypeScript data sources additionally require `type: "typescript"` and `handlerPath`. Files missing required fields are skipped with a warning.
 
-5. **`response` is optional**: When omitted, the API always returns `{ data: rows[] }`. Add `response` only when you need schema documentation or a different response format (object unwrapping or CSV).
+5. **Response format**: SQL data sources always return `{ "data": rows[] }`. TypeScript data sources return the handler's `Response` as-is (the handler controls the response format via `c.json()`, `c.text()`, etc.).
 
-6. **Response format selection**: The server checks `response.defaultContentType` first (CSV), then checks if `content["application/json"].schema` is an object type (unwrapped), otherwise defaults to `{ data: result }`.
+6. **Parameter defaults**: When a parameter is not provided in the request and has a `default` value, the default is used. Otherwise `null` is used.
 
-7. **Parameter defaults**: When a parameter is not provided in the request and has a `default` value, the default is used. Otherwise `null` is used.
+7. **BigQuery table names**: Always use backtick-quoted fully qualified names: `` `project.dataset.table` ``.
 
-8. **BigQuery table names**: Always use backtick-quoted fully qualified names: `` `project.dataset.table` ``.
+8. **Snowflake table names**: Use fully qualified `DATABASE.SCHEMA.TABLE` format. Snowflake identifiers are case-insensitive by default but stored as uppercase.
 
-9. **Snowflake table names**: Use fully qualified `DATABASE.SCHEMA.TABLE` format. Snowflake identifiers are case-insensitive by default but stored as uppercase.
+9. **Cache key includes parameters**: Different parameter combinations create separate cache entries. High-cardinality filters reduce cache hit rates.
 
-10. **Cache key includes parameters**: Different parameter combinations create separate cache entries. High-cardinality filters reduce cache hit rates.
+10. **connections.json**: All data sources require a `connectionId` that maps to an entry in `.squadbase/connections.json`. Each entry has `connector: { slug }` and `envVars`. The `envVars` values are environment variable **names**, not actual secrets.
 
-11. **connections.json**: All data sources require a `connectionId` that maps to an entry in `.squadbase/connections.json`. Each entry has `connector: { slug }` and `envVars`. The `envVars` values are environment variable **names**, not actual secrets.
-
-12. **`.env` loading**: The server reads the root `.env` file at startup (since Vite doesn't pass non-`VITE_`-prefixed env vars to the server process).
+11. **`.env` loading**: The server reads the root `.env` file at startup (since Vite doesn't pass non-`VITE_`-prefixed env vars to the server process).

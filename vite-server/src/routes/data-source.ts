@@ -7,29 +7,15 @@ import {
   isFresh,
   recordHit,
 } from "../cache.ts";
-import type { DataSourceResponse } from "../types/data-source.ts";
-import { convertRowsToCsv } from "../lib/csv.ts";
 
 const app = new Hono();
 
-function buildResponse(
-  c: Context,
-  result: unknown,
-  response: DataSourceResponse | undefined,
-): Response {
-  const contentType = response?.defaultContentType ?? "application/json";
-
-  if (contentType === "text/csv") {
-    const csv = convertRowsToCsv(result as Record<string, unknown>[]);
-    return c.text(csv, 200, { "Content-Type": "text/csv; charset=utf-8" });
-  }
-
-  const schema = response?.content?.["application/json"]?.schema;
-  if (schema?.type === "object" && schema.properties) {
-    return c.json(result);
-  }
-
+function buildSqlResponse(c: Context, result: unknown): Response {
   return c.json({ data: result });
+}
+
+function buildTypescriptResponse(result: unknown): Response {
+  return result as Response;
 }
 
 // Also accessible via GET without params (for browser inspection and debugging)
@@ -42,14 +28,14 @@ app.get("/:slug", async (c) => {
   }
 
   try {
-    let result: unknown;
     if (ds._isTypescript && ds._tsHandlerPath) {
       const handler = await loadTypeScriptHandler(ds._tsHandlerPath);
-      result = await handler(c);
+      const result = await handler(c);
+      return buildTypescriptResponse(result);
     } else {
-      result = { data: await ds.handler({}) }
+      const result = await ds.handler({});
+      return buildSqlResponse(c, result);
     }
-    return buildResponse(c, result, ds.response);
   } catch (e) {
     console.error(`[data-source] ${slug} error:`, e);
     return c.json(
@@ -75,21 +61,24 @@ app.post("/:slug", async (c) => {
     const ttl = cacheConfig?.ttl ?? 0;
 
     // --- Cache disabled (ttl=0 or no cache config) ---
-    // Backward-compatible: identical to the existing behavior.
     if (ttl <= 0) {
-      let result: unknown;
       if (ds._isTypescript && ds._tsHandlerPath) {
         const handler = await loadTypeScriptHandler(ds._tsHandlerPath);
-        result = await handler(c);
+        const result = await handler(c);
+        return buildTypescriptResponse(result);
       } else {
-        result = await ds.handler(params);
+        const result = await ds.handler(params);
+        return buildSqlResponse(c, result);
       }
-      return buildResponse(c, result, ds.response);
     }
 
     // --- Cache enabled ---
     const cacheKey = buildCacheKey(slug, params);
     const cached = cacheGet(cacheKey);
+
+    const buildResponse = ds._isTypescript
+      ? (r: unknown) => buildTypescriptResponse(r)
+      : (r: unknown) => buildSqlResponse(c, r);
 
     if (cached) {
       if (isFresh(cached)) {
@@ -99,7 +88,7 @@ app.post("/:slug", async (c) => {
         c.header("X-Cache", "HIT");
         c.header("X-Cache-Age", String(ageSeconds));
         c.header("Cache-Control", `max-age=${ttl - ageSeconds}`);
-        return buildResponse(c, cached.data, ds.response);
+        return buildResponse(cached.data);
       }
 
       // Cache hit (TTL expired)
@@ -116,7 +105,6 @@ app.post("/:slug", async (c) => {
           try {
             let freshData: unknown;
             if (ds._isTypescript && ds._tsHandlerPath) {
-              // c.req.json() is cached by Hono, so it can be called again
               const tsHandler = await loadTypeScriptHandler(ds._tsHandlerPath);
               freshData = await tsHandler(c);
             } else {
@@ -129,7 +117,7 @@ app.post("/:slug", async (c) => {
           }
         })();
 
-        return buildResponse(c, cached.data, ds.response);
+        return buildResponse(cached.data);
       }
 
       // staleWhileRevalidate=false: expired, so fetch synchronously
@@ -150,7 +138,7 @@ app.post("/:slug", async (c) => {
     c.header("X-Cache-Age", "0");
     c.header("Cache-Control", `max-age=${ttl}`);
 
-    return buildResponse(c, result, ds.response);
+    return buildResponse(result);
   } catch (e) {
     console.error(`[data-source] ${slug} error:`, e);
     return c.json(
