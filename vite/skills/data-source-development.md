@@ -309,7 +309,7 @@ All data sources require a `connectionId` that maps to an entry in `.squadbase/c
   "my-ga": {
     "connector": { "slug": "google-analytics" },
     "envVars": {
-      "service-account-json-base64": "GA_SERVICE_ACCOUNT_JSON_BASE64",
+      "service-account-key-json-base64": "GA_SERVICE_ACCOUNT_JSON_BASE64",
       "property-id": "GA_PROPERTY_ID"
     }
   },

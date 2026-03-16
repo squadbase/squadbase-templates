@@ -19,7 +19,7 @@ export function createGoogleAnalyticsClient(
   entry: ConnectionEntry,
   slug: string,
 ): GoogleAnalyticsClient {
-  const serviceAccountJsonBase64 = resolveEnvVar(entry, "service-account-json-base64", slug);
+  const serviceAccountJsonBase64 = resolveEnvVar(entry, "service-account-key-json-base64", slug);
   const propertyId = resolveEnvVar(entry, "property-id", slug);
 
   const serviceAccountJson = Buffer.from(serviceAccountJsonBase64, "base64").toString("utf-8");
