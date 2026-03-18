@@ -18,6 +18,10 @@
     "./plugin": {
       "import": "./dist/vite-plugin.js",
       "types": "./dist/vite-plugin.d.ts"
+    },
+    "./connectors/kintone": {
+      "import": "./dist/connectors/kintone.js",
+      "types": "./dist/connectors/kintone.d.ts"
     }
   },
   "files": [

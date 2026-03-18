@@ -6,6 +6,7 @@ export default defineConfig({
     main: "src/main.ts",
     "types/data-source": "src/types/data-source.ts",
     "vite-plugin": "src/vite-plugin.ts",
+    "connectors/kintone": "src/connectors/kintone.ts",
   },
   format: ["esm"],
   dts: true,
@@ -26,6 +27,8 @@ export default defineConfig({
 
     "@google-analytics/data",
     "@kintone/rest-api-client",
+    "@squadbase/connectors",
+    "@squadbase/connectors/sdk",
     "hono",
     "@hono/node-server",
     "@hono/vite-build",
