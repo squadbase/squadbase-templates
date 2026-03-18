@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { readdirSync, rmSync, mkdirSync, readFileSync, writeFileSync, existsSync } = require("fs");
+const { rmSync, mkdirSync, readFileSync, writeFileSync, existsSync } = require("fs");
 const { join } = require("path");
 
 // Colors for output
@@ -18,16 +18,19 @@ function log(color, message) {
 const repoRoot = join(__dirname, "..");
 const skillsDir = join(repoRoot, "vite", "skills");
 
-// 1. Clean up vite/skills/
-if (existsSync(skillsDir)) {
-  for (const file of readdirSync(skillsDir)) {
-    rmSync(join(skillsDir, file), { recursive: true, force: true });
-  }
-  log("yellow", "Cleaned vite/skills/");
-} else {
+// 1. Clean up managed skill directories only
+const managedSkills = ["frontend-development", "data-source-development"];
+if (!existsSync(skillsDir)) {
   mkdirSync(skillsDir, { recursive: true });
-  log("yellow", "Created vite/skills/");
 }
+for (const skill of managedSkills) {
+  const dir = join(skillsDir, skill);
+  if (existsSync(dir)) {
+    rmSync(dir, { recursive: true, force: true });
+  }
+  mkdirSync(dir, { recursive: true });
+}
+log("yellow", "Cleaned managed skill directories");
 
 // 2. vite/AGENTS.md → vite/skills/frontend-development.md
 const frontendFrontmatter = `---
@@ -37,8 +40,8 @@ description: Component TSX generation rules — allowed/forbidden imports, data 
 
 `;
 const frontendContent = readFileSync(join(repoRoot, "vite", "AGENTS.md"), "utf-8");
-writeFileSync(join(skillsDir, "frontend-development.md"), frontendFrontmatter + frontendContent);
-log("green", "Copied vite/AGENTS.md → vite/skills/frontend-development.md (with frontmatter)");
+writeFileSync(join(skillsDir, "frontend-development", "SKILL.md"), frontendFrontmatter + frontendContent);
+log("green", "Copied vite/AGENTS.md → vite/skills/frontend-development/SKILL.md (with frontmatter)");
 
 // 3. vite-server/AGENTS.md → vite/skills/data-source-development.md
 const dataSourceFrontmatter = `---
@@ -48,7 +51,7 @@ description: Data source creation and editing workflows — SQL/TypeScript data 
 
 `;
 const dataSourceContent = readFileSync(join(repoRoot, "vite-server", "AGENTS.md"), "utf-8");
-writeFileSync(join(skillsDir, "data-source-development.md"), dataSourceFrontmatter + dataSourceContent);
-log("green", "Copied vite-server/AGENTS.md → vite/skills/data-source-development.md (with frontmatter)");
+writeFileSync(join(skillsDir, "data-source-development", "SKILL.md"), dataSourceFrontmatter + dataSourceContent);
+log("green", "Copied vite-server/AGENTS.md → vite/skills/data-source-development/SKILL.md (with frontmatter)");
 
 log("green", "vite-prepublish complete.");
