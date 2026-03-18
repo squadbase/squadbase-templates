@@ -1,6 +1,6 @@
 {
   "name": "@squadbase/vite-server",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "type": "module",
   "exports": {
     ".": {
@@ -41,6 +41,7 @@
     "build:cli": "tsup src/cli/index.ts --out-dir dist/cli --format esm --platform node --no-splitting --external pg --external snowflake-sdk --external @google-cloud/bigquery --external mysql2 --external @aws-sdk/client-athena --external @aws-sdk/client-redshift-data --external @databricks/sql --external @google-analytics/data --external @kintone/rest-api-client --external hono --external @clack/prompts"
   },
   "dependencies": {
+    "@squadbase/connectors": "^0.0.10",
     "@aws-sdk/client-athena": "^3.750.0",
     "@aws-sdk/client-redshift-data": "^3.750.0",
     "@databricks/sql": "^1.8.0",
@@ -58,7 +59,6 @@
   },
   "devDependencies": {
     "@clack/prompts": "^0.9.1",
-    "@squadbase/connectors": "^0.0.9",
     "@types/node": "^22.15.0",
     "@types/pg": "^8.16.0",
     "@types/snowflake-sdk": "^1.6.24",
