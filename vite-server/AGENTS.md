@@ -6,7 +6,7 @@ Read only this file — no other documentation is needed to create data sources.
 ## Overview
 
 `@squadbase/vite-server` is a Hono-based backend that loads data source definitions from JSON files,
-executes SQL queries against configured databases, and exposes results via REST API.
+executes SQL queries or arbitrary server-side logic via TypeScript handlers, and exposes results via REST API.
 The server watches the data source directory and **auto-reloads on file changes** — no restart needed.
 
 ---
@@ -43,7 +43,6 @@ interface JsonTypeScriptDataSourceDefinition {
   description: string;              // REQUIRED — human-readable description
   type: "typescript";               // REQUIRED — must be exactly "typescript"
   handlerPath: string;              // REQUIRED — relative path to .ts handler file (from the JSON file's directory)
-  connectionId: string;             // REQUIRED — key in .squadbase/connections.json
   parameters?: ParameterMeta[];     // Optional — parameter definitions (for metadata only)
   response?: DataSourceResponse;    // Optional — response schema (used by AI agents and UI)
   cache?: DataSourceCacheConfig;    // Optional — caching configuration
@@ -52,32 +51,28 @@ interface JsonTypeScriptDataSourceDefinition {
 
 #### Handler file format
 
-The handler file must export a default async function that receives a Hono `Context` and returns a `Response` using `c.json()`, `c.text()`, etc.
+The handler file must export a default async function that returns a `Response` object.
 
 ```typescript
 // data-source/my-handler.ts
-import type { Context } from "hono";
-
-export default async function handler(c: Context) {
-  const body = await c.req.json().catch(() => ({}));
-  const userId = (body.params?.userId as string) ?? "";
-
-  if (!userId) return c.json({ error: "userId is required" }, 400);
-
-  const res = await fetch(`https://api.example.com/users/${userId}`, {
+export default async function handler() {
+  const res = await fetch(`https://api.example.com/users`, {
     headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
   });
 
   if (!res.ok) throw new Error(`API error: ${res.status}`);
-  const data = await res.json();
-  return c.json(data);
+  const users = await res.json();
+
+  return new Response(JSON.stringify({ data: users }), {
+    headers: { "Content-Type": "application/json" },
+  });
 }
 ```
 
 **Rules:**
-- Always use `import type { Context } from "hono"` (type-only import)
-- Read request body via `c.req.json().catch(() => ({}))` — params are in `body.params`
-- Return a `Response` via `c.json()` — the server passes the handler's response through as-is
+- Export a default async function (no arguments needed)
+- Return a `Response` object directly (e.g., `new Response(JSON.stringify(...))`) — the server passes the handler's response through as-is
+- For non-SQL connectors, use `connection()` from `@squadbase/vite-server/connectors/<type>` (see "Using Non-SQL Connectors" section below)
 - `handlerPath` must be relative to the JSON file's directory and must point to a `.ts` file within the data-source directory (no path traversal)
 - Handlers run with full Node.js environment access including `process.env`
 
@@ -89,7 +84,6 @@ export default async function handler(c: Context) {
   "description": "Fetch user purchase summary from external API",
   "type": "typescript",
   "handlerPath": "./user-summary.ts",
-  "connectionId": "my-api-connection",
   "parameters": [
     { "name": "userId", "type": "string", "description": "Target user ID", "required": true }
   ],
@@ -103,7 +97,6 @@ export default async function handler(c: Context) {
   "description": "Combine sales data and trend data from multiple APIs",
   "type": "typescript",
   "handlerPath": "./sales-forecast.ts",
-  "connectionId": "my-api-connection",
   "parameters": [
     { "name": "region", "type": "string", "description": "Region code", "required": true }
   ]
@@ -150,18 +143,12 @@ interface ParameterMeta {
 | Data source type | Response format |
 |---|---|
 | SQL (`type: "sql"` or omitted) | `{ "data": rows[] }` — the server wraps the query result in a `data` property |
-| TypeScript (`type: "typescript"`) | The handler's `Response` is returned as-is — the handler controls the format via `c.json()`, `c.text()`, etc. |
+| TypeScript (`type: "typescript"`) | The handler's `Response` is returned as-is — the handler controls the format via `new Response(...)` |
 
-#### `connectionId` (string, **required**)
-Key in `.squadbase/connections.json` identifying the connection. Every data source must specify a connectionId.
+#### `connectionId` (string, **required for SQL data sources only**)
+Key in `.squadbase/connections.json` identifying the database connection. Required for SQL data sources; not used (and not accepted) for TypeScript data sources.
 
-The connector type is determined automatically from `connections.json` entry's `connector.slug`:
-
-**SQL connectors** (used in data source JSON `query` field):
-`"postgresql"`, `"squadbase-db"`, `"mysql"`, `"bigquery"`, `"snowflake"`, `"athena"`, `"redshift"`, `"databricks"`
-
-**Non-SQL connectors** (used in TypeScript handlers via client utilities):
-`"airtable"`, `"google-analytics"`, `"kintone"`, `"wix-store"`, `"dbt"`
+The connector type is determined by each entry's `connector.slug`. SQL connectors are used with the `query` field in JSON; non-SQL connectors are used in TypeScript handlers via `connection()` from connector subpath exports.
 
 #### `cache` (DataSourceCacheConfig, optional)
 ```typescript
@@ -204,110 +191,20 @@ WRONG:     WHERE date >= '{{start_date}}'    ← double-quoting bug!
 
 ## Connection Configuration
 
-All data sources require a `connectionId` that maps to an entry in `.squadbase/connections.json` (default: `<cwd>/.squadbase/connections.json`).
+SQL data sources require a `connectionId` that maps to an entry in `.squadbase/connections.json` (default: `<cwd>/.squadbase/connections.json`). TypeScript data sources access connections via the `connection()` function from connector subpath exports (e.g., `@squadbase/vite-server/connectors/kintone`).
 
 ```json
 {
-  "my-bigquery": {
-    "connector": { "slug": "bigquery" },
+  "<connectionId>": {
+    "connector": { "slug": "<connector-type>" },
     "envVars": {
-      "project-id": "GCP_PROJECT_ID",
-      "service-account-key-json-base64": "GCP_SA_JSON_BASE64"
-    }
-  },
-  "my-snowflake": {
-    "connector": { "slug": "snowflake" },
-    "envVars": {
-      "account": "SNOWFLAKE_ACCOUNT",
-      "user": "SNOWFLAKE_USER",
-      "role": "SNOWFLAKE_ROLE",
-      "warehouse": "SNOWFLAKE_WAREHOUSE",
-      "private-key-base64": "SNOWFLAKE_PRIVATE_KEY_BASE64"
-    }
-  },
-  "my-pg": {
-    "connector": { "slug": "postgresql" },
-    "envVars": {
-      "connection-url": "PG_URL"
-    }
-  },
-  "my-mysql": {
-    "connector": { "slug": "mysql" },
-    "envVars": {
-      "connection-url": "MYSQL_URL"
-    }
-  },
-  "my-athena": {
-    "connector": { "slug": "athena" },
-    "envVars": {
-      "aws-region": "ATHENA_AWS_REGION",
-      "aws-access-key-id": "ATHENA_AWS_ACCESS_KEY_ID",
-      "aws-secret-access-key": "ATHENA_AWS_SECRET_ACCESS_KEY",
-      "workgroup": "ATHENA_WORKGROUP",
-      "output-location": "ATHENA_OUTPUT_LOCATION"
-    }
-  },
-  "my-redshift": {
-    "connector": { "slug": "redshift" },
-    "envVars": {
-      "aws-region": "REDSHIFT_AWS_REGION",
-      "aws-access-key-id": "REDSHIFT_AWS_ACCESS_KEY_ID",
-      "aws-secret-access-key": "REDSHIFT_AWS_SECRET_ACCESS_KEY",
-      "database": "REDSHIFT_DATABASE",
-      "cluster-identifier": "REDSHIFT_CLUSTER_IDENTIFIER",
-      "workgroup-name": "REDSHIFT_WORKGROUP_NAME"
-    }
-  },
-  "my-databricks": {
-    "connector": { "slug": "databricks" },
-    "envVars": {
-      "host": "DATABRICKS_HOST",
-      "http-path": "DATABRICKS_HTTP_PATH",
-      "token": "DATABRICKS_TOKEN"
-    }
-  },
-  "my-airtable": {
-    "connector": { "slug": "airtable" },
-    "envVars": {
-      "base-id": "AIRTABLE_BASE_ID",
-      "api-key": "AIRTABLE_API_KEY"
-    }
-  },
-  "my-ga": {
-    "connector": { "slug": "google-analytics" },
-    "envVars": {
-      "service-account-key-json-base64": "GA_SERVICE_ACCOUNT_JSON_BASE64",
-      "property-id": "GA_PROPERTY_ID"
-    }
-  },
-  "my-kintone": {
-    "connector": { "slug": "kintone" },
-    "envVars": {
-      "base-url": "KINTONE_BASE_URL",
-      "username": "KINTONE_USERNAME",
-      "password": "KINTONE_PASSWORD"
-    }
-  },
-  "my-wix": {
-    "connector": { "slug": "wix-store" },
-    "envVars": {
-      "site-id": "WIX_SITE_ID",
-      "api-key": "WIX_API_KEY"
-    }
-  },
-  "my-dbt": {
-    "connector": { "slug": "dbt" },
-    "envVars": {
-      "host": "DBT_HOST",
-      "prod-env-id": "DBT_PROD_ENV_ID",
-      "token": "DBT_TOKEN"
+      "<param-slug>": "<ENV_VAR_NAME>"
     }
   }
 }
 ```
 
 Each `envVars` value is the **name of an environment variable** (not the actual secret).
-The actual credentials must be set in the environment or `.env` file.
 
 ---
 
@@ -377,18 +274,6 @@ All endpoints are under the `/api` prefix.
 
 ---
 
-## SQL Dialect Guide per Connector
-
-| Feature | PostgreSQL | MySQL | BigQuery (GoogleSQL) | Snowflake | Athena (Trino/Presto) | Redshift | Databricks (Spark SQL) |
-|---------|-----------|-------|---------------------|-----------|----------------------|----------|----------------------|
-| Table reference | `schema.table` | `database.table` | `` `project.dataset.table` `` | `DATABASE.SCHEMA.TABLE` | `database.table` | `schema.table` | `catalog.schema.table` |
-| Date truncate | `DATE_TRUNC('month', d)` | `DATE_FORMAT(d, '%Y-%m-01')` | `DATE_TRUNC(d, MONTH)` | `DATE_TRUNC('MONTH', d)` | `DATE_TRUNC('month', d)` | `DATE_TRUNC('month', d)` | `DATE_TRUNC('MONTH', d)` |
-| Current timestamp | `NOW()` | `NOW()` | `CURRENT_TIMESTAMP()` | `CURRENT_TIMESTAMP()` | `NOW()` | `GETDATE()` | `CURRENT_TIMESTAMP()` |
-| LIMIT | `LIMIT n` | `LIMIT n` | `LIMIT n` | `LIMIT n` | `LIMIT n` | `LIMIT n` | `LIMIT n` |
-| Parameter binding | `$1, $2` | `?` placeholders | Literal replacement | Literal replacement | Literal replacement | Literal replacement | Literal replacement |
-
----
-
 ## Complete JSON Examples
 
 ### Example 1: Simple Row Array (No Response Schema)
@@ -450,80 +335,23 @@ Filename: `sales-by-region.json`
 
 Response: `{ "data": [{ "date": "2025-01-01", ... }, ...] }`
 
-### Example 3: BigQuery with Date Range
-
-Filename: `bq-daily-pageviews.json`
-
-```json
-{
-  "description": "Daily pageview counts from BigQuery analytics",
-  "query": "SELECT FORMAT_DATE('%Y-%m-%d', event_date) AS date, SUM(pageviews) AS pageviews, COUNT(DISTINCT user_id) AS unique_users FROM `myproject.analytics.page_events` WHERE event_date >= DATE({{start_date}}) AND event_date <= DATE({{end_date}}) GROUP BY date ORDER BY date DESC",
-  "parameters": [
-    { "name": "start_date", "type": "string", "description": "Start date (YYYY-MM-DD)", "required": true },
-    { "name": "end_date", "type": "string", "description": "End date (YYYY-MM-DD)", "required": true }
-  ],
-  "response": {
-    "content": {
-      "application/json": {
-        "schema": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "date": { "type": "string", "description": "Event date" },
-              "pageviews": { "type": "number", "description": "Total pageviews" },
-              "unique_users": { "type": "number", "description": "Unique user count" }
-            }
-          }
-        }
-      }
-    }
-  },
-  "connectionId": "my-bigquery",
-  "cache": {
-    "ttl": 600,
-    "staleWhileRevalidate": true
-  }
-}
-```
-
 ---
 
 ## Using Non-SQL Connectors in TypeScript Handlers
 
-Non-SQL connectors (Airtable, Google Analytics, Kintone, Wix Store, dbt) are used via TypeScript data source handlers. Import client factories from `@squadbase/vite-server`.
+Non-SQL connectors are used via TypeScript data source handlers. Import the `connection()` function from the connector-specific subpath export of `@squadbase/vite-server`.
 
-### Example: Airtable handler (`data-source/airtable-records.ts`)
+### Usage
 
 ```typescript
-import type { Context } from "hono";
-import { createAirtableClient, loadConnections } from "@squadbase/vite-server";
+import { connection } from "@squadbase/vite-server/connectors/<type>";
 
-export default async function handler(c: Context) {
-  const body = await c.req.json().catch(() => ({}));
-  const tableName = (body.params?.table as string) ?? "Tasks";
-
-  const connections = await loadConnections();
-  const entry = connections["my-airtable"];
-  if (!entry) throw new Error("Airtable connection not configured");
-
-  const client = createAirtableClient(entry, "my-airtable");
-  const { records } = await client.listRecords(tableName, { maxRecords: 100 });
-  return c.json(records.map((r) => ({ id: r.id, ...r.fields })));
-}
+const client = connection("<connectionId>");
 ```
 
-### Available client factories
-
-| Factory | Connector Type | Methods |
-|---------|---------------|---------|
-| `createAirtableClient(entry, slug)` | airtable | `listRecords()`, `getRecord()` |
-| `createGoogleAnalyticsClient(entry, slug)` | google-analytics | `runReport()` |
-| `createKintoneClient(entry, slug)` | kintone | `getRecords()`, `getRecord()`, `listApps()` |
-| `createWixStoreClient(entry, slug)` | wix-store | `queryProducts()`, `queryOrders()` |
-| `createDbtClient(entry, slug)` | dbt | `query()`, `getModels()`, `getModelByName()` |
-
-Use `await loadConnections()` to get the connections map, then pass the entry and slug to the factory function.
+- Import the connector-specific `connection()` function from `@squadbase/vite-server/connectors/<type>`
+- `connection(connectionId)` reads the connection entry from `.squadbase/connections.json`, resolves environment variables, and returns a typed client instance
+- Each connector's SDK usage (methods, arguments, etc.) depends on the connector type
 
 ---
 
@@ -535,18 +363,12 @@ Use `await loadConnections()` to get the connections map, then pass the entry an
 
 3. **String auto-quoting**: String parameters are automatically quoted. Writing `'{{param}}'` in SQL causes double-quoting bugs. Always write `{{param}}` without quotes.
 
-4. **Required fields**: All data sources require `description` and `connectionId`. SQL data sources additionally require `query`. TypeScript data sources additionally require `type: "typescript"` and `handlerPath`. Files missing required fields are skipped with a warning.
+4. **Required fields**: All data sources require `description`. SQL data sources additionally require `connectionId` and `query`. TypeScript data sources require `type: "typescript"` and `handlerPath` (no `connectionId`). Files missing required fields are skipped with a warning.
 
-5. **Response format**: SQL data sources always return `{ "data": rows[] }`. TypeScript data sources return the handler's `Response` as-is (the handler controls the response format via `c.json()`, `c.text()`, etc.).
+5. **Response format**: SQL data sources always return `{ "data": rows[] }`. TypeScript data sources return the handler's `Response` as-is (the handler controls the response format via `new Response(...)`).
 
 6. **Parameter defaults**: When a parameter is not provided in the request and has a `default` value, the default is used. Otherwise `null` is used.
 
-7. **BigQuery table names**: Always use backtick-quoted fully qualified names: `` `project.dataset.table` ``.
+7. **Cache key includes parameters**: Different parameter combinations create separate cache entries. High-cardinality filters reduce cache hit rates.
 
-8. **Snowflake table names**: Use fully qualified `DATABASE.SCHEMA.TABLE` format. Snowflake identifiers are case-insensitive by default but stored as uppercase.
-
-9. **Cache key includes parameters**: Different parameter combinations create separate cache entries. High-cardinality filters reduce cache hit rates.
-
-10. **connections.json**: All data sources require a `connectionId` that maps to an entry in `.squadbase/connections.json`. Each entry has `connector: { slug }` and `envVars`. The `envVars` values are environment variable **names**, not actual secrets.
-
-11. **`.env` loading**: The server reads the root `.env` file at startup (since Vite doesn't pass non-`VITE_`-prefixed env vars to the server process).
+8. **connections.json**: SQL data sources require a `connectionId` that maps to an entry in `.squadbase/connections.json`. TypeScript handlers access connections via `connection()` from connector subpath exports, passing the connection ID. Each connections.json entry has `connector: { slug }` and `envVars`. The `envVars` values are environment variable **names**, not actual secrets.
