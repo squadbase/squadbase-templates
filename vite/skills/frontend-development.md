@@ -1,9 +1,14 @@
+---
+name: frontend-development
+description: Component TSX generation rules — allowed/forbidden imports, data fetching patterns (useQuery), export conventions, layout constraints
+---
+
 # Squadbase Vite Template — Agent Instructions
 
 ## Stack
 
-Vite 6 + React 19 + Hono + TypeScript + Tailwind CSS v4 + shadcn/ui
-Full-stack: React SPA (client) + Hono API server (Node 20).
+Vite 7 + React 19 + TypeScript + Tailwind CSS v4 + shadcn/ui
+Full-stack: React SPA (client) + API server via `@squadbase/vite-server` plugin (Node 20).
 
 ## Commands
 
@@ -21,7 +26,7 @@ src/
   pages/           # File-based routing. Files starting with _ are excluded from routing.
   components/ui/   # shadcn/ui components — DO NOT recreate these
   hooks/           # Place custom hooks here
-server/            # Hono API server (server-side only)
+data-source/       # Data source JSON definitions (see skills/data-source-development.md)
 ```
 
 **Routing**: `home.tsx` → `/`, `dashboard.tsx` → `/dashboard`
@@ -164,4 +169,4 @@ Keep simple 1-2 section pages or partial edits in a single file.
 
 ## Reference
 
-Full Japanese guidelines with detailed examples: `skills/frontend-development.md`
+Skill file with YAML frontmatter (identical content): `skills/frontend-development.md`

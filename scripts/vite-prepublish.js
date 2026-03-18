@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { readdirSync, rmSync, mkdirSync, copyFileSync, existsSync } = require("fs");
+const { readdirSync, rmSync, mkdirSync, readFileSync, writeFileSync, existsSync } = require("fs");
 const { join } = require("path");
 
 // Colors for output
@@ -30,11 +30,25 @@ if (existsSync(skillsDir)) {
 }
 
 // 2. vite/AGENTS.md → vite/skills/frontend-development.md
-copyFileSync(join(repoRoot, "vite", "AGENTS.md"), join(skillsDir, "frontend-development.md"));
-log("green", "Copied vite/AGENTS.md → vite/skills/frontend-development.md");
+const frontendFrontmatter = `---
+name: frontend-development
+description: Component TSX generation rules — allowed/forbidden imports, data fetching patterns (useQuery), export conventions, layout constraints
+---
+
+`;
+const frontendContent = readFileSync(join(repoRoot, "vite", "AGENTS.md"), "utf-8");
+writeFileSync(join(skillsDir, "frontend-development.md"), frontendFrontmatter + frontendContent);
+log("green", "Copied vite/AGENTS.md → vite/skills/frontend-development.md (with frontmatter)");
 
 // 3. vite-server/AGENTS.md → vite/skills/data-source-development.md
-copyFileSync(join(repoRoot, "vite-server", "AGENTS.md"), join(skillsDir, "data-source-development.md"));
-log("green", "Copied vite-server/AGENTS.md → vite/skills/data-source-development.md");
+const dataSourceFrontmatter = `---
+name: data-source-development
+description: Data source creation and editing workflows — SQL/TypeScript data source patterns, connection setup, testing procedures
+---
+
+`;
+const dataSourceContent = readFileSync(join(repoRoot, "vite-server", "AGENTS.md"), "utf-8");
+writeFileSync(join(skillsDir, "data-source-development.md"), dataSourceFrontmatter + dataSourceContent);
+log("green", "Copied vite-server/AGENTS.md → vite/skills/data-source-development.md (with frontmatter)");
 
 log("green", "vite-prepublish complete.");
