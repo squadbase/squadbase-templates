@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@clack/prompts": "^0.9.1",
-    "@squadbase/connectors": "^0.0.4",
+    "@squadbase/connectors": "^0.0.7",
     "@types/node": "^22.15.0",
     "@types/pg": "^8.16.0",
     "@types/snowflake-sdk": "^1.6.24",
