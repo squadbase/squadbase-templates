@@ -22,6 +22,10 @@
     "./connectors/kintone": {
       "import": "./dist/connectors/kintone.js",
       "types": "./dist/connectors/kintone.d.ts"
+    },
+    "./connectors/openai": {
+      "import": "./dist/connectors/openai.js",
+      "types": "./dist/connectors/openai.d.ts"
     }
   },
   "files": [
@@ -41,7 +45,7 @@
     "build:cli": "tsup src/cli/index.ts --out-dir dist/cli --format esm --platform node --no-splitting --external pg --external snowflake-sdk --external @google-cloud/bigquery --external mysql2 --external @aws-sdk/client-athena --external @aws-sdk/client-redshift-data --external @databricks/sql --external @google-analytics/data --external @kintone/rest-api-client --external hono --external @clack/prompts"
   },
   "dependencies": {
-    "@squadbase/connectors": "^0.0.10",
+    "@squadbase/connectors": "^0.0.11",
     "@aws-sdk/client-athena": "^3.750.0",
     "@aws-sdk/client-redshift-data": "^3.750.0",
     "@databricks/sql": "^1.8.0",

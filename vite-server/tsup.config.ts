@@ -1,4 +1,13 @@
 import { defineConfig } from "tsup";
+import { globSync } from "glob";
+import path from "node:path";
+
+const connectorEntries = Object.fromEntries(
+  globSync("src/connectors/entries/*.ts").map((f) => [
+    `connectors/${path.basename(f, ".ts")}`,
+    f,
+  ]),
+);
 
 export default defineConfig({
   entry: {
@@ -6,7 +15,7 @@ export default defineConfig({
     main: "src/main.ts",
     "types/data-source": "src/types/data-source.ts",
     "vite-plugin": "src/vite-plugin.ts",
-    "connectors/kintone": "src/connectors/kintone.ts",
+    ...connectorEntries,
   },
   format: ["esm"],
   dts: true,
