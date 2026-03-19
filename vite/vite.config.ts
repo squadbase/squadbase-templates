@@ -39,6 +39,10 @@ export default defineConfig(({ command, mode }) => {
     server: {
       host: "0.0.0.0",
       allowedHosts: [".vercel.run"],
+      forwardConsole: {
+        unhandledErrors: true,
+        logLevels: ["warn", "error"],
+      },
     },
   };
 });
