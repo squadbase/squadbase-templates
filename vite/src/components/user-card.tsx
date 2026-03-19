@@ -64,7 +64,7 @@ function UserInfo({ user }: { user: User }) {
                   ))}
                 </div>
               ) : (
-                <p className="font-medium">None</p>
+                <p className="text-sm text-muted-foreground">No roles assigned</p>
               )}
             </div>
           </div>

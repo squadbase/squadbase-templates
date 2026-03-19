@@ -68,7 +68,6 @@ export type DataSourceMediaType = z.infer<typeof dataSourceMediaTypeSchema>;
 
 export const dataSourceResponseSchema = z.object({
   description: z.string().optional(),
-  defaultContentType: z.string().optional(),
   content: z.record(z.string(), dataSourceMediaTypeSchema).optional(),
 });
 

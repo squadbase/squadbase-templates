@@ -1,3 +1,8 @@
+---
+name: data-source-development
+description: Data source creation and editing workflows — SQL/TypeScript data source patterns, connection setup, testing procedures
+---
+
 # Data Source Development Guide
 
 This document is the complete reference for AI agents creating and managing data source JSON files.

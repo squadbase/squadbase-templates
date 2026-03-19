@@ -2,6 +2,8 @@ import { readFileSync, watch as fsWatch } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { connectors } from "@squadbase/connectors";
+import { getContext } from "hono/context-storage";
+import { getCookie } from "hono/cookie";
 import type { ConnectionEntry, ConnectionsMap } from "./types.ts";
 import { resolveEnvVar, resolveEnvVarOptional } from "./env.ts";
 
@@ -97,14 +99,16 @@ export function createConnectorRegistry() {
   return { getQuery, loadConnections, reloadEnvFile, watchConnectionsFile };
 }
 
-function createProxyFetch(connectionId: string): typeof fetch {
+const APP_SESSION_COOKIE_NAME = "__Host-squadbase-session";
+
+function createSandboxProxyFetch(connectionId: string): typeof fetch {
   return async (input, init) => {
     const token = process.env.INTERNAL_SQUADBASE_OAUTH_MACHINE_CREDENTIAL;
     const sandboxId = process.env.INTERNAL_SQUADBASE_SANDBOX_ID;
 
     if (!token || !sandboxId) {
       throw new Error(
-        "OAuth proxy requires INTERNAL_SQUADBASE_OAUTH_MACHINE_CREDENTIAL and INTERNAL_SQUADBASE_SANDBOX_ID",
+        "Connection proxy is not configured. Please check your deployment settings.",
       );
     }
 
@@ -128,6 +132,53 @@ function createProxyFetch(connectionId: string): typeof fetch {
       }),
     });
   };
+}
+
+function createDeployedAppProxyFetch(connectionId: string): typeof fetch {
+  const projectId = process.env["SQUADBASE_PROJECT_ID"];
+  if (!projectId) {
+    throw new Error(
+      "Connection proxy is not configured. Please check your deployment settings.",
+    );
+  }
+
+  const baseDomain =
+    process.env["SQUADBASE_APP_BASE_DOMAIN"] ?? "squadbase.app";
+  const proxyUrl = `https://${projectId}.${baseDomain}/_sqcore/connections/${connectionId}/request`;
+
+  return async (input, init) => {
+    const originalUrl = typeof input === "string" ? input : input instanceof URL ? input.href : (input as Request).url;
+    const originalMethod = init?.method ?? "GET";
+    const originalBody = init?.body ? JSON.parse(init.body as string) : undefined;
+
+    const c = getContext();
+    const appSession = getCookie(c, APP_SESSION_COOKIE_NAME);
+    if (!appSession) {
+      throw new Error(
+        "No authentication method available for connection proxy.",
+      );
+    }
+
+    return fetch(proxyUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${appSession}`,
+      },
+      body: JSON.stringify({
+        url: originalUrl,
+        method: originalMethod,
+        body: originalBody,
+      }),
+    });
+  };
+}
+
+function createProxyFetch(connectionId: string): typeof fetch {
+  if (process.env.INTERNAL_SQUADBASE_SANDBOX_ID) {
+    return createSandboxProxyFetch(connectionId);
+  }
+  return createDeployedAppProxyFetch(connectionId);
 }
 
 function resolveParams(
