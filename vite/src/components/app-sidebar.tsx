@@ -13,7 +13,6 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
 import { UserCard } from "@/components/user-card";
 
 export function AppSidebar() {
@@ -22,12 +21,9 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader>
-        <div className="flex items-center gap-2 px-2 py-1">
-          <span className="font-semibold text-sm">App</span>
-        </div>
+      <SidebarHeader className="h-12 shrink-0 justify-center border-b p-0 px-4">
+        <span className="font-semibold text-sm">App</span>
       </SidebarHeader>
-      <Separator />
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Pages</SidebarGroupLabel>
