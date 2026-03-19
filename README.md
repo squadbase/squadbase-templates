@@ -13,13 +13,15 @@ While Squadbase comes with several built-in data connections, this repository of
 | Template | Description |
 |----------|-------------|
 | [Core Template](./core/) | A core template for squadbase |
-| [Vite Template](./vite/) | Full-stack template: Vite 6 + React 19 + Hono + TypeScript + Tailwind CSS v4 + shadcn/ui |
+| [Vite Template](./vite/) | Full-stack template: Vite 8 + React 19 + @squadbase/vite-server + TypeScript + Tailwind CSS v4 + shadcn/ui |
 
 ### Vite Template
 
-A full-stack template combining a React 19 SPA with a Hono API server, with HMR enabled.
+A full-stack template combining a React 19 SPA with a @squadbase/vite-server backend, with HMR enabled.
 
-**Stack:** Vite 6 · React 19 · Hono · TypeScript · Tailwind CSS v4 · shadcn/ui · TanStack Query · Apache ECharts
+**Stack:** Vite 8 · React 19 · @squadbase/vite-server · TypeScript · Tailwind CSS v4 · shadcn/ui · TanStack Query · Apache ECharts
+
+> **@squadbase/vite-server** — A Hono-based backend server that manages and executes SQL/TypeScript data sources with automatic file-change reloading.
 
 **Commands:**
 
@@ -35,8 +37,8 @@ The `vite/skills/` directory contains agent instruction files for AI-assisted de
 
 | File | Source | Description |
 |------|--------|-------------|
-| `vite/skills/frontend-development.md` | `vite/AGENTS.md` | React frontend development guidelines |
-| `vite/skills/data-source-development.md` | `vite-server/AGENTS.md` | Data source and server development guidelines |
+| `vite/skills/frontend-development/SKILL.md` | `vite/AGENTS.md` | React frontend development guidelines |
+| `vite/skills/data-source-development/SKILL.md` | `vite-server/AGENTS.md` | Data source and server development guidelines |
 
 To sync skills files after updating an AGENTS.md:
 
