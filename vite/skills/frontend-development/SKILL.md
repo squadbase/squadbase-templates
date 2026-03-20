@@ -166,7 +166,3 @@ Keep simple 1-2 section pages or partial edits in a single file.
 | `@/components/ui/form` | Individual components: `Input`, `Label`, `Select`, etc. |
 | `@/components/ui/toast` | Does not exist |
 | Named exports for pages/components | `export default function ...` only |
-
-## Reference
-
-Skill file with YAML frontmatter (identical content): `skills/frontend-development.md`

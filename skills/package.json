@@ -1,0 +1,23 @@
+{
+  "name": "@squadbase/skills",
+  "version": "0.0.1",
+  "type": "module",
+  "bin": {
+    "squadbase-skills": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "skills"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "node scripts/prepublish.cjs && tsup",
+    "release": "npm publish --@squadbase:registry=https://registry.npmjs.org"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "~5.7.0"
+  }
+}
