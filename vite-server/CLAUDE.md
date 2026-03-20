@@ -42,7 +42,7 @@ Consolidates logic previously split between `packages/data-api` and `packages/ap
 
 ## Change Rule
 
-**Always update `AGENTS.md` when any of the following change:**
+**Always update `skills/source/squadbase-vite-react/data-source-development/SKILL.md` when any of the following change:**
 - Data source JSON specification (`types/data-source.ts`)
 - API route paths or request/response shapes
 - Parameter binding behavior (`registry.ts`)

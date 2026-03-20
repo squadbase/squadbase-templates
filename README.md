@@ -33,22 +33,23 @@ npm run start    # Run production server
 
 **Skills (AI agent guidelines):**
 
-The `vite/skills/` directory contains agent instruction files for AI-assisted development. These are generated automatically from the source AGENTS.md files — do not edit them directly.
+The canonical source for skill files is `skills/source/squadbase-vite-react/`, published as [`@squadbase/skills`](https://www.npmjs.com/package/@squadbase/skills). The `vite/skills/` directory is a copy — do not edit it directly.
 
-| File | Source | Description |
-|------|--------|-------------|
-| `vite/skills/frontend-development/SKILL.md` | `vite/AGENTS.md` | React frontend development guidelines |
-| `vite/skills/data-source-development/SKILL.md` | `vite-server/AGENTS.md` | Data source and server development guidelines |
+| Skill | Source | Description |
+|-------|--------|-------------|
+| `frontend-development` | `skills/source/squadbase-vite-react/frontend-development/SKILL.md` | React frontend development guidelines |
+| `data-source-development` | `skills/source/squadbase-vite-react/data-source-development/SKILL.md` | Data source and server development guidelines |
+| `component-generation` | `skills/source/squadbase-vite-react/component-generation/SKILL.md` | TSX component generation rules for buildPageSection |
 
-To sync skills files after updating an AGENTS.md:
+To sync skill files to `vite/skills/`:
 
 ```bash
-npm run vite-prepublish
+cd vite && npx @squadbase/skills --clean
 ```
 
 ## Documentation
 
-For detailed documentation on each template, refer to the AGENTS.md in the specific template directory.
+For detailed documentation on each template, refer to the skill files in `skills/source/`.
 
 For Squadbase platform documentation, visit [Squadbase Docs](https://www.squadbase.dev/en/docs).
 
