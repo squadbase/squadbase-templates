@@ -20,7 +20,7 @@ const sourceDir = join(packageRoot, "source");
 const skillsOutDir = join(packageRoot, "skills");
 
 // Frameworks with skills in source/
-const FRAMEWORKS = ["squadbase-vite-react"];
+const FRAMEWORKS = ["squadbase-vite-react", "nextjs"];
 
 // 1. Clean and recreate framework output directories
 for (const framework of FRAMEWORKS) {
@@ -43,12 +43,6 @@ for (const framework of FRAMEWORKS) {
   const frameworkOutDir = join(skillsOutDir, framework);
   cpSync(frameworkSourceDir, frameworkOutDir, { recursive: true });
   log("green", `Copied skills from source/${framework}/`);
-}
-
-// 3. Create nextjs placeholder directory
-const nextjsDir = join(skillsOutDir, "nextjs");
-if (!existsSync(nextjsDir)) {
-  mkdirSync(nextjsDir, { recursive: true });
 }
 
 log("green", "skills prepublish complete.");

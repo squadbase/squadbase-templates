@@ -121,6 +121,7 @@ const option: EChartsOption = {
 ```
 
 Props: `option` (required), `height` (default `"400px"`), `className`, `theme` (`"light" | "dark"`).
+For advanced chart patterns (pie, gauge, composite, scatter), see the `advanced-echarts-patterns` skill.
 
 ## Tables — TanStack Table
 
