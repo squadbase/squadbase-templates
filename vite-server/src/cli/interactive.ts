@@ -1,4 +1,4 @@
-import type { ParameterMeta } from "../types/data-source.ts";
+import type { ParameterMeta } from "../types/server-logic.ts";
 
 // Dynamic import so missing @clack/prompts doesn't crash non-interactive usage
 async function getPrompts() {
@@ -12,11 +12,11 @@ async function getPrompts() {
   }
 }
 
-export async function selectDataSource(slugs: string[]): Promise<string | null> {
+export async function selectServerLogic(slugs: string[]): Promise<string | null> {
   const { select, isCancel } = await getPrompts();
 
   const result = await select({
-    message: "Select a data source to test:",
+    message: "Select a server logic to test:",
     options: slugs.map((s) => ({ value: s, label: s })),
   });
 
@@ -67,7 +67,7 @@ export async function confirmRunAll(): Promise<boolean> {
   const { confirm, isCancel } = await getPrompts();
 
   const result = await confirm({
-    message: "Run all data sources?",
+    message: "Run all server logics?",
   });
 
   if (isCancel(result)) return false;

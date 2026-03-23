@@ -12,8 +12,8 @@
       "types": "./dist/main.d.ts"
     },
     "./types": {
-      "import": "./dist/types/data-source.js",
-      "types": "./dist/types/data-source.d.ts"
+      "import": "./dist/types/server-logic.js",
+      "types": "./dist/types/server-logic.d.ts"
     },
     "./plugin": {
       "import": "./dist/vite-plugin.js",
@@ -35,7 +35,7 @@
     "access": "public"
   },
   "bin": {
-    "squadbase-ds-test": "./dist/cli/index.js"
+    "squadbase-sl-test": "./dist/cli/index.js"
   },
   "scripts": {
     "cli": "tsx src/cli/index.ts",

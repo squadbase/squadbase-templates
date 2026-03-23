@@ -31,9 +31,9 @@ description: Rules for generating TSX components used with buildPageSection (exp
 - Pattern:
   ```
   const { data, isLoading, error } = useQuery({
-    queryKey: ["data-source", "slug"],
+    queryKey: ["server-logic", "slug"],
     queryFn: async () => {
-      const res = await fetch("/api/data-source/slug", {
+      const res = await fetch("/api/server-logic/slug", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ params: {} }),

@@ -21,7 +21,7 @@ A full-stack template combining a React 19 SPA with a @squadbase/vite-server bac
 
 **Stack:** Vite 8 · React 19 · @squadbase/vite-server · TypeScript · Tailwind CSS v4 · shadcn/ui · TanStack Query · Apache ECharts
 
-> **@squadbase/vite-server** — A Hono-based backend server that manages and executes SQL/TypeScript data sources with automatic file-change reloading.
+> **@squadbase/vite-server** — A Hono-based backend server that manages and executes SQL/TypeScript server logics with automatic file-change reloading.
 
 **Commands:**
 
@@ -38,7 +38,7 @@ The canonical source for skill files is `skills/source/squadbase-vite-react/`, p
 | Skill | Source | Description |
 |-------|--------|-------------|
 | `frontend-development` | `skills/source/squadbase-vite-react/frontend-development/SKILL.md` | React frontend development guidelines |
-| `data-source-development` | `skills/source/squadbase-vite-react/data-source-development/SKILL.md` | Data source and server development guidelines |
+| `server-logic-development` | `skills/source/squadbase-vite-react/server-logic-development/SKILL.md` | Server logic development guidelines |
 | `component-generation` | `skills/source/squadbase-vite-react/component-generation/SKILL.md` | TSX component generation rules for buildPageSection |
 
 To sync skill files to `vite/skills/`:

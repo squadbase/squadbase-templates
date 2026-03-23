@@ -13,7 +13,7 @@ export default defineConfig({
   entry: {
     index: "src/index.ts",
     main: "src/main.ts",
-    "types/data-source": "src/types/data-source.ts",
+    "types/server-logic": "src/types/server-logic.ts",
     "vite-plugin": "src/vite-plugin.ts",
     ...connectorEntries,
   },

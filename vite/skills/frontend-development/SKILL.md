@@ -26,7 +26,7 @@ src/
   pages/           # File-based routing. Files starting with _ are excluded from routing.
   components/ui/   # shadcn/ui components — DO NOT recreate these
   hooks/           # Place custom hooks here
-data-source/       # Data source JSON definitions (see skills/data-source-development.md)
+server-logic/       # Data source JSON definitions (see skills/server-logic-development.md)
 ```
 
 **Routing**: `home.tsx` → `/`, `dashboard.tsx` → `/dashboard`
@@ -56,9 +56,9 @@ import { useQuery } from "@tanstack/react-query";
 
 // Basic
 const { data, isLoading, error } = useQuery({
-  queryKey: ["data-source", "users"],
+  queryKey: ["server-logic", "users"],
   queryFn: async () => {
-    const res = await fetch("/api/data-source/users", {
+    const res = await fetch("/api/server-logic/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ params: {} }),
@@ -72,9 +72,9 @@ const { data, isLoading, error } = useQuery({
 
 // With params
 const { data } = useQuery({
-  queryKey: ["data-source", "sales-by-region", { region }],
+  queryKey: ["server-logic", "sales-by-region", { region }],
   queryFn: async () => {
-    const res = await fetch("/api/data-source/sales-by-region", {
+    const res = await fetch("/api/server-logic/sales-by-region", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ params: { region } }),
@@ -145,7 +145,7 @@ const table = useReactTable({ data, columns, getCoreRowModel: getCoreRowModel() 
 ## TypeScript
 
 - Strict mode enabled — no `any` types
-- Explicitly type data from data sources
+- Explicitly type data from server logics
 
 ## Component Splitting
 

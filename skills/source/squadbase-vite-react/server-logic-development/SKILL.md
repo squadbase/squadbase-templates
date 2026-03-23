@@ -1,11 +1,11 @@
 ---
-name: data-source-development
-description: Data source creation and editing workflows — SQL/TypeScript data source patterns, connection setup, testing procedures
+name: server-logic-development
+description: Server logic creation and editing workflows — SQL/TypeScript server logic patterns, connection setup, testing procedures
 ---
 
-# Data Source Development Guide
+# Server Logic Development Guide
 
-Reference for creating data sources using the `create-sql-data-source` and `create-typescript-data-source` tools.
+Reference for creating server logics using the `create-sql-server-logic` and `create-typescript-server-logic` tools.
 This document covers the domain knowledge needed to provide correct inputs — query design, handler code, parameters, and connections.
 
 ---
@@ -15,20 +15,20 @@ This document covers the domain knowledge needed to provide correct inputs — q
 | Tool | Purpose |
 |------|---------|
 | `listConnections` | Discover available database connections and their IDs |
-| `create-sql-data-source` | Create a new SQL data source |
-| `create-typescript-data-source` | Create a new TypeScript data source |
-| `testDataSource` | Test a data source by executing it with sample parameters |
-| `testFetchDataSource` | Test fetching data source results (validates end-to-end) |
-| `listDataSources` | List all existing data sources |
-| `editDataSource` | Modify an existing data source |
-| `deleteDataSource` | Remove a data source |
+| `create-sql-server-logic` | Create a new SQL server logic |
+| `create-typescript-server-logic` | Create a new TypeScript server logic |
+| `testServerLogic` | Test a server logic by executing it with sample parameters |
+| `testFetchServerLogic` | Test fetching server logic results (validates end-to-end) |
+| `listServerLogics` | List all existing server logics |
+| `editServerLogic` | Modify an existing server logic |
+| `deleteServerLogic` | Remove a server logic |
 
 ### Typical Workflow
 
 1. **Discover connections** — call `listConnections` to find available `connectionId` values
 2. **Design query/handler** — write the SQL query or TypeScript handler code using this guide
-3. **Create data source** — call `create-sql-data-source` or `create-typescript-data-source` with the designed inputs
-4. **Test** — call `testDataSource` to verify execution, then `testFetchDataSource` to validate end-to-end
+3. **Create server logic** — call `create-sql-server-logic` or `create-typescript-server-logic` with the designed inputs
+4. **Test** — call `testServerLogic` to verify execution, then `testFetchServerLogic` to validate end-to-end
 
 ### What the tools handle automatically
 
@@ -38,14 +38,14 @@ This document covers the domain knowledge needed to provide correct inputs — q
 
 ---
 
-## SQL Data Source — What to Provide
+## SQL Server Logic — What to Provide
 
-### Tool Parameters (`create-sql-data-source`)
+### Tool Parameters (`create-sql-server-logic`)
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `slug` | string | yes | Identifier — becomes the filename and API path |
-| `description` | string | yes | Human-readable description of what this data source returns |
+| `description` | string | yes | Human-readable description of what this server logic returns |
 | `query` | string | yes | SQL query with `{{paramName}}` placeholders |
 | `connectionId` | string | yes | Connection ID from `listConnections` |
 | `parameters` | ParameterMeta[] | no | Query parameter definitions (see Parameter Definition section) |
@@ -84,20 +84,20 @@ WRONG:     WHERE date >= '{{start_date}}'    ← double-quoting bug!
 
 ---
 
-## TypeScript Data Source — What to Provide
+## TypeScript Server Logic — What to Provide
 
-### Tool Parameters (`create-typescript-data-source`)
+### Tool Parameters (`create-typescript-server-logic`)
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `slug` | string | yes | Identifier — becomes the filename and API path |
-| `description` | string | yes | Human-readable description of what this data source returns |
-| `handlerPath` | string | yes | Relative path to `.ts` handler file (from the data-source directory) |
+| `description` | string | yes | Human-readable description of what this server logic returns |
+| `handlerPath` | string | yes | Relative path to `.ts` handler file (from the server-logic directory) |
 | `handlerCode` | string | yes | TypeScript handler source code |
 | `parameters` | ParameterMeta[] | no | Parameter definitions (for metadata) |
 | `cache` | CacheConfig | no | Caching configuration (see Cache Configuration section) |
 | `title` | string | no | Display title |
-| `response` | DataSourceResponse | no | Response schema (usually auto-inferred — omit unless you need to override) |
+| `response` | ServerLogicResponse | no | Response schema (usually auto-inferred — omit unless you need to override) |
 
 ### Handler File Format
 
@@ -126,10 +126,10 @@ export default async function handler(c: Context) {
 ### Handler Rules
 
 - Export a default async function with signature `(c: Context)` — import `Context` from `"hono"`
-- Access request parameters via `const { params } = await c.req.json()` — the POST body contains `{ params: { ... } }` matching the data source's `parameters` definitions
+- Access request parameters via `const { params } = await c.req.json()` — the POST body contains `{ params: { ... } }` matching the server logic's `parameters` definitions
 - Return a `Response` object directly (e.g., `new Response(JSON.stringify(...))`) — the server passes the handler's response through as-is
 - For non-SQL connectors, use `connection()` from `@squadbase/vite-server/connectors/<type>` (see Non-SQL Connectors section)
-- `handlerPath` must be relative to the data-source directory and point to a `.ts` file within it (no path traversal)
+- `handlerPath` must be relative to the server-logic directory and point to a `.ts` file within it (no path traversal)
 - Handlers run with full Node.js environment access including `process.env`
 
 ---
@@ -152,9 +152,9 @@ When a parameter is not provided in the request: if it has a `default` value, th
 
 ## Connections
 
-Use `listConnections` to discover available connections and their IDs before creating a data source.
+Use `listConnections` to discover available connections and their IDs before creating a server logic.
 
-- SQL data sources use `connectionId` to reference a connection
+- SQL server logics use `connectionId` to reference a connection
 - TypeScript handlers access connections via the `connection()` function from connector subpath exports (see Non-SQL Connectors section)
 - Each connection entry has `connector: { slug }` and `envVars` — the `envVars` values are environment variable **names**, not actual secrets
 
@@ -163,7 +163,7 @@ Use `listConnections` to discover available connections and their IDs before cre
 ## Cache Configuration
 
 ```typescript
-interface DataSourceCacheConfig {
+interface ServerLogicCacheConfig {
   ttl: number;                      // Cache lifetime in seconds. 0 = no cache.
   staleWhileRevalidate?: boolean;   // Return stale data while refreshing in background. Default: false.
 }
@@ -182,7 +182,7 @@ interface DataSourceCacheConfig {
 
 ## Non-SQL Connectors in TypeScript Handlers
 
-Non-SQL connectors are used via TypeScript data source handlers. Import the `connection()` function from the connector-specific subpath export.
+Non-SQL connectors are used via TypeScript server logic handlers. Import the `connection()` function from the connector-specific subpath export.
 
 ```typescript
 import { connection } from "@squadbase/vite-server/connectors/<type>";
@@ -197,14 +197,14 @@ const client = connection("<connectionId>");
 
 ## Important Notes
 
-1. **Slug = filename**: The slug becomes the JSON filename and the API path segment (e.g., slug `sales-summary` → `data-source/sales-summary.json` → `POST /api/data-source/sales-summary`).
+1. **Slug = filename**: The slug becomes the JSON filename and the API path segment (e.g., slug `sales-summary` → `server-logic/sales-summary.json` → `POST /api/server-logic/sales-summary`).
 
 2. **Auto-quoting warning**: String parameters are automatically quoted in SQL. Writing `'{{param}}'` causes double-quoting bugs. Always write `{{param}}` without quotes.
 
-3. **Response format**: SQL data sources return `{ "data": rows[] }`. TypeScript data sources return the handler's `Response` as-is.
+3. **Response format**: SQL server logics return `{ "data": rows[] }`. TypeScript server logics return the handler's `Response` as-is.
 
 4. **Response schema is auto-inferred**: The tools infer the response schema from test results — you typically don't need to specify it manually.
 
 5. **Parameter defaults**: When a parameter is not provided and has a `default` value, the default is used; otherwise `null` is used.
 
-6. **Always test after creation**: Call `testDataSource` then `testFetchDataSource` to verify the data source works correctly.
+6. **Always test after creation**: Call `testServerLogic` then `testFetchServerLogic` to verify the server logic works correctly.
