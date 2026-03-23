@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build:all": "node scripts/build-all.js",
+    "skills-prepublish": "node skills/scripts/prepublish.cjs",
     "prepare": "husky"
   },
   "devDependencies": {
