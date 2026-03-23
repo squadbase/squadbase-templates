@@ -1,0 +1,6 @@
+src/
+scripts/
+source/
+node_modules/
+tsconfig.json
+tsup.config.ts

@@ -1,11 +1,71 @@
-## Key dependencies
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Development Commands
+
+- `npm run lint` - Run ESLint with auto-fix (use this instead of build for testing)
+- `npm run build` - Build for production (standalone mode)
+
+**Note:** A development server is always running in the background. Do not run `npm run dev`.
+
+## Key Dependencies
 
 Do not change major versions unless explicitly requested by the user.
 
 - Next.js 16.x (standalone mode)
 - Tailwind CSS v4
 
-## Strict rules
+## Architecture Overview
+
+### App Structure
+
+```
+app/
+├── layout.tsx      # Root layout with sidebar, header, providers
+├── page.tsx        # Homepage
+└── [page]/
+    ├── page.tsx
+    └── components/ # Page-specific components
+
+components/
+├── ui/             # shadcn/ui components (do not modify)
+├── sqb-dev/        # Squadbase dev tools (component selector)
+├── app-sidebar.tsx # Sidebar navigation
+├── providers.tsx   # React Query provider
+└── site-header.tsx # Header component
+```
+
+### Layout Hierarchy
+
+`RootLayout` wraps all pages with:
+
+1. `Providers` (React Query)
+2. `SidebarProvider` + `AppSidebar` (navigation)
+3. `SiteHeader`
+
+### Data Fetching Pattern
+
+**Server-side:** Use route handlers (NOT server actions)
+**Client-side:** Use React Query via `@tanstack/react-query`
+
+### Database Access
+
+- PostgreSQL: `lib/squadbase-db.ts` - `createSquadbaseDbClient()`
+- Squadbase SDK: `lib/squadbaseSdk.ts` - User auth and platform features
+
+### Sidebar Navigation
+
+Add new pages to `components/app-sidebar.tsx` `menuItems` array:
+
+```tsx
+const menuItems = [
+  { title: "Home", url: "/", icon: LucideHome },
+  { title: "Analytics", url: "/analytics", icon: LucideBarChart },
+];
+```
+
+## Strict Rules
 
 - NEVER use server actions. Always use route handlers instead.
 - ALWAYS use React Query (TanStack Query) for client-side API fetching.
