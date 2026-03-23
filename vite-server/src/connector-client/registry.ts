@@ -116,8 +116,9 @@ function createSandboxProxyFetch(connectionId: string): typeof fetch {
     const originalMethod = init?.method ?? "GET";
     const originalBody = init?.body ? JSON.parse(init.body as string) : undefined;
 
-    const envPrefix = process.env.SQUADBASE_ENV === "prod" ? "" : `${process.env.SQUADBASE_ENV ?? "dev1"}-`;
-    const proxyUrl = `https://${sandboxId}.preview.${envPrefix}app.squadbase.dev/_sqcore/connections/${connectionId}/request`;
+    const baseDomain =
+      process.env["SQUADBASE_PREVIEW_BASE_DOMAIN"] ?? "preview.app.squadbase.dev";
+    const proxyUrl = `https://${sandboxId}.${baseDomain}/_sqcore/connections/${connectionId}/request`;
 
     return fetch(proxyUrl, {
       method: "POST",
