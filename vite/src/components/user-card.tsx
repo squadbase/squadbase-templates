@@ -54,9 +54,23 @@ function UserInfo({ user }: { user: User }) {
               <p className="font-medium">{user.email}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Roles</p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">Project Roles</p>
+                <a
+                  href={
+                    navigator.language.startsWith("ja")
+                      ? "https://www.squadbase.dev/ja/docs/access-control#プロジェクトロール"
+                      : "https://www.squadbase.dev/docs/access-control#project-roles"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-muted-foreground underline underline-offset-4 hover:text-primary/80"
+                >
+                  Learn more
+                </a>
+              </div>
               {user.roles.length > 0 ? (
-                <div className="flex flex-wrap gap-1">
+                <div className="mt-2 flex flex-wrap gap-1">
                   {user.roles.map((role) => (
                     <Badge key={role} variant="outline">
                       {role}
@@ -64,7 +78,7 @@ function UserInfo({ user }: { user: User }) {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground">No roles assigned</p>
+                <p className="mt-2 text-sm text-muted-foreground">No roles assigned</p>
               )}
             </div>
           </div>
