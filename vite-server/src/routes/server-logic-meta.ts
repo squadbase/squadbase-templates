@@ -12,7 +12,7 @@ app.get("/:slug", (c) => {
   const meta = getMeta(slug);
 
   if (!meta) {
-    return c.json({ error: `Data source '${slug}' not found` }, 404);
+    return c.json({ error: `Server logic '${slug}' not found` }, 404);
   }
 
   return c.json(meta);

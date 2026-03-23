@@ -1,5 +1,5 @@
 import { Hono, type Context } from "hono";
-import { getDataSource, loadTypeScriptHandler } from "../registry.ts";
+import { getServerLogic, loadTypeScriptHandler } from "../registry.ts";
 import {
   buildCacheKey,
   cacheGet,
@@ -21,10 +21,10 @@ function buildTypescriptResponse(result: unknown): Response {
 // Also accessible via GET without params (for browser inspection and debugging)
 app.get("/:slug", async (c) => {
   const slug = c.req.param("slug");
-  const ds = getDataSource(slug);
+  const ds = getServerLogic(slug);
 
   if (!ds) {
-    return c.json({ error: `Data source '${slug}' not found` }, 404);
+    return c.json({ error: `Server logic '${slug}' not found` }, 404);
   }
 
   try {
@@ -37,7 +37,7 @@ app.get("/:slug", async (c) => {
       return buildSqlResponse(c, result);
     }
   } catch (e) {
-    console.error(`[data-source] ${slug} error:`, e);
+    console.error(`[server-logic] ${slug} error:`, e);
     return c.json(
       { error: e instanceof Error ? e.message : "Internal error" },
       500,
@@ -47,10 +47,10 @@ app.get("/:slug", async (c) => {
 
 app.post("/:slug", async (c) => {
   const slug = c.req.param("slug");
-  const ds = getDataSource(slug);
+  const ds = getServerLogic(slug);
 
   if (!ds) {
-    return c.json({ error: `Data source '${slug}' not found` }, 404);
+    return c.json({ error: `Server logic '${slug}' not found` }, 404);
   }
 
   try {
@@ -140,7 +140,7 @@ app.post("/:slug", async (c) => {
 
     return buildResponse(result);
   } catch (e) {
-    console.error(`[data-source] ${slug} error:`, e);
+    console.error(`[server-logic] ${slug} error:`, e);
     return c.json(
       { error: e instanceof Error ? e.message : "Internal error" },
       500,

@@ -3,7 +3,7 @@ import { parseArgs } from "node:util";
 import path from "node:path";
 import { readFile } from "node:fs/promises";
 import { loadEnvFile } from "./env-loader.ts";
-import { runDataSource, runAll, listSlugs } from "./runner.ts";
+import { runServerLogic, runAll, listSlugs } from "./runner.ts";
 import {
   displayTable,
   displaySummary,
@@ -11,17 +11,17 @@ import {
   displayJson,
   displayError,
 } from "./display.ts";
-import { anyJsonDataSourceSchema } from "../types/data-source.ts";
+import { anyJsonServerLogicSchema } from "../types/server-logic.ts";
 
 const HELP = `
-Usage: squadbase-ds-test [options]
+Usage: squadbase-sl-test [options]
 
 Options:
-  --slug <slug>     Run a specific data source
-  --all             Run all data sources
+  --slug <slug>     Run a specific server logic
+  --all             Run all server logics
   --params k=v,...  Comma-separated key=value parameters
   --env <path>      Path to .env file (default: ../../.env)
-  --dir <path>      Data source directory (default: ./data-source)
+  --dir <path>      Server logic directory (default: ./server-logic)
   --format table|json  Output format (default: table)
   --limit <n>       Max rows to display (default: 50)
   --debug           Show SQL query and parameter values
@@ -59,7 +59,7 @@ async function main() {
   const cwd = process.cwd();
   const dirPath = values.dir
     ? path.resolve(cwd, values.dir)
-    : path.join(cwd, "data-source");
+    : path.join(cwd, "server-logic");
   const envPath = values.env
     ? path.resolve(cwd, values.env)
     : path.join(cwd, "../../.env");
@@ -83,8 +83,8 @@ async function main() {
 
   // Determine mode
   if (values.slug) {
-    // Single data source run
-    const result = await runDataSource(values.slug, dirPath, params, limit);
+    // Single server logic run
+    const result = await runServerLogic(values.slug, dirPath, params, limit);
 
     if (format === "json") {
       displayJson([result]);
@@ -96,7 +96,7 @@ async function main() {
 
     if (result.error) process.exit(1);
   } else if (values.all) {
-    // Run all data sources
+    // Run all server logics
     const results = await runAll(dirPath, params, limit);
 
     if (format === "json") {
@@ -118,14 +118,14 @@ async function main() {
     const slugs = await listSlugs(dirPath);
 
     if (slugs.length === 0) {
-      displayError(new Error(`No data sources found in ${dirPath}`));
+      displayError(new Error(`No server logics found in ${dirPath}`));
       process.exit(1);
     }
 
     try {
-      const { selectDataSource, inputParameters } = await import("./interactive.ts");
+      const { selectServerLogic, inputParameters } = await import("./interactive.ts");
 
-      const slug = await selectDataSource(slugs);
+      const slug = await selectServerLogic(slugs);
       if (!slug) {
         console.log("Cancelled.");
         process.exit(0);
@@ -133,10 +133,10 @@ async function main() {
 
       // Load parameter definitions for the selected slug
       const jsonPath = path.join(dirPath, `${slug}.json`);
-      let paramMeta: import("../types/data-source.ts").ParameterMeta[] = [];
+      let paramMeta: import("../types/server-logic.ts").ParameterMeta[] = [];
       try {
         const raw = await readFile(jsonPath, "utf-8");
-        const parsed = anyJsonDataSourceSchema.safeParse(JSON.parse(raw));
+        const parsed = anyJsonServerLogicSchema.safeParse(JSON.parse(raw));
         if (parsed.success) paramMeta = parsed.data.parameters ?? [];
       } catch {
         // ignore — run with empty params
@@ -145,7 +145,7 @@ async function main() {
       const interactiveParams = await inputParameters(paramMeta);
       const merged = { ...interactiveParams, ...params };
 
-      const result = await runDataSource(slug, dirPath, merged, limit);
+      const result = await runServerLogic(slug, dirPath, merged, limit);
       displaySummary(result);
       if (values.debug) displayDebug(result);
       if (!result.error) displayTable(result.rows, limit);

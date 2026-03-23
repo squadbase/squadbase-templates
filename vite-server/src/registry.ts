@@ -2,15 +2,15 @@ import { readdir, readFile, mkdir } from "node:fs/promises";
 import { watch as fsWatch } from "node:fs";
 import path from "node:path";
 import { getQuery } from "./connector-client/index.ts";
-import { anyJsonDataSourceSchema } from "./types/data-source.ts";
+import { anyJsonServerLogicSchema } from "./types/server-logic.ts";
 import type {
-  DataSourceDefinition,
-  DataSourceMeta,
-  JsonSqlDataSourceDefinition,
+  ServerLogicDefinition,
+  ServerLogicMeta,
+  JsonSqlServerLogicDefinition,
   ParameterMeta,
-} from "./types/data-source.ts";
+} from "./types/server-logic.ts";
 
-const dataSources = new Map<string, DataSourceDefinition>();
+const serverLogics = new Map<string, ServerLogicDefinition>();
 let currentDirPath: string = "";
 
 let viteServer: import("vite").ViteDevServer | null = null;
@@ -23,7 +23,7 @@ function validateHandlerPath(dirPath: string, handlerPath: string): string {
   const absolute = path.resolve(dirPath, handlerPath);
   const normalizedDir = path.resolve(dirPath);
   if (!absolute.startsWith(normalizedDir + path.sep)) {
-    throw new Error(`Handler path escapes data-source directory: ${handlerPath}`);
+    throw new Error(`Handler path escapes server-logic directory: ${handlerPath}`);
   }
   if (!absolute.endsWith(".ts")) {
     throw new Error(`Handler must be a .ts file: ${handlerPath}`);
@@ -73,14 +73,14 @@ export function applyDefaults(
   return result;
 }
 
-const defaultDataSourceDir = path.join(process.cwd(), "data-source");
+const defaultServerLogicDir = path.join(process.cwd(), "server-logic");
 
 export async function initialize(): Promise<void> {
   console.log(
-    `[registry] loading data sources from ${defaultDataSourceDir}...`,
+    `[registry] loading server logics from ${defaultServerLogicDir}...`,
   );
-  dataSources.clear();
-  const dirPath = process.env.DATA_SOURCE_DIR || defaultDataSourceDir;
+  serverLogics.clear();
+  const dirPath = process.env.SERVER_LOGIC_DIR || process.env.DATA_SOURCE_DIR || defaultServerLogicDir;
   currentDirPath = dirPath;
 
   // Create directory if it doesn't exist (so the watcher can function)
@@ -93,7 +93,7 @@ export async function initialize(): Promise<void> {
     jsonFiles.map(async (file) => {
       const slug = file.replace(/\.json$/, "");
       const raw = await readFile(`${dirPath}/${file}`, "utf-8");
-      const parsed = anyJsonDataSourceSchema.safeParse(JSON.parse(raw));
+      const parsed = anyJsonServerLogicSchema.safeParse(JSON.parse(raw));
 
       if (!parsed.success) {
         console.warn(`[registry] Skipping ${file}: ${parsed.error.message}`);
@@ -103,10 +103,10 @@ export async function initialize(): Promise<void> {
       const def = parsed.data;
 
       if (def.type === "typescript") {
-        // TypeScript function data source
+        // TypeScript function server logic
         const absoluteHandlerPath = validateHandlerPath(dirPath, def.handlerPath);
 
-        const dataSourceDef: DataSourceDefinition = {
+        const serverLogicDef: ServerLogicDefinition = {
           description: def.description,
           parameters: def.parameters ?? [],
           response: def.response,
@@ -118,13 +118,13 @@ export async function initialize(): Promise<void> {
           _tsHandlerPath: absoluteHandlerPath,
         };
 
-        dataSources.set(slug, dataSourceDef);
+        serverLogics.set(slug, serverLogicDef);
         console.log(`[registry] registered (typescript): ${slug}`);
       } else {
-        // SQL data source
-        const sqlDef = def as JsonSqlDataSourceDefinition;
+        // SQL server logic
+        const sqlDef = def as JsonSqlServerLogicDefinition;
 
-        const dataSourceDef: DataSourceDefinition = {
+        const serverLogicDef: ServerLogicDefinition = {
           description: sqlDef.description,
           parameters: sqlDef.parameters ?? [],
           response: sqlDef.response,
@@ -142,7 +142,7 @@ export async function initialize(): Promise<void> {
           },
         };
 
-        dataSources.set(slug, dataSourceDef);
+        serverLogics.set(slug, serverLogicDef);
         console.log(`[registry] registered: ${slug}`);
       }
     }),
@@ -157,35 +157,35 @@ export async function initialize(): Promise<void> {
     }
   });
 
-  console.log(`[registry] ${dataSources.size} data source(s) ready`);
+  console.log(`[registry] ${serverLogics.size} server logic(s) ready`);
 }
 
 let reloadTimer: ReturnType<typeof setTimeout> | null = null;
 
 export function startWatching(): void {
-  const dirPath = process.env.DATA_SOURCE_DIR || defaultDataSourceDir;
+  const dirPath = process.env.SERVER_LOGIC_DIR || process.env.DATA_SOURCE_DIR || defaultServerLogicDir;
   try {
     fsWatch(dirPath, { persistent: false }, (_event, filename) => {
       if (!filename?.endsWith(".json") && !filename?.endsWith(".ts")) return;
       if (reloadTimer) clearTimeout(reloadTimer);
       reloadTimer = setTimeout(async () => {
-        console.log("[registry] data-source changed, reloading...");
+        console.log("[registry] server-logic changed, reloading...");
         await initialize();
       }, 300);
     });
-    console.log("[registry] watching data-source directory");
+    console.log("[registry] watching server-logic directory");
   } catch {
     console.warn(
-      "[registry] could not watch data-source directory (static load only)",
+      "[registry] could not watch server-logic directory (static load only)",
     );
   }
 }
 
-export function getDataSource(slug: string): DataSourceDefinition | undefined {
-  return dataSources.get(slug);
+export function getServerLogic(slug: string): ServerLogicDefinition | undefined {
+  return serverLogics.get(slug);
 }
 
-function buildMeta(slug: string, def: DataSourceDefinition): DataSourceMeta {
+function buildMeta(slug: string, def: ServerLogicDefinition): ServerLogicMeta {
   const base = {
     slug,
     description: def.description,
@@ -210,14 +210,14 @@ function buildMeta(slug: string, def: DataSourceDefinition): DataSourceMeta {
   };
 }
 
-export function getAllMeta(): DataSourceMeta[] {
-  return Array.from(dataSources.entries()).map(([slug, def]) =>
+export function getAllMeta(): ServerLogicMeta[] {
+  return Array.from(serverLogics.entries()).map(([slug, def]) =>
     buildMeta(slug, def),
   );
 }
 
-export function getMeta(slug: string): DataSourceMeta | undefined {
-  const def = dataSources.get(slug);
+export function getMeta(slug: string): ServerLogicMeta | undefined {
+  const def = serverLogics.get(slug);
   if (!def) return undefined;
   return buildMeta(slug, def);
 }

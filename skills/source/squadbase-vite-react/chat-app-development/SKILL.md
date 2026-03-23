@@ -1,23 +1,23 @@
 ---
 name: chat-app-development
-description: LLM chat application patterns — TypeScript data source backend with streaming, Vercel AI SDK frontend integration
+description: LLM chat application patterns — TypeScript server logic backend with streaming, Vercel AI SDK frontend integration
 ---
 
 # Chat App Development Guide
 
-Build LLM-powered chat applications using TypeScript data source handlers as the backend and Vercel AI SDK + React as the frontend.
+Build LLM-powered chat applications using TypeScript server logic handlers as the backend and Vercel AI SDK + React as the frontend.
 
 ## Architecture
 
 ```
-Frontend (React)              Backend (TypeScript data source handler)
+Frontend (React)              Backend (TypeScript server logic handler)
 ┌──────────────┐   POST       ┌──────────────────────┐        ┌──────────┐
-│ useChat hook │ ──────────── │ /api/data-source/chat │ ────── │ LLM API  │
+│ useChat hook │ ──────────── │ /api/server-logic/chat │ ────── │ LLM API  │
 │ (ai/react)   │   streaming  │ (handler.ts)          │        │ (OpenAI) │
 └──────────────┘ ◄─────────── └──────────────────────┘        └──────────┘
 ```
 
-- **Backend**: TypeScript data source handler → streams LLM responses via `Response` passthrough
+- **Backend**: TypeScript server logic handler → streams LLM responses via `Response` passthrough
 - **Frontend**: Vercel AI SDK `useChat` hook → manages conversation state and streaming automatically
 
 ## Dependencies
@@ -28,9 +28,9 @@ Install Vercel AI SDK and the OpenAI provider:
 npm install ai @ai-sdk/openai
 ```
 
-## Backend: Data Source JSON Definition
+## Backend: Server Logic JSON Definition
 
-Create `data-source/chat.json`:
+Create `server-logic/chat.json`:
 
 ```json
 {
@@ -44,7 +44,7 @@ Create `data-source/chat.json`:
 
 ## Backend: Handler Implementation (Streaming)
 
-Create `data-source/chat.ts`:
+Create `server-logic/chat.ts`:
 
 ```typescript
 import { createOpenAI } from "@ai-sdk/openai";
@@ -140,7 +140,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ChatPage() {
   const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
-    api: "/api/data-source/chat",
+    api: "/api/server-logic/chat",
   });
 
   return (
@@ -194,7 +194,7 @@ Use the `body` option to send extra data alongside messages:
 
 ```tsx
 const { messages, input, handleInputChange, handleSubmit } = useChat({
-  api: "/api/data-source/chat",
+  api: "/api/server-logic/chat",
   body: {
     model: "gpt-4o-mini",
     temperature: 0.7,
@@ -222,8 +222,8 @@ export default async function handler(c) {
 ## Complete File Tree
 
 ```
-data-source/
-  chat.json          # Data source definition (type: "typescript")
+server-logic/
+  chat.json          # Server logic definition (type: "typescript")
   chat.ts            # TypeScript handler (streamText + toDataStreamResponse)
 src/
   pages/
@@ -232,7 +232,7 @@ src/
 
 ## Important Notes
 
-1. **No caching**: Never add `cache` to chat data source JSON — streaming responses are not cacheable.
+1. **No caching**: Never add `cache` to chat server logic JSON — streaming responses are not cacheable.
 2. **Handler signature**: Chat handlers receive Hono Context `c` — use `c.req.json()` to access the full request body.
 3. **Body format**: `useChat` sends `{ messages: [...] }` directly in the POST body, NOT in `{ params: {} }`. Read messages from `body.messages`, not `body.params.messages`.
 4. **Streaming passthrough**: `toDataStreamResponse()` returns a standard `Response` — the server passes it through to the client unchanged.

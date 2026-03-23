@@ -1,56 +1,56 @@
 ---
-name: data-source-development
-description: Data source creation and editing workflows — SQL/TypeScript data source patterns, connection setup, testing procedures
+name: server-logic-development
+description: Server logic creation and editing workflows — SQL/TypeScript server logic patterns, connection setup, testing procedures
 ---
 
-# Data Source Development Guide
+# Server Logic Development Guide
 
-This document is the complete reference for AI agents creating and managing data source JSON files.
-Read only this file — no other documentation is needed to create data sources.
+This document is the complete reference for AI agents creating and managing server logic JSON files.
+Read only this file — no other documentation is needed to create server logics.
 
 ## Overview
 
-`@squadbase/vite-server` is a Hono-based backend that loads data source definitions from JSON files,
+`@squadbase/vite-server` is a Hono-based backend that loads server logic definitions from JSON files,
 executes SQL queries or arbitrary server-side logic via TypeScript handlers, and exposes results via REST API.
-The server watches the data source directory and **auto-reloads on file changes** — no restart needed.
+The server watches the server logic directory and **auto-reloads on file changes** — no restart needed.
 
 ---
 
-## Data Source JSON Specification
+## Server Logic JSON Specification
 
-Each data source is a single `.json` file in the data source directory (default: `<project>/data-source/`).
+Each server logic is a single `.json` file in the server logic directory (default: `<project>/server-logic/`).
 The **filename (without extension) becomes the slug** used in API calls.
 
-Example: `sales-summary.json` → slug `sales-summary` → `POST /api/data-source/sales-summary`
+Example: `sales-summary.json` → slug `sales-summary` → `POST /api/server-logic/sales-summary`
 
-Two types of data sources are supported: **SQL** (default) and **TypeScript**.
+Two types of server logics are supported: **SQL** (default) and **TypeScript**.
 
-### SQL Data Source (JsonDataSourceDefinition)
+### SQL Server Logic (JsonServerLogicDefinition)
 
 ```typescript
-interface JsonDataSourceDefinition {
+interface JsonServerLogicDefinition {
   description: string;              // REQUIRED — human-readable description
   type?: "sql";                     // Optional — defaults to SQL when omitted
   query: string;                    // REQUIRED — SQL query with {{param}} placeholders
   connectionId: string;             // REQUIRED — key in .squadbase/connections.json
   parameters?: ParameterMeta[];     // Optional — query parameter definitions
-  response?: DataSourceResponse;    // Optional — response schema (used by AI agents and UI)
-  cache?: DataSourceCacheConfig;    // Optional — caching configuration
+  response?: ServerLogicResponse;    // Optional — response schema (used by AI agents and UI)
+  cache?: ServerLogicCacheConfig;    // Optional — caching configuration
 }
 ```
 
-### TypeScript Data Source (JsonTypeScriptDataSourceDefinition)
+### TypeScript Server Logic (JsonTypeScriptServerLogicDefinition)
 
-A TypeScript data source lets you run arbitrary server-side logic — external API calls, data transformations, multi-source aggregation — and expose the result through the same `/api/data-source/:slug` endpoint.
+A TypeScript server logic lets you run arbitrary server-side logic — external API calls, data transformations, multi-source aggregation — and expose the result through the same `/api/server-logic/:slug` endpoint.
 
 ```typescript
-interface JsonTypeScriptDataSourceDefinition {
+interface JsonTypeScriptServerLogicDefinition {
   description: string;              // REQUIRED — human-readable description
   type: "typescript";               // REQUIRED — must be exactly "typescript"
   handlerPath: string;              // REQUIRED — relative path to .ts handler file (from the JSON file's directory)
   parameters?: ParameterMeta[];     // Optional — parameter definitions (for metadata only)
-  response?: DataSourceResponse;    // Optional — response schema (used by AI agents and UI)
-  cache?: DataSourceCacheConfig;    // Optional — caching configuration
+  response?: ServerLogicResponse;    // Optional — response schema (used by AI agents and UI)
+  cache?: ServerLogicCacheConfig;    // Optional — caching configuration
 }
 ```
 
@@ -59,7 +59,7 @@ interface JsonTypeScriptDataSourceDefinition {
 The handler file must export a default async function that returns a `Response` object.
 
 ```typescript
-// data-source/my-handler.ts
+// server-logic/my-handler.ts
 export default async function handler() {
   const res = await fetch(`https://api.example.com/users`, {
     headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
@@ -78,12 +78,12 @@ export default async function handler() {
 - Export a default async function (no arguments needed)
 - Return a `Response` object directly (e.g., `new Response(JSON.stringify(...))`) — the server passes the handler's response through as-is
 - For non-SQL connectors, use `connection()` from `@squadbase/vite-server/connectors/<type>` (see "Using Non-SQL Connectors" section below)
-- `handlerPath` must be relative to the JSON file's directory and must point to a `.ts` file within the data-source directory (no path traversal)
+- `handlerPath` must be relative to the JSON file's directory and must point to a `.ts` file within the server-logic directory (no path traversal)
 - Handlers run with full Node.js environment access including `process.env`
 
-#### TypeScript data source examples
+#### TypeScript server logic examples
 
-**Simple external API call** (`data-source/user-summary.json`):
+**Simple external API call** (`server-logic/user-summary.json`):
 ```json
 {
   "description": "Fetch user purchase summary from external API",
@@ -96,7 +96,7 @@ export default async function handler() {
 }
 ```
 
-**Multi-source aggregation** (`data-source/sales-forecast.json`):
+**Multi-source aggregation** (`server-logic/sales-forecast.json`):
 ```json
 {
   "description": "Combine sales data and trend data from multiple APIs",
@@ -108,20 +108,20 @@ export default async function handler() {
 }
 ```
 
-#### Coexistence with SQL data sources
+#### Coexistence with SQL server logics
 
 ```
-data-source/
-  ├── active-users.json        # SQL data source (no type field → SQL)
-  ├── sales-by-region.json     # SQL data source
-  ├── user-summary.json        # TypeScript data source (type: "typescript")
+server-logic/
+  ├── active-users.json        # SQL server logic (no type field → SQL)
+  ├── sales-by-region.json     # SQL server logic
+  ├── user-summary.json        # TypeScript server logic (type: "typescript")
   └── user-summary.ts          # Corresponding handler file
 ```
 
 ### Field Definitions
 
 #### `description` (string, **required**)
-Human-readable description of what this data source returns.
+Human-readable description of what this server logic returns.
 
 #### `query` (string, **required**)
 SQL query template. Use `{{paramName}}` placeholders for dynamic values.
@@ -145,19 +145,19 @@ interface ParameterMeta {
 
 #### Response format
 
-| Data source type | Response format |
+| Server logic type | Response format |
 |---|---|
 | SQL (`type: "sql"` or omitted) | `{ "data": rows[] }` — the server wraps the query result in a `data` property |
 | TypeScript (`type: "typescript"`) | The handler's `Response` is returned as-is — the handler controls the format via `new Response(...)` |
 
-#### `connectionId` (string, **required for SQL data sources only**)
-Key in `.squadbase/connections.json` identifying the database connection. Required for SQL data sources; not used (and not accepted) for TypeScript data sources.
+#### `connectionId` (string, **required for SQL server logics only**)
+Key in `.squadbase/connections.json` identifying the database connection. Required for SQL server logics; not used (and not accepted) for TypeScript server logics.
 
 The connector type is determined by each entry's `connector.slug`. SQL connectors are used with the `query` field in JSON; non-SQL connectors are used in TypeScript handlers via `connection()` from connector subpath exports.
 
-#### `cache` (DataSourceCacheConfig, optional)
+#### `cache` (ServerLogicCacheConfig, optional)
 ```typescript
-interface DataSourceCacheConfig {
+interface ServerLogicCacheConfig {
   ttl: number;                      // Cache lifetime in seconds. 0 = no cache.
   staleWhileRevalidate?: boolean;   // Return stale data immediately while refreshing in background. Default: false.
 }
@@ -196,7 +196,7 @@ WRONG:     WHERE date >= '{{start_date}}'    ← double-quoting bug!
 
 ## Connection Configuration
 
-SQL data sources require a `connectionId` that maps to an entry in `.squadbase/connections.json` (default: `<cwd>/.squadbase/connections.json`). TypeScript data sources access connections via the `connection()` function from connector subpath exports (e.g., `@squadbase/vite-server/connectors/kintone`).
+SQL server logics require a `connectionId` that maps to an entry in `.squadbase/connections.json` (default: `<cwd>/.squadbase/connections.json`). TypeScript server logics access connections via the `connection()` function from connector subpath exports (e.g., `@squadbase/vite-server/connectors/kintone`).
 
 ```json
 {
@@ -247,19 +247,19 @@ When cache is enabled (`ttl > 0`), responses include:
 
 All endpoints are under the `/api` prefix.
 
-### Data Source
+### Server Logic
 
 | Method | Path | Body | Response | Description |
 |--------|------|------|----------|-------------|
-| GET | `/api/data-source/:slug` | — | SQL: `{ data: rows[] }`, TS: handler response | Execute query with no parameters (debug) |
-| POST | `/api/data-source/:slug` | `{ "params": { ... } }` | SQL: `{ data: rows[] }`, TS: handler response | Execute query with parameters |
+| GET | `/api/server-logic/:slug` | — | SQL: `{ data: rows[] }`, TS: handler response | Execute query with no parameters (debug) |
+| POST | `/api/server-logic/:slug` | `{ "params": { ... } }` | SQL: `{ data: rows[] }`, TS: handler response | Execute query with parameters |
 
-### Data Source Metadata
+### Server Logic Metadata
 
 | Method | Path | Response | Description |
 |--------|------|----------|-------------|
-| GET | `/api/data-source-meta` | `[{ slug, description, type, parameters, response?, connectionId, query?, handlerPath?, cache? }]` | List all registered data sources |
-| GET | `/api/data-source-meta/:slug` | `{ slug, description, type, parameters, response?, connectionId, query?, handlerPath?, cache? }` | Get metadata for a specific data source |
+| GET | `/api/server-logic-meta` | `[{ slug, description, type, parameters, response?, connectionId, query?, handlerPath?, cache? }]` | List all registered server logics |
+| GET | `/api/server-logic-meta/:slug` | `{ slug, description, type, parameters, response?, connectionId, query?, handlerPath?, cache? }` | Get metadata for a specific server logic |
 
 ### Cache Management
 
@@ -344,7 +344,7 @@ Response: `{ "data": [{ "date": "2025-01-01", ... }, ...] }`
 
 ## Using Non-SQL Connectors in TypeScript Handlers
 
-Non-SQL connectors are used via TypeScript data source handlers. Import the `connection()` function from the connector-specific subpath export of `@squadbase/vite-server`.
+Non-SQL connectors are used via TypeScript server logic handlers. Import the `connection()` function from the connector-specific subpath export of `@squadbase/vite-server`.
 
 ### Usage
 
@@ -362,18 +362,18 @@ const client = connection("<connectionId>");
 
 ## Important Notes and Gotchas
 
-1. **Filename = Slug**: The JSON filename (without `.json`) is the data source slug used in API calls and frontend hooks.
+1. **Filename = Slug**: The JSON filename (without `.json`) is the server logic slug used in API calls and frontend hooks.
 
-2. **Auto-reload**: The server watches the data source directory with `fs.watch`. After creating or modifying a JSON file, wait ~300ms for automatic reload. No server restart needed.
+2. **Auto-reload**: The server watches the server logic directory with `fs.watch`. After creating or modifying a JSON file, wait ~300ms for automatic reload. No server restart needed.
 
 3. **String auto-quoting**: String parameters are automatically quoted. Writing `'{{param}}'` in SQL causes double-quoting bugs. Always write `{{param}}` without quotes.
 
-4. **Required fields**: All data sources require `description`. SQL data sources additionally require `connectionId` and `query`. TypeScript data sources require `type: "typescript"` and `handlerPath` (no `connectionId`). Files missing required fields are skipped with a warning.
+4. **Required fields**: All server logics require `description`. SQL server logics additionally require `connectionId` and `query`. TypeScript server logics require `type: "typescript"` and `handlerPath` (no `connectionId`). Files missing required fields are skipped with a warning.
 
-5. **Response format**: SQL data sources always return `{ "data": rows[] }`. TypeScript data sources return the handler's `Response` as-is (the handler controls the response format via `new Response(...)`).
+5. **Response format**: SQL server logics always return `{ "data": rows[] }`. TypeScript server logics return the handler's `Response` as-is (the handler controls the response format via `new Response(...)`).
 
 6. **Parameter defaults**: When a parameter is not provided in the request and has a `default` value, the default is used. Otherwise `null` is used.
 
 7. **Cache key includes parameters**: Different parameter combinations create separate cache entries. High-cardinality filters reduce cache hit rates.
 
-8. **connections.json**: SQL data sources require a `connectionId` that maps to an entry in `.squadbase/connections.json`. TypeScript handlers access connections via `connection()` from connector subpath exports, passing the connection ID. Each connections.json entry has `connector: { slug }` and `envVars`. The `envVars` values are environment variable **names**, not actual secrets.
+8. **connections.json**: SQL server logics require a `connectionId` that maps to an entry in `.squadbase/connections.json`. TypeScript handlers access connections via `connection()` from connector subpath exports, passing the connection ID. Each connections.json entry has `connector: { slug }` and `envVars`. The `envVars` values are environment variable **names**, not actual secrets.

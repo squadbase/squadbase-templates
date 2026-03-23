@@ -3,11 +3,11 @@ import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { getQuery } from "../connector-client/index.ts";
 import { applyDefaults } from "../registry.ts";
-import { anyJsonDataSourceSchema } from "../types/data-source.ts";
+import { anyJsonServerLogicSchema } from "../types/server-logic.ts";
 import type {
-  AnyJsonDataSourceDefinition,
-  JsonSqlDataSourceDefinition,
-} from "../types/data-source.ts";
+  AnyJsonServerLogicDefinition,
+  JsonSqlServerLogicDefinition,
+} from "../types/server-logic.ts";
 
 export interface RunResult {
   slug: string;
@@ -47,9 +47,9 @@ function createStubContext(params: Record<string, unknown>): import("hono").Cont
   return stub as unknown as import("hono").Context;
 }
 
-async function runSqlDataSource(
+async function runSqlServerLogic(
   slug: string,
-  def: JsonSqlDataSourceDefinition,
+  def: JsonSqlServerLogicDefinition,
   params: Record<string, unknown>,
   limit: number,
 ): Promise<RunResult> {
@@ -78,7 +78,7 @@ async function runSqlDataSource(
   }
 }
 
-async function runTypescriptDataSource(
+async function runTypescriptServerLogic(
   slug: string,
   handlerPath: string,
   params: Record<string, unknown>,
@@ -120,24 +120,24 @@ async function runTypescriptDataSource(
   }
 }
 
-export async function runDataSource(
+export async function runServerLogic(
   slug: string,
   dirPath: string,
   params: Record<string, unknown>,
   limit: number,
 ): Promise<RunResult> {
   const jsonPath = path.join(dirPath, `${slug}.json`);
-  let def: AnyJsonDataSourceDefinition;
+  let def: AnyJsonServerLogicDefinition;
   try {
     const raw = await readFile(jsonPath, "utf-8");
-    const parsed = anyJsonDataSourceSchema.safeParse(JSON.parse(raw));
+    const parsed = anyJsonServerLogicSchema.safeParse(JSON.parse(raw));
     if (!parsed.success) {
       return {
         slug,
         rows: [],
         rowCount: 0,
         durationMs: 0,
-        error: new Error(`Invalid data source definition: ${parsed.error.message}`),
+        error: new Error(`Invalid server logic definition: ${parsed.error.message}`),
       };
     }
     def = parsed.data;
@@ -147,16 +147,16 @@ export async function runDataSource(
       rows: [],
       rowCount: 0,
       durationMs: 0,
-      error: new Error(`Data source not found: ${jsonPath}`),
+      error: new Error(`Server logic not found: ${jsonPath}`),
     };
   }
 
   if (def.type === "typescript") {
     const absolutePath = path.resolve(dirPath, def.handlerPath);
-    return runTypescriptDataSource(slug, absolutePath, params);
+    return runTypescriptServerLogic(slug, absolutePath, params);
   }
 
-  return runSqlDataSource(slug, def as JsonSqlDataSourceDefinition, params, limit);
+  return runSqlServerLogic(slug, def as JsonSqlServerLogicDefinition, params, limit);
 }
 
 export async function listSlugs(dirPath: string): Promise<string[]> {
@@ -176,5 +176,5 @@ export async function runAll(
   limit: number,
 ): Promise<RunResult[]> {
   const slugs = await listSlugs(dirPath);
-  return Promise.all(slugs.map((slug) => runDataSource(slug, dirPath, params, limit)));
+  return Promise.all(slugs.map((slug) => runServerLogic(slug, dirPath, params, limit)));
 }

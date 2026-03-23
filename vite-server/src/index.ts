@@ -4,8 +4,8 @@ import { cors } from "hono/cors";
 import path from "node:path";
 import { initialize, startWatching } from "./registry.ts";
 import { watchConnectionsFile, reloadEnvFile } from "./connector-client/index.ts";
-import dataSourceRoutes from "./routes/data-source.ts";
-import dataSourceMetaRoutes from "./routes/data-source-meta.ts";
+import serverLogicRoutes from "./routes/server-logic.ts";
+import serverLogicMetaRoutes from "./routes/server-logic-meta.ts";
 import cacheRoutes from "./routes/cache.ts";
 import pagesRoutes from "./routes/pages.ts";
 
@@ -36,8 +36,8 @@ export type { ConnectionFetchOptions } from "./connection.ts";
 const apiApp = new Hono();
 apiApp.use("/*", contextStorage());
 apiApp.use("/*", cors());
-apiApp.route("/data-source", dataSourceRoutes);
-apiApp.route("/data-source-meta", dataSourceMetaRoutes);
+apiApp.route("/server-logic", serverLogicRoutes);
+apiApp.route("/server-logic-meta", serverLogicMetaRoutes);
 apiApp.route("/cache", cacheRoutes);
 apiApp.route("/", pagesRoutes);
 

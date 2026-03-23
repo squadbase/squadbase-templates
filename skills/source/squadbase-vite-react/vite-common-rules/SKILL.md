@@ -16,13 +16,13 @@ description: Prohibited file modifications and architectural constraints for Vit
 | `src/index.css` | Tailwind CSS v4 base imports, design tokens (oklch CSS custom properties), dark mode config, base layer styles. | Editing tokens or imports breaks the entire design system. |
 | `src/vite-env.d.ts` | Vite type reference (`/// <reference types="vite/client" />`). | Changing it breaks TypeScript module resolution for `import.meta.env`. |
 | `node_modules/` | Installed dependencies. | Direct edits are overwritten on install and cause non-reproducible builds. |
-| `.squadbase/` | Connection configuration (`connections.json`). | Contains deployment-specific connector config; manual edits break data source connections. |
+| `.squadbase/` | Connection configuration (`connections.json`). | Contains deployment-specific connector config; manual edits break server logic connections. |
 
 ## Where to Implement Instead
 
 | Need | Location | Notes |
 |------|----------|-------|
-| Backend logic / API endpoint | `data-source/*.ts` | TypeScript data source handler. See `data-source-development` skill. |
+| Backend logic / API endpoint | `server-logic/*.ts` | TypeScript server logic handler. See `server-logic-development` skill. |
 | New page | `src/pages/{name}.tsx` | File-based routing: `home.tsx` → `/`, `dashboard.tsx` → `/dashboard`. Use `export default function`. |
 | New component | `src/components/{pageName}/{component-name}.tsx` | Use `export default function`. See `frontend-development` skill. |
 | Custom hook | `src/hooks/{hook-name}.ts` | Standard React hook file. |
@@ -31,7 +31,7 @@ description: Prohibited file modifications and architectural constraints for Vit
 
 | If you need to… | NEVER do this | Do this instead |
 |-----------------|---------------|-----------------|
-| Add an API endpoint or backend logic | Modify `vite.config.ts` or create Express/Hono routes manually | Create a TypeScript data source handler in `data-source/` |
+| Add an API endpoint or backend logic | Modify `vite.config.ts` or create Express/Hono routes manually | Create a TypeScript server logic handler in `server-logic/` |
 | Add a provider or context | Edit `src/main.tsx` to add providers | Wrap providers inside your page or component |
 | Change the app layout | Edit `src/App.tsx` | Create a layout component in `src/components/` and use it within your page |
 | Add a new route | Manually edit `src/routes.tsx` | Create a new `.tsx` file in `src/pages/` — it is auto-registered |
