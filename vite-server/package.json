@@ -1,6 +1,6 @@
 {
   "name": "@squadbase/vite-server",
-  "version": "0.1.2-dev.0",
+  "version": "0.1.2-dev.1",
   "type": "module",
   "exports": {
     ".": {
@@ -38,6 +38,74 @@
     "./connectors/google-ads-oauth": {
       "import": "./dist/connectors/google-ads-oauth.js",
       "types": "./dist/connectors/google-ads-oauth.d.ts"
+    },
+    "./connectors/kintone-api-token": {
+      "import": "./dist/connectors/kintone-api-token.js",
+      "types": "./dist/connectors/kintone-api-token.d.ts"
+    },
+    "./connectors/airtable": {
+      "import": "./dist/connectors/airtable.js",
+      "types": "./dist/connectors/airtable.d.ts"
+    },
+    "./connectors/google-analytics": {
+      "import": "./dist/connectors/google-analytics.js",
+      "types": "./dist/connectors/google-analytics.d.ts"
+    },
+    "./connectors/wix-store": {
+      "import": "./dist/connectors/wix-store.js",
+      "types": "./dist/connectors/wix-store.d.ts"
+    },
+    "./connectors/dbt": {
+      "import": "./dist/connectors/dbt.js",
+      "types": "./dist/connectors/dbt.d.ts"
+    },
+    "./connectors/gemini": {
+      "import": "./dist/connectors/gemini.js",
+      "types": "./dist/connectors/gemini.d.ts"
+    },
+    "./connectors/anthropic": {
+      "import": "./dist/connectors/anthropic.js",
+      "types": "./dist/connectors/anthropic.d.ts"
+    },
+    "./connectors/hubspot-oauth": {
+      "import": "./dist/connectors/hubspot-oauth.js",
+      "types": "./dist/connectors/hubspot-oauth.d.ts"
+    },
+    "./connectors/stripe-oauth": {
+      "import": "./dist/connectors/stripe-oauth.js",
+      "types": "./dist/connectors/stripe-oauth.d.ts"
+    },
+    "./connectors/airtable-oauth": {
+      "import": "./dist/connectors/airtable-oauth.js",
+      "types": "./dist/connectors/airtable-oauth.d.ts"
+    },
+    "./connectors/amplitude": {
+      "import": "./dist/connectors/amplitude.js",
+      "types": "./dist/connectors/amplitude.d.ts"
+    },
+    "./connectors/attio": {
+      "import": "./dist/connectors/attio.js",
+      "types": "./dist/connectors/attio.d.ts"
+    },
+    "./connectors/shopify": {
+      "import": "./dist/connectors/shopify.js",
+      "types": "./dist/connectors/shopify.d.ts"
+    },
+    "./connectors/slack": {
+      "import": "./dist/connectors/slack.js",
+      "types": "./dist/connectors/slack.d.ts"
+    },
+    "./connectors/shopify-oauth": {
+      "import": "./dist/connectors/shopify-oauth.js",
+      "types": "./dist/connectors/shopify-oauth.d.ts"
+    },
+    "./connectors/ms-teams": {
+      "import": "./dist/connectors/ms-teams.js",
+      "types": "./dist/connectors/ms-teams.d.ts"
+    },
+    "./connectors/ms-teams-oauth": {
+      "import": "./dist/connectors/ms-teams-oauth.js",
+      "types": "./dist/connectors/ms-teams-oauth.d.ts"
     }
   },
   "files": [
@@ -66,7 +134,7 @@
     "@hono/vite-build": "^1.10.0",
     "@hono/vite-dev-server": "^0.25.0",
     "@kintone/rest-api-client": "^5.5.0",
-    "@squadbase/connectors": "^0.1.2-dev.0",
+    "@squadbase/connectors": "^0.1.2-dev.3",
     "hono": "^4.11.9",
     "mysql2": "^3.11.0",
     "pg": "^8.18.0",
