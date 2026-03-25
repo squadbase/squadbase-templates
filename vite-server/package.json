@@ -1,6 +1,6 @@
 {
   "name": "@squadbase/vite-server",
-  "version": "0.1.2-dev.1",
+  "version": "0.1.2-dev.2",
   "type": "module",
   "exports": {
     ".": {
@@ -99,13 +99,13 @@
       "import": "./dist/connectors/shopify-oauth.js",
       "types": "./dist/connectors/shopify-oauth.d.ts"
     },
-    "./connectors/ms-teams": {
-      "import": "./dist/connectors/ms-teams.js",
-      "types": "./dist/connectors/ms-teams.d.ts"
+    "./connectors/microsoft-teams": {
+      "import": "./dist/connectors/microsoft-teams.js",
+      "types": "./dist/connectors/microsoft-teams.d.ts"
     },
-    "./connectors/ms-teams-oauth": {
-      "import": "./dist/connectors/ms-teams-oauth.js",
-      "types": "./dist/connectors/ms-teams-oauth.d.ts"
+    "./connectors/microsoft-teams-oauth": {
+      "import": "./dist/connectors/microsoft-teams-oauth.js",
+      "types": "./dist/connectors/microsoft-teams-oauth.d.ts"
     }
   },
   "files": [
