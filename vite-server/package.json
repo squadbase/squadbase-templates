@@ -1,6 +1,6 @@
 {
   "name": "@squadbase/vite-server",
-  "version": "0.1.2-dev.4",
+  "version": "0.1.2-dev.5",
   "type": "module",
   "exports": {
     ".": {
@@ -134,7 +134,7 @@
     "@hono/vite-build": "^1.10.0",
     "@hono/vite-dev-server": "^0.25.0",
     "@kintone/rest-api-client": "^5.5.0",
-    "@squadbase/connectors": "^0.1.2-dev.8",
+    "@squadbase/connectors": "^0.1.2-dev.9",
     "hono": "^4.11.9",
     "mysql2": "^3.11.0",
     "pg": "^8.18.0",
