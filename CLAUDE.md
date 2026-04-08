@@ -12,6 +12,7 @@ This repository contains templates for [Squadbase](https://www.squadbase.dev/) �
 |-----------|-------------|
 | `vite/` | Default template — Vite 8 + React 19 + Tailwind CSS v4 + shadcn/ui |
 | `vite-server/` | `@squadbase/vite-server` — Hono-based backend plugin for the Vite template |
+| `vite-template/` | `@squadbase/vite-template` — CLI for initializing and customizing Vite templates |
 | `skills/` | `@squadbase/skills` — Agent Skills used in the editor environment |
 
 Each active directory has its own `CLAUDE.md` with detailed guidance. Read those when working in a specific directory.
@@ -40,6 +41,14 @@ npm run lint     # ESLint
 ```bash
 cd vite-server
 npm run build    # Build with tsup (all entry points + CLI)
+npm run release  # Publish to npm
+```
+
+### vite-template/
+
+```bash
+cd vite-template
+npm run build    # Sync base template from ../vite/ + build with tsup
 npm run release  # Publish to npm
 ```
 
