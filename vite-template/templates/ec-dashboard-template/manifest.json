@@ -1,0 +1,16 @@
+{
+  "name": "ec-dashboard-template",
+  "description": "E-commerce dashboard with product and order analytics",
+  "version": "1.0.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "pages/products.tsx", "dest": "src/pages/products.tsx", "action": "add" },
+    { "src": "pages/orders.tsx", "dest": "src/pages/orders.tsx", "action": "add" },
+    { "src": "components/product-table.tsx", "dest": "src/components/product-table.tsx", "action": "add" },
+    { "src": "components/order-chart.tsx", "dest": "src/components/order-chart.tsx", "action": "add" }
+  ],
+  "routes": [
+    { "name": "products", "path": "/products", "title": "Products", "page": "./pages/products" },
+    { "name": "orders", "path": "/orders", "title": "Orders", "page": "./pages/orders" }
+  ]
+}
