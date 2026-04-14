@@ -68,7 +68,13 @@ This works because `routes.tsx` has a fixed structure managed by Squadbase templ
 
 ## Adding a New Template
 
+**テンプレートは原則 1 ルート**: `routes[]` は空にし、追加ルートは作らない。UI ロジックは適切にコンポーネントに分割すること（`components/` 配下に配置し、`manifest.json` の `files[]` に `action: "add"` で追加）。ユーザーがルートを追加する起点は `home.tsx` とし、テンプレート自体でルートを増やさない設計にすること。
+
 1. Create `templates/<name>/` directory
-2. Add a `manifest.json` with `name`, `description`, `version`, `files[]`, and `routes[]`
-3. Add page/component files referenced by the manifest
+2. Add a `manifest.json` with `name`, `description`, `version`, `files[]` (home.tsx + any component files with `action: "add"`), and `routes[]` (empty)
+3. Add `pages/home.tsx` as the entry point, splitting large UI blocks into `components/` as appropriate
 4. Test with `node dist/index.js add <name> --dry-run` from a Vite project directory
+
+## Design Guidelines
+
+See [DESIGN.md](./DESIGN.md) for UI/UX design guidelines for building dashboards and data apps with this template. Follow these guidelines when creating or modifying template pages and components.
