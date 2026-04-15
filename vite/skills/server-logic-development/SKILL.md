@@ -1,6 +1,6 @@
 ---
 name: server-logic-development
-description: Server logic creation and editing workflows — SQL/TypeScript server logic patterns, connection setup, testing procedures
+description: Specification and implementation conventions for SQL / TypeScript server logic. Read when creating or editing a server logic, and before implementing any frontend code that calls one.
 ---
 
 # Server Logic Development Guide

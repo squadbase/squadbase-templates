@@ -1,6 +1,6 @@
 ---
 name: frontend-development
-description: Component TSX generation rules — allowed/forbidden imports, data fetching patterns (useQuery), export conventions, layout constraints
+description: Implementation conventions for the Vite + React frontend. Read before implementing any frontend code.
 ---
 
 # Squadbase Vite Template — Agent Instructions

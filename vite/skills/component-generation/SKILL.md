@@ -1,6 +1,6 @@
 ---
 name: component-generation
-description: Rules for generating TSX components used with buildPageSection (export, imports, layout)
+description: Rules for the TSX code (React component implementation) passed to the buildPageSection tool. Read immediately before calling buildPageSection.
 ---
 
 ## Component Generation Rules (for buildPageSection tsxCode)
