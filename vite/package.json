@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@squadbase/react": "^0.0.1",
-    "@squadbase/vite-server": "^0.1.3-dev.8",
+    "@squadbase/vite-server": "0.1.3-dev.9",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query": "^5.0.0",
     "@tanstack/react-table": "^8.21.3",
