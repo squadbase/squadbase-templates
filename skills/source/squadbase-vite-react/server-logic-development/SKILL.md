@@ -110,14 +110,9 @@ export default async function handler(c: Context) {
   // Access POST body parameters via c.req.json()
   const { params } = await c.req.json();
 
-  const res = await fetch(`https://api.example.com/users/${params.userId}`, {
-    headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
-  });
+  // ... call external APIs or compute the data your handler needs ...
 
-  if (!res.ok) throw new Error(`API error: ${res.status}`);
-  const data = await res.json();
-
-  return new Response(JSON.stringify({ data }), {
+  return new Response(JSON.stringify(/* response body */), {
     headers: { "Content-Type": "application/json" },
   });
 }
