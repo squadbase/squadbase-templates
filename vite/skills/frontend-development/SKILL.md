@@ -179,3 +179,4 @@ Keep simple 1-2 section pages or partial edits in a single file.
 | `@/components/ui/form` | Individual components: `Input`, `Label`, `Select`, etc. |
 | `@/components/ui/toast` | Does not exist |
 | Named exports for pages/components | `export default function ...` only |
+| `<SelectItem value="" />` (empty string) | Radix reserves `""` for "cleared selection" and throws at runtime. Use a sentinel like `"__all__"` and map it to your actual state in `onValueChange` |
