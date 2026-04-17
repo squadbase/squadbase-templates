@@ -12,6 +12,7 @@
   "dependencies": {
     "@squadbase/react": "^0.0.1",
     "@squadbase/vite-server": "^0.1.2",
+    "@streamdown/code": "^1.1.1",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query": "^5.0.0",
     "@tanstack/react-table": "^8.21.3",
@@ -22,11 +23,13 @@
     "echarts": "^6.0.0",
     "echarts-for-react": "^3.0.6",
     "lucide-react": "^0.468.0",
+    "next-themes": "^0.4.6",
     "radix-ui": "^1.4.3",
     "react": "^19.0.0",
-    "react-day-picker": "^9.13.2",
+    "react-day-picker": "^9.14.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.0.0",
+    "streamdown": "^2.5.0",
     "tailwind-merge": "^3.0.0",
     "vaul": "^1.1.2"
   },
