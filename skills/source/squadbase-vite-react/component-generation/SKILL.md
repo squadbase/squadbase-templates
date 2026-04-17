@@ -12,6 +12,10 @@ Constraints for the single TSX component string passed to `buildPageSection`'s `
 - Exactly one default export: `export default function ComponentName()`.
 - No props — the component is self-contained and must render without external input.
 
+## Imports
+
+- Existing components are almost always **named exports**. Before importing one, open its source file to confirm the export name and Props — do not assume a default export.
+
 ## Data fetching
 
 All server calls go through `useQuery` + `POST /api/server-logic/<slug>`.
