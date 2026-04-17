@@ -22,7 +22,7 @@ const pageShellHeaderVariants = cva(
   {
     variants: {
       theme: defineThemeVariant({
-        default: "px-6 py-12 bg-muted",
+        default: "px-6 py-12 border-b",
         shibuya: "px-6 pt-6",
       }),
     },
