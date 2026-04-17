@@ -1,0 +1,26 @@
+{
+  "name": "@squadbase/vite-template",
+  "version": "0.0.1",
+  "type": "module",
+  "bin": {
+    "squadbase-vite-template": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "templates",
+    "base-template"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "sync-base": "rsync -a --delete --exclude='node_modules' --exclude='dist' --exclude='package-lock.json' --exclude='*.tsbuildinfo' --exclude='*.log' ../vite/ base-template/",
+    "build": "npm run sync-base && tsup",
+    "dev": "node scripts/dev.mjs",
+    "release": "npm publish --@squadbase:registry=https://registry.npmjs.org"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "~5.7.0"
+  }
+}

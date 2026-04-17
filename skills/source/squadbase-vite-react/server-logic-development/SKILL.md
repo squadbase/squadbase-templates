@@ -17,8 +17,7 @@ This document covers the domain knowledge needed to provide correct inputs — q
 | `listConnections` | Discover available database connections and their IDs |
 | `create-sql-server-logic` | Create a new SQL server logic |
 | `create-typescript-server-logic` | Create a new TypeScript server logic |
-| `testServerLogic` | Test a server logic by executing it with sample parameters |
-| `testFetchServerLogic` | Test fetching server logic results (validates end-to-end) |
+| `testFetchServerLogic` | Execute a server logic with sample parameters and inspect the response (end-to-end validation) |
 | `listServerLogics` | List all existing server logics |
 | `editServerLogic` | Modify an existing server logic |
 | `deleteServerLogic` | Remove a server logic |
@@ -28,7 +27,7 @@ This document covers the domain knowledge needed to provide correct inputs — q
 1. **Discover connections** — call `listConnections` to find available `connectionId` values
 2. **Design query/handler** — write the SQL query or TypeScript handler code using this guide
 3. **Create server logic** — call `create-sql-server-logic` or `create-typescript-server-logic` with the designed inputs
-4. **Test** — call `testServerLogic` to verify execution, then `testFetchServerLogic` to validate end-to-end
+4. **Test** — call `testFetchServerLogic` to execute the server logic with sample parameters and verify the response
 
 ### What the tools handle automatically
 
@@ -202,4 +201,4 @@ const client = connection("<connectionId>");
 
 5. **Parameter defaults**: When a parameter is not provided and has a `default` value, the default is used; otherwise `null` is used.
 
-6. **Always test after creation**: Call `testServerLogic` then `testFetchServerLogic` to verify the server logic works correctly.
+6. **Always test after creation**: Call `testFetchServerLogic` with sample parameters to verify the server logic works correctly.

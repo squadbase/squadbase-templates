@@ -45,7 +45,17 @@ for (const framework of FRAMEWORKS) {
   log("green", `Copied skills from source/${framework}/`);
 }
 
-// 3. Create nextjs placeholder directory
+// 3. Copy general skills into each framework's output
+const generalSourceDir = join(sourceDir, "general");
+if (existsSync(generalSourceDir)) {
+  for (const framework of FRAMEWORKS) {
+    const frameworkOutDir = join(skillsOutDir, framework);
+    cpSync(generalSourceDir, frameworkOutDir, { recursive: true });
+    log("green", `Copied general skills into skills/${framework}/`);
+  }
+}
+
+// 4. Create nextjs placeholder directory
 const nextjsDir = join(skillsOutDir, "nextjs");
 if (!existsSync(nextjsDir)) {
   mkdirSync(nextjsDir, { recursive: true });

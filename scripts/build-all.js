@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const { spawn } = require("child_process");
-const { existsSync, readdirSync } = require("fs");
+const { existsSync } = require("fs");
 const { join, basename } = require("path");
 
 // Colors for output
@@ -20,27 +20,9 @@ function log(color, message) {
 const repoRoot = join(__dirname, "..");
 
 // Build target directories
-const templateDirs = [];
-
-// Add core if it exists
-const corePath = join(repoRoot, "core");
-if (existsSync(join(corePath, "package.json"))) {
-  templateDirs.push(corePath);
-}
-
-// Dynamically detect templates/*
-const templatesPath = join(repoRoot, "templates");
-if (existsSync(templatesPath)) {
-  const templates = readdirSync(templatesPath, { withFileTypes: true });
-  for (const template of templates) {
-    if (template.isDirectory()) {
-      const templatePath = join(templatesPath, template.name);
-      if (existsSync(join(templatePath, "package.json"))) {
-        templateDirs.push(templatePath);
-      }
-    }
-  }
-}
+const templateDirs = [join(repoRoot, "vite")].filter((dir) =>
+  existsSync(join(dir, "package.json"))
+);
 
 if (templateDirs.length === 0) {
   log("yellow", "No templates found to build.");
