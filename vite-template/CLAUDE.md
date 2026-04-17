@@ -1,80 +1,180 @@
 # CLAUDE.md — vite-template
 
-CLI tool (`@squadbase/vite-template`) for initializing and customizing Squadbase Vite projects. Zero runtime dependencies — uses only Node.js built-ins.
+Squadbase Vite プロジェクトの初期化・カスタマイズ用 CLI ツール（`@squadbase/vite-template`）。ランタイム依存なし — Node.js 組み込みモジュールのみ使用。
 
-## Directory Structure
+## ディレクトリ構成
 
 ```
 vite-template/
 ├── src/
-│   ├── index.ts              # CLI entry — parseArgs + command routing
+│   ├── index.ts              # CLI エントリ — parseArgs + コマンドルーティング
 │   ├── commands/
-│   │   ├── init.ts           # init command — copies base-template/ to cwd
-│   │   ├── add.ts            # add command — validates project, loads manifest, calls apply
-│   │   └── list.ts           # list command — reads templates/ and shows manifests
-│   ├── apply.ts              # File copying + routes.tsx patching
-│   ├── manifest.ts           # Type definitions (TemplateManifest, FileEntry, RouteEntry) + loader
-│   └── logger.ts             # ANSI color logging
-├── templates/                # Template data shipped in npm package
+│   │   ├── init.ts           # init コマンド — base-template/ を cwd にコピー
+│   │   ├── add.ts            # add コマンド — プロジェクト検証、manifest 読み込み、apply 呼び出し
+│   │   └── list.ts           # list コマンド — templates/ を走査して manifest を表示
+│   ├── apply.ts              # ファイルコピー + routes.tsx パッチ
+│   ├── manifest.ts           # 型定義 (TemplateManifest, FileEntry, RouteEntry) + ローダー
+│   └── logger.ts             # ANSI カラーログ
+├── templates/                # npm パッケージに同梱されるテンプレートデータ
 │   └── <template-name>/
 │       ├── manifest.json
 │       ├── pages/
 │       └── components/
-├── base-template/            # Build-time copy of ../vite/ (gitignored)
-├── tsup.config.ts            # Bundles to dist/index.js with #!/usr/bin/env node banner
+├── base-template/            # ビルド時に ../vite/ からコピー（gitignore 対象）
+├── tsup.config.ts            # dist/index.js にバンドル（#!/usr/bin/env node バナー付き）
 ├── tsconfig.json
 ├── package.json
 ├── .gitignore
 └── .npmignore
 ```
 
-## Build Process
+## ビルドプロセス
 
-`npm run build` does two things in sequence:
+`npm run build` は以下を順番に実行:
 
-1. **`sync-base`** — `rsync -a --delete ../vite/ base-template/` (excluding node_modules, dist, package-lock.json, *.tsbuildinfo, *.log)
-2. **`tsup`** — Bundles `src/index.ts` into `dist/index.js` (single ESM file with shebang)
+1. **`sync-base`** — `rsync -a --delete ../vite/ base-template/`（node_modules, dist, package-lock.json, *.tsbuildinfo, *.log を除外）
+2. **`tsup`** — `src/index.ts` を `dist/index.js` にバンドル（ESM 単一ファイル + shebang）
 
-### What gets published to npm
+### npm に公開される内容
 
-- `dist/` — Compiled CLI
-- `templates/` — Template data (pages, components, manifest.json)
-- `base-template/` — Full copy of the Vite base project (for `init` command)
+- `dist/` — コンパイル済み CLI
+- `templates/` — テンプレートデータ（pages, components, manifest.json）
+- `base-template/` — Vite ベースプロジェクトのフルコピー（`init` コマンド用）
 
-### Path resolution
+### パス解決
 
-tsup bundles everything into a single `dist/index.js`, so `__dirname` always resolves to `dist/`. Asset directories are resolved one level up:
+tsup が全てを `dist/index.js` にバンドルするため、`__dirname` は常に `dist/` に解決される。アセットディレクトリは1階層上で参照:
 
 - `join(__dirname, "..", "templates")` → `vite-template/templates/`
 - `join(__dirname, "..", "base-template")` → `vite-template/base-template/`
 
-## Development Commands
+## 開発コマンド
 
 ```bash
-npm run build      # Sync base template from ../vite/ + build with tsup
-npm run release    # Publish to npm (@squadbase:registry)
+npm run build      # ../vite/ からベーステンプレートを同期 + tsup でビルド
+npm run release    # npm に公開（@squadbase:registry）
 ```
 
-## How routes.tsx Patching Works
+## routes.tsx パッチの仕組み
 
-The `add` command patches `src/routes.tsx` using string manipulation (not AST):
+`add` コマンドは文字列操作（AST ではなく）で `src/routes.tsx` をパッチする:
 
-1. Reads `src/routes.tsx`
-2. Checks for duplicate routes by matching `name: "<name>"` pattern
-3. Finds the last `];` in the file (routes array closing)
-4. Inserts new `lazy(() => import(...))` entries before `];`
+1. `src/routes.tsx` を読み込み
+2. `name: "<name>"` パターンでルート重複をチェック
+3. ファイル内の最後の `];`（routes 配列の閉じ括弧）を探す
+4. `];` の手前に `lazy(() => import(...))` エントリを挿入
 
-This works because `routes.tsx` has a fixed structure managed by Squadbase templates.
+`routes.tsx` は Squadbase テンプレートが管理する固定構造のため、この方式で動作する。
 
-## Adding a New Template
+## テンプレートの追加方法
 
 **テンプレートは原則 1 ルート**: `routes[]` は空にし、追加ルートは作らない。UI ロジックは適切にコンポーネントに分割すること（`components/` 配下に配置し、`manifest.json` の `files[]` に `action: "add"` で追加）。ユーザーがルートを追加する起点は `home.tsx` とし、テンプレート自体でルートを増やさない設計にすること。
 
-1. Create `templates/<name>/` directory
-2. Add a `manifest.json` with `name`, `description`, `version`, `files[]` (home.tsx + any component files with `action: "add"`), and `routes[]` (empty)
-3. Add `pages/home.tsx` as the entry point, splitting large UI blocks into `components/` as appropriate
-4. Test with `node dist/index.js add <name> --dry-run` from a Vite project directory
+1. `templates/<name>/` ディレクトリを作成
+2. `manifest.json` に `name`, `description`, `version`, `files[]`（home.tsx + コンポーネントファイル `action: "add"`）, `routes[]`（空）を定義
+3. `pages/home.tsx` をエントリポイントとし、大きな UI ブロックは `components/` に分割
+4. `node dist/index.js add <name> --dry-run` でテスト（Vite プロジェクトディレクトリから実行）
 
-## Design Guidelines
+## テンプレート開発ルール
 
-See [DESIGN.md](./DESIGN.md) for UI/UX design guidelines for building dashboards and data apps with this template. Follow these guidelines when creating or modifying template pages and components.
+テンプレートのページ・コンポーネントを作成する際は、以下のルールに従うこと。
+
+### PageShell を使う
+
+ページファイル（`pages/home.tsx`）では `PageShell` コンポーネント群（`@/components/common/page-shell`）を使ってレイアウトを構成する。raw `div` + 手動の className でページレイアウトを組まないこと。
+
+```tsx
+import {
+  PageShell,
+  PageShellHeader,
+  PageShellHeading,
+  PageShellTitle,
+  PageShellDescription,
+  PageShellHeaderEnd,
+  PageShellContent,
+} from "@/components/common/page-shell"
+
+<PageShell>
+  <PageShellHeader>
+    <PageShellHeading>
+      <PageShellTitle>ページタイトル</PageShellTitle>
+      <PageShellDescription>概要説明</PageShellDescription>
+    </PageShellHeading>
+    <PageShellHeaderEnd>
+      {/* DateRangePicker などのアクション */}
+    </PageShellHeaderEnd>
+  </PageShellHeader>
+  <PageShellContent>
+    {/* メインコンテンツ */}
+  </PageShellContent>
+</PageShell>
+```
+
+### PageShellSummary でインサイトを表示する (テーマに適した場合)
+
+`PageShellHeader` 内に `PageShellSummary` を配置し、ダッシュボードのテーマに沿った分析インサイトをカード形式で表示する。タブ内の KPI 値をそのまま繰り返すのではなく、複数データソースを横断した導出型のインサイト（クロスタブ分析・機会の示唆・全体サマリーなど）を自然言語の文章で伝える。
+
+- インサイトのデータ導出ロジックは `lib/` に純粋関数として分離し、コンポーネントから import する
+- カードの内容はテンプレートのテーマ・データに合わせて設計する（SEOダッシュボードならSEOインサイト、売上ダッシュボードなら売上インサイト）
+- `DashboardCard` composable API を使ってカードを構成する
+
+```tsx
+import {
+  PageShellSummary,
+} from "@/components/common/page-shell"
+import { InsightCards } from "@/components/xxx-dashboard/insight-cards"
+
+<PageShellHeader>
+  <PageShellHeading>
+    <PageShellTitle>ページタイトル</PageShellTitle>
+    <PageShellDescription>概要説明</PageShellDescription>
+  </PageShellHeading>
+  <PageShellHeaderEnd>
+    {/* DateRangePicker などのアクション */}
+  </PageShellHeaderEnd>
+  <PageShellSummary>
+    <InsightCards />
+  </PageShellSummary>
+</PageShellHeader>
+```
+
+### DashboardCard を使う
+
+`Card`（`@/components/ui/card`）を直接使わず、`DashboardCard`（`@/components/common/dashboard-card`）を使う。
+
+- **シンプルなカード**（タイトル + コンテンツ）: `DashboardCardPreset` を使う
+- **カスタムレイアウトが必要なカード**（KPIカードなど）: `DashboardCard` + `DashboardCardHeader` + `DashboardCardTitle` + `DashboardCardContent` 等の composable API を使う
+
+```tsx
+// シンプルなカード（チャート・テーブルの包み）
+import { DashboardCardPreset } from "@/components/common/dashboard-card"
+
+<DashboardCardPreset title="チャートタイトル">
+  <EChart option={option} height="300px" />
+</DashboardCardPreset>
+
+// カスタムレイアウト（KPIカードなど）
+import {
+  DashboardCard,
+  DashboardCardHeader,
+  DashboardCardTitle,
+  DashboardCardAction,
+  DashboardCardContent,
+} from "@/components/common/dashboard-card"
+
+<DashboardCard>
+  <DashboardCardHeader>
+    <DashboardCardTitle>ラベル</DashboardCardTitle>
+    <DashboardCardAction>
+      <Icon className="size-4 text-muted-foreground" />
+    </DashboardCardAction>
+  </DashboardCardHeader>
+  <DashboardCardContent>
+    {/* カスタムコンテンツ */}
+  </DashboardCardContent>
+</DashboardCard>
+```
+
+## デザインガイドライン
+
+ダッシュボード・データアプリの UI/UX 設計指針については [DESIGN.md](./DESIGN.md) を参照。テンプレートのページ・コンポーネントを作成・修正する際はこのガイドラインに従うこと。

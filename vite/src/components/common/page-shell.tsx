@@ -154,20 +154,21 @@ const pageShellSummaryCardVariants = cva(
       }),
       accent: {
         default: "text-card-foreground",
-        accent: "border-[var(--chart-1)] [&>svg]:text-[var(--chart-1)]",
+        accent:
+          "border-[var(--chart-1)] bg-white bg-linear-to-r from-[var(--chart-1)]/5 to-[var(--chart-1)]/5 [&>svg]:text-[var(--chart-1)]",
         amber:
-          "border-amber-500 [&>svg]:text-amber-600 dark:border-amber-800 dark:[&>svg]:text-amber-400",
-        blue: "border-blue-500 [&>svg]:text-blue-600 dark:border-blue-800 dark:[&>svg]:text-blue-400",
+          "border-amber-500 bg-amber-50 [&>svg]:text-amber-600 dark:border-amber-800 dark:[&>svg]:text-amber-400",
+        blue: "border-blue-500 bg-blue-50 [&>svg]:text-blue-600 dark:border-blue-800 dark:[&>svg]:text-blue-400",
         emerald:
-          "border-emerald-500 [&>svg]:text-emerald-600 dark:border-emerald-800 dark:[&>svg]:text-emerald-400",
-        red: "border-red-500 [&>svg]:text-red-600 dark:border-red-800 dark:[&>svg]:text-red-400",
+          "border-emerald-500 bg-emerald-50 [&>svg]:text-emerald-600 dark:border-emerald-800 dark:[&>svg]:text-emerald-400",
+        red: "border-red-500 bg-red-50 [&>svg]:text-red-600 dark:border-red-800 dark:[&>svg]:text-red-400",
         violet:
-          "border-violet-500 [&>svg]:text-violet-600 dark:border-violet-800 dark:[&>svg]:text-violet-400",
+          "border-violet-500 bg-violet-50 [&>svg]:text-violet-600 dark:border-violet-800 dark:[&>svg]:text-violet-400",
         orange:
-          "border-orange-500 [&>svg]:text-orange-600 dark:border-orange-800 dark:[&>svg]:text-orange-400",
-        cyan: "border-cyan-500 [&>svg]:text-cyan-600 dark:border-cyan-800 dark:[&>svg]:text-cyan-400",
+          "border-orange-500 bg-orange-50 [&>svg]:text-orange-600 dark:border-orange-800 dark:[&>svg]:text-orange-400",
+        cyan: "border-cyan-500 bg-cyan-50 [&>svg]:text-cyan-600 dark:border-cyan-800 dark:[&>svg]:text-cyan-400",
         slate:
-          "border-slate-500 [&>svg]:text-slate-600 dark:border-slate-800 dark:[&>svg]:text-slate-400",
+          "border-slate-500 bg-slate-50 [&>svg]:text-slate-600 dark:border-slate-800 dark:[&>svg]:text-slate-400",
       },
     },
     compoundVariants: [
