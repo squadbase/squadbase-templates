@@ -1,0 +1,7 @@
+html[data-theme="default"] {
+  --chart-1: var(--color-blue-600);
+  --chart-2: var(--color-teal-500);
+  --chart-3: var(--color-fuchsia-500);
+  --chart-4: var(--color-violet-500);
+  --chart-5: var(--color-gray-400);
+}

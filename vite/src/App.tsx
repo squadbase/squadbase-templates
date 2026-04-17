@@ -1,29 +1,49 @@
+import { Link, useLocation, useSearchParams } from "react-router";
+import { FileText } from "lucide-react";
+import { AppShell } from "@/components/common/app-shell";
 import { PageRouter } from "@/pages/_router";
-import {
-  SidebarProvider,
-  SidebarInset,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
+import { UserCard } from "@/components/user-card";
+import { routes } from "@/routes";
+import type { NavGroup } from "@/types/navigation";
 
-function AppLayout({ children }: { children: React.ReactNode }) {
+function RouterLink({
+  href,
+  children,
+  ...props
+}: { href: string } & React.ComponentProps<"a">) {
+  const [searchParams] = useSearchParams();
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-12 items-center gap-2 border-b px-4">
-          <SidebarTrigger />
-        </header>
-        <main className="flex-1">{children}</main>
-      </SidebarInset>
-    </SidebarProvider>
+    <Link to={{ pathname: href, search: searchParams.toString() }} {...props}>
+      {children}
+    </Link>
   );
 }
 
+function useNavGroups(): NavGroup[] {
+  const location = useLocation();
+  return [
+    {
+      label: "Pages",
+      items: routes.map((route) => ({
+        label: route.title,
+        href: route.path,
+        icon: route.icon ?? FileText,
+        isActive: location.pathname === route.path,
+      })),
+    },
+  ];
+}
+
 export default function App() {
+  const groups = useNavGroups();
   return (
-    <AppLayout>
+    <AppShell
+      groups={groups}
+      actions={<UserCard />}
+      linkComponent={RouterLink}
+      variant="header"
+    >
       <PageRouter />
-    </AppLayout>
+    </AppShell>
   );
 }

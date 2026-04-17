@@ -1,3 +1,5 @@
+English | [日本語](./README.ja.md)
+
 # Squadbase Templates
 
 A collection of production-ready templates for [Squadbase](https://www.squadbase.dev).
