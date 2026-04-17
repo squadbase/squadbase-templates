@@ -1,6 +1,6 @@
 ---
 name: component-generation
-description: Rules for generating TSX components used with buildPageSection (export, imports, data fetching patterns)
+description: Rules for the TSX code (React component implementation) passed to the buildPageSection tool. Read immediately before calling buildPageSection.
 ---
 
 ## Component Generation Rules (for buildPageSection tsxCode)
@@ -26,26 +26,3 @@ description: Rules for generating TSX components used with buildPageSection (exp
 - `@/components/ui/toast` does NOT exist
 - `@/lib/utils` — do NOT import
 
-### Data Fetching
-- Use `useQuery` from `@tanstack/react-query` for all data fetching
-- Pattern:
-  ```
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["server-logic", "slug"],
-    queryFn: async () => {
-      const res = await fetch("/api/server-logic/slug", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ params: {} }),
-      });
-      if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
-      const json = await res.json();
-      return json.data as YourType[];
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-  ```
-- queryKey must include slug and params for correct cache invalidation
-- Always handle loading: `if (isLoading) return <Skeleton .../>`
-- Always handle error: `if (error) return <p className="text-destructive">{error.message}</p>`
-- NEVER call `.filter()`, `.map()`, `.length` on `data` without null guard

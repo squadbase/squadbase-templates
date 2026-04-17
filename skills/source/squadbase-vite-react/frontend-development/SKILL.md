@@ -1,6 +1,6 @@
 ---
 name: frontend-development
-description: Component TSX generation rules — allowed/forbidden imports, data fetching patterns (useQuery), export conventions, layout constraints
+description: Implementation conventions for the Vite + React frontend. Read before implementing any frontend code.
 ---
 
 # Squadbase Vite Template — Agent Instructions
@@ -49,12 +49,23 @@ export default function DashboardPage() {
 
 ## Data Fetching
 
-Use `useQuery` from `@tanstack/react-query` directly.
+Use `useQuery` from `@tanstack/react-query` for all data fetching.
+
+- `queryKey` must include slug and params for correct cache invalidation
+- `staleTime: 5 * 60 * 1000` (5 min) is the standard; adjust as needed
+- Always show `<Skeleton />` while loading; always handle `error`
+- Explicitly type the return value with `as YourType`
+- To pass params, include them in the request body's `params` field **and** in the `queryKey`
+
+The response shape depends on the server logic's type (SQL vs TypeScript).
+
+### Fetching from a SQL server logic
+
+The server wraps query results in `{ "data": rows[] }`, so access the array via `json.data`.
 
 ```tsx
 import { useQuery } from "@tanstack/react-query";
 
-// Basic
 const { data, isLoading, error } = useQuery({
   queryKey: ["server-logic", "users"],
   queryFn: async () => {
@@ -69,28 +80,30 @@ const { data, isLoading, error } = useQuery({
   },
   staleTime: 5 * 60 * 1000,
 });
+```
 
-// With params
-const { data } = useQuery({
-  queryKey: ["server-logic", "sales-by-region", { region }],
+### Fetching from a TypeScript server logic
+
+TypeScript handlers return their `Response` as-is, so the shape is determined by the handler.
+
+```tsx
+import { useQuery } from "@tanstack/react-query";
+
+const { data, isLoading, error } = useQuery({
+  queryKey: ["server-logic", "dashboard-summary"],
   queryFn: async () => {
-    const res = await fetch("/api/server-logic/sales-by-region", {
+    const res = await fetch("/api/server-logic/dashboard-summary", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ params: { region } }),
+      body: JSON.stringify({ params: {} }),
     });
     if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
     const json = await res.json();
-    return json.data as SalesRow[];
+    return json as DashboardSummary;
   },
   staleTime: 5 * 60 * 1000,
 });
 ```
-
-- `queryKey` must include slug and params for correct cache invalidation
-- `staleTime: 5 * 60 * 1000` (5 min) is the standard; adjust as needed
-- Always show `<Skeleton />` while loading; always handle `error`
-- Explicitly type the return value with `as YourType`
 
 ## UI Components — Always Use These
 
@@ -166,3 +179,4 @@ Keep simple 1-2 section pages or partial edits in a single file.
 | `@/components/ui/form` | Individual components: `Input`, `Label`, `Select`, etc. |
 | `@/components/ui/toast` | Does not exist |
 | Named exports for pages/components | `export default function ...` only |
+| `<SelectItem value="" />` (empty string) | Radix reserves `""` for "cleared selection" and throws at runtime. Use a sentinel like `"__all__"` and map it to your actual state in `onValueChange` |
