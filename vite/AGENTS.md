@@ -57,6 +57,8 @@ Routes are explicit in `src/routes.tsx`. To add a page:
 ## Component Rules
 
 - Every **page** (`src/pages/*.tsx`) uses `export default function` — required by the `lazy()` loader in `routes.tsx`. Components under `src/components/` may use named or default exports.
+- Page files default to `PageShell` (Header → Content, optional Footer). Only switch to a custom layout when the requested design explicitly cannot be expressed with `PageShell`.
+- Framed / bordered content defaults to `DashboardCard` (or `DashboardCardPreset`). Reach for `ui/Card` only when `DashboardCard` genuinely cannot meet the requirement.
 - Before using any component, open its source file to confirm the exact Props and usage — do not rely on assumptions.
 - Import React hooks as named imports (`import { useState } from "react"`). Never `import React from "react"` — the JSX transform is automatic.
 - ECharts: `import type { EChartsOption } from "echarts"` only. Use `@/components/data/echart` for the chart component itself.
@@ -88,13 +90,15 @@ Only components with **non-obvious usage** or **error-prone behavior** are detai
 
 No gotcha (listed only): `Button`, `Card`, `Badge`, `Label`, `Separator`, `Skeleton`, `Avatar`, `Progress`, `Accordion`, `Breadcrumb`, `Pagination`, `Alert`, `Collapsible`, `Empty`, `Spinner`, `Input`, `Textarea`, `Checkbox`, `RadioGroup`, `Switch`, `Table`, `Toggle`.
 
+> `Card` is allowed but not the default — prefer `DashboardCard` from `components/common/` unless `DashboardCard` can't satisfy the requirement.
+
 ### `components/common/` — app-level building blocks
 
 | Component | When to use | Gotcha |
 |---|---|---|
 | `AppShell` | Outer layout wrapping every route | `groups: NavGroup[]` required. `linkComponent` must accept `href` and `aria-disabled`. Sidebar context does not exist when `variant="header"` |
-| `PageShell` / `PageShellHeader` / `PageShellContent` | Per-page header + body frame | Child order must be Header → Content (→ Footer). Reversing breaks layout |
-| `DashboardCard` | Single dashboard widget frame | `variant` is `"default" \| "elevated" \| "ghost"` only. Falls back to `"default"` when theme is unresolved |
+| `PageShell` / `PageShellHeader` / `PageShellContent` | Default page frame (header + body). Use on every page unless the layout cannot be expressed here | Child order must be Header → Content (→ Footer). Reversing breaks layout |
+| `DashboardCard` | Default frame for widgets and bordered content — prefer over `ui/Card` | `variant` is `"default" \| "elevated" \| "ghost"` only. Falls back to `"default"` when theme is unresolved |
 | `MarkdownRenderer` | Markdown rendering | **Input is NOT XSS-sanitized**. Sanitize user-generated content with DOMPurify (or equivalent) beforehand |
 | `MultiSelect` | Multi-select (tags, etc.) | `value` must be `string[]` (not `undefined`). Each option `value` cannot be an empty string (inherits shadcn restriction) |
 | `SearchableSelect` | Standard searchable single select — prefer over `ui/Combobox` unless you need a fully custom implementation | `value` is `string \| undefined`. `onChange` passes `undefined` on clear. Empty-string options are forbidden |
