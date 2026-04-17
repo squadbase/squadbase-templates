@@ -129,6 +129,7 @@ Use the framework's semantic color tokens (CSS variables) — not hardcoded colo
 
 **Chart color rules:**
 
+- **Use the default theme chart colors.** Don't specify individual series colors unless the user asks, or the color carries semantic meaning (e.g., green = success, red = failure).
 - Max **5 series colors**.
 - Positive → green, negative → red.
 - Emphasize hero series with stronger color; fade background series.
