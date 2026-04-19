@@ -21,6 +21,7 @@ export default defineConfig(({ command, mode }) => {
             "@aws-sdk/client-redshift-data",
             "@google-analytics/data",
             "@kintone/rest-api-client",
+            "@clickhouse/client",
           ],
         }),
       ],
