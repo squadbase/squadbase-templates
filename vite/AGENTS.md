@@ -140,7 +140,7 @@ const { data, isLoading, error } = useQuery({
     });
     if (!res.ok) throw new Error(await res.text());
     const json = await res.json();
-    return json.data as SalesRow[];
+    return /* see Response shape below */;
   },
   staleTime: 5 * 60 * 1000,
 });
@@ -150,6 +150,13 @@ const { data, isLoading, error } = useQuery({
 - `staleTime: 5 * 60 * 1000` (5 min) is the default; adjust per endpoint if data changes faster.
 - Explicitly cast the parsed body (`as YourType`) — server responses are untyped.
 - Always render `<Skeleton />` while `isLoading`, and surface `error` (e.g. via `<p className="text-destructive">{error.message}</p>`). Never unwrap `data` without that guard.
+
+### Response shape
+
+The `return` line in `queryFn` depends on the handler type:
+
+- **SQL server logic** — results are wrapped in `{ data: rows[] }`: `return json.data as SalesRow[];`
+- **TypeScript server logic** — the handler's `Response` is passed through as-is: `return json as DashboardSummary;`
 
 Server logic authoring (SQL / TS, parameters, caching, connections): [`skills/server-logic-development/SKILL.md`](skills/server-logic-development/SKILL.md).
 
