@@ -22,7 +22,7 @@ function resolveColor(cssVar: string): string {
     : `rgb(${r},${g},${b})`
 }
 
-function withAlpha(color: string, alpha: number): string {
+export function withAlpha(color: string, alpha: number): string {
   const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
   if (!match) return color
   const [, r, g, b, a] = match

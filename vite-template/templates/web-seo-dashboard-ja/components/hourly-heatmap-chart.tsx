@@ -1,5 +1,9 @@
 import type { EChartsOption } from "echarts"
-import { EChart } from "@/components/data/echart"
+import {
+  EChart,
+  useEChartsContrastColor,
+  withAlpha,
+} from "@/components/data/echart"
 import { DashboardCardPreset } from "@/components/common/dashboard-card"
 import { formatNumber } from "./chart-helpers"
 import type { HeatmapCell } from "@/types/web-seo"
@@ -14,7 +18,13 @@ const HOUR_LABELS = Array.from(
   (_, i) => `${String(i).padStart(2, "0")}`,
 )
 
+const HEATMAP_ALPHA_STOPS = [0.08, 0.2, 0.35, 0.5, 0.65, 0.82, 1]
+
 export function HourlyHeatmapChart({ data }: HourlyHeatmapChartProps) {
+  const baseColor = useEChartsContrastColor("--chart-1")
+  const gradient = baseColor
+    ? HEATMAP_ALPHA_STOPS.map((a) => withAlpha(baseColor, a))
+    : undefined
   const maxPv = data.reduce((m, c) => (c.pageviews > m ? c.pageviews : m), 0)
 
   // echart heatmap の Y 軸は下→上の順で index が増える。
@@ -72,17 +82,7 @@ export function HourlyHeatmapChart({ data }: HourlyHeatmapChartProps) {
       bottom: 0,
       itemWidth: 12,
       text: ["高", "低"],
-      inRange: {
-        color: [
-          "#eff6ff",
-          "#dbeafe",
-          "#bfdbfe",
-          "#93c5fd",
-          "#60a5fa",
-          "#3b82f6",
-          "#1d4ed8",
-        ],
-      },
+      inRange: gradient ? { color: gradient } : undefined,
     },
     series: [
       {
