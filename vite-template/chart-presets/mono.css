@@ -1,0 +1,15 @@
+html[data-theme="default"] {
+  --chart-1: var(--color-zinc-900);
+  --chart-2: var(--color-zinc-600);
+  --chart-3: var(--color-zinc-400);
+  --chart-4: var(--color-zinc-300);
+  --chart-5: var(--color-zinc-200);
+}
+
+html[data-theme="default"].dark {
+  --chart-1: var(--color-zinc-100);
+  --chart-2: var(--color-zinc-300);
+  --chart-3: var(--color-zinc-500);
+  --chart-4: var(--color-zinc-600);
+  --chart-5: var(--color-zinc-700);
+}

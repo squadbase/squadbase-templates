@@ -2,7 +2,9 @@ import * as React from "react"
 import ReactECharts from "echarts-for-react"
 import type { EChartsOption } from "echarts"
 import { useEffect, useState } from "react"
+import { Check, Copy, Download } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 
 // ── Color resolution ──────────────────────────────────────────────────────────
 
@@ -20,6 +22,14 @@ function resolveColor(cssVar: string): string {
     : `rgb(${r},${g},${b})`
 }
 
+function withAlpha(color: string, alpha: number): string {
+  const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
+  if (!match) return color
+  const [, r, g, b, a] = match
+  const baseAlpha = a ? parseFloat(a) : 1
+  return `rgba(${r},${g},${b},${(baseAlpha * alpha).toFixed(3)})`
+}
+
 const CHART_VARS = ["--chart-1", "--chart-2", "--chart-3", "--chart-4", "--chart-5"]
 
 // ── Themes ────────────────────────────────────────────────────────────────────
@@ -30,11 +40,7 @@ function buildLightTheme(colors: string[]) {
   return {
     color: [
       ...colors,
-      "#6366f1", // indigo-500 (supplementary)
-      "#ec4899", // pink-500 (supplementary)
-      "#14b8a6", // teal-500 (supplementary)
-      "#f97316", // orange-500 (supplementary)
-      "#8b5cf6", // violet-500 (supplementary)
+      ...colors.map((c) => withAlpha(c, 0.6)),
     ],
     backgroundColor: "transparent",
     textStyle: { fontFamily: FONT_FAMILY, fontSize: 12, color: "#0a0a0a" },
@@ -67,11 +73,7 @@ function buildDarkTheme(colors: string[]) {
   return {
     color: [
       ...colors,
-      "#818cf8", // indigo-400 (supplementary)
-      "#f472b6", // pink-400 (supplementary)
-      "#2dd4bf", // teal-400 (supplementary)
-      "#fb923c", // orange-400 (supplementary)
-      "#a78bfa", // violet-400 (supplementary)
+      ...colors.map((c) => withAlpha(c, 0.6)),
     ],
     backgroundColor: "transparent",
     textStyle: { fontFamily: FONT_FAMILY, fontSize: 12, color: "#fafafa" },
@@ -198,6 +200,10 @@ interface EChartProps {
   className?: string
   /** true にすると SquadbaseTheme のライト/ダークに対応したデカールパターンを系列ごとに自動適用する */
   decal?: boolean
+  /** true にするとチャート右上に PNG コピー / ダウンロードボタンを表示する */
+  actions?: boolean
+  /** ダウンロード時のファイル名（拡張子含む）。省略時は "chart.png" */
+  fileName?: string
 }
 
 export const EChart = React.forwardRef<HTMLDivElement, EChartProps>(
@@ -211,6 +217,8 @@ export const EChart = React.forwardRef<HTMLDivElement, EChartProps>(
       ariaLabel,
       className,
       decal = false,
+      actions = false,
+      fileName = "chart.png",
     }: EChartProps,
     ref
   ) {
@@ -218,6 +226,41 @@ export const EChart = React.forwardRef<HTMLDivElement, EChartProps>(
     const contrastColor = useEChartsContrastColor()
     const decalPatterns = useEChartsDecalPatterns()
     const chartRef = React.useRef<ReactECharts>(null)
+    const [copied, setCopied] = useState(false)
+
+    const getPngDataUrl = React.useCallback(() => {
+      const chart = chartRef.current?.getEchartsInstance()
+      if (!chart) return null
+      return chart.getDataURL({
+        type: "png",
+        pixelRatio: 2,
+        backgroundColor: resolveColor("--background"),
+      })
+    }, [])
+
+    const handleCopy = React.useCallback(async () => {
+      const dataUrl = getPngDataUrl()
+      if (!dataUrl) return
+      try {
+        const blob = await (await fetch(dataUrl)).blob()
+        await navigator.clipboard.write([
+          new ClipboardItem({ "image/png": blob }),
+        ])
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      } catch {
+        // ClipboardItem 未対応ブラウザでは silent fail
+      }
+    }, [getPngDataUrl])
+
+    const handleDownload = React.useCallback(() => {
+      const dataUrl = getPngDataUrl()
+      if (!dataUrl) return
+      const link = document.createElement("a")
+      link.href = dataUrl
+      link.download = fileName
+      link.click()
+    }, [getPngDataUrl, fileName])
 
     // 2系列時に --chart-1 / --chart-5 を自動適用する
     const effectiveOption = React.useMemo(() => {
@@ -266,7 +309,7 @@ export const EChart = React.forwardRef<HTMLDivElement, EChartProps>(
       <div
         ref={ref}
         data-slot="echart"
-        className={cn("w-full", className)}
+        className={cn("group relative w-full", className)}
         role="img"
         aria-label={ariaLabel ?? "チャート"}
       >
@@ -281,6 +324,31 @@ export const EChart = React.forwardRef<HTMLDivElement, EChartProps>(
           onEvents={onEvents}
           opts={{ renderer: "canvas" }}
         />
+        {actions && (
+          <div
+            data-slot="echart-actions"
+            className="absolute right-2 top-2 z-10 flex gap-1 opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100"
+          >
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              onClick={handleCopy}
+              aria-label={copied ? "コピーしました" : "PNG をクリップボードにコピー"}
+            >
+              {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              onClick={handleDownload}
+              aria-label="PNG をダウンロード"
+            >
+              <Download className="size-4" />
+            </Button>
+          </div>
+        )}
       </div>
     )
   }

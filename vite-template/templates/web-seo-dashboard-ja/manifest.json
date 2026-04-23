@@ -1,0 +1,28 @@
+{
+  "name": "web-seo-dashboard-ja",
+  "description": "[日本語] Webアクセス・SEO分析ダッシュボード — トラフィック概況・コンテンツ分析・SEO分析の3タブ構成",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/traffic-overview-tab.tsx", "dest": "src/components/web-seo-dashboard/traffic-overview-tab.tsx", "action": "add" },
+    { "src": "components/content-analysis-tab.tsx", "dest": "src/components/web-seo-dashboard/content-analysis-tab.tsx", "action": "add" },
+    { "src": "components/seo-analysis-tab.tsx", "dest": "src/components/web-seo-dashboard/seo-analysis-tab.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/web-seo-dashboard/kpi-card.tsx", "action": "add" },
+    { "src": "components/traffic-trend-chart.tsx", "dest": "src/components/web-seo-dashboard/traffic-trend-chart.tsx", "action": "add" },
+    { "src": "components/channel-breakdown-list.tsx", "dest": "src/components/web-seo-dashboard/channel-breakdown-list.tsx", "action": "add" },
+    { "src": "components/hourly-heatmap-chart.tsx", "dest": "src/components/web-seo-dashboard/hourly-heatmap-chart.tsx", "action": "add" },
+    { "src": "components/page-traffic-table.tsx", "dest": "src/components/web-seo-dashboard/page-traffic-table.tsx", "action": "add" },
+    { "src": "components/category-performance-chart.tsx", "dest": "src/components/web-seo-dashboard/category-performance-chart.tsx", "action": "add" },
+    { "src": "components/content-ranking-table.tsx", "dest": "src/components/web-seo-dashboard/content-ranking-table.tsx", "action": "add" },
+    { "src": "components/seo-dual-axis-chart.tsx", "dest": "src/components/web-seo-dashboard/seo-dual-axis-chart.tsx", "action": "add" },
+    { "src": "components/ctr-position-scatter.tsx", "dest": "src/components/web-seo-dashboard/ctr-position-scatter.tsx", "action": "add" },
+    { "src": "components/keyword-ranking-table.tsx", "dest": "src/components/web-seo-dashboard/keyword-ranking-table.tsx", "action": "add" },
+    { "src": "components/rank-change-badge.tsx", "dest": "src/components/web-seo-dashboard/rank-change-badge.tsx", "action": "add" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/web-seo-dashboard/insight-cards.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/web-seo-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/web-seo-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/web-seo-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/web-seo.ts", "action": "add" }
+  ],
+  "routes": []
+}

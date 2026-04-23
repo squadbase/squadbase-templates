@@ -48,9 +48,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Webアクセス・SEO分析</PageShellTitle>
+          <PageShellTitle>Web Traffic & SEO Analytics</PageShellTitle>
           <PageShellDescription>
-            サイトトラフィック、コンテンツパフォーマンス、検索エンジン最適化の統合ダッシュボード
+            Unified dashboard for site traffic, content performance, and search engine optimization
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd>
@@ -81,26 +81,26 @@ export default function HomePage() {
         >
           <FilterBarSelect
             filterKey="device"
-            label="デバイス"
+            label="Device"
             options={deviceOptions}
           />
           <FilterBarSelect
             filterKey="channel"
-            label="チャネル"
+            label="Channel"
             options={channelOptions}
           />
           <FilterBarSelect
             filterKey="category"
-            label="カテゴリ"
+            label="Category"
             options={categoryOptions}
           />
         </FilterBar>
 
         <Tabs defaultValue="traffic">
           <TabsList>
-            <TabsTrigger value="traffic">トラフィック概況</TabsTrigger>
-            <TabsTrigger value="content">コンテンツ分析</TabsTrigger>
-            <TabsTrigger value="seo">SEO分析</TabsTrigger>
+            <TabsTrigger value="traffic">Traffic Overview</TabsTrigger>
+            <TabsTrigger value="content">Content Analysis</TabsTrigger>
+            <TabsTrigger value="seo">SEO Analysis</TabsTrigger>
           </TabsList>
           <TabsContent value="traffic">
             <TrafficOverviewTab />
