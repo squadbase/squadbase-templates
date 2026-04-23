@@ -11,11 +11,11 @@ export type ChannelType =
 export type DeviceCategory = "desktop" | "mobile" | "tablet"
 
 export type ArticleCategory =
-  | "技術"
-  | "マーケティング"
-  | "プロダクト"
-  | "ニュース"
-  | "事例紹介"
+  | "Technology"
+  | "Marketing"
+  | "Product"
+  | "News"
+  | "Case Studies"
 
 // ── Raw data schemas ──
 
@@ -173,6 +173,13 @@ export interface CtrPositionPoint {
   position: number
   ctr: number
   searchVolume: number
+}
+
+export interface HeatmapCell {
+  dayOfWeek: number // 0=Mon, 6=Sun
+  hour: number // 0-23
+  pageviews: number
+  uniqueUsers: number
 }
 
 // ── Filter state ──

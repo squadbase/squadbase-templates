@@ -30,21 +30,21 @@ export function TrafficTrendChart({ data }: TrafficTrendChartProps) {
     },
     series: [
       {
-        name: "PV",
+        name: "Pageviews",
         type: "line",
         smooth: true,
         data: data.map((d) => d.pageviews),
         showSymbol: false,
       },
       {
-        name: "UU",
+        name: "Unique Users",
         type: "line",
         smooth: true,
         data: data.map((d) => d.uniqueUsers),
         showSymbol: false,
       },
       {
-        name: "セッション",
+        name: "Sessions",
         type: "line",
         smooth: true,
         data: data.map((d) => d.sessions),
@@ -54,7 +54,7 @@ export function TrafficTrendChart({ data }: TrafficTrendChartProps) {
   }
 
   return (
-    <DashboardCardPreset title="日別トラフィック推移">
+    <DashboardCardPreset title="Daily Traffic Trend">
       <EChart option={option} height="360px" />
     </DashboardCardPreset>
   )

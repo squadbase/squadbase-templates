@@ -7,11 +7,11 @@ import { formatDuration, formatPercent } from "./chart-helpers"
 import type { ContentRankingItem, ArticleCategory } from "@/types/web-seo"
 
 const categoryColors: Record<ArticleCategory, string> = {
-  技術: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400",
-  マーケティング: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-400",
-  プロダクト: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400",
-  ニュース: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400",
-  事例紹介: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400",
+  Technology: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400",
+  Marketing: "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-400",
+  Product: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400",
+  News: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400",
+  "Case Studies": "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400",
 }
 
 interface ContentRankingTableProps {
@@ -32,7 +32,7 @@ export function ContentRankingTable({ data }: ContentRankingTableProps) {
       },
       {
         accessorKey: "title",
-        header: "タイトル",
+        header: "Title",
         cell: ({ row }) => (
           <div className="max-w-[260px] truncate font-medium">
             {row.original.title}
@@ -41,7 +41,7 @@ export function ContentRankingTable({ data }: ContentRankingTableProps) {
       },
       {
         accessorKey: "category",
-        header: "カテゴリ",
+        header: "Category",
         cell: ({ row }) => (
           <Badge
             variant="secondary"
@@ -53,7 +53,7 @@ export function ContentRankingTable({ data }: ContentRankingTableProps) {
       },
       {
         accessorKey: "pageviews",
-        header: "PV",
+        header: "Pageviews",
         cell: ({ row }) => (
           <div className="text-right tabular-nums">
             {row.original.pageviews.toLocaleString()}
@@ -62,7 +62,7 @@ export function ContentRankingTable({ data }: ContentRankingTableProps) {
       },
       {
         accessorKey: "avgTimeOnPage",
-        header: "平均滞在時間",
+        header: "Avg. Time on Page",
         cell: ({ row }) => (
           <div className="text-right tabular-nums">
             {formatDuration(row.original.avgTimeOnPage)}
@@ -71,7 +71,7 @@ export function ContentRankingTable({ data }: ContentRankingTableProps) {
       },
       {
         accessorKey: "scrollDepth",
-        header: "スクロール深度",
+        header: "Scroll Depth",
         cell: ({ row }) => {
           const depth = row.original.scrollDepth
           return (
@@ -91,7 +91,7 @@ export function ContentRankingTable({ data }: ContentRankingTableProps) {
       },
       {
         accessorKey: "conversionContribution",
-        header: "CV貢献度",
+        header: "CV Contribution",
         cell: ({ row }) => (
           <div className="text-right tabular-nums">
             {formatPercent(row.original.conversionContribution)}
@@ -103,7 +103,7 @@ export function ContentRankingTable({ data }: ContentRankingTableProps) {
   )
 
   return (
-    <DashboardCardPreset title="コンテンツランキング">
+    <DashboardCardPreset title="Top Content">
       <DataTablePreset
         columns={columns}
         data={data}

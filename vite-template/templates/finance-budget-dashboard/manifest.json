@@ -1,0 +1,26 @@
+{
+  "name": "finance-budget-dashboard",
+  "description": "Finance & budget management dashboard — two-tab layout for company-wide overview and department detail (P&L waterfall, attainment progress, budget-vs-actual bullet, category × department heatmap)",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/overview-tab.tsx", "dest": "src/components/finance-budget-dashboard/overview-tab.tsx", "action": "add" },
+    { "src": "components/detail-tab.tsx", "dest": "src/components/finance-budget-dashboard/detail-tab.tsx", "action": "add" },
+    { "src": "components/achievement-progress-card.tsx", "dest": "src/components/finance-budget-dashboard/achievement-progress-card.tsx", "action": "add" },
+    { "src": "components/pl-waterfall-chart.tsx", "dest": "src/components/finance-budget-dashboard/pl-waterfall-chart.tsx", "action": "add" },
+    { "src": "components/bs-composition-chart.tsx", "dest": "src/components/finance-budget-dashboard/bs-composition-chart.tsx", "action": "add" },
+    { "src": "components/expense-stacked-bar.tsx", "dest": "src/components/finance-budget-dashboard/expense-stacked-bar.tsx", "action": "add" },
+    { "src": "components/bullet-budget-chart.tsx", "dest": "src/components/finance-budget-dashboard/bullet-budget-chart.tsx", "action": "add" },
+    { "src": "components/budget-variance-table.tsx", "dest": "src/components/finance-budget-dashboard/budget-variance-table.tsx", "action": "add" },
+    { "src": "components/cost-heatmap-chart.tsx", "dest": "src/components/finance-budget-dashboard/cost-heatmap-chart.tsx", "action": "add" },
+    { "src": "components/cost-category-donut.tsx", "dest": "src/components/finance-budget-dashboard/cost-category-donut.tsx", "action": "add" },
+    { "src": "components/monthly-trend-chart.tsx", "dest": "src/components/finance-budget-dashboard/monthly-trend-chart.tsx", "action": "add" },
+    { "src": "components/department-filter.tsx", "dest": "src/components/finance-budget-dashboard/department-filter.tsx", "action": "add" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/finance-budget-dashboard/insight-cards.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/finance-budget-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/finance-budget-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/finance-budget-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/finance-budget.ts", "action": "add" }
+  ],
+  "routes": []
+}

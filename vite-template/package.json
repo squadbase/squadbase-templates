@@ -8,7 +8,8 @@
   "files": [
     "dist",
     "templates",
-    "base-template"
+    "base-template",
+    "chart-presets"
   ],
   "publishConfig": {
     "access": "public"
