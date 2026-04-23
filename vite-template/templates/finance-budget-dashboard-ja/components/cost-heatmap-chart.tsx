@@ -1,5 +1,9 @@
 import type { EChartsOption } from "echarts"
-import { EChart } from "@/components/data/echart"
+import {
+  EChart,
+  useEChartsContrastColor,
+  withAlpha,
+} from "@/components/data/echart"
 import { DashboardCardPreset } from "@/components/common/dashboard-card"
 import { formatCurrency } from "./chart-helpers"
 import {
@@ -12,7 +16,13 @@ interface CostHeatmapChartProps {
   data: CostHeatmapCell[]
 }
 
+const HEATMAP_ALPHA_STOPS = [0.08, 0.2, 0.35, 0.5, 0.65, 0.82, 1]
+
 export function CostHeatmapChart({ data }: CostHeatmapChartProps) {
+  const baseColor = useEChartsContrastColor("--chart-1")
+  const gradient = baseColor
+    ? HEATMAP_ALPHA_STOPS.map((a) => withAlpha(baseColor, a))
+    : undefined
   const maxAmount = data.reduce((m, c) => (c.amount > m ? c.amount : m), 0)
 
   // X軸: 部門, Y軸: 費目 (Y は下→上順に index が増えるので逆順に)
@@ -64,17 +74,7 @@ export function CostHeatmapChart({ data }: CostHeatmapChartProps) {
       bottom: 0,
       itemWidth: 12,
       text: ["高", "低"],
-      inRange: {
-        color: [
-          "#fef3c7",
-          "#fde68a",
-          "#fcd34d",
-          "#fb923c",
-          "#f97316",
-          "#ea580c",
-          "#c2410c",
-        ],
-      },
+      inRange: gradient ? { color: gradient } : undefined,
     },
     series: [
       {

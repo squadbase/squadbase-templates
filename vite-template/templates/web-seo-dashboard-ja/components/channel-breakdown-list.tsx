@@ -35,7 +35,7 @@ export function ChannelBreakdownList({ data }: ChannelBreakdownListProps) {
               </div>
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full rounded-full bg-primary"
+                  className="h-full rounded-full bg-chart-1"
                   style={{ width: `${c.percentage}%` }}
                 />
               </div>
