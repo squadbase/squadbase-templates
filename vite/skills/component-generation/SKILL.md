@@ -47,7 +47,7 @@ const { data, isLoading, error } = useQuery({
     });
     if (!res.ok) throw new Error(await res.text());
     const json = await res.json();
-    return json.data as SalesRow[];
+    return /* see Response shape below */;
   },
   staleTime: 5 * 60 * 1000,
 });
@@ -63,6 +63,13 @@ const { data, isLoading, error } = useQuery({
 - `if (isLoading) return <Skeleton className="..." />;`
 - `if (error) return <p className="text-destructive">{error.message}</p>;`
 - Never call `.filter()` / `.map()` / `.length` on `data` without a null guard.
+
+### Response shape
+
+The `return` line in `queryFn` depends on the handler type:
+
+- **SQL server logic** — results are wrapped in `{ data: rows[] }`: `return json.data as SalesRow[];`
+- **TypeScript server logic** — the handler's `Response` is passed through as-is: `return json as DashboardSummary;`
 
 ## Composition defaults
 
