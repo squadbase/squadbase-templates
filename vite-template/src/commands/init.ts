@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -10,7 +11,7 @@ function getBaseTemplateDir(): string {
   return join(__dirname, "..", "base-template");
 }
 
-export function initProject(options: { force: boolean }): void {
+export function initProject(options: { force: boolean; skipInstall: boolean }): void {
   const targetDir = process.cwd();
   const baseTemplateDir = getBaseTemplateDir();
 
@@ -56,8 +57,28 @@ export function initProject(options: { force: boolean }): void {
     log("cyan", `  ${entry.name}`);
   }
 
+  if (options.skipInstall) {
+    log("green", "\nProject initialized successfully!");
+    log("dim", "\nNext steps:");
+    log("dim", "  npm install");
+    log("dim", "  npm run dev");
+    return;
+  }
+
+  log("green", "\nInstalling dependencies...");
+  const install = spawnSync("npm", ["install"], {
+    cwd: targetDir,
+    stdio: "inherit",
+    shell: process.platform === "win32",
+  });
+
+  if (install.error || install.status !== 0) {
+    log("red", "\nDependency installation failed.");
+    log("yellow", "Run 'npm install' manually in the project directory.");
+    process.exit(1);
+  }
+
   log("green", "\nProject initialized successfully!");
   log("dim", "\nNext steps:");
-  log("dim", "  npm install");
   log("dim", "  npm run dev");
 }

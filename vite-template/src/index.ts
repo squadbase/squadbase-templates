@@ -14,9 +14,10 @@ Commands:
   list                  List available templates
 
 Options:
-  --force     Overwrite existing files
-  --dry-run   Show what would be done without making changes
-  --help      Show this help message
+  --force          Overwrite existing files
+  --dry-run        Show what would be done without making changes
+  --skip-install   Skip dependency installation after init
+  --help           Show this help message
 `.trim();
 
 function main(): void {
@@ -24,6 +25,7 @@ function main(): void {
     options: {
       force: { type: "boolean", default: false },
       "dry-run": { type: "boolean", default: false },
+      "skip-install": { type: "boolean", default: false },
       help: { type: "boolean", default: false },
     },
     allowPositionals: true,
@@ -38,7 +40,10 @@ function main(): void {
   const command = positionals[0];
 
   if (command === "init") {
-    initProject({ force: values.force ?? false });
+    initProject({
+      force: values.force ?? false,
+      skipInstall: values["skip-install"] ?? false,
+    });
   } else if (command === "list") {
     listTemplates();
   } else if (command === "add") {
