@@ -18,6 +18,7 @@ export const root = join(__dirname, "..");
 export const baseTemplateDir = join(root, "base-template");
 export const devDir = join(root, "dev");
 export const templatesDir = join(root, "templates");
+export const chartPresetsDir = join(root, "chart-presets");
 
 export function listTemplateNames() {
   return readdirSync(templatesDir).filter((d) =>
@@ -25,9 +26,26 @@ export function listTemplateNames() {
   );
 }
 
-export function setupDev(templateName) {
+export function listChartPresetNames() {
+  if (!existsSync(chartPresetsDir)) return [];
+  return readdirSync(chartPresetsDir)
+    .filter((f) => f.endsWith(".css"))
+    .map((f) => f.replace(/\.css$/, ""))
+    .sort();
+}
+
+export function setupDev(templateName, { chartPreset } = {}) {
   const name = templateName ?? listTemplateNames()[0];
   if (!name) throw new Error("No template found in templates/");
+
+  if (chartPreset) {
+    const available = listChartPresetNames();
+    if (!available.includes(chartPreset)) {
+      throw new Error(
+        `Chart preset "${chartPreset}" not found. Available: ${available.join(", ")}`,
+      );
+    }
+  }
 
   const manifestPath = join(templatesDir, name, "manifest.json");
   if (!existsSync(manifestPath)) {
@@ -84,5 +102,14 @@ export function setupDev(templateName) {
     writeFileSync(routesPath, content, "utf-8");
   }
 
-  return { devDir, templateName: name };
+  if (chartPreset) {
+    const presetCss = readFileSync(
+      join(chartPresetsDir, `${chartPreset}.css`),
+      "utf-8",
+    );
+    const targetPath = join(devDir, "src", "themes", "theme-default.css");
+    writeFileSync(targetPath, presetCss, "utf-8");
+  }
+
+  return { devDir, templateName: name, chartPreset: chartPreset ?? null };
 }

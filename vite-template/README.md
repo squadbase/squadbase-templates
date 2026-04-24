@@ -72,6 +72,19 @@ Apply a preset at init time with `--chart <preset>`, or switch later with the `c
 
 Preset CSS sources live under `chart-presets/` in this package — adding a new preset only requires dropping a new `<name>.css` file there (and registering a description in `src/chart-presets.ts`).
 
+## Template Development
+
+To preview a template locally against the base Vite project, use the internal `dev` script. It rsyncs `../vite/` into `base-template/`, copies it to `dev/`, symlinks the selected template's files, and starts Vite.
+
+```bash
+npm run dev                                          # First template under templates/
+npm run dev -- sales-revenue-dashboard               # Specific template
+npm run dev -- sales-revenue-dashboard --chart sunset # Apply a chart preset for this session
+npm run dev -- --chart forest                        # First template + forest preset
+```
+
+The `--chart <preset>` flag overwrites `dev/src/themes/theme-default.css` with the selected preset from `chart-presets/`. Because `dev/` is regenerated from scratch on every run, omitting the flag reverts to the base (`blue`) palette.
+
 ## Template Screenshots
 
 `scripts/screenshot.mjs` boots each template's dev server and captures it with Playwright at a fixed 1440×900 viewport (`deviceScaleFactor: 2`, so the PNG is 2880×1800). Output goes to `screenshots/` (gitignored).
