@@ -18,9 +18,11 @@
     "sync-base": "rsync -a --delete --exclude='node_modules' --exclude='dist' --exclude='package-lock.json' --exclude='*.tsbuildinfo' --exclude='*.log' ../vite/ base-template/",
     "build": "npm run sync-base && tsup",
     "dev": "node scripts/dev.mjs",
+    "screenshot": "node scripts/screenshot.mjs",
     "release": "npm publish --@squadbase:registry=https://registry.npmjs.org"
   },
   "devDependencies": {
+    "playwright": "^1.49.0",
     "tsup": "^8.4.0",
     "typescript": "~5.7.0"
   }

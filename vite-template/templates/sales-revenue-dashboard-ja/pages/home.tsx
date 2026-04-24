@@ -18,7 +18,7 @@ import {
 } from "@/components/common/page-shell"
 import { InsightCards } from "@/components/sales-revenue-dashboard/insight-cards"
 import { SalesAnalyticsTab } from "@/components/sales-revenue-dashboard/sales-analytics-tab"
-import { RealtimeMonitorTab } from "@/components/sales-revenue-dashboard/realtime-monitor-tab"
+import { TodayPerformanceTab } from "@/components/sales-revenue-dashboard/today-performance-tab"
 import {
   channelOptions,
   categoryOptions,
@@ -53,7 +53,7 @@ export default function HomePage() {
         <PageShellHeading>
           <PageShellTitle>売上・収益ダッシュボード</PageShellTitle>
           <PageShellDescription>
-            GMV・注文数・客単価など主要KPIとリアルタイムモニタリングの統合ビュー
+            GMV・注文数・客単価など主要KPIと本日のスナップショットを統合ビューで確認
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd>
@@ -75,7 +75,7 @@ export default function HomePage() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <TabsList>
               <TabsTrigger value="analytics">売上分析</TabsTrigger>
-              <TabsTrigger value="realtime">リアルタイムモニター</TabsTrigger>
+              <TabsTrigger value="today">本日のパフォーマンス</TabsTrigger>
             </TabsList>
             <div className="flex flex-wrap items-center gap-2">
               <SegmentedControl
@@ -126,8 +126,8 @@ export default function HomePage() {
           <TabsContent value="analytics" className="mt-6">
             <SalesAnalyticsTab />
           </TabsContent>
-          <TabsContent value="realtime" className="mt-6">
-            <RealtimeMonitorTab />
+          <TabsContent value="today" className="mt-6">
+            <TodayPerformanceTab />
           </TabsContent>
         </Tabs>
       </PageShellContent>

@@ -4,11 +4,9 @@ import type {
   ChannelBreakdown,
   CategoryRankingItem,
   HourlyCumulativePoint,
-  LiveOrder,
+  TodayCategoryItem,
   AlertEvent,
   FunnelStep,
-  ProductCategory,
-  Channel,
 } from "@/types/sales-revenue"
 
 // ── Helpers ──
@@ -234,158 +232,95 @@ export const CURRENT_HOUR = 14
 export const hourlyCumulative: HourlyCumulativePoint[] =
   generateHourlyCumulative()
 
-// ── Realtime KPIs ──
+export const DAILY_REVENUE_TARGET = 3_200_000
 
-function computeRealtimeKpis(): KpiItem[] {
+// ── Today KPIs (CURRENT_HOUR 時点) ──
+
+function computeTodayKpis(): KpiItem[] {
   const current = hourlyCumulative[CURRENT_HOUR]
-  const previousHour =
-    CURRENT_HOUR > 0 ? hourlyCumulative[CURRENT_HOUR - 1] : null
-  const lastHourRevenue = previousHour
-    ? current.cumulativeRevenue - previousHour.cumulativeRevenue
-    : current.cumulativeRevenue
+  const todayRevenue = current.cumulativeRevenue
+  const prevDayRevenue = current.prevDayCumulative
 
-  const prevDaySameHour = current.prevDayCumulative
-  const prevDayHourDelta =
-    ((current.cumulativeRevenue - prevDaySameHour) / prevDaySameHour) * 100
+  const todayAov = 8800
+  const prevDayAov = 8500
+  const todayOrders = Math.round(todayRevenue / todayAov)
+  const prevDayOrders = Math.round(prevDayRevenue / prevDayAov)
 
-  const targetAchievementRate =
-    (current.cumulativeRevenue / current.target) * 100
+  const pct = (now: number, prev: number) =>
+    prev === 0 ? 0 : Math.round(((now - prev) / prev) * 1000) / 10
+
+  const hourlyRevenueDeltas = hourlyCumulative
+    .slice(0, CURRENT_HOUR + 1)
+    .map((h, i, a) => (i === 0 ? h.cumulativeRevenue : h.cumulativeRevenue - a[i - 1].cumulativeRevenue))
+
+  const expectedAtHour = DAILY_REVENUE_TARGET * ((CURRENT_HOUR + 1) / 24)
+  const paceVsTarget = (todayRevenue / expectedAtHour) * 100
 
   return [
     {
-      label: "直近1時間売上",
-      value: `¥${Math.round(lastHourRevenue).toLocaleString("ja-JP")}`,
-      change: 12.4,
-      changeLabel: "前時間比",
+      label: "本日売上",
+      value: `¥${Math.round(todayRevenue).toLocaleString("ja-JP")}`,
+      change: pct(todayRevenue, prevDayRevenue),
+      changeLabel: "前日同時刻比",
       positiveIsGood: true,
-      sparklineData: hourlyCumulative.slice(0, CURRENT_HOUR + 1).map((h, i, a) => {
-        if (i === 0) return h.cumulativeRevenue
-        return h.cumulativeRevenue - a[i - 1].cumulativeRevenue
-      }),
+      sparklineData: hourlyRevenueDeltas,
     },
     {
-      label: "前日同時刻比",
-      value: `${prevDayHourDelta > 0 ? "+" : ""}${prevDayHourDelta.toFixed(1)}%`,
-      change: prevDayHourDelta,
-      changeLabel: "vs 前日",
+      label: "本日注文数",
+      value: todayOrders.toLocaleString("ja-JP"),
+      change: pct(todayOrders, prevDayOrders),
+      changeLabel: "前日同時刻比",
       positiveIsGood: true,
-      sparklineData: hourlyCumulative
-        .slice(0, CURRENT_HOUR + 1)
-        .map((h) => h.cumulativeRevenue - h.prevDayCumulative),
+      sparklineData: hourlyRevenueDeltas.map((r) => Math.round(r / todayAov)),
     },
     {
-      label: "目標達成率",
-      value: `${targetAchievementRate.toFixed(1)}%`,
-      change: targetAchievementRate - 100,
-      changeLabel: "vs 時間帯別目標",
+      label: "本日 AOV",
+      value: `¥${Math.round(todayAov).toLocaleString("ja-JP")}`,
+      change: pct(todayAov, prevDayAov),
+      changeLabel: "前日比",
       positiveIsGood: true,
       sparklineData: hourlyCumulative
         .slice(0, CURRENT_HOUR + 1)
-        .map((h) => (h.cumulativeRevenue / h.target) * 100),
+        .map((_, i) => todayAov + (i - CURRENT_HOUR / 2) * 40),
     },
     {
-      label: "アラート発火件数",
-      value: "2",
-      change: 2,
-      changeLabel: "直近1時間",
-      positiveIsGood: false,
-      sparklineData: [0, 0, 1, 1, 2, 1, 2, 3, 2, 2],
+      label: "目標ペース",
+      value: `${paceVsTarget.toFixed(1)}%`,
+      change: Math.round((paceVsTarget - 100) * 10) / 10,
+      changeLabel: `${String(CURRENT_HOUR).padStart(2, "0")}:00 時点`,
+      positiveIsGood: true,
+      sparklineData: hourlyCumulative
+        .slice(0, CURRENT_HOUR + 1)
+        .map((h, i) => {
+          const expected = DAILY_REVENUE_TARGET * ((i + 1) / 24)
+          return (h.cumulativeRevenue / expected) * 100
+        }),
     },
   ]
 }
 
-export const realtimeKpis: KpiItem[] = computeRealtimeKpis()
+export const todayKpis: KpiItem[] = computeTodayKpis()
 
-// ── Live Orders (seed 20 件 — UI 側でさらに追加される) ──
+// ── 本日のチャネル別売上 (CURRENT_HOUR 時点) ──
 
-const firstNames = [
-  "田中",
-  "山田",
-  "佐藤",
-  "鈴木",
-  "高橋",
-  "伊藤",
-  "渡辺",
-  "中村",
-  "小林",
-  "加藤",
-  "吉田",
-  "山本",
-]
-const lastNames = ["太郎", "花子", "健", "美咲", "翔", "真奈美", "大輔", "愛"]
-const regions = ["東京都", "神奈川県", "大阪府", "福岡県", "北海道", "愛知県"]
-const categories: ProductCategory[] = [
-  "ファッション",
-  "食品",
-  "家電",
-  "日用品",
-  "コスメ",
-  "スポーツ",
-]
-const channels: Channel[] = [
-  "direct",
-  "organic",
-  "paid_search",
-  "social",
-  "email",
-  "affiliate",
+export const todayChannelBreakdown: ChannelBreakdown[] = [
+  { channel: "自然検索", revenue: 784_000, percentage: 35.2 },
+  { channel: "直接アクセス", revenue: 451_000, percentage: 20.3 },
+  { channel: "有料検索", revenue: 332_000, percentage: 14.9 },
+  { channel: "ソーシャル", revenue: 278_000, percentage: 12.5 },
+  { channel: "メール", revenue: 239_000, percentage: 10.7 },
+  { channel: "アフィリエイト", revenue: 143_000, percentage: 6.4 },
 ]
 
-function generateSeedLiveOrders(): LiveOrder[] {
-  const orders: LiveOrder[] = []
-  for (let i = 0; i < 20; i++) {
-    const fn = firstNames[srand(0, firstNames.length - 1)]
-    const ln = lastNames[srand(0, lastNames.length - 1)]
-    const category = categories[srand(0, categories.length - 1)]
-    const baseAmount =
-      category === "家電"
-        ? 15000 + srand(0, 45000)
-        : category === "ファッション"
-          ? 4000 + srand(0, 16000)
-          : 2000 + srand(0, 8000)
+// ── 本日の Top5 カテゴリ (直近30日の1日平均との比較) ──
 
-    // 14時(現在時刻)から過去にさかのぼって秒をずらす
-    const secondsAgo = i * srand(15, 90)
-    const now = new Date(BASE_DATE)
-    now.setHours(CURRENT_HOUR, 0, 0, 0)
-    now.setSeconds(now.getSeconds() - secondsAgo)
-
-    orders.push({
-      orderId: `ORD-${String(100000 + srand(0, 899999))}`,
-      orderedAt: now.toISOString(),
-      customerName: `${fn} ${ln}`,
-      region: regions[srand(0, regions.length - 1)],
-      category,
-      channel: channels[srand(0, channels.length - 1)],
-      amount: baseAmount,
-    })
-  }
-  return orders
-}
-
-export const seedLiveOrders: LiveOrder[] = generateSeedLiveOrders()
-
-/** UI 側の疑似ストリームが使う注文生成関数 (非 seeded) */
-export function generateRandomLiveOrder(): LiveOrder {
-  const pick = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)]
-  const category = pick(categories)
-  const baseAmount =
-    category === "家電"
-      ? 15000 + Math.floor(Math.random() * 45000)
-      : category === "ファッション"
-        ? 4000 + Math.floor(Math.random() * 16000)
-        : 2000 + Math.floor(Math.random() * 8000)
-
-  return {
-    orderId: `ORD-${String(100000 + Math.floor(Math.random() * 899999))}`,
-    orderedAt: new Date().toISOString(),
-    customerName: `${pick(firstNames)} ${pick(lastNames)}`,
-    region: pick(regions),
-    category,
-    channel: pick(channels),
-    amount: baseAmount,
-  }
-}
+export const todayCategoryTop5: TodayCategoryItem[] = [
+  { rank: 1, category: "ファッション", revenue: 682_000, orders: 79, vsAverage: 12.8 },
+  { rank: 2, category: "家電", revenue: 534_000, orders: 30, vsAverage: 18.4 },
+  { rank: 3, category: "コスメ", revenue: 396_000, orders: 71, vsAverage: -4.2 },
+  { rank: 4, category: "食品", revenue: 291_000, orders: 91, vsAverage: 2.1 },
+  { rank: 5, category: "日用品", revenue: 220_000, orders: 51, vsAverage: 6.7 },
+]
 
 // ── Alerts ──
 
@@ -449,8 +384,6 @@ export const categoryOptions: { label: string; value: string }[] = [
   { label: "コスメ", value: "コスメ" },
   { label: "スポーツ", value: "スポーツ" },
 ]
-
-export const DAILY_REVENUE_TARGET = 3_200_000
 
 // ── 月次目標 / 進捗 (タブ1: 目標達成カード) ──
 

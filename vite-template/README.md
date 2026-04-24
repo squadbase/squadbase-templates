@@ -72,6 +72,34 @@ Apply a preset at init time with `--chart <preset>`, or switch later with the `c
 
 Preset CSS sources live under `chart-presets/` in this package — adding a new preset only requires dropping a new `<name>.css` file there (and registering a description in `src/chart-presets.ts`).
 
+## Template Screenshots
+
+`scripts/screenshot.mjs` boots each template's dev server and captures it with Playwright at a fixed 1440×900 viewport (`deviceScaleFactor: 2`, so the PNG is 2880×1800). Output goes to `screenshots/` (gitignored).
+
+### Setup (first time only)
+
+```bash
+npm install
+npx playwright install chromium
+```
+
+### Run
+
+```bash
+npm run screenshot                          # All templates under templates/
+npm run screenshot finance-budget-dashboard # One or more specific templates
+npm run screenshot sales-revenue-dashboard web-seo-dashboard
+```
+
+For each template, two kinds of images are produced:
+
+| File | Contents |
+|------|----------|
+| `<template>.png` | Page top — title, summary cards, the first tab |
+| `<template>--<n>-<tab-slug>.png` | Each tab activated, with the tab list scrolled to the top of the viewport so the tab content sits directly underneath |
+
+The script runs templates serially (the `dev/` workspace is shared), uses fixed port `5273` with `--strictPort`, and tears down the Vite process between templates. Errors on a single template are reported and the run continues with the next.
+
 ## Creating Templates
 
 Templates live in `templates/<template-name>/` and are shipped with the npm package.
