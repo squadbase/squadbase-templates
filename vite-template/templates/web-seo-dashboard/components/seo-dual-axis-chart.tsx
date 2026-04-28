@@ -26,26 +26,26 @@ export function SeoDualAxisChart({ data }: SeoDualAxisChartProps) {
     yAxis: [
       {
         type: "value",
-        name: "クリック数",
+        name: "Clicks",
         min: 0,
         axisLabel: { formatter: (v: number) => formatNumber(v) },
       },
       {
         type: "value",
-        name: "表示回数",
+        name: "Impressions",
         min: 0,
         axisLabel: { formatter: (v: number) => formatNumber(v) },
       },
     ],
     series: [
       {
-        name: "クリック数",
+        name: "Clicks",
         type: "bar",
         barMaxWidth: 6,
         data: data.map((d) => d.clicks),
       },
       {
-        name: "表示回数",
+        name: "Impressions",
         type: "line",
         yAxisIndex: 1,
         smooth: true,
@@ -56,7 +56,7 @@ export function SeoDualAxisChart({ data }: SeoDualAxisChartProps) {
   }
 
   return (
-    <DashboardCardPreset title="検索パフォーマンス推移">
+    <DashboardCardPreset title="Search Performance Trend">
       <EChart option={option} height="360px" />
     </DashboardCardPreset>
   )

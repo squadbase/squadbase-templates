@@ -1,0 +1,15 @@
+html[data-theme="default"] {
+  --chart-1: var(--color-sky-600);
+  --chart-2: var(--color-cyan-500);
+  --chart-3: var(--color-indigo-500);
+  --chart-4: var(--color-teal-500);
+  --chart-5: var(--color-slate-400);
+}
+
+html[data-theme="default"].dark {
+  --chart-1: var(--color-sky-400);
+  --chart-2: var(--color-cyan-400);
+  --chart-3: var(--color-indigo-400);
+  --chart-4: var(--color-teal-400);
+  --chart-5: var(--color-slate-500);
+}

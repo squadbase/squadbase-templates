@@ -15,7 +15,7 @@ export function KeywordRankingTable({ data }: KeywordRankingTableProps) {
     () => [
       {
         accessorKey: "keyword",
-        header: "キーワード",
+        header: "Keyword",
         cell: ({ row }) => (
           <div className="max-w-[200px] truncate font-medium">
             {row.original.keyword}
@@ -24,7 +24,7 @@ export function KeywordRankingTable({ data }: KeywordRankingTableProps) {
       },
       {
         accessorKey: "rank",
-        header: "順位",
+        header: "Position",
         cell: ({ row }) => (
           <div className="text-center font-medium tabular-nums">
             {row.original.rank}
@@ -33,7 +33,7 @@ export function KeywordRankingTable({ data }: KeywordRankingTableProps) {
       },
       {
         accessorKey: "rankChange",
-        header: "変動",
+        header: "Change",
         cell: ({ row }) => (
           <div className="flex justify-center">
             <RankChangeBadge change={row.original.rankChange} />
@@ -51,7 +51,7 @@ export function KeywordRankingTable({ data }: KeywordRankingTableProps) {
       },
       {
         accessorKey: "impressions",
-        header: "表示回数",
+        header: "Impressions",
         cell: ({ row }) => (
           <div className="text-right tabular-nums">
             {formatNumber(row.original.impressions)}
@@ -60,7 +60,7 @@ export function KeywordRankingTable({ data }: KeywordRankingTableProps) {
       },
       {
         accessorKey: "clicks",
-        header: "クリック数",
+        header: "Clicks",
         cell: ({ row }) => (
           <div className="text-right tabular-nums">
             {formatNumber(row.original.clicks)}
@@ -69,7 +69,7 @@ export function KeywordRankingTable({ data }: KeywordRankingTableProps) {
       },
       {
         accessorKey: "searchVolume",
-        header: "検索ボリューム",
+        header: "Search Volume",
         cell: ({ row }) => (
           <div className="text-right tabular-nums">
             {formatNumber(row.original.searchVolume)}
@@ -81,7 +81,7 @@ export function KeywordRankingTable({ data }: KeywordRankingTableProps) {
   )
 
   return (
-    <DashboardCardPreset title="キーワードランキング">
+    <DashboardCardPreset title="Keyword Rankings">
       <DataTablePreset
         columns={columns}
         data={data}
