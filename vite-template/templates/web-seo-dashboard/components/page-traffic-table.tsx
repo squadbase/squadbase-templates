@@ -15,7 +15,7 @@ export function PageTrafficTable({ data }: PageTrafficTableProps) {
     () => [
       {
         accessorKey: "pageTitle",
-        header: "ページタイトル",
+        header: "Page Title",
         cell: ({ row }) => (
           <div className="max-w-[300px] truncate font-medium">
             {row.original.pageTitle}
@@ -24,7 +24,7 @@ export function PageTrafficTable({ data }: PageTrafficTableProps) {
       },
       {
         accessorKey: "pageviews",
-        header: "PV",
+        header: "Pageviews",
         cell: ({ row }) => (
           <div className="text-right tabular-nums">
             {row.original.pageviews.toLocaleString()}
@@ -33,7 +33,7 @@ export function PageTrafficTable({ data }: PageTrafficTableProps) {
       },
       {
         accessorKey: "uniquePageviews",
-        header: "UU",
+        header: "Unique Users",
         cell: ({ row }) => (
           <div className="text-right tabular-nums">
             {row.original.uniquePageviews.toLocaleString()}
@@ -42,7 +42,7 @@ export function PageTrafficTable({ data }: PageTrafficTableProps) {
       },
       {
         accessorKey: "avgTimeOnPage",
-        header: "平均滞在時間",
+        header: "Avg. Time on Page",
         cell: ({ row }) => (
           <div className="text-right tabular-nums">
             {formatDuration(row.original.avgTimeOnPage)}
@@ -51,7 +51,7 @@ export function PageTrafficTable({ data }: PageTrafficTableProps) {
       },
       {
         accessorKey: "bounceRate",
-        header: "直帰率",
+        header: "Bounce Rate",
         cell: ({ row }) => {
           const rate = row.original.bounceRate
           return (
@@ -75,7 +75,7 @@ export function PageTrafficTable({ data }: PageTrafficTableProps) {
   )
 
   return (
-    <DashboardCardPreset title="ページ別トラフィック">
+    <DashboardCardPreset title="Traffic by Page">
       <DataTablePreset
         columns={columns}
         data={data}

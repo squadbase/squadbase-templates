@@ -25,7 +25,7 @@ export function CategoryPerformanceChart({ data }: CategoryPerformanceChartProps
     yAxis: [
       {
         type: "value",
-        name: "PV",
+        name: "Pageviews",
         min: 0,
         axisLabel: { formatter: (v: number) => formatNumber(v) },
       },
@@ -39,13 +39,13 @@ export function CategoryPerformanceChart({ data }: CategoryPerformanceChartProps
     ],
     series: [
       {
-        name: "ページビュー",
+        name: "Pageviews",
         type: "bar",
         barMaxWidth: 48,
         data: data.map((d) => d.pageviews),
       },
       {
-        name: "コンバージョン率",
+        name: "Conversion Rate",
         type: "line",
         yAxisIndex: 1,
         smooth: true,
@@ -57,7 +57,7 @@ export function CategoryPerformanceChart({ data }: CategoryPerformanceChartProps
   }
 
   return (
-    <DashboardCardPreset title="カテゴリ別パフォーマンス">
+    <DashboardCardPreset title="Performance by Category">
       <EChart option={option} height="320px" />
     </DashboardCardPreset>
   )

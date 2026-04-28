@@ -1,20 +1,36 @@
 ---
 name: component-generation
-description: Rules for generating TSX components used with buildPageSection (export, imports, data fetching patterns, error guards). Must be loaded before using buildPageSection.
+description: General rules for creating React component files (pages and child components) in the Squadbase Vite template — recommended creation order, export/import conventions, data fetching patterns, error guards, composition and styling defaults.
 ---
 
-# Component Generation Rules (for buildPageSection tsxCode)
+# Component Generation Rules
 
-Constraints for the single TSX component string passed to `buildPageSection`'s `tsxCode` parameter. The component is rendered inside the Squadbase Vite template, so available modules follow that template's layout. For the component catalog (props, gotchas, when-to-use), see the `available-component-catalog` skill.
+Rules for authoring any React component file in the Squadbase Vite template — `src/pages/*.tsx` (page files) and `src/components/**/*.tsx` (child components). Apply these whether you are writing directly, using `buildPageSection`, or editing an existing file. For the component catalog (props, gotchas, when-to-use), see the `available-component-catalog` skill.
+
+## Recommended creation order (strongly recommended)
+
+When a page is composed of child components, **always** create files in this order. Importing a child component before its file exists causes the Vite dev server to throw a module resolution error, which blocks preview and interrupts the agent loop.
+
+1. **Create the page file with `Skeleton` placeholders, no child imports.** Lay out `PageShell` + headers and drop a `<Skeleton className="..." />` (from `@/components/ui/skeleton`) sized to match each planned child where it will go. Only import modules that already exist (shadcn primitives, `@/components/common/*`, etc.).
+2. **Create each child component file** under `src/components/<pageName>/<component-name>.tsx`. Each child is self-contained (owns its data fetching + loading/error UI).
+3. **Update the page file** to add the child imports and replace placeholders with the real components.
+
+Do not collapse steps 1 and 3 into a single write — even if you plan to create the child immediately afterward, the intermediate state (page imports a non-existent file) surfaces as a dev-server error and aborts preview.
+
+When a page has only 1–2 sections and no child split is needed, skip straight to a single page file.
 
 ## Export
 
-- Exactly one default export: `export default function ComponentName()`.
-- No props — the component is self-contained and must render without external input.
+- **Pages** (`src/pages/*.tsx`): exactly one `export default function PageName()`. Required by the `lazy()` loader in `routes.tsx`.
+- **Child components** (`src/components/**/*.tsx`): named export is the convention in this template (`export function ComponentName()`). Default exports work but are inconsistent with the rest of the codebase.
+- Self-contained children take no props — they fetch their own data. Add props only when the parent genuinely needs to configure the child (e.g. a shared filter value).
 
 ## Imports
 
 - Existing components are almost always **named exports**. Before importing one, open its source file to confirm the export name and Props — do not assume a default export.
+- Use the `@/*` alias (e.g. `@/components/common/page-shell`), not relative paths across directories.
+- Import React hooks as named imports (`import { useState } from "react"`). Never `import React from "react"` — the JSX transform is automatic.
+- Never add an import for a file that does not yet exist on disk — see the creation order above.
 
 ## Data fetching
 

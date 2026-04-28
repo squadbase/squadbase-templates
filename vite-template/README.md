@@ -16,7 +16,9 @@ Initialize a new Squadbase Vite project in the current directory. Copies the bas
 
 ```bash
 npx @squadbase/vite-template init
-npx @squadbase/vite-template init --force   # Overwrite existing files
+npx @squadbase/vite-template init --force            # Overwrite existing files
+npx @squadbase/vite-template init --skip-install     # Skip npm install
+npx @squadbase/vite-template init --chart sunset     # Apply a chart preset during init
 ```
 
 After initialization:
@@ -36,13 +38,39 @@ npx @squadbase/vite-template add ec-dashboard-template --force     # Overwrite e
 npx @squadbase/vite-template add ec-dashboard-template --dry-run   # Preview changes
 ```
 
+#### `chart <preset-name>`
+
+Switch the chart color preset of an existing Squadbase Vite project. Rewrites `src/themes/theme-default.css` with the selected preset.
+
+```bash
+npx @squadbase/vite-template chart sunset
+npx @squadbase/vite-template chart forest --dry-run   # Preview the CSS without writing
+```
+
 #### `list`
 
-List all available templates.
+List all available templates and chart presets.
 
 ```bash
 npx @squadbase/vite-template list
 ```
+
+## Chart Presets
+
+The default template ships with 6 chart color presets. Each preset defines `--chart-1` through `--chart-5` for both light and dark modes, using Tailwind v4 color variables. Because chart colors influence the overall palette feel of the dashboard UI, swapping presets is the quickest way to re-flavor a template.
+
+| Preset | Palette | Mood |
+|--------|---------|------|
+| `blue` (default) | blue, teal, fuchsia, violet, gray | Business / cool |
+| `sunset` | orange, rose, amber, pink, stone | Warm / energetic |
+| `forest` | emerald, lime, teal, green, stone | Natural / calm |
+| `ocean` | sky, cyan, indigo, teal, slate | Cool / clean |
+| `berry` | purple, pink, fuchsia, violet, rose | Vibrant |
+| `mono` | zinc monochrome | Minimal |
+
+Apply a preset at init time with `--chart <preset>`, or switch later with the `chart` subcommand. Presets overwrite `src/themes/theme-default.css` in full; if you've customized that file manually, back it up before switching.
+
+Preset CSS sources live under `chart-presets/` in this package — adding a new preset only requires dropping a new `<name>.css` file there (and registering a description in `src/chart-presets.ts`).
 
 ## Creating Templates
 
