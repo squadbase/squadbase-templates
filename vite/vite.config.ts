@@ -22,6 +22,7 @@ export default defineConfig(({ command, mode }) => {
             "@google-analytics/data",
             "@kintone/rest-api-client",
             "@clickhouse/client",
+            "ssh2",
           ],
         }),
       ],
