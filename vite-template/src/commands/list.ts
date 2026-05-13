@@ -2,14 +2,37 @@ import { getChartPresetDescription, listChartPresetNames } from "../chart-preset
 import { log } from "../logger.js";
 import { listTemplateNames, loadManifest } from "../manifest.js";
 
-export function listTemplates(): void {
-  const names = listTemplateNames();
+export interface ListTemplatesOptions {
+  json?: boolean;
+  lang?: string;
+}
 
-  if (names.length === 0) {
+export function listTemplates(options: ListTemplatesOptions = {}): void {
+  const names = listTemplateNames();
+  const isJa = options.lang === "ja";
+  const filtered = names.filter((name) =>
+    isJa ? name.endsWith("-ja") : !name.endsWith("-ja"),
+  );
+
+  if (options.json) {
+    const items: { name: string; description: string }[] = [];
+    for (const name of filtered) {
+      try {
+        const manifest = loadManifest(name);
+        items.push({ name: manifest.name, description: manifest.description });
+      } catch {
+        // skip invalid manifests
+      }
+    }
+    console.log(JSON.stringify(items, null, 2));
+    return;
+  }
+
+  if (filtered.length === 0) {
     log("yellow", "No templates available.");
   } else {
     log("green", "Available templates:");
-    for (const name of names) {
+    for (const name of filtered) {
       try {
         const manifest = loadManifest(name);
         log("cyan", `  ${manifest.name} — ${manifest.description}`);

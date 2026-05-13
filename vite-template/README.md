@@ -49,11 +49,16 @@ npx @squadbase/vite-template chart forest --dry-run   # Preview the CSS without 
 
 #### `list`
 
-List all available templates and chart presets.
+List available templates and chart presets.
 
 ```bash
-npx @squadbase/vite-template list
+npx @squadbase/vite-template list                  # English templates (default)
+npx @squadbase/vite-template list --lang ja        # Japanese templates (names ending with -ja)
+npx @squadbase/vite-template list --json           # Machine-readable JSON output
+npx @squadbase/vite-template list --json --lang ja # Combine flags
 ```
+
+Templates are shipped as English / Japanese pairs (e.g. `bs-dashboard` and `bs-dashboard-ja`). By default `list` shows only the English variants; pass `--lang ja` to switch to the Japanese ones. The chart presets section is language-agnostic and is always shown.
 
 ## Chart Presets
 
