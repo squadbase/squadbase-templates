@@ -1,0 +1,19 @@
+{
+  "name": "equipment-maintenance-dashboard",
+  "description": "Equipment Maintenance Dashboard — Plant maintenance read-out covering availability, MTBF/MTTR, failure trend, preventive-maintenance schedule with overdue highlights, and an equipment x week downtime heatmap",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/equipment-maintenance-dashboard/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/equipment-maintenance-dashboard/kpi-card.tsx", "action": "add" },
+    { "src": "components/equipment-uptime-table.tsx", "dest": "src/components/equipment-maintenance-dashboard/equipment-uptime-table.tsx", "action": "add" },
+    { "src": "components/failure-trend-chart.tsx", "dest": "src/components/equipment-maintenance-dashboard/failure-trend-chart.tsx", "action": "add" },
+    { "src": "components/preventive-maintenance-list.tsx", "dest": "src/components/equipment-maintenance-dashboard/preventive-maintenance-list.tsx", "action": "add" },
+    { "src": "components/downtime-heatmap.tsx", "dest": "src/components/equipment-maintenance-dashboard/downtime-heatmap.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/equipment-maintenance-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/equipment-maintenance-dashboard-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/equipment-maintenance-dashboard-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/equipment-maintenance-dashboard.ts", "action": "add" }
+  ],
+  "routes": []
+}

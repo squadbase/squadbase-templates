@@ -1,0 +1,17 @@
+{
+  "name": "survey-aggregation-dashboard-ja",
+  "description": "[日本語] アンケート集計ダッシュボード — 回答数 / NPS / 満足度スコア / 設問別バー / NPS・CSAT 時系列 / 属性別スコア差 / 自由記述タグ分布",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/survey-aggregation-dashboard/insight-cards.tsx", "action": "add" },
+    { "src": "components/question-aggregation-chart.tsx", "dest": "src/components/survey-aggregation-dashboard/question-aggregation-chart.tsx", "action": "add" },
+    { "src": "components/nps-csat-trend-chart.tsx", "dest": "src/components/survey-aggregation-dashboard/nps-csat-trend-chart.tsx", "action": "add" },
+    { "src": "components/segment-score-gap-chart.tsx", "dest": "src/components/survey-aggregation-dashboard/segment-score-gap-chart.tsx", "action": "add" },
+    { "src": "components/free-text-tag-chart.tsx", "dest": "src/components/survey-aggregation-dashboard/free-text-tag-chart.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/survey-aggregation-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/survey-aggregation-dashboard-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/survey-aggregation-dashboard.ts", "action": "add" }
+  ],
+  "routes": []
+}

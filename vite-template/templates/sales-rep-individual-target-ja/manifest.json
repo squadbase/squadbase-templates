@@ -1,0 +1,18 @@
+{
+  "name": "sales-rep-individual-target-ja",
+  "description": "[日本語] 営業個人別目標達成 — 営業マネージャー向け、個人別の達成率横棒・ペース判定 (必要日次平均 vs 実績平均)・個人別月次トレンドの小マルチで構成する単一ページダッシュボード",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/sales-rep-individual-target/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/sales-rep-individual-target/kpi-card.tsx", "action": "add" },
+    { "src": "components/attainment-bar-chart.tsx", "dest": "src/components/sales-rep-individual-target/attainment-bar-chart.tsx", "action": "add" },
+    { "src": "components/pace-judgment-table.tsx", "dest": "src/components/sales-rep-individual-target/pace-judgment-table.tsx", "action": "add" },
+    { "src": "components/monthly-trend-small-multiples.tsx", "dest": "src/components/sales-rep-individual-target/monthly-trend-small-multiples.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/sales-rep-individual-target/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/sales-rep-individual-target-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/sales-rep-individual-target-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/sales-rep-individual-target.ts", "action": "add" }
+  ],
+  "routes": []
+}

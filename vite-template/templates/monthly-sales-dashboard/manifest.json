@@ -1,0 +1,19 @@
+{
+  "name": "monthly-sales-dashboard",
+  "description": "Monthly Sales Dashboard (Executive Reporting) — 12-month trend with YoY, budget-vs-actual waterfall (signature), and category/channel monthly stacks",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/monthly-sales-dashboard/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/monthly-sales-dashboard/kpi-card.tsx", "action": "add" },
+    { "src": "components/monthly-trend-chart.tsx", "dest": "src/components/monthly-sales-dashboard/monthly-trend-chart.tsx", "action": "add" },
+    { "src": "components/budget-actual-waterfall.tsx", "dest": "src/components/monthly-sales-dashboard/budget-actual-waterfall.tsx", "action": "add" },
+    { "src": "components/category-stack-chart.tsx", "dest": "src/components/monthly-sales-dashboard/category-stack-chart.tsx", "action": "add" },
+    { "src": "components/channel-stack-chart.tsx", "dest": "src/components/monthly-sales-dashboard/channel-stack-chart.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/monthly-sales-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/monthly-sales-dashboard-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/monthly-sales-dashboard-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/monthly-sales-dashboard.ts", "action": "add" }
+  ],
+  "routes": []
+}

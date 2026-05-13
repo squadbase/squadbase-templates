@@ -1,0 +1,18 @@
+{
+  "name": "affiliate-performance-dashboard-ja",
+  "description": "[日本語] アフィリエイト効果ダッシュボード — 媒体／ASP別CVランキング、ROAS散布図 (シグネチャ)、月次CV推移を1ページで把握",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/affiliate-performance-dashboard/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/affiliate-performance-dashboard/kpi-card.tsx", "action": "add" },
+    { "src": "components/media-cv-ranking.tsx", "dest": "src/components/affiliate-performance-dashboard/media-cv-ranking.tsx", "action": "add" },
+    { "src": "components/roas-scatter.tsx", "dest": "src/components/affiliate-performance-dashboard/roas-scatter.tsx", "action": "add" },
+    { "src": "components/monthly-cv-trend.tsx", "dest": "src/components/affiliate-performance-dashboard/monthly-cv-trend.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/affiliate-performance-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/affiliate-performance-dashboard-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/affiliate-performance-dashboard-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/affiliate-performance-dashboard.ts", "action": "add" }
+  ],
+  "routes": []
+}

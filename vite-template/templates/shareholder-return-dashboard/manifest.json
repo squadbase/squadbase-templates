@@ -1,0 +1,16 @@
+{
+  "name": "shareholder-return-dashboard",
+  "description": "Shareholder Return Dashboard — Single-page IR view of dividend totals, total payout ratio trend, share buyback timeline, and capital-return KPIs",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/shareholder-return-dashboard/insight-cards.tsx", "action": "add" },
+    { "src": "components/dividend-bar-chart.tsx", "dest": "src/components/shareholder-return-dashboard/dividend-bar-chart.tsx", "action": "add" },
+    { "src": "components/payout-ratio-trend-chart.tsx", "dest": "src/components/shareholder-return-dashboard/payout-ratio-trend-chart.tsx", "action": "add" },
+    { "src": "components/buyback-timeline-chart.tsx", "dest": "src/components/shareholder-return-dashboard/buyback-timeline-chart.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/shareholder-return-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/shareholder-return-dashboard-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/shareholder-return-dashboard.ts", "action": "add" }
+  ],
+  "routes": []
+}

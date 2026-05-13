@@ -1,0 +1,19 @@
+{
+  "name": "inventory-replenishment-dashboard",
+  "description": "Inventory & Replenishment Dashboard — SKU stock-days table with color thresholds, shortage-risk list, and auto-replenishment recommendation",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/inventory-replenishment-dashboard/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/inventory-replenishment-dashboard/kpi-card.tsx", "action": "add" },
+    { "src": "components/stock-days-table.tsx", "dest": "src/components/inventory-replenishment-dashboard/stock-days-table.tsx", "action": "add" },
+    { "src": "components/shortage-risk-list.tsx", "dest": "src/components/inventory-replenishment-dashboard/shortage-risk-list.tsx", "action": "add" },
+    { "src": "components/replenishment-recommendation.tsx", "dest": "src/components/inventory-replenishment-dashboard/replenishment-recommendation.tsx", "action": "add" },
+    { "src": "components/stock-days-distribution-chart.tsx", "dest": "src/components/inventory-replenishment-dashboard/stock-days-distribution-chart.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/inventory-replenishment-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/inventory-replenishment-dashboard-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/inventory-replenishment-dashboard-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/inventory-replenishment-dashboard.ts", "action": "add" }
+  ],
+  "routes": []
+}

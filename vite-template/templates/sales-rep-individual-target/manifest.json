@@ -1,0 +1,18 @@
+{
+  "name": "sales-rep-individual-target",
+  "description": "Sales Rep Individual Target Tracking — Single-page dashboard for sales managers to monitor per-rep attainment, pace judgement (required vs actual daily average), and monthly trend small multiples",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/sales-rep-individual-target/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/sales-rep-individual-target/kpi-card.tsx", "action": "add" },
+    { "src": "components/attainment-bar-chart.tsx", "dest": "src/components/sales-rep-individual-target/attainment-bar-chart.tsx", "action": "add" },
+    { "src": "components/pace-judgment-table.tsx", "dest": "src/components/sales-rep-individual-target/pace-judgment-table.tsx", "action": "add" },
+    { "src": "components/monthly-trend-small-multiples.tsx", "dest": "src/components/sales-rep-individual-target/monthly-trend-small-multiples.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/sales-rep-individual-target/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/sales-rep-individual-target-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/sales-rep-individual-target-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/sales-rep-individual-target.ts", "action": "add" }
+  ],
+  "routes": []
+}

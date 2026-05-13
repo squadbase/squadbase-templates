@@ -1,0 +1,18 @@
+{
+  "name": "project-work-hours-dashboard",
+  "description": "Project Work Hours — project × member stacked hours, plan-vs-actual diverging variance (signature), and weekly utilization trend",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/project-work-hours-dashboard/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/project-work-hours-dashboard/kpi-card.tsx", "action": "add" },
+    { "src": "components/project-hours-stack.tsx", "dest": "src/components/project-work-hours-dashboard/project-hours-stack.tsx", "action": "add" },
+    { "src": "components/plan-vs-actual-variance.tsx", "dest": "src/components/project-work-hours-dashboard/plan-vs-actual-variance.tsx", "action": "add" },
+    { "src": "components/utilization-trend.tsx", "dest": "src/components/project-work-hours-dashboard/utilization-trend.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/project-work-hours-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/project-work-hours-dashboard-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/project-work-hours-dashboard-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/project-work-hours-dashboard.ts", "action": "add" }
+  ],
+  "routes": []
+}
