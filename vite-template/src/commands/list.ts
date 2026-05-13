@@ -2,6 +2,17 @@ import { getChartPresetDescription, listChartPresetNames } from "../chart-preset
 import { log } from "../logger.js";
 import { listTemplateNames, loadManifest } from "../manifest.js";
 
+// TODO: switch to "main" once feature/vite-templates is merged.
+const PREVIEW_BRANCH = "feature/vite-templates";
+const PREVIEW_BASE_URL = `https://raw.githubusercontent.com/squadbase/squadbase-templates/refs/heads/${PREVIEW_BRANCH}/vite-template/templates`;
+
+function previewUrls(templateName: string): { image: string; imageSquare: string } {
+  return {
+    image: `${PREVIEW_BASE_URL}/${templateName}/preview-wide.png`,
+    imageSquare: `${PREVIEW_BASE_URL}/${templateName}/preview-square.png`,
+  };
+}
+
 export interface ListTemplatesOptions {
   json?: boolean;
   lang?: string;
@@ -15,11 +26,20 @@ export function listTemplates(options: ListTemplatesOptions = {}): void {
   );
 
   if (options.json) {
-    const items: { name: string; description: string }[] = [];
+    const items: {
+      name: string;
+      description: string;
+      image: string;
+      imageSquare: string;
+    }[] = [];
     for (const name of filtered) {
       try {
         const manifest = loadManifest(name);
-        items.push({ name: manifest.name, description: manifest.description });
+        items.push({
+          name: manifest.name,
+          description: manifest.description,
+          ...previewUrls(name),
+        });
       } catch {
         // skip invalid manifests
       }
@@ -35,7 +55,10 @@ export function listTemplates(options: ListTemplatesOptions = {}): void {
     for (const name of filtered) {
       try {
         const manifest = loadManifest(name);
+        const urls = previewUrls(name);
         log("cyan", `  ${manifest.name} — ${manifest.description}`);
+        log("dim", `    image:       ${urls.image}`);
+        log("dim", `    imageSquare: ${urls.imageSquare}`);
       } catch {
         log("dim", `  ${name} (invalid manifest)`);
       }
