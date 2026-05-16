@@ -1,0 +1,15 @@
+{
+  "name": "kpi-chart-simple-ja",
+  "description": "[日本語] KPI + チャート (シンプル) — KPIカード4個・売上トレンド1本・トップ商品テーブルの最小ダッシュボード構成",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/ui-template-kpi-chart-simple/kpi-card.tsx", "action": "add" },
+    { "src": "components/trend-chart.tsx", "dest": "src/components/ui-template-kpi-chart-simple/trend-chart.tsx", "action": "add" },
+    { "src": "components/top-items-table.tsx", "dest": "src/components/ui-template-kpi-chart-simple/top-items-table.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/ui-template-kpi-chart-simple/chart-helpers.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/ui-template-kpi-chart-simple-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/ui-template-kpi-chart-simple.ts", "action": "add" }
+  ],
+  "routes": []
+}

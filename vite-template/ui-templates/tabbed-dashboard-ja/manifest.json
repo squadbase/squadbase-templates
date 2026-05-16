@@ -1,0 +1,15 @@
+{
+  "name": "tabbed-dashboard-ja",
+  "description": "[日本語] タブ付きダッシュボード — アイコン+サブラベル付きの大型 underline タブで、ページを 2 つのワークスペースに分割。概要タブは KPI 主役 (4 KPI + 売上トレンド + カテゴリドーナツ)、詳細タブはテーブル主役 (検索 + ステータスフィルタチップ + エクスポート + 14 行のアイテムテーブル + カテゴリ別詳細)。サマリ閲覧と詳細分析を別ビューに分けたい場合向け",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/ui-template-tabbed-dashboard/kpi-card.tsx", "action": "add" },
+    { "src": "components/overview-tab.tsx", "dest": "src/components/ui-template-tabbed-dashboard/overview-tab.tsx", "action": "add" },
+    { "src": "components/detail-tab.tsx", "dest": "src/components/ui-template-tabbed-dashboard/detail-tab.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/ui-template-tabbed-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/ui-template-tabbed-dashboard-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/ui-template-tabbed-dashboard.ts", "action": "add" }
+  ],
+  "routes": []
+}

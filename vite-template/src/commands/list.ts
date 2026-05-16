@@ -1,25 +1,34 @@
 import { getChartPresetDescription, listChartPresetNames } from "../chart-presets.js";
 import { log } from "../logger.js";
-import { listTemplateNames, loadManifest } from "../manifest.js";
+import {
+  listTemplateNames,
+  loadManifest,
+  type TemplateSource,
+} from "../manifest.js";
 
 // TODO: switch to "main" once feature/vite-templates is merged.
 const PREVIEW_BRANCH = "feature/vite-templates";
-const PREVIEW_BASE_URL = `https://raw.githubusercontent.com/squadbase/squadbase-templates/refs/heads/${PREVIEW_BRANCH}/vite-template/templates`;
 
-function previewUrls(templateName: string): { image: string; imageSquare: string } {
+function previewUrls(
+  templateName: string,
+  source: TemplateSource,
+): { image: string; imageSquare: string } {
+  const base = `https://raw.githubusercontent.com/squadbase/squadbase-templates/refs/heads/${PREVIEW_BRANCH}/vite-template/${source}`;
   return {
-    image: `${PREVIEW_BASE_URL}/${templateName}/preview-wide.png`,
-    imageSquare: `${PREVIEW_BASE_URL}/${templateName}/preview-square.png`,
+    image: `${base}/${templateName}/preview-wide.png`,
+    imageSquare: `${base}/${templateName}/preview-square.png`,
   };
 }
 
 export interface ListTemplatesOptions {
   json?: boolean;
   lang?: string;
+  ui?: boolean;
 }
 
 export function listTemplates(options: ListTemplatesOptions = {}): void {
-  const names = listTemplateNames();
+  const source: TemplateSource = options.ui ? "ui-templates" : "templates";
+  const names = listTemplateNames(source);
   const isJa = options.lang === "ja";
   const filtered = names.filter((name) =>
     isJa ? name.endsWith("-ja") : !name.endsWith("-ja"),
@@ -34,11 +43,11 @@ export function listTemplates(options: ListTemplatesOptions = {}): void {
     }[] = [];
     for (const name of filtered) {
       try {
-        const manifest = loadManifest(name);
+        const manifest = loadManifest(name, source);
         items.push({
           name: manifest.name,
           description: manifest.description,
-          ...previewUrls(name),
+          ...previewUrls(name, source),
         });
       } catch {
         // skip invalid manifests
@@ -48,14 +57,15 @@ export function listTemplates(options: ListTemplatesOptions = {}): void {
     return;
   }
 
+  const heading = options.ui ? "Available UI templates:" : "Available templates:";
   if (filtered.length === 0) {
-    log("yellow", "No templates available.");
+    log("yellow", options.ui ? "No UI templates available." : "No templates available.");
   } else {
-    log("green", "Available templates:");
+    log("green", heading);
     for (const name of filtered) {
       try {
-        const manifest = loadManifest(name);
-        const urls = previewUrls(name);
+        const manifest = loadManifest(name, source);
+        const urls = previewUrls(name, source);
         log("cyan", `  ${manifest.name} — ${manifest.description}`);
         log("dim", `    image:       ${urls.image}`);
         log("dim", `    imageSquare: ${urls.imageSquare}`);

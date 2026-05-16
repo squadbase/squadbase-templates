@@ -1,0 +1,20 @@
+{
+  "name": "kpi-chart-advanced",
+  "description": "KPI + Chart (Advanced) — Hero KPI (1 large + 4 small in 2×2 grid), bar+line comparison, donut breakdown, daily trend, and a campaign table. KPI-led analytics dashboard layout.",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/ui-template-kpi-chart-advanced/kpi-card.tsx", "action": "add" },
+    { "src": "components/hero-kpi-card.tsx", "dest": "src/components/ui-template-kpi-chart-advanced/hero-kpi-card.tsx", "action": "add" },
+    { "src": "components/comparison-chart.tsx", "dest": "src/components/ui-template-kpi-chart-advanced/comparison-chart.tsx", "action": "add" },
+    { "src": "components/breakdown-chart.tsx", "dest": "src/components/ui-template-kpi-chart-advanced/breakdown-chart.tsx", "action": "add" },
+    { "src": "components/trend-chart.tsx", "dest": "src/components/ui-template-kpi-chart-advanced/trend-chart.tsx", "action": "add" },
+    { "src": "components/campaign-table.tsx", "dest": "src/components/ui-template-kpi-chart-advanced/campaign-table.tsx", "action": "add" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/ui-template-kpi-chart-advanced/insight-cards.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/ui-template-kpi-chart-advanced/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/ui-template-kpi-chart-advanced-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/ui-template-kpi-chart-advanced-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/ui-template-kpi-chart-advanced.ts", "action": "add" }
+  ],
+  "routes": []
+}

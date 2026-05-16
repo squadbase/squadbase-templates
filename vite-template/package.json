@@ -8,6 +8,7 @@
   "files": [
     "dist",
     "templates",
+    "ui-templates",
     "base-template",
     "chart-presets"
   ],

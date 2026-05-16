@@ -1,0 +1,14 @@
+{
+  "name": "funnel-ja",
+  "description": "[日本語] ファネル — 上部に 4 つのサマリ KPI (ファネル流入 / エンドツーエンド転換率 / 最良ステージ / ボトルネック)、その下に左揃え単色グラデーションのファネルとステージ別「通過率 + 離脱」サイドバー、最下段にステージ別パフォーマンステーブル。コンバージョン/パイプライン分析向け",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/funnel-chart.tsx", "dest": "src/components/ui-template-funnel/funnel-chart.tsx", "action": "add" },
+    { "src": "components/stage-table.tsx", "dest": "src/components/ui-template-funnel/stage-table.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/ui-template-funnel/chart-helpers.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/ui-template-funnel-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/ui-template-funnel.ts", "action": "add" }
+  ],
+  "routes": []
+}
