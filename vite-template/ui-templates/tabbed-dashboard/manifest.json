@@ -1,6 +1,6 @@
 {
   "name": "tabbed-dashboard",
-  "description": "Tabbed Dashboard — Full-width underline tabs (with icons + sublabels) split the page into two distinct workspaces. Overview tab: KPI-led (4 KPI cards + revenue trend + category donut). Detail tab: table-led with search, status filter chips, Export action, a 14-row item table, and a category breakdown table. Use when at-a-glance summary and deep-dive workflows should each get their own view.",
+  "description": "Tabbed Dashboard — Full-width underline tabs (with icons + sublabels) split the page into two distinct workspaces. Overview tab: KPI-led (4 KPI cards + trend line + breakdown donut). Detail tab: table-led with search, status filter chips, Export action, a 14-row item table, and a breakdown table. Use when at-a-glance summary and deep-dive workflows should each get their own view.",
   "version": "0.1.0",
   "files": [
     { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },

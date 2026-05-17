@@ -1,6 +1,6 @@
 {
   "name": "kpi-chart-advanced",
-  "description": "KPI + Chart (Advanced) — Hero KPI (1 large + 4 small in 2×2 grid), bar+line comparison, donut breakdown, daily trend, and a campaign table. KPI-led analytics dashboard layout.",
+  "description": "KPI + Chart (Advanced) — Hero KPI (1 large + 4 small in 2×2 grid), bar+line comparison, donut breakdown, daily trend, and a detail table. KPI-led analytics dashboard layout.",
   "version": "0.1.0",
   "files": [
     { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },

@@ -85,7 +85,7 @@ Six patterns are currently available, each shipped as an English / Japanese pair
 | Template | Layout |
 |----------|--------|
 | `kpi-chart-simple` | 4 KPI cards + a single trend line + a top-items table. The minimal headline-metrics layout. |
-| `kpi-chart-advanced` | Hero KPI (1 large + 4 small) + bar/line comparison + donut breakdown + daily trend + campaign table. KPI-led analytics. |
+| `kpi-chart-advanced` | Hero KPI (1 large + 4 small) + bar/line comparison + donut breakdown + daily trend + detail table. KPI-led analytics. |
 | `chart-grid` | Six-chart grid (area, line, bar, scatter, radar, heatmap) with category filter chips. Visualization-first. |
 | `table-focus` | Header search + Export, status filter chips, a 24+ row sortable detail table, with a trend chart and segment breakdown in a right sidebar. For data-heavy operational dashboards. |
 | `funnel` | 4 summary KPIs, a funnel chart with a per-stage drop-off + pass-through sidebar, and a stage-performance ranking table. For conversion / pipeline analysis. |

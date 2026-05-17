@@ -1,6 +1,6 @@
 {
   "name": "kpi-chart-simple-ja",
-  "description": "[日本語] KPI + チャート (シンプル) — KPIカード4個・売上トレンド1本・トップ商品テーブルの最小ダッシュボード構成",
+  "description": "[日本語] KPI + チャート (シンプル) — KPIカード4個・トレンドライン1本・上位アイテムテーブルの最小ダッシュボード構成",
   "version": "0.1.0",
   "files": [
     { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },

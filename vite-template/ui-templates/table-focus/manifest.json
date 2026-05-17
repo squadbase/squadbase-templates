@@ -1,6 +1,6 @@
 {
   "name": "table-focus",
-  "description": "Table-Focused — Workbench layout: header search + Export, status filter chips, detail table (24+ rows, sortable) as the main element, with an activity trend chart and segment breakdown in a right sidebar. For data-heavy operational dashboards.",
+  "description": "Table-Focused — Workbench layout: header search + Export, status filter chips, detail table (24+ rows, sortable) as the main element, with a trend chart and segment breakdown in a right sidebar. For data-heavy operational dashboards.",
   "version": "0.1.0",
   "files": [
     { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },

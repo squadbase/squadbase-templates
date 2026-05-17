@@ -1,6 +1,6 @@
 {
   "name": "kpi-chart-simple",
-  "description": "KPI + Chart (Simple) — 4 KPI cards, a single revenue trend line, and a top-items table. The minimal headline-metrics dashboard layout.",
+  "description": "KPI + Chart (Simple) — 4 KPI cards, a single trend line, and a ranked-items table. The minimal headline-metrics dashboard layout.",
   "version": "0.1.0",
   "files": [
     { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
