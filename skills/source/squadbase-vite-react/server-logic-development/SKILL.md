@@ -5,200 +5,96 @@ description: Specification and implementation conventions for SQL / TypeScript s
 
 # Server Logic Development Guide
 
-Reference for creating server logics using the `create-sql-server-logic` and `create-typescript-server-logic` tools.
-This document covers the domain knowledge needed to provide correct inputs — query design, handler code, parameters, and connections.
+For `create-sql-server-logic` and `create-typescript-server-logic`. Workflow, tool inventory, minimal skeletons here; detailed specs in `references/`.
 
 ---
 
-## Tools Overview
+## Tools
 
 | Tool | Purpose |
 |------|---------|
-| `listConnections` | Discover available database connections and their IDs |
-| `create-sql-server-logic` | Create a new SQL server logic |
-| `create-typescript-server-logic` | Create a new TypeScript server logic |
-| `testFetchServerLogic` | Execute a server logic with sample parameters and inspect the response (end-to-end validation) |
-| `listServerLogics` | List all existing server logics |
-| `editServerLogic` | Modify an existing server logic |
-| `deleteServerLogic` | Remove a server logic |
+| `listConnections` | List available DB connections + IDs |
+| `create-sql-server-logic` | Create SQL server logic |
+| `create-typescript-server-logic` | Create TypeScript server logic |
+| `testFetchServerLogic` | Run with sample params, inspect response (end-to-end check) |
+| `listServerLogics` | List existing |
+| `editServerLogic` | Modify existing |
+| `deleteServerLogic` | Remove |
 
-### Typical Workflow
+## Workflow
 
-1. **Discover connections** — call `listConnections` to find available `connectionId` values
-2. **Design query/handler** — write the SQL query or TypeScript handler code using this guide
-3. **Create server logic** — call `create-sql-server-logic` or `create-typescript-server-logic` with the designed inputs
-4. **Test** — call `testFetchServerLogic` to execute the server logic with sample parameters and verify the response
+1. **Discover connections** → `listConnections` for `connectionId` values
+2. **Design query / handler** — see references for parameter specs
+3. **Create** → `create-sql-server-logic` or `create-typescript-server-logic`
+4. **Test** → `testFetchServerLogic` with sample params
 
-### What the tools handle automatically
-
-- Writing the JSON definition file to the correct directory
-- Inferring the response schema from test results
-- Triggering server auto-reload (no restart needed)
+Tools auto-handle: JSON definition write, response schema inference from test results, server auto-reload.
 
 ---
 
-## SQL Server Logic — What to Provide
-
-### Tool Parameters (`create-sql-server-logic`)
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `slug` | string | yes | Identifier — becomes the filename and API path |
-| `description` | string | yes | Human-readable description of what this server logic returns |
-| `query` | string | yes | SQL query with `{{paramName}}` placeholders |
-| `connectionId` | string | yes | Connection ID from `listConnections` |
-| `parameters` | ParameterMeta[] | no | Query parameter definitions (see Parameter Definition section) |
-| `cache` | CacheConfig | no | Caching configuration (see Cache Configuration section) |
-| `title` | string | no | Display title |
-
-### SQL Placeholder Syntax
-
-Parameters are embedded in SQL using `{{paramName}}` placeholders.
+## SQL minimal skeleton
 
 ```sql
-SELECT * FROM orders WHERE created_at >= {{start_date}} AND region = {{region}} LIMIT {{limit}}
+SELECT id, name, created_at
+FROM orders
+WHERE created_at >= {{start_date}}
+ORDER BY created_at DESC
+LIMIT {{limit}}
 ```
 
-**Connector-specific binding:**
+Parameters:
 
-| Connector | Binding method |
-|-----------|---------------|
-| PostgreSQL / squadbase-db | Converted to `$1, $2, ...` positional parameters (parameterized) |
-| MySQL | Converted to `?` positional parameters (parameterized) |
-| Snowflake / BigQuery / Athena / Redshift / Databricks | Literal value substitution (no parameterized query support) |
-
-### Auto-Quoting (Critical!)
-
-**String-type parameters are automatically single-quoted by the server.**
-Never add quotes around placeholders in your SQL template.
-
-```
-CORRECT:   WHERE date >= {{start_date}}
-WRONG:     WHERE date >= '{{start_date}}'    ← double-quoting bug!
+```json
+[
+  { "name": "start_date", "type": "string", "description": "ISO date string", "required": true },
+  { "name": "limit",      "type": "number", "description": "Max rows",        "default": 100 }
+]
 ```
 
-- `string` parameters → auto-wrapped in `'...'` (with `'` escaped to `''`)
-- `number` parameters → inserted as bare numeric literals
-- `null` / `undefined` → inserted as `NULL`
+Placeholder syntax, auto-quoting, connector binding → [`references/sql-logic.md`](./references/sql-logic.md).
 
 ---
 
-## TypeScript Server Logic — What to Provide
-
-### Tool Parameters (`create-typescript-server-logic`)
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `slug` | string | yes | Identifier — becomes the filename and API path |
-| `description` | string | yes | Human-readable description of what this server logic returns |
-| `handlerPath` | string | yes | Relative path to `.ts` handler file (from the server-logic directory) |
-| `handlerCode` | string | yes | TypeScript handler source code |
-| `parameters` | ParameterMeta[] | no | Parameter definitions (for metadata) |
-| `cache` | CacheConfig | no | Caching configuration (see Cache Configuration section) |
-| `title` | string | no | Display title |
-| `response` | ServerLogicResponse | no | Response schema (usually auto-inferred — omit unless you need to override) |
-
-### Handler File Format
-
-The handler must export a default async function receiving a Hono `Context` and returning a `Response`.
+## TypeScript minimal skeleton
 
 ```typescript
 import type { Context } from "hono";
 
 export default async function handler(c: Context) {
-  // Access POST body parameters via c.req.json()
   const { params } = await c.req.json();
 
-  // ... call external APIs or compute the data your handler needs ...
+  // ... do work, call APIs, transform data ...
 
-  return new Response(JSON.stringify(/* response body */), {
+  return new Response(JSON.stringify({ data: { /* ... */ } }), {
     headers: { "Content-Type": "application/json" },
   });
 }
 ```
 
-### Handler Rules
+Handler rules, param shapes, response inference → [`references/typescript-logic.md`](./references/typescript-logic.md).
 
-- Export a default async function with signature `(c: Context)` — import `Context` from `"hono"`
-- Access request parameters via `const { params } = await c.req.json()` — the POST body contains `{ params: { ... } }` matching the server logic's `parameters` definitions
-- Return a `Response` object directly (e.g., `new Response(JSON.stringify(...))`) — the server passes the handler's response through as-is
-- For non-SQL connectors, use `connection()` from `@squadbase/vite-server/connectors/<type>` (see Non-SQL Connectors section)
-- `handlerPath` must be relative to the server-logic directory and point to a `.ts` file within it (no path traversal)
-- Handlers run with full Node.js environment access including `process.env`
-
----
-
-## Parameter Definition
-
-```typescript
-interface ParameterMeta {
-  name: string;                           // Parameter name (matches {{name}} in SQL query)
-  type: "string" | "number" | "boolean";  // Value type
-  description: string;                    // Human-readable description
-  required?: boolean;                     // Default: false
-  default?: string | number | boolean;    // Default value when parameter is not provided
-}
-```
-
-When a parameter is not provided in the request: if it has a `default` value, the default is used; otherwise `null` is used.
-
----
-
-## Connections
-
-Use `listConnections` to discover available connections and their IDs before creating a server logic.
-
-- SQL server logics use `connectionId` to reference a connection
-- TypeScript handlers access connections via the `connection()` function from connector subpath exports (see Non-SQL Connectors section)
-- Each connection entry has `connector: { slug }` and `envVars` — the `envVars` values are environment variable **names**, not actual secrets
-
----
-
-## Cache Configuration
-
-```typescript
-interface ServerLogicCacheConfig {
-  ttl: number;                      // Cache lifetime in seconds. 0 = no cache.
-  staleWhileRevalidate?: boolean;   // Return stale data while refreshing in background. Default: false.
-}
-```
-
-### Recommended TTL Values
-
-| Use Case | TTL (seconds) | staleWhileRevalidate | Rationale |
-|----------|---------------|----------------------|-----------|
-| Real-time monitoring | 10–30 | `true` | Near-fresh data; stale fallback avoids loading states |
-| Daily reports / aggregations | 300–600 | `true` | 5–10 min delay acceptable; background refresh for UX |
-| Master data (region lists, etc.) | 3600+ | `false` | Rarely changes; long TTL reduces DB load |
-| Historical / archive data | 3600+ | `false` | Never changes; cache as long as possible |
-
----
-
-## Non-SQL Connectors in TypeScript Handlers
-
-Non-SQL connectors are used via TypeScript server logic handlers. Import the `connection()` function from the connector-specific subpath export.
-
-```typescript
-import { connection } from "@squadbase/vite-server/connectors/<type>";
-
-const client = connection("<connectionId>");
-```
-
-- `connection(connectionId)` reads the connection entry from `.squadbase/connections.json`, resolves environment variables, and returns a typed client instance
-- Each connector's SDK usage (methods, arguments, etc.) depends on the connector type
+Non-SQL connectors (OpenAI, Slack, Notion, etc.) → [`references/cache-and-connectors.md`](./references/cache-and-connectors.md).
 
 ---
 
 ## Important Notes
 
-1. **Slug = filename**: The slug becomes the JSON filename and the API path segment (e.g., slug `sales-summary` → `server-logic/sales-summary.json` → `POST /api/server-logic/sales-summary`).
+1. **Slug = filename** — `sales-summary` → `server-logic/sales-summary.json` → `POST /api/server-logic/sales-summary`.
+2. **No quotes around SQL placeholders** — write `{{param}}`, NOT `'{{param}}'`. Strings auto-quoted by server (double-quoting bug). See [`references/sql-logic.md`](./references/sql-logic.md).
+3. **Response format** — SQL → `{ "data": rows[] }`. TS → handler's `Response` as-is.
+4. **Schema auto-inferred** — from test results; usually no manual spec needed.
+5. **Param defaults** — missing param uses `default` if set, else `null`.
+6. **Always test after creation** — `testFetchServerLogic` with sample params.
 
-2. **Auto-quoting warning**: String parameters are automatically quoted in SQL. Writing `'{{param}}'` causes double-quoting bugs. Always write `{{param}}` without quotes.
+---
 
-3. **Response format**: SQL server logics return `{ "data": rows[] }`. TypeScript server logics return the handler's `Response` as-is.
+## References
 
-4. **Response schema is auto-inferred**: The tools infer the response schema from test results — you typically don't need to specify it manually.
+- [`references/sql-logic.md`](./references/sql-logic.md) — `create-sql-server-logic` full spec: placeholders, auto-quoting, connector binding, response shape
+- [`references/typescript-logic.md`](./references/typescript-logic.md) — `create-typescript-server-logic` full spec: handler rules, Context, schema inference
+- [`references/cache-and-connectors.md`](./references/cache-and-connectors.md) — cache config, recommended TTLs, non-SQL `connection()` usage
 
-5. **Parameter defaults**: When a parameter is not provided and has a `default` value, the default is used; otherwise `null` is used.
+## Related skills
 
-6. **Always test after creation**: Call `testFetchServerLogic` with sample parameters to verify the server logic works correctly.
+- `chat-app-development` — chat handlers are streaming TS server logics. Use `{ messages }` body (not `{ params }`) and skip `cache`.
+- `component-generation` — frontend wires server logic via `useQuery` + `POST /api/server-logic/<slug>`. See for queryKey conventions and loading / error guards.
