@@ -63,7 +63,27 @@ interface DataTableContextValue<TData> {
   visibleColumnCount: number
 }
 
+/**
+ * @template TData 行データ型
+ * @template TValue セル値の型 (省略時は任意)
+ */
 interface DataTableProps<TData, TValue> {
+  /**
+   * tanstack-table の列定義配列。
+   *
+   * `ColumnDef<TData, TValue>[]` を annotation するか配列リテラルに
+   * `satisfies ColumnDef<TData>[]` を付けないと、`accessorKey` などの
+   * literal が `string` に拡張され型エラーになる。
+   *
+   * @example
+   * import type { ColumnDef } from "@/registry/data/data-table"
+   *
+   * const columns: ColumnDef<User>[] = [
+   *   { accessorKey: "id", header: "ID" },
+   *   { accessorKey: "name", header: "名前" },
+   * ]
+   * <DataTable columns={columns} data={users}>...</DataTable>
+   */
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
 
@@ -792,6 +812,16 @@ export {
   type DataTableColumnVisibilityProps,
   type DataTablePresetProps,
 }
+
+export type {
+  ColumnDef,
+  Table,
+  SortingState,
+  ColumnFiltersState,
+  VisibilityState,
+  PaginationState,
+  RowSelectionState,
+} from "@tanstack/react-table"
 
 // Backwards compatibility alias
 export { DataTablePreset as DataTableCompat }

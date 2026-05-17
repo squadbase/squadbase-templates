@@ -85,6 +85,17 @@ export const defaultPresets: PresetItem[] = [
 ]
 
 interface DateRangePickerProps {
+  /**
+   * 選択中の日付範囲。型は `@/types/date` の `DateRange` (独自定義)。
+   * react-day-picker の `DateRange` とは別物なので注意 — そちらが必要なら
+   * このファイルの末尾で re-export している `RdpDateRange` を使う。
+   *
+   * @example
+   * import type { DateRange } from "@/types/date"
+   *
+   * const [range, setRange] = React.useState<DateRange | undefined>()
+   * <DateRangePicker value={range} onChange={setRange} />
+   */
   value?: DateRange
   onChange?: (range: DateRange) => void
   presets?: PresetItem[]
@@ -207,4 +218,6 @@ const DateRangePicker = React.forwardRef<HTMLDivElement, DateRangePickerProps>(
 DateRangePicker.displayName = "DateRangePicker"
 
 export { DateRangePicker }
+
+export type { DateRange as RdpDateRange } from "react-day-picker"
 export type { DateRangePickerProps }

@@ -36,7 +36,7 @@ import {
 import { cn } from "@/lib/utils"
 import type { NavGroup, NavItem } from "@/types/navigation"
 
-interface AppShellSidebarProps {
+export interface AppShellSidebarProps {
   variant?: "sidebar"
   groups: NavGroup[]
   actions?: React.ReactNode
@@ -48,7 +48,7 @@ interface AppShellSidebarProps {
   onNavigate?: (href: string) => void
 }
 
-interface AppShellHeaderProps {
+export interface AppShellHeaderProps {
   variant: "header"
   groups: NavGroup[]
   actions?: React.ReactNode
@@ -59,7 +59,7 @@ interface AppShellHeaderProps {
   onNavigate?: (href: string) => void
 }
 
-type AppShellProps = AppShellSidebarProps | AppShellHeaderProps
+export type AppShellProps = AppShellSidebarProps | AppShellHeaderProps
 
 function flattenItems(item: NavItem): NavItem[] {
   if (item.children && item.children.length > 0) {

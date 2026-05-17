@@ -22,7 +22,7 @@ function resolveColor(cssVar: string): string {
     : `rgb(${r},${g},${b})`
 }
 
-export function withAlpha(color: string, alpha: number): string {
+function withAlpha(color: string, alpha: number): string {
   const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
   if (!match) return color
   const [, r, g, b, a] = match
@@ -190,7 +190,24 @@ function useEChartsDecalPatterns(): DecalObject[] {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-interface EChartProps {
+export interface EChartProps {
+  /**
+   * ECharts のオプション。
+   *
+   * 型推論を効かせるため、必ず `EChartsOption` を annotation するか
+   * `satisfies EChartsOption` を付けること。付けないと `type: "category"` などの
+   * literal が `string` に拡張され、ビルドが失敗する。
+   *
+   * @example
+   * import type { EChartsOption } from "@/registry/data/echart"
+   *
+   * const option: EChartsOption = {
+   *   xAxis: { type: "category", data: ["A", "B"] },
+   *   yAxis: { type: "value" },
+   *   series: [{ type: "bar", data: [1, 2] }],
+   * }
+   * <EChart option={option} />
+   */
   option: EChartsOption
   height?: string | number
   loading?: boolean
@@ -355,3 +372,5 @@ export const EChart = React.forwardRef<HTMLDivElement, EChartProps>(
 )
 
 EChart.displayName = "EChart"
+
+export type { EChartsOption } from "echarts"
