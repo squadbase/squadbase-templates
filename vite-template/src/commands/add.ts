@@ -7,6 +7,7 @@ import { listTemplateNames, loadManifest } from "../manifest.js";
 
 export function addTemplate(templateName: string, options: ApplyOptions): void {
   const projectRoot = process.cwd();
+  const source = options.source ?? "templates";
 
   // Validate this is a Squadbase Vite project
   const routesPath = join(projectRoot, "src", "routes.tsx");
@@ -16,16 +17,16 @@ export function addTemplate(templateName: string, options: ApplyOptions): void {
   }
 
   // Validate template exists
-  const available = listTemplateNames();
+  const available = listTemplateNames(source);
   if (!available.includes(templateName)) {
-    log("red", `Template "${templateName}" not found.`);
+    log("red", `Template "${templateName}" not found in ${source}/.`);
     if (available.length > 0) {
       log("yellow", `Available templates: ${available.join(", ")}`);
     }
     process.exit(1);
   }
 
-  const manifest = loadManifest(templateName);
+  const manifest = loadManifest(templateName, source);
 
   log("green", `Applying template: ${manifest.name}`);
   if (options.dryRun) {

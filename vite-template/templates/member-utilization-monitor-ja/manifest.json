@@ -1,0 +1,18 @@
+{
+  "name": "member-utilization-monitor-ja",
+  "description": "[日本語] メンバー稼働率モニタ — メンバー別稼働率バー (目標ライン)、残業ヒートマップ、稼働率分布の箱ひげ図 (シグネチャ)",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/member-utilization-monitor/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/member-utilization-monitor/kpi-card.tsx", "action": "add" },
+    { "src": "components/member-utilization-bar.tsx", "dest": "src/components/member-utilization-monitor/member-utilization-bar.tsx", "action": "add" },
+    { "src": "components/overtime-heatmap.tsx", "dest": "src/components/member-utilization-monitor/overtime-heatmap.tsx", "action": "add" },
+    { "src": "components/utilization-boxplot.tsx", "dest": "src/components/member-utilization-monitor/utilization-boxplot.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/member-utilization-monitor/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/member-utilization-monitor-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/member-utilization-monitor-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/member-utilization-monitor.ts", "action": "add" }
+  ],
+  "routes": []
+}

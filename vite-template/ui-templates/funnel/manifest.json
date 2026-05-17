@@ -1,0 +1,14 @@
+{
+  "name": "funnel",
+  "description": "Funnel — Pipeline-centric layout: 4 summary KPIs (Top of funnel / End-to-end conversion / Best stage / Bottleneck) on top, then a left-aligned single-tone funnel chart with a per-stage drop-off + pass-through sidebar, and a stage-performance ranking table below. For conversion / pipeline analysis dashboards.",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/funnel-chart.tsx", "dest": "src/components/ui-template-funnel/funnel-chart.tsx", "action": "add" },
+    { "src": "components/stage-table.tsx", "dest": "src/components/ui-template-funnel/stage-table.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/ui-template-funnel/chart-helpers.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/ui-template-funnel-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/ui-template-funnel.ts", "action": "add" }
+  ],
+  "routes": []
+}

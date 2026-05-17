@@ -10,7 +10,7 @@ import {
   useResolvedTheme,
 } from "../common/squadbase-theme";
 
-interface TrendIndicatorProps {
+export interface TrendIndicatorProps {
   value: number;
   direction: TrendDirection;
   positiveIsGood?: boolean;

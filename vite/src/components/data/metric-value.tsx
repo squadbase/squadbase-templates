@@ -25,34 +25,38 @@ const metricValueVariants = cva("font-medium tracking-tight", {
   },
 });
 
-const MetricValue = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> &
-    VariantProps<typeof metricValueVariants>
->(({ className, size, ...props }, ref) => {
-  const theme = useResolvedTheme();
-  return (
-    <div
-      ref={ref}
-      data-slot="metric-value"
-      className={cn("my-4", metricValueVariants({ size, theme }), className)}
-      {...props}
-    />
-  );
-});
+export interface MetricValueProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof metricValueVariants> {}
+
+const MetricValue = React.forwardRef<HTMLDivElement, MetricValueProps>(
+  ({ className, size, ...props }, ref) => {
+    const theme = useResolvedTheme();
+    return (
+      <div
+        ref={ref}
+        data-slot="metric-value"
+        className={cn("my-4", metricValueVariants({ size, theme }), className)}
+        {...props}
+      />
+    );
+  },
+);
 MetricValue.displayName = "MetricValue";
 
-const MetricUnit = React.forwardRef<
-  HTMLSpanElement,
-  React.HTMLAttributes<HTMLSpanElement>
->(({ className, ...props }, ref) => (
-  <span
-    ref={ref}
-    data-slot="metric-unit"
-    className={cn("text-sm font-normal text-muted-foreground", className)}
-    {...props}
-  />
-));
+export interface MetricUnitProps
+  extends React.HTMLAttributes<HTMLSpanElement> {}
+
+const MetricUnit = React.forwardRef<HTMLSpanElement, MetricUnitProps>(
+  ({ className, ...props }, ref) => (
+    <span
+      ref={ref}
+      data-slot="metric-unit"
+      className={cn("text-sm font-normal text-muted-foreground", className)}
+      {...props}
+    />
+  ),
+);
 MetricUnit.displayName = "MetricUnit";
 
 export { MetricValue, MetricUnit, metricValueVariants };

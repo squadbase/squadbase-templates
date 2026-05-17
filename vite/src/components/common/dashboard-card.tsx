@@ -14,7 +14,7 @@ import {
 /*  DashboardCard (Root)                                               */
 /* ------------------------------------------------------------------ */
 
-const dashboardCardVariants = cva(
+export const dashboardCardVariants = cva(
   "group rounded-lg border bg-card text-card-foreground px-1 py-1",
   {
     variants: {
@@ -29,24 +29,26 @@ const dashboardCardVariants = cva(
   },
 );
 
-const DashboardCard = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> &
-    VariantProps<typeof dashboardCardVariants>
->(({ className, theme: themeProp, ...props }, ref) => {
-  const resolvedTheme = useResolvedTheme(themeProp ?? undefined);
-  return (
-    <div
-      ref={ref}
-      data-slot="dashboard-card"
-      className={cn(
-        dashboardCardVariants({ theme: resolvedTheme }),
-        className,
-      )}
-      {...props}
-    />
-  );
-});
+export interface DashboardCardProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof dashboardCardVariants> {}
+
+export const DashboardCard = React.forwardRef<HTMLDivElement, DashboardCardProps>(
+  ({ className, theme: themeProp, ...props }, ref) => {
+    const resolvedTheme = useResolvedTheme(themeProp ?? undefined);
+    return (
+      <div
+        ref={ref}
+        data-slot="dashboard-card"
+        className={cn(
+          dashboardCardVariants({ theme: resolvedTheme }),
+          className,
+        )}
+        {...props}
+      />
+    );
+  },
+);
 DashboardCard.displayName = "DashboardCard";
 
 /* ------------------------------------------------------------------ */
@@ -68,9 +70,12 @@ const dashboardCardHeaderVariants = cva(
   },
 );
 
-const DashboardCardHeader = React.forwardRef<
+export interface DashboardCardHeaderProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const DashboardCardHeader = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  DashboardCardHeaderProps
 >(({ className, ...props }, ref) => {
   const resolvedTheme = useResolvedTheme();
   return (
@@ -102,9 +107,12 @@ const dashboardCardTitleVariants = cva("text-sm font-semibold leading-none", {
   },
 });
 
-const DashboardCardTitle = React.forwardRef<
+export interface DashboardCardTitleProps
+  extends React.HTMLAttributes<HTMLHeadingElement> {}
+
+export const DashboardCardTitle = React.forwardRef<
   HTMLHeadingElement,
-  React.HTMLAttributes<HTMLHeadingElement>
+  DashboardCardTitleProps
 >(({ className, ...props }, ref) => {
   const theme = useResolvedTheme();
   return (
@@ -122,9 +130,12 @@ DashboardCardTitle.displayName = "DashboardCardTitle";
 /*  DashboardCardDescription                                           */
 /* ------------------------------------------------------------------ */
 
-const DashboardCardDescription = React.forwardRef<
+export interface DashboardCardDescriptionProps
+  extends React.HTMLAttributes<HTMLParagraphElement> {}
+
+export const DashboardCardDescription = React.forwardRef<
   HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
+  DashboardCardDescriptionProps
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
@@ -139,9 +150,12 @@ DashboardCardDescription.displayName = "DashboardCardDescription";
 /*  DashboardCardAction                                                */
 /* ------------------------------------------------------------------ */
 
-const DashboardCardAction = React.forwardRef<
+export interface DashboardCardActionProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const DashboardCardAction = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  DashboardCardActionProps
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -166,9 +180,13 @@ const dashboardCardContentVariants = cva("p-3", {
     theme: "default",
   },
 });
-const DashboardCardContent = React.forwardRef<
+
+export interface DashboardCardContentProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const DashboardCardContent = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  DashboardCardContentProps
 >(({ className, ...props }, ref) => {
   const resolvedTheme = useResolvedTheme();
   return (
@@ -189,9 +207,12 @@ DashboardCardContent.displayName = "DashboardCardContent";
 /*  DashboardCardFooter                                                */
 /* ------------------------------------------------------------------ */
 
-const DashboardCardFooter = React.forwardRef<
+export interface DashboardCardFooterProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const DashboardCardFooter = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  DashboardCardFooterProps
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -206,7 +227,11 @@ DashboardCardFooter.displayName = "DashboardCardFooter";
 /*  DashboardCardSkeleton                                              */
 /* ------------------------------------------------------------------ */
 
-function DashboardCardSkeleton({ className }: { className?: string }) {
+export interface DashboardCardSkeletonProps {
+  className?: string;
+}
+
+export function DashboardCardSkeleton({ className }: DashboardCardSkeletonProps) {
   return (
     <div
       data-slot="dashboard-card-skeleton"
@@ -229,7 +254,7 @@ function DashboardCardSkeleton({ className }: { className?: string }) {
 /*  DashboardCardPreset                                                */
 /* ------------------------------------------------------------------ */
 
-interface DashboardCardPresetProps
+export interface DashboardCardPresetProps
   extends
     Omit<React.HTMLAttributes<HTMLDivElement>, "title">,
     VariantProps<typeof dashboardCardVariants> {
@@ -242,7 +267,7 @@ interface DashboardCardPresetProps
   footerClassName?: string;
 }
 
-function DashboardCardPreset({
+export function DashboardCardPreset({
   title,
   description,
   actions,
@@ -285,20 +310,3 @@ function DashboardCardPreset({
     </DashboardCard>
   );
 }
-
-/* ------------------------------------------------------------------ */
-/*  Exports                                                            */
-/* ------------------------------------------------------------------ */
-
-export {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardTitle,
-  DashboardCardDescription,
-  DashboardCardAction,
-  DashboardCardContent,
-  DashboardCardFooter,
-  DashboardCardSkeleton,
-  DashboardCardPreset,
-  dashboardCardVariants,
-};

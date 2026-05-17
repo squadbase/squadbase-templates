@@ -4,17 +4,19 @@ import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { defineThemeVariant, useResolvedTheme } from "./squadbase-theme";
 
-const PageShell = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    data-slot="page-shell"
-    className={cn("flex flex-col", className)}
-    {...props}
-  />
-));
+export interface PageShellProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const PageShell = React.forwardRef<HTMLDivElement, PageShellProps>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      data-slot="page-shell"
+      className={cn("flex flex-col", className)}
+      {...props}
+    />
+  ),
+);
 PageShell.displayName = "PageShell";
 
 const pageShellHeaderVariants = cva(
@@ -31,9 +33,12 @@ const pageShellHeaderVariants = cva(
     },
   },
 );
-const PageShellHeader = React.forwardRef<
+export interface PageShellHeaderProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const PageShellHeader = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  PageShellHeaderProps
 >(({ className, ...props }, ref) => {
   const theme = useResolvedTheme();
   return (
@@ -47,9 +52,12 @@ const PageShellHeader = React.forwardRef<
 });
 PageShellHeader.displayName = "PageShellHeader";
 
-const PageShellHeading = React.forwardRef<
+export interface PageShellHeadingProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const PageShellHeading = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  PageShellHeadingProps
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -60,9 +68,12 @@ const PageShellHeading = React.forwardRef<
 ));
 PageShellHeading.displayName = "PageShellHeading";
 
-const PageShellTitle = React.forwardRef<
+export interface PageShellTitleProps
+  extends React.HTMLAttributes<HTMLHeadingElement> {}
+
+export const PageShellTitle = React.forwardRef<
   HTMLHeadingElement,
-  React.HTMLAttributes<HTMLHeadingElement>
+  PageShellTitleProps
 >(({ className, ...props }, ref) => (
   <h1
     ref={ref}
@@ -76,9 +87,12 @@ const PageShellTitle = React.forwardRef<
 ));
 PageShellTitle.displayName = "PageShellTitle";
 
-const PageShellDescription = React.forwardRef<
+export interface PageShellDescriptionProps
+  extends React.HTMLAttributes<HTMLParagraphElement> {}
+
+export const PageShellDescription = React.forwardRef<
   HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
+  PageShellDescriptionProps
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
@@ -89,9 +103,12 @@ const PageShellDescription = React.forwardRef<
 ));
 PageShellDescription.displayName = "PageShellDescription";
 
-const PageShellHeaderEnd = React.forwardRef<
+export interface PageShellHeaderEndProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const PageShellHeaderEnd = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  PageShellHeaderEndProps
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -102,9 +119,12 @@ const PageShellHeaderEnd = React.forwardRef<
 ));
 PageShellHeaderEnd.displayName = "PageShellHeaderEnd";
 
-const PageShellMeta = React.forwardRef<
+export interface PageShellMetaProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const PageShellMeta = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  PageShellMetaProps
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -115,9 +135,12 @@ const PageShellMeta = React.forwardRef<
 ));
 PageShellMeta.displayName = "PageShellMeta";
 
-const PageShellActions = React.forwardRef<
+export interface PageShellActionsProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const PageShellActions = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  PageShellActionsProps
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -128,9 +151,12 @@ const PageShellActions = React.forwardRef<
 ));
 PageShellActions.displayName = "PageShellActions";
 
-const PageShellSummary = React.forwardRef<
+export interface PageShellSummaryProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const PageShellSummary = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  PageShellSummaryProps
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -144,7 +170,7 @@ const PageShellSummary = React.forwardRef<
 ));
 PageShellSummary.displayName = "PageShellSummary";
 
-const pageShellSummaryCardVariants = cva(
+export const pageShellSummaryCardVariants = cva(
   "relative flex items-start gap-3 rounded-lg border px-4 py-3 text-sm [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:mt-0.5",
   {
     variants: {
@@ -155,20 +181,41 @@ const pageShellSummaryCardVariants = cva(
       accent: {
         default: "text-card-foreground",
         accent:
-          "border-[var(--chart-1)] bg-white bg-linear-to-r from-[var(--chart-1)]/5 to-[var(--chart-1)]/5 [&>svg]:text-[var(--chart-1)]",
+          "border-[var(--chart-1)]/30 bg-white bg-linear-to-r from-[var(--chart-1)]/5 to-[var(--chart-1)]/5 [&>svg]:text-[var(--chart-1)]",
         amber:
-          "border-amber-500 bg-amber-50 [&>svg]:text-amber-600 dark:border-amber-800 dark:[&>svg]:text-amber-400",
-        blue: "border-blue-500 bg-blue-50 [&>svg]:text-blue-600 dark:border-blue-800 dark:[&>svg]:text-blue-400",
+          "border-amber-300 bg-amber-50 [&>svg]:text-amber-600 dark:border-amber-800 dark:[&>svg]:text-amber-400",
+        blue: "border-blue-300 bg-blue-50 [&>svg]:text-blue-600 dark:border-blue-800 dark:[&>svg]:text-blue-400",
         emerald:
-          "border-emerald-500 bg-emerald-50 [&>svg]:text-emerald-600 dark:border-emerald-800 dark:[&>svg]:text-emerald-400",
-        red: "border-red-500 bg-red-50 [&>svg]:text-red-600 dark:border-red-800 dark:[&>svg]:text-red-400",
+          "border-emerald-300 bg-emerald-50 [&>svg]:text-emerald-600 dark:border-emerald-800 dark:[&>svg]:text-emerald-400",
+        red: "border-red-300 bg-red-50 [&>svg]:text-red-600 dark:border-red-800 dark:[&>svg]:text-red-400",
         violet:
-          "border-violet-500 bg-violet-50 [&>svg]:text-violet-600 dark:border-violet-800 dark:[&>svg]:text-violet-400",
+          "border-violet-300 bg-violet-50 [&>svg]:text-violet-600 dark:border-violet-800 dark:[&>svg]:text-violet-400",
         orange:
-          "border-orange-500 bg-orange-50 [&>svg]:text-orange-600 dark:border-orange-800 dark:[&>svg]:text-orange-400",
-        cyan: "border-cyan-500 bg-cyan-50 [&>svg]:text-cyan-600 dark:border-cyan-800 dark:[&>svg]:text-cyan-400",
+          "border-orange-300 bg-orange-50 [&>svg]:text-orange-600 dark:border-orange-800 dark:[&>svg]:text-orange-400",
+        cyan: "border-cyan-300 bg-cyan-50 [&>svg]:text-cyan-600 dark:border-cyan-800 dark:[&>svg]:text-cyan-400",
         slate:
-          "border-slate-500 bg-slate-50 [&>svg]:text-slate-600 dark:border-slate-800 dark:[&>svg]:text-slate-400",
+          "border-slate-300 bg-slate-50 [&>svg]:text-slate-600 dark:border-slate-800 dark:[&>svg]:text-slate-400",
+        gray: "border-gray-300 bg-gray-50 [&>svg]:text-gray-600 dark:border-gray-800 dark:[&>svg]:text-gray-400",
+        zinc: "border-zinc-300 bg-zinc-50 [&>svg]:text-zinc-600 dark:border-zinc-800 dark:[&>svg]:text-zinc-400",
+        neutral:
+          "border-neutral-300 bg-neutral-50 [&>svg]:text-neutral-600 dark:border-neutral-800 dark:[&>svg]:text-neutral-400",
+        stone:
+          "border-stone-300 bg-stone-50 [&>svg]:text-stone-600 dark:border-stone-800 dark:[&>svg]:text-stone-400",
+        yellow:
+          "border-yellow-300 bg-yellow-50 [&>svg]:text-yellow-600 dark:border-yellow-800 dark:[&>svg]:text-yellow-400",
+        lime: "border-lime-300 bg-lime-50 [&>svg]:text-lime-600 dark:border-lime-800 dark:[&>svg]:text-lime-400",
+        green:
+          "border-green-300 bg-green-50 [&>svg]:text-green-600 dark:border-green-800 dark:[&>svg]:text-green-400",
+        teal: "border-teal-300 bg-teal-50 [&>svg]:text-teal-600 dark:border-teal-800 dark:[&>svg]:text-teal-400",
+        sky: "border-sky-300 bg-sky-50 [&>svg]:text-sky-600 dark:border-sky-800 dark:[&>svg]:text-sky-400",
+        indigo:
+          "border-indigo-300 bg-indigo-50 [&>svg]:text-indigo-600 dark:border-indigo-800 dark:[&>svg]:text-indigo-400",
+        purple:
+          "border-purple-300 bg-purple-50 [&>svg]:text-purple-600 dark:border-purple-800 dark:[&>svg]:text-purple-400",
+        fuchsia:
+          "border-fuchsia-300 bg-fuchsia-50 [&>svg]:text-fuchsia-600 dark:border-fuchsia-800 dark:[&>svg]:text-fuchsia-400",
+        pink: "border-pink-300 bg-pink-50 [&>svg]:text-pink-600 dark:border-pink-800 dark:[&>svg]:text-pink-400",
+        rose: "border-rose-300 bg-rose-50 [&>svg]:text-rose-600 dark:border-rose-800 dark:[&>svg]:text-rose-400",
       },
     },
     compoundVariants: [
@@ -218,6 +265,76 @@ const pageShellSummaryCardVariants = cva(
         accent: "slate",
         className: "border-slate-300 bg-slate-50 dark:bg-slate-950/50",
       },
+      {
+        theme: "shibuya",
+        accent: "gray",
+        className: "border-gray-300 bg-gray-50 dark:bg-gray-950/50",
+      },
+      {
+        theme: "shibuya",
+        accent: "zinc",
+        className: "border-zinc-300 bg-zinc-50 dark:bg-zinc-950/50",
+      },
+      {
+        theme: "shibuya",
+        accent: "neutral",
+        className: "border-neutral-300 bg-neutral-50 dark:bg-neutral-950/50",
+      },
+      {
+        theme: "shibuya",
+        accent: "stone",
+        className: "border-stone-300 bg-stone-50 dark:bg-stone-950/50",
+      },
+      {
+        theme: "shibuya",
+        accent: "yellow",
+        className: "border-yellow-300 bg-yellow-50 dark:bg-yellow-950/50",
+      },
+      {
+        theme: "shibuya",
+        accent: "lime",
+        className: "border-lime-300 bg-lime-50 dark:bg-lime-950/50",
+      },
+      {
+        theme: "shibuya",
+        accent: "green",
+        className: "border-green-300 bg-green-50 dark:bg-green-950/50",
+      },
+      {
+        theme: "shibuya",
+        accent: "teal",
+        className: "border-teal-300 bg-teal-50 dark:bg-teal-950/50",
+      },
+      {
+        theme: "shibuya",
+        accent: "sky",
+        className: "border-sky-300 bg-sky-50 dark:bg-sky-950/50",
+      },
+      {
+        theme: "shibuya",
+        accent: "indigo",
+        className: "border-indigo-300 bg-indigo-50 dark:bg-indigo-950/50",
+      },
+      {
+        theme: "shibuya",
+        accent: "purple",
+        className: "border-purple-300 bg-purple-50 dark:bg-purple-950/50",
+      },
+      {
+        theme: "shibuya",
+        accent: "fuchsia",
+        className: "border-fuchsia-300 bg-fuchsia-50 dark:bg-fuchsia-950/50",
+      },
+      {
+        theme: "shibuya",
+        accent: "pink",
+        className: "border-pink-300 bg-pink-50 dark:bg-pink-950/50",
+      },
+      {
+        theme: "shibuya",
+        accent: "rose",
+        className: "border-rose-300 bg-rose-50 dark:bg-rose-950/50",
+      },
     ],
     defaultVariants: {
       theme: "default",
@@ -226,10 +343,13 @@ const pageShellSummaryCardVariants = cva(
   },
 );
 
-const PageShellSummaryCard = React.forwardRef<
+export interface PageShellSummaryCardProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof pageShellSummaryCardVariants> {}
+
+export const PageShellSummaryCard = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> &
-    VariantProps<typeof pageShellSummaryCardVariants>
+  PageShellSummaryCardProps
 >(({ className, accent, ...props }, ref) => {
   const theme = useResolvedTheme();
   return (
@@ -243,9 +363,12 @@ const PageShellSummaryCard = React.forwardRef<
 });
 PageShellSummaryCard.displayName = "PageShellSummaryCard";
 
-const PageShellContent = React.forwardRef<
+export interface PageShellContentProps
+  extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const PageShellContent = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
+  PageShellContentProps
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -255,18 +378,3 @@ const PageShellContent = React.forwardRef<
   />
 ));
 PageShellContent.displayName = "PageShellContent";
-
-export {
-  PageShell,
-  PageShellHeader,
-  PageShellHeading,
-  PageShellTitle,
-  PageShellDescription,
-  PageShellHeaderEnd,
-  PageShellMeta,
-  PageShellActions,
-  PageShellSummary,
-  PageShellSummaryCard,
-  pageShellSummaryCardVariants,
-  PageShellContent,
-};

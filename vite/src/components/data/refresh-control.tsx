@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { getRelativeTimeString } from "@/lib/freshness"
 
-interface RefreshControlProps {
+export interface RefreshControlProps {
   onRefresh: () => void | Promise<void>
   lastUpdatedAt?: Date | null
   isRefreshing?: boolean

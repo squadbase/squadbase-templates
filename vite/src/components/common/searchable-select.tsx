@@ -170,3 +170,5 @@ const SearchableSelect = React.forwardRef<HTMLDivElement, SearchableSelectProps>
 SearchableSelect.displayName = "SearchableSelect"
 
 export { SearchableSelect }
+
+export type { SelectOption, SelectGroup, SelectOptions } from "./select-types"

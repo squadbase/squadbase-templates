@@ -20,6 +20,9 @@ Options:
   --dry-run            Show what would be done without making changes
   --skip-install       Skip dependency installation after init
   --chart <preset>     Apply a chart preset during init (e.g. --chart sunset)
+  --json               Output as JSON (for the list command)
+  --lang <code>        Filter list by language (e.g. --lang ja)
+  --ui                 Operate on UI-pattern templates (ui-templates/) instead of templates/
   --help               Show this help message
 `.trim();
 
@@ -30,6 +33,9 @@ function main(): void {
       "dry-run": { type: "boolean", default: false },
       "skip-install": { type: "boolean", default: false },
       chart: { type: "string" },
+      json: { type: "boolean", default: false },
+      lang: { type: "string" },
+      ui: { type: "boolean", default: false },
       help: { type: "boolean", default: false },
     },
     allowPositionals: true,
@@ -50,7 +56,11 @@ function main(): void {
       chart: values.chart,
     });
   } else if (command === "list") {
-    listTemplates();
+    listTemplates({
+      json: values.json ?? false,
+      lang: values.lang,
+      ui: values.ui ?? false,
+    });
   } else if (command === "add") {
     const templateName = positionals[1];
     if (!templateName) {
@@ -61,6 +71,7 @@ function main(): void {
     addTemplate(templateName, {
       force: values.force ?? false,
       dryRun: values["dry-run"] ?? false,
+      source: values.ui ? "ui-templates" : "templates",
     });
   } else if (command === "chart") {
     const presetName = positionals[1];

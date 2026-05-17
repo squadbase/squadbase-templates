@@ -5,32 +5,32 @@ description: General rules for creating React component files (pages and child c
 
 # Component Generation Rules
 
-Rules for authoring any React component file in the Squadbase Vite template — `src/pages/*.tsx` (page files) and `src/components/**/*.tsx` (child components). Apply these whether you are writing directly, using `buildPageSection`, or editing an existing file. For the component catalog (props, gotchas, when-to-use), see the `available-component-catalog` skill.
+Rules for any React component file: `src/pages/*.tsx` (pages) and `src/components/**/*.tsx` (children). Applies to direct writes, `buildPageSection`, and edits. For props / gotchas / when-to-use, see `available-component-catalog`.
 
-## Recommended creation order (strongly recommended)
+## Creation order (strongly recommended)
 
-When a page is composed of child components, **always** create files in this order. Importing a child component before its file exists causes the Vite dev server to throw a module resolution error, which blocks preview and interrupts the agent loop.
+When a page composes child components, **always** create files in this order. Importing a child before its file exists throws a Vite module-resolution error, blocking preview and aborting the agent loop.
 
-1. **Create the page file with `Skeleton` placeholders, no child imports.** Lay out `PageShell` + headers and drop a `<Skeleton className="..." />` (from `@/components/ui/skeleton`) sized to match each planned child where it will go. Only import modules that already exist (shadcn primitives, `@/components/common/*`, etc.).
-2. **Create each child component file** under `src/components/<pageName>/<component-name>.tsx`. Each child is self-contained (owns its data fetching + loading/error UI).
-3. **Update the page file** to add the child imports and replace placeholders with the real components.
+1. **Page file with `Skeleton` placeholders, no child imports.** Lay out `PageShell` + headers, drop `<Skeleton className="..." />` (from `@/components/ui/skeleton`) sized to match each planned child. Only import modules that exist.
+2. **Each child file** at `src/components/<pageName>/<component-name>.tsx`. Self-contained (own data fetching + loading / error UI).
+3. **Update page file** — add child imports, replace placeholders.
 
-Do not collapse steps 1 and 3 into a single write — even if you plan to create the child immediately afterward, the intermediate state (page imports a non-existent file) surfaces as a dev-server error and aborts preview.
+Do not collapse steps 1 and 3 — the intermediate state (page imports non-existent file) surfaces as a dev-server error and aborts preview.
 
-When a page has only 1–2 sections and no child split is needed, skip straight to a single page file.
+For 1–2 section pages with no child split, skip straight to a single page file.
 
 ## Export
 
-- **Pages** (`src/pages/*.tsx`): exactly one `export default function PageName()`. Required by the `lazy()` loader in `routes.tsx`.
-- **Child components** (`src/components/**/*.tsx`): named export is the convention in this template (`export function ComponentName()`). Default exports work but are inconsistent with the rest of the codebase.
-- Self-contained children take no props — they fetch their own data. Add props only when the parent genuinely needs to configure the child (e.g. a shared filter value).
+- **Pages** (`src/pages/*.tsx`) — exactly one `export default function PageName()`. Required by `lazy()` loader in `routes.tsx`.
+- **Children** (`src/components/**/*.tsx`) — named export convention (`export function ComponentName()`). Default works but inconsistent with the codebase.
+- Self-contained children take no props (fetch own data). Add props only when parent must configure (e.g., shared filter value).
 
 ## Imports
 
-- Existing components are almost always **named exports**. Before importing one, open its source file to confirm the export name and Props — do not assume a default export.
-- Use the `@/*` alias (e.g. `@/components/common/page-shell`), not relative paths across directories.
-- Import React hooks as named imports (`import { useState } from "react"`). Never `import React from "react"` — the JSX transform is automatic.
-- Never add an import for a file that does not yet exist on disk — see the creation order above.
+- Existing components are almost always **named exports**. Open source to confirm export name + Props before importing.
+- Use `@/*` alias (`@/components/common/page-shell`), not relative cross-directory paths.
+- React hooks as named imports (`import { useState } from "react"`). Never `import React from "react"` — JSX transform is automatic.
+- Never import a file that doesn't yet exist — see Creation order.
 
 ## Data fetching
 
@@ -53,31 +53,40 @@ const { data, isLoading, error } = useQuery({
 });
 ```
 
-- `queryKey` **must** be `["server-logic", slug, params]` so cache invalidation fires when params change.
-- `body: JSON.stringify({ params })` — wrap params under the `params` key. (Chat/streaming endpoints are the exception — see the `chat-app-development` skill.)
-- Cast the parsed body (`as YourType`) — server responses are untyped.
-- `staleTime: 5 * 60 * 1000` (5 min) is the default; tighten only when data changes faster.
+- `queryKey` **must** be `["server-logic", slug, params]` so cache invalidates on param change.
+- `body: JSON.stringify({ params })` — wrap under `params`. (Chat/streaming exception → `chat-app-development`.)
+- Cast parsed body (`as YourType`) — server responses untyped.
+- `staleTime: 5 * 60 * 1000` (5 min) default; tighten only for fast-changing data.
 
 ### Loading / error guards
 
 - `if (isLoading) return <Skeleton className="..." />;`
 - `if (error) return <p className="text-destructive">{error.message}</p>;`
-- Never call `.filter()` / `.map()` / `.length` on `data` without a null guard.
+- Never call `.filter()` / `.map()` / `.length` on `data` without null guard.
 
 ### Response shape
 
-The `return` line in `queryFn` depends on the handler type:
+`return` in `queryFn` depends on handler type:
 
-- **SQL server logic** — results are wrapped in `{ data: rows[] }`: `return json.data as SalesRow[];`
-- **TypeScript server logic** — the handler's `Response` is passed through as-is: `return json as DashboardSummary;`
+- **SQL** — `{ data: rows[] }` wrapper: `return json.data as SalesRow[];`
+- **TypeScript** — handler's `Response` passes through as-is: `return json as DashboardSummary;`
 
 ## Composition defaults
 
-- Page frame defaults to `PageShell` → `PageShellHeader` → `PageShellContent` (optional footer last). Reversing child order breaks the layout.
-- Framed / bordered widgets default to `DashboardCardPreset` (or composable `DashboardCard` + sub-parts). Reach for `ui/Card` only when the Dashboard equivalents cannot express the layout.
-- Inside `PageShellSummary`, use `PageShellSummaryCard` (not `DashboardCard`). Accent prop values: `"default" | "accent" | "amber" | "blue" | "emerald" | "red" | "violet" | "orange" | "cyan" | "slate"`.
+- Page frame: `PageShell` → `PageShellHeader` → `PageShellContent` (optional footer last). Reversing breaks layout.
+- Framed / bordered widgets: `DashboardCardPreset` (or composable `DashboardCard` + sub-parts). Reach for `ui/Card` only when Dashboard equivalents can't express the layout.
+- Inside `PageShellSummary`: `PageShellSummaryCard` (NOT `DashboardCard`). Accent values: `"default" | "accent" | "amber" | "blue" | "emerald" | "red" | "violet" | "orange" | "cyan" | "slate"`.
 
 ## Styling
 
-- Use semantic tokens — `text-foreground`, `text-muted-foreground`, `bg-background`, `bg-muted`, `text-primary`, `text-destructive`, `border-border` — not raw Tailwind color scales.
-- Components ship with sensible defaults. Do not restyle them unless the request requires it.
+- Semantic tokens — `text-foreground`, `text-muted-foreground`, `bg-background`, `bg-muted`, `text-primary`, `text-destructive`, `border-border` — not raw Tailwind color scales.
+- Components ship with sensible defaults. Don't restyle unless required.
+
+---
+
+## Related skills
+
+- `available-component-catalog` — props, gotchas, when-to-use map for every shipped component. Read before importing to confirm export names + pitfalls.
+- `server-logic-development` — defining the backend endpoint `useQuery` calls. `{ params }` body shape, response format, caching.
+- `chat-app-development` — when page is an LLM chat UI. `useChat` instead of `useQuery`, different body shape.
+- `general/dashboard-ui-design` — framework-agnostic principles to decide layout, hierarchy, chart selection before coding.

@@ -1,0 +1,18 @@
+{
+  "name": "attendance-dashboard-ja",
+  "description": "[日本語] 勤怠ダッシュボード — 人事 / 労務 / 管理職向け月次ビュー: メンバー別労働時間ランキング (閾値ハイライト)、残業時間月次推移、有給取得率の部署別比較",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/attendance-dashboard/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/attendance-dashboard/kpi-card.tsx", "action": "add" },
+    { "src": "components/member-workhours-ranking.tsx", "dest": "src/components/attendance-dashboard/member-workhours-ranking.tsx", "action": "add" },
+    { "src": "components/overtime-trend-chart.tsx", "dest": "src/components/attendance-dashboard/overtime-trend-chart.tsx", "action": "add" },
+    { "src": "components/paid-leave-by-department.tsx", "dest": "src/components/attendance-dashboard/paid-leave-by-department.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/attendance-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/attendance-dashboard-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/attendance-dashboard-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/attendance-dashboard.ts", "action": "add" }
+  ],
+  "routes": []
+}

@@ -1,0 +1,18 @@
+{
+  "name": "learning-progress-dashboard-ja",
+  "description": "[日本語] 受講進捗ダッシュボード — 教育担当・マネージャー向け単一ページ (受講完了率・テスト平均点・学習時間・未着手率、コース別完了率ランキング、受講者別アクティビティヒートマップ、テスト得点分布)",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/learning-progress-dashboard/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/learning-progress-dashboard/kpi-card.tsx", "action": "add" },
+    { "src": "components/course-completion-ranking.tsx", "dest": "src/components/learning-progress-dashboard/course-completion-ranking.tsx", "action": "add" },
+    { "src": "components/learner-activity-heatmap.tsx", "dest": "src/components/learning-progress-dashboard/learner-activity-heatmap.tsx", "action": "add" },
+    { "src": "components/test-score-distribution.tsx", "dest": "src/components/learning-progress-dashboard/test-score-distribution.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/learning-progress-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/learning-progress-dashboard-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/learning-progress-dashboard-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/learning-progress-dashboard.ts", "action": "add" }
+  ],
+  "routes": []
+}

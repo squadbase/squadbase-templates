@@ -68,7 +68,7 @@ export function AlertPanel() {
   return (
     <DashboardCardPreset
       title="アラート"
-      description="閾値を超えた指標のリアルタイム通知"
+      description="閾値を超えた主要指標のビジネスアラート"
       actions={
         <Button variant="ghost" size="sm" className="gap-1.5">
           <Settings className="size-3.5" />
