@@ -65,7 +65,7 @@ function DatePicker({
           mode="single"
           selected={displayDate}
           onSelect={handleSelect}
-          initialFocus
+          autoFocus
         />
       </PopoverContent>
       {name && displayDate && (
