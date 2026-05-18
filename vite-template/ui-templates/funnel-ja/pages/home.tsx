@@ -61,7 +61,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>コンバージョンパイプライン</PageShellTitle>
+          <PageShellTitle>[テンプレート] コンバージョンパイプライン</PageShellTitle>
           <PageShellDescription>
             ファネル可視化をページ中央に大きく配置し、ステージ別ボリュームをサイドバーに添える構成
           </PageShellDescription>

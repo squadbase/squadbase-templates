@@ -27,7 +27,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>パフォーマンスワークベンチ</PageShellTitle>
+          <PageShellTitle>[テンプレート] パフォーマンスワークベンチ</PageShellTitle>
           <PageShellDescription>
             タブで切り替えるダッシュボード。サマリ閲覧用の概要タブと、詳細分析用の詳細タブに分かれています
           </PageShellDescription>

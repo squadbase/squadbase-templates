@@ -42,7 +42,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>カタログ運用</PageShellTitle>
+          <PageShellTitle>[テンプレート] カタログ運用</PageShellTitle>
           <PageShellDescription>
             詳細テーブルを軸に、右サイドの活性度トレンドとセグメント内訳で補強する作業画面構成
           </PageShellDescription>

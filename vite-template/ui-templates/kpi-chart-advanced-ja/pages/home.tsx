@@ -63,7 +63,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>グロース分析</PageShellTitle>
+          <PageShellTitle>[テンプレート] グロース分析</PageShellTitle>
           <PageShellDescription>
             主要KPI・前期比較・チャネル構成・日次トレンド・キャンペーン成果を一画面で確認
           </PageShellDescription>

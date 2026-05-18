@@ -27,7 +27,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Performance Workbench</PageShellTitle>
+          <PageShellTitle>[Template] Performance Workbench</PageShellTitle>
           <PageShellDescription>
             Tabbed workspace — switch between an at-a-glance Overview and a deep-dive Detail view
           </PageShellDescription>
