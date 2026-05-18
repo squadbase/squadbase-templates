@@ -32,14 +32,14 @@ export const timeSeries: TimePoint[] = Array.from({ length: DAYS }, (_, i) => {
 })
 
 export const barSeries: BarPoint[] = [
-  { category: "Segment A", value: 184_320 },
-  { category: "Segment B", value: 162_480 },
-  { category: "Segment C", value: 138_750 },
-  { category: "Segment D", value: 121_900 },
-  { category: "Segment E", value: 98_640 },
-  { category: "Segment F", value: 87_220 },
-  { category: "Segment G", value: 72_410 },
-  { category: "Segment H", value: 54_220 },
+  { category: "Item 1", value: 184_320 },
+  { category: "Item 2", value: 162_480 },
+  { category: "Item 3", value: 138_750 },
+  { category: "Item 4", value: 121_900 },
+  { category: "Item 5", value: 98_640 },
+  { category: "Item 6", value: 87_220 },
+  { category: "Item 7", value: 72_410 },
+  { category: "Item 8", value: 54_220 },
 ]
 
 export const scatterPoints: ScatterPoint[] = Array.from({ length: 28 }, (_, i) => ({
@@ -50,16 +50,16 @@ export const scatterPoints: ScatterPoint[] = Array.from({ length: 28 }, (_, i) =
 }))
 
 export const radarAxes: RadarPoint[] = [
-  { axis: "Speed", current: 82, benchmark: 70 },
-  { axis: "Quality", current: 91, benchmark: 78 },
-  { axis: "Cost", current: 64, benchmark: 75 },
-  { axis: "Coverage", current: 88, benchmark: 80 },
-  { axis: "Adoption", current: 73, benchmark: 65 },
-  { axis: "Support", current: 79, benchmark: 70 },
+  { axis: "Axis 1", current: 82, benchmark: 70 },
+  { axis: "Axis 2", current: 91, benchmark: 78 },
+  { axis: "Axis 3", current: 64, benchmark: 75 },
+  { axis: "Axis 4", current: 88, benchmark: 80 },
+  { axis: "Axis 5", current: 73, benchmark: 65 },
+  { axis: "Axis 6", current: 79, benchmark: 70 },
 ]
 
-const HEATMAP_X = ["00", "04", "08", "12", "16", "20"]
-const HEATMAP_Y = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+const HEATMAP_X = ["0", "1", "2", "3", "4", "5"]
+const HEATMAP_Y = ["Row 1", "Row 2", "Row 3", "Row 4", "Row 5", "Row 6", "Row 7"]
 export const heatmapCells: HeatmapCell[] = HEATMAP_Y.flatMap((y, yi) =>
   HEATMAP_X.map((x, xi) => {
     const isPeak = xi >= 2 && xi <= 4 && yi < 5

@@ -4,8 +4,12 @@ import {
   useEChartsContrastColor,
   withAlpha,
 } from "@/components/data/echart"
-import { DashboardCardPreset } from "@/components/common/dashboard-card"
-import { formatNumber } from "./chart-helpers"
+import {
+  DashboardCard,
+  DashboardCardHeader,
+  DashboardCardContent,
+} from "@/components/common/dashboard-card"
+import { Skeleton } from "@/components/ui/skeleton"
 import type { FunnelStage } from "@/types/ui-template-funnel"
 
 interface FunnelChartProps {
@@ -27,17 +31,7 @@ export function FunnelChart({
   const palette = alphas.map((a) => (a === 1 ? baseColor : withAlpha(baseColor, a)))
 
   const option: EChartsOption = {
-    tooltip: {
-      trigger: "item",
-      formatter: (params: unknown) => {
-        const p = params as {
-          name: string
-          value: number
-          data: { conversionRate: number; share: number }
-        }
-        return `${p.name}<br/>${formatNumber(p.value)} (${p.data.share.toFixed(1)}% of top)`
-      },
-    },
+    tooltip: { trigger: "item" },
     series: [
       {
         type: "funnel",
@@ -63,7 +57,7 @@ export function FunnelChart({
             const main =
               display === "percent"
                 ? `${params.data.share.toFixed(1)}%`
-                : formatNumber(params.value)
+                : params.value.toLocaleString("en-US")
             return `{name|${params.name}}\n{value|${main}}`
           },
           rich: {
@@ -96,11 +90,16 @@ export function FunnelChart({
   }
 
   return (
-    <DashboardCardPreset
-      title="Conversion Funnel"
-      description="Stage-by-stage funnel from visitors to conversions"
-    >
-      <EChart option={option} height={height} />
-    </DashboardCardPreset>
+    <DashboardCard>
+      <DashboardCardHeader>
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="h-3.5 w-56" />
+        </div>
+      </DashboardCardHeader>
+      <DashboardCardContent>
+        <EChart option={option} height={height} />
+      </DashboardCardContent>
+    </DashboardCard>
   )
 }

@@ -1,9 +1,12 @@
 import { useMemo } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
-import { DashboardCardPreset } from "@/components/common/dashboard-card"
-import { cn } from "@/lib/utils"
-import { formatNumber, formatPercent } from "./chart-helpers"
+import {
+  DashboardCard,
+  DashboardCardHeader,
+  DashboardCardContent,
+} from "@/components/common/dashboard-card"
+import { Skeleton } from "@/components/ui/skeleton"
 import type { StageRow } from "@/types/ui-template-funnel"
 
 interface StageTableProps {
@@ -15,50 +18,42 @@ export function StageTable({ data }: StageTableProps) {
     () => [
       {
         accessorKey: "stage",
-        header: "ステージ遷移",
-        cell: ({ row }) => <span className="font-medium">{row.original.stage}</span>,
+        header: "Column 1",
+        cell: () => <Skeleton className="h-4 w-32" />,
       },
       {
         accessorKey: "count",
-        header: "通過件数",
-        cell: ({ row }) => (
-          <div className="text-right font-semibold tabular-nums">
-            {formatNumber(row.original.count)}
+        header: "Column 2",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-16" />
           </div>
         ),
       },
       {
         accessorKey: "conversionRate",
-        header: "通過率",
-        cell: ({ row }) => {
-          const r = row.original.conversionRate
-          return (
-            <div
-              className={cn(
-                "text-right font-medium tabular-nums",
-                r < 25 ? "text-rose-600" : r > 60 ? "text-emerald-600" : "",
-              )}
-            >
-              {formatPercent(r)}
-            </div>
-          )
-        },
+        header: "Column 3",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-12" />
+          </div>
+        ),
       },
       {
         accessorKey: "avgDays",
-        header: "平均日数",
-        cell: ({ row }) => (
-          <div className="text-right tabular-nums text-muted-foreground">
-            {row.original.avgDays.toFixed(1)}
+        header: "Column 4",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-10" />
           </div>
         ),
       },
       {
         accessorKey: "dropoff",
-        header: "離脱数",
-        cell: ({ row }) => (
-          <div className="text-right tabular-nums text-rose-600 dark:text-rose-400">
-            {formatNumber(row.original.dropoff)}
+        header: "Column 5",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-16" />
           </div>
         ),
       },
@@ -67,11 +62,16 @@ export function StageTable({ data }: StageTableProps) {
   )
 
   return (
-    <DashboardCardPreset
-      title="ステージ別パフォーマンス"
-      description="各ステージの通過率・速度・離脱数のランキング"
-    >
-      <DataTablePreset columns={columns} data={data} enableSorting />
-    </DashboardCardPreset>
+    <DashboardCard>
+      <DashboardCardHeader>
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="h-3.5 w-56" />
+        </div>
+      </DashboardCardHeader>
+      <DashboardCardContent>
+        <DataTablePreset columns={columns} data={data} enableSorting />
+      </DashboardCardContent>
+    </DashboardCard>
   )
 }

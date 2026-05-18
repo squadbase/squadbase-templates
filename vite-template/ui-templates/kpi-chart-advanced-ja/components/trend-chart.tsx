@@ -1,7 +1,12 @@
 import type { EChartsOption } from "echarts"
 import { EChart } from "@/components/data/echart"
-import { DashboardCardPreset } from "@/components/common/dashboard-card"
-import { formatCurrency, formatNumber, getBaseGrid } from "./chart-helpers"
+import {
+  DashboardCard,
+  DashboardCardHeader,
+  DashboardCardContent,
+} from "@/components/common/dashboard-card"
+import { Skeleton } from "@/components/ui/skeleton"
+import { formatNumber, getBaseGrid } from "./chart-helpers"
 import type { TrendPoint } from "@/types/ui-template-kpi-chart-advanced"
 
 interface TrendChartProps {
@@ -10,13 +15,7 @@ interface TrendChartProps {
 
 export function TrendChart({ data }: TrendChartProps) {
   const option: EChartsOption = {
-    tooltip: {
-      trigger: "axis",
-      valueFormatter: (v) =>
-        v === null || v === undefined
-          ? "-"
-          : formatCurrency(v as number, { short: true }),
-    },
+    tooltip: { trigger: "axis" },
     legend: { bottom: 0 },
     grid: getBaseGrid(),
     xAxis: {
@@ -31,7 +30,7 @@ export function TrendChart({ data }: TrendChartProps) {
     },
     series: [
       {
-        name: "日次売上",
+        name: "Series A",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -42,11 +41,16 @@ export function TrendChart({ data }: TrendChartProps) {
   }
 
   return (
-    <DashboardCardPreset
-      title="日次トレンド"
-      description="期間内の日次売上の推移"
-    >
-      <EChart option={option} height="280px" />
-    </DashboardCardPreset>
+    <DashboardCard>
+      <DashboardCardHeader>
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-3.5 w-56" />
+        </div>
+      </DashboardCardHeader>
+      <DashboardCardContent>
+        <EChart option={option} height="280px" />
+      </DashboardCardContent>
+    </DashboardCard>
   )
 }

@@ -2,53 +2,33 @@ import type { LucideIcon } from "lucide-react"
 import {
   DashboardCard,
   DashboardCardHeader,
-  DashboardCardTitle,
   DashboardCardAction,
   DashboardCardContent,
 } from "@/components/common/dashboard-card"
-import { TrendIndicator } from "@/components/data/trend-indicator"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Sparkline } from "@/components/data/sparkline"
 import type { KpiItem } from "@/types/ui-template-kpi-chart-advanced"
-
-interface SubStat {
-  label: string
-  value: string
-}
 
 interface HeroKpiCardProps {
   item: KpiItem
   icon: LucideIcon
-  subStats?: SubStat[]
 }
 
-export function HeroKpiCard({ item, icon: Icon, subStats }: HeroKpiCardProps) {
-  const direction =
-    item.change > 0 ? "up" : item.change < 0 ? "down" : "neutral"
-
+export function HeroKpiCard({ item, icon: Icon }: HeroKpiCardProps) {
   return (
     <DashboardCard className="h-full">
       <DashboardCardHeader>
-        <DashboardCardTitle className="text-base font-semibold">
-          {item.label}
-        </DashboardCardTitle>
+        <Skeleton className="h-5 w-32" />
         <DashboardCardAction>
           <Icon className="size-5 text-muted-foreground" />
         </DashboardCardAction>
       </DashboardCardHeader>
       <DashboardCardContent className="flex flex-1 flex-col gap-5">
         <div>
-          <div className="text-5xl font-bold tabular-nums tracking-tight">
-            {item.value}
-          </div>
-          <div className="mt-2 flex items-center gap-2">
-            <TrendIndicator
-              value={Math.abs(item.change)}
-              direction={direction}
-              positiveIsGood={item.positiveIsGood}
-            />
-            <span className="text-sm text-muted-foreground">
-              {item.changeLabel}
-            </span>
+          <Skeleton className="h-10 w-40" />
+          <div className="mt-3 flex items-center gap-2">
+            <Skeleton className="h-4 w-12" />
+            <Skeleton className="h-3.5 w-32" />
           </div>
         </div>
         {item.sparklineData.length > 0 && (
@@ -58,18 +38,16 @@ export function HeroKpiCard({ item, icon: Icon, subStats }: HeroKpiCardProps) {
             area
           />
         )}
-        {subStats && subStats.length > 0 && (
-          <div className="grid grid-cols-2 gap-3 border-t pt-3">
-            {subStats.map((s) => (
-              <div key={s.label}>
-                <div className="text-xs text-muted-foreground">{s.label}</div>
-                <div className="text-base font-semibold tabular-nums">
-                  {s.value}
-                </div>
-              </div>
-            ))}
+        <div className="grid grid-cols-2 gap-3 border-t pt-3">
+          <div className="space-y-1.5">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-4 w-20" />
           </div>
-        )}
+          <div className="space-y-1.5">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-4 w-20" />
+          </div>
+        </div>
       </DashboardCardContent>
     </DashboardCard>
   )

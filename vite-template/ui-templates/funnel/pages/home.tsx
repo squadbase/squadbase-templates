@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { subDays } from "date-fns"
 import { TrendingDown, TrendingUp, Users, Target } from "lucide-react"
 import { DateRangePicker } from "@/components/data/date-range-picker"
@@ -6,10 +6,8 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   DashboardCard,
   DashboardCardHeader,
-  DashboardCardTitle,
   DashboardCardAction,
   DashboardCardContent,
-  DashboardCardPreset,
 } from "@/components/common/dashboard-card"
 import {
   PageShell,
@@ -20,9 +18,9 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
+import { Skeleton } from "@/components/ui/skeleton"
 import { FunnelChart } from "@/components/ui-template-funnel/funnel-chart"
 import { StageTable } from "@/components/ui-template-funnel/stage-table"
-import { formatNumber } from "@/components/ui-template-funnel/chart-helpers"
 import {
   funnelStages,
   stageRows,
@@ -39,31 +37,15 @@ export default function HomePage() {
   })
   const [display, setDisplay] = useState<DisplayMode>("count")
 
-  const summary = useMemo(() => {
-    const top = funnelStages[0]
-    const bottom = funnelStages[funnelStages.length - 1]
-    const transitions = funnelStages.slice(1)
-    const best = transitions.reduce((acc, s) =>
-      s.conversionRate > acc.conversionRate ? s : acc,
-    )
-    const worst = transitions.reduce((acc, s) =>
-      s.conversionRate < acc.conversionRate ? s : acc,
-    )
-    return {
-      topValue: top.value,
-      endToEnd: (bottom.value / top.value) * 100,
-      best,
-      worst,
-    }
-  }, [])
-
   return (
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>[Template] Conversion Pipeline</PageShellTitle>
+          <PageShellTitle>
+            <Skeleton className="h-7 w-64" />
+          </PageShellTitle>
           <PageShellDescription>
-            End-to-end funnel as the centerpiece, with stage-by-stage volume on the side
+            <Skeleton className="mt-2 h-4 w-96" />
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd className="flex-row items-center gap-2">
@@ -74,8 +56,8 @@ export default function HomePage() {
             variant="outline"
             size="sm"
           >
-            <ToggleGroupItem value="count">Count</ToggleGroupItem>
-            <ToggleGroupItem value="percent">Percent</ToggleGroupItem>
+            <ToggleGroupItem value="count">Option A</ToggleGroupItem>
+            <ToggleGroupItem value="percent">Option B</ToggleGroupItem>
           </ToggleGroup>
           <DateRangePicker
             value={dateRange}
@@ -88,27 +70,15 @@ export default function HomePage() {
       <PageShellContent className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <SummaryCard
-            label="Top of funnel"
-            value={formatNumber(summary.topValue)}
-            sub="Visitors entering the funnel"
             icon={<Users className="size-4 text-muted-foreground" />}
           />
           <SummaryCard
-            label="End-to-end conversion"
-            value={`${summary.endToEnd.toFixed(2)}%`}
-            sub="Visitors → Conversions"
             icon={<Target className="size-4 text-muted-foreground" />}
           />
           <SummaryCard
-            label="Best stage"
-            value={`${summary.best.conversionRate.toFixed(1)}%`}
-            sub={`Strongest pass-through · ${summary.best.stage}`}
             icon={<TrendingUp className="size-4 text-emerald-600" />}
           />
           <SummaryCard
-            label="Bottleneck"
-            value={`${summary.worst.conversionRate.toFixed(1)}%`}
-            sub={`Lowest pass-through · ${summary.worst.stage}`}
             icon={<TrendingDown className="size-4 text-rose-600" />}
           />
         </div>
@@ -117,12 +87,17 @@ export default function HomePage() {
           <div className="lg:col-span-2">
             <FunnelChart data={funnelStages} height="440px" display={display} />
           </div>
-          <DashboardCardPreset
-            title="Stages"
-            description="Drop-off and pass-through per step"
-          >
-            <StagesSidebar />
-          </DashboardCardPreset>
+          <DashboardCard>
+            <DashboardCardHeader>
+              <div className="space-y-2">
+                <Skeleton className="h-5 w-24" />
+                <Skeleton className="h-3.5 w-48" />
+              </div>
+            </DashboardCardHeader>
+            <DashboardCardContent>
+              <StagesSidebar />
+            </DashboardCardContent>
+          </DashboardCard>
         </div>
 
         <StageTable data={stageRows} />
@@ -132,22 +107,19 @@ export default function HomePage() {
 }
 
 interface SummaryCardProps {
-  label: string
-  value: string
-  sub: string
   icon: React.ReactNode
 }
 
-function SummaryCard({ label, value, sub, icon }: SummaryCardProps) {
+function SummaryCard({ icon }: SummaryCardProps) {
   return (
     <DashboardCard>
       <DashboardCardHeader>
-        <DashboardCardTitle>{label}</DashboardCardTitle>
+        <Skeleton className="h-4 w-28" />
         <DashboardCardAction>{icon}</DashboardCardAction>
       </DashboardCardHeader>
       <DashboardCardContent>
-        <div className="text-3xl font-semibold tabular-nums">{value}</div>
-        <p className="mt-1 text-xs text-muted-foreground">{sub}</p>
+        <Skeleton className="h-8 w-24" />
+        <Skeleton className="mt-2 h-3 w-40" />
       </DashboardCardContent>
     </DashboardCard>
   )
@@ -158,8 +130,7 @@ function StagesSidebar() {
     <ol className="space-y-4">
       {funnelStages.map((s, i) => {
         const prev = i > 0 ? funnelStages[i - 1] : null
-        const dropoff = prev ? prev.value - s.value : 0
-        const dropoffPct = prev ? (dropoff / prev.value) * 100 : 0
+        const dropoffPct = prev ? ((prev.value - s.value) / prev.value) * 100 : 0
         return (
           <li key={s.stage} className="space-y-2">
             <div className="flex items-baseline justify-between gap-2">
@@ -167,30 +138,14 @@ function StagesSidebar() {
                 <span className="text-xs font-semibold text-muted-foreground tabular-nums">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="text-sm font-medium truncate">{s.stage}</span>
+                <Skeleton className="h-4 w-20" />
               </div>
-              <span className="text-sm font-semibold tabular-nums">
-                {formatNumber(s.value)}
-              </span>
+              <Skeleton className="h-4 w-16" />
             </div>
-            <div className="grid grid-cols-2 gap-3 text-xs tabular-nums">
-              <div className="flex items-center gap-1.5">
-                <span className="text-muted-foreground">Pass-through</span>
-                <span className="font-medium">
-                  {prev ? `${s.conversionRate.toFixed(1)}%` : "—"}
-                </span>
-              </div>
-              <div className="flex items-center justify-end gap-1.5">
-                <span className="text-muted-foreground">Drop-off</span>
-                <span
-                  className={
-                    prev
-                      ? "font-medium text-rose-600 dark:text-rose-400"
-                      : "font-medium text-muted-foreground"
-                  }
-                >
-                  {prev ? `−${formatNumber(dropoff)}` : "—"}
-                </span>
+            <div className="grid grid-cols-2 gap-3">
+              <Skeleton className="h-3 w-24" />
+              <div className="flex justify-end">
+                <Skeleton className="h-3 w-20" />
               </div>
             </div>
             {prev && (

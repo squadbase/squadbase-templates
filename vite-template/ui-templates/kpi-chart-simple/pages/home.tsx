@@ -11,6 +11,7 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
+import { Skeleton } from "@/components/ui/skeleton"
 import { KpiCard } from "@/components/ui-template-kpi-chart-simple/kpi-card"
 import { TrendChart } from "@/components/ui-template-kpi-chart-simple/trend-chart"
 import { TopItemsTable } from "@/components/ui-template-kpi-chart-simple/top-items-table"
@@ -38,9 +39,11 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>[Template] Performance Overview</PageShellTitle>
+          <PageShellTitle>
+            <Skeleton className="h-7 w-64" />
+          </PageShellTitle>
           <PageShellDescription>
-            Headline metrics, daily revenue trend, and the top items driving the period
+            <Skeleton className="mt-2 h-4 w-96" />
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd>

@@ -1,7 +1,12 @@
 import type { EChartsOption } from "echarts"
 import { EChart } from "@/components/data/echart"
-import { DashboardCardPreset } from "@/components/common/dashboard-card"
-import { formatCurrency, formatNumber, getBaseGrid } from "./chart-helpers"
+import {
+  DashboardCard,
+  DashboardCardHeader,
+  DashboardCardContent,
+} from "@/components/common/dashboard-card"
+import { Skeleton } from "@/components/ui/skeleton"
+import { formatNumber, getBaseGrid } from "./chart-helpers"
 import type { TrendPoint } from "@/types/ui-template-table-focus"
 
 interface SupportChartProps {
@@ -10,11 +15,7 @@ interface SupportChartProps {
 
 export function SupportChart({ data }: SupportChartProps) {
   const option: EChartsOption = {
-    tooltip: {
-      trigger: "axis",
-      valueFormatter: (v) =>
-        v === null || v === undefined ? "-" : formatCurrency(v as number, { short: true }),
-    },
+    tooltip: { trigger: "axis" },
     legend: { bottom: 0 },
     grid: getBaseGrid(),
     xAxis: {
@@ -26,7 +27,7 @@ export function SupportChart({ data }: SupportChartProps) {
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "日次合計",
+        name: "Series A",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -37,11 +38,16 @@ export function SupportChart({ data }: SupportChartProps) {
   }
 
   return (
-    <DashboardCardPreset
-      title="日次アクティビティ"
-      description="テーブルを補完する日次集計トレンド"
-    >
-      <EChart option={option} height="220px" />
-    </DashboardCardPreset>
+    <DashboardCard>
+      <DashboardCardHeader>
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-3.5 w-48" />
+        </div>
+      </DashboardCardHeader>
+      <DashboardCardContent>
+        <EChart option={option} height="220px" />
+      </DashboardCardContent>
+    </DashboardCard>
   )
 }

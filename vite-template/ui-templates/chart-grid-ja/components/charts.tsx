@@ -1,7 +1,12 @@
 import type { EChartsOption } from "echarts"
 import { EChart } from "@/components/data/echart"
-import { DashboardCardPreset } from "@/components/common/dashboard-card"
-import { formatCurrency, formatNumber, getBaseGrid } from "./chart-helpers"
+import {
+  DashboardCard,
+  DashboardCardHeader,
+  DashboardCardContent,
+} from "@/components/common/dashboard-card"
+import { Skeleton } from "@/components/ui/skeleton"
+import { formatNumber, getBaseGrid } from "./chart-helpers"
 import type {
   TimePoint,
   BarPoint,
@@ -10,16 +15,30 @@ import type {
   HeatmapCell,
 } from "@/types/ui-template-chart-grid"
 
+interface ChartCardProps {
+  children: React.ReactNode
+}
+
+function ChartCard({ children }: ChartCardProps) {
+  return (
+    <DashboardCard>
+      <DashboardCardHeader>
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-3.5 w-48" />
+        </div>
+      </DashboardCardHeader>
+      <DashboardCardContent>{children}</DashboardCardContent>
+    </DashboardCard>
+  )
+}
+
 interface AreaChartProps {
   data: TimePoint[]
 }
 export function AreaChart({ data }: AreaChartProps) {
   const option: EChartsOption = {
-    tooltip: {
-      trigger: "axis",
-      valueFormatter: (v) =>
-        v === null || v === undefined ? "-" : formatCurrency(v as number, { short: true }),
-    },
+    tooltip: { trigger: "axis" },
     legend: { bottom: 0 },
     grid: getBaseGrid(),
     xAxis: {
@@ -31,7 +50,7 @@ export function AreaChart({ data }: AreaChartProps) {
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "主系列",
+        name: "Series A",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -39,7 +58,7 @@ export function AreaChart({ data }: AreaChartProps) {
         areaStyle: { opacity: 0.22 },
       },
       {
-        name: "副系列",
+        name: "Series B",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -49,9 +68,9 @@ export function AreaChart({ data }: AreaChartProps) {
     ],
   }
   return (
-    <DashboardCardPreset title="エリアチャート" description="二系列の日次エリアチャート">
+    <ChartCard>
       <EChart option={option} height="280px" />
-    </DashboardCardPreset>
+    </ChartCard>
   )
 }
 
@@ -60,11 +79,7 @@ interface LineChartProps {
 }
 export function LineChart({ data }: LineChartProps) {
   const option: EChartsOption = {
-    tooltip: {
-      trigger: "axis",
-      valueFormatter: (v) =>
-        v === null || v === undefined ? "-" : formatNumber(v as number),
-    },
+    tooltip: { trigger: "axis" },
     legend: { bottom: 0 },
     grid: getBaseGrid(),
     xAxis: {
@@ -76,14 +91,14 @@ export function LineChart({ data }: LineChartProps) {
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "主系列",
+        name: "Series A",
         type: "line",
         smooth: true,
         showSymbol: false,
         data: data.map((d) => d.series1),
       },
       {
-        name: "副系列",
+        name: "Series B",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -92,9 +107,9 @@ export function LineChart({ data }: LineChartProps) {
     ],
   }
   return (
-    <DashboardCardPreset title="折れ線トレンド" description="二系列の日次折れ線">
+    <ChartCard>
       <EChart option={option} height="280px" />
-    </DashboardCardPreset>
+    </ChartCard>
   )
 }
 
@@ -103,18 +118,13 @@ interface BarChartProps {
 }
 export function BarChart({ data }: BarChartProps) {
   const option: EChartsOption = {
-    tooltip: {
-      trigger: "axis",
-      axisPointer: { type: "shadow" },
-      valueFormatter: (v) =>
-        v === null || v === undefined ? "-" : formatCurrency(v as number, { short: true }),
-    },
+    tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
     grid: getBaseGrid(),
     xAxis: { type: "category", data: data.map((d) => d.category) },
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "金額",
+        name: "Series A",
         type: "bar",
         data: data.map((d) => d.value),
         barMaxWidth: 28,
@@ -122,9 +132,9 @@ export function BarChart({ data }: BarChartProps) {
     ],
   }
   return (
-    <DashboardCardPreset title="セグメント別ランキング" description="セグメント別の金額">
+    <ChartCard>
       <EChart option={option} height="280px" />
-    </DashboardCardPreset>
+    </ChartCard>
   )
 }
 
@@ -133,16 +143,10 @@ interface ScatterChartProps {
 }
 export function ScatterChart({ data }: ScatterChartProps) {
   const option: EChartsOption = {
-    tooltip: {
-      trigger: "item",
-      formatter: (params: unknown) => {
-        const p = params as { value: [number, number, number]; data: { label: string } }
-        return `${p.data.label}<br/>X: ${p.value[0]} · Y: ${p.value[1]}`
-      },
-    },
+    tooltip: { trigger: "item" },
     grid: getBaseGrid(),
-    xAxis: { type: "value", name: "次元X" },
-    yAxis: { type: "value", name: "次元Y" },
+    xAxis: { type: "value" },
+    yAxis: { type: "value" },
     series: [
       {
         type: "scatter",
@@ -158,9 +162,9 @@ export function ScatterChart({ data }: ScatterChartProps) {
     ] as EChartsOption["series"],
   }
   return (
-    <DashboardCardPreset title="散布図" description="二次元での分布">
+    <ChartCard>
       <EChart option={option} height="280px" />
-    </DashboardCardPreset>
+    </ChartCard>
   )
 }
 
@@ -181,12 +185,12 @@ export function RadarChart({ data }: RadarChartProps) {
         data: [
           {
             value: data.map((r) => r.current),
-            name: "現状",
+            name: "Series A",
             areaStyle: { opacity: 0.28 },
           },
           {
             value: data.map((r) => r.benchmark),
-            name: "ベンチマーク",
+            name: "Series B",
             areaStyle: { opacity: 0.18 },
           },
         ],
@@ -194,9 +198,9 @@ export function RadarChart({ data }: RadarChartProps) {
     ],
   }
   return (
-    <DashboardCardPreset title="ケイパビリティレーダー" description="軸別の現状とベンチマーク比較">
+    <ChartCard>
       <EChart option={option} height="280px" />
-    </DashboardCardPreset>
+    </ChartCard>
   )
 }
 
@@ -229,8 +233,8 @@ export function HeatmapChart({ data, xAxis, yAxis }: HeatmapChartProps) {
     ],
   }
   return (
-    <DashboardCardPreset title="アクティビティヒートマップ" description="曜日 × 時間帯の活性度">
+    <ChartCard>
       <EChart option={option} height="280px" />
-    </DashboardCardPreset>
+    </ChartCard>
   )
 }

@@ -12,6 +12,7 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
+import { Skeleton } from "@/components/ui/skeleton"
 import { OverviewTab } from "@/components/ui-template-tabbed-dashboard/overview-tab"
 import { DetailTab } from "@/components/ui-template-tabbed-dashboard/detail-tab"
 
@@ -27,9 +28,11 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>[テンプレート] パフォーマンスワークベンチ</PageShellTitle>
+          <PageShellTitle>
+            <Skeleton className="h-7 w-64" />
+          </PageShellTitle>
           <PageShellDescription>
-            タブで切り替えるダッシュボード。サマリ閲覧用の概要タブと、詳細分析用の詳細タブに分かれています
+            <Skeleton className="mt-2 h-4 w-96" />
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd>
@@ -47,11 +50,11 @@ export default function HomePage() {
             <TabsList variant="line" className="gap-4 bg-transparent -mb-px">
               <TabsTrigger value="overview" className="gap-2 px-1">
                 <LayoutDashboard className="size-4" />
-                概要
+                Tab 1
               </TabsTrigger>
               <TabsTrigger value="detail" className="gap-2 px-1">
                 <Table2 className="size-4" />
-                詳細
+                Tab 2
               </TabsTrigger>
             </TabsList>
           </div>

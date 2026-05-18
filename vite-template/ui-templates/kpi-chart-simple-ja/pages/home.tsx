@@ -11,6 +11,7 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
+import { Skeleton } from "@/components/ui/skeleton"
 import { KpiCard } from "@/components/ui-template-kpi-chart-simple/kpi-card"
 import { TrendChart } from "@/components/ui-template-kpi-chart-simple/trend-chart"
 import { TopItemsTable } from "@/components/ui-template-kpi-chart-simple/top-items-table"
@@ -38,9 +39,11 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>[テンプレート] パフォーマンス概況</PageShellTitle>
+          <PageShellTitle>
+            <Skeleton className="h-7 w-64" />
+          </PageShellTitle>
           <PageShellDescription>
-            主要指標、日次売上トレンド、期間内トップ商品をひとつのページで確認
+            <Skeleton className="mt-2 h-4 w-96" />
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd>

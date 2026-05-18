@@ -44,11 +44,11 @@ export const comparisonSeries: ComparisonPoint[] = months.map((m, i) => {
 })
 
 export const breakdownSlices: BreakdownSlice[] = [
-  { segment: "Direct", value: 412_000 },
-  { segment: "Organic", value: 318_000 },
-  { segment: "Paid", value: 287_000 },
-  { segment: "Referral", value: 164_000 },
-  { segment: "Social", value: 132_000 },
+  { segment: "Segment 1", value: 412_000 },
+  { segment: "Segment 2", value: 318_000 },
+  { segment: "Segment 3", value: 287_000 },
+  { segment: "Segment 4", value: 164_000 },
+  { segment: "Segment 5", value: 132_000 },
 ]
 
 const totalRevenue = trendSeries.reduce((s, p) => s + p.value, 0)
@@ -67,37 +67,37 @@ function buildSparkline(values: number[], length = 12): number[] {
 export const headerKpis: KpiItem[] = [
   {
     id: "revenue",
-    label: "Total Revenue",
+    label: "Metric 1",
     value: `$${(totalRevenue / 1_000_000).toFixed(2)}M`,
     change: 14.2,
-    changeLabel: "vs. previous period",
+    changeLabel: "",
     positiveIsGood: true,
     sparklineData: buildSparkline(trendSeries.map((p) => p.value)),
   },
   {
     id: "users",
-    label: "Active Users",
+    label: "Metric 2",
     value: users.toLocaleString("en-US"),
     change: 9.8,
-    changeLabel: "vs. previous period",
+    changeLabel: "",
     positiveIsGood: true,
     sparklineData: buildSparkline(trendSeries.map((p) => Math.round(p.value / 6))),
   },
   {
     id: "sessions",
-    label: "Sessions",
+    label: "Metric 3",
     value: sessions.toLocaleString("en-US"),
     change: 6.5,
-    changeLabel: "vs. previous period",
+    changeLabel: "",
     positiveIsGood: true,
     sparklineData: buildSparkline(trendSeries.map((p) => Math.round(p.value / 4))),
   },
   {
     id: "conversion",
-    label: "Conversion Rate",
+    label: "Metric 4",
     value: `${((conversions / users) * 100).toFixed(2)}%`,
     change: -0.4,
-    changeLabel: "vs. previous period",
+    changeLabel: "",
     positiveIsGood: true,
     sparklineData: buildSparkline(
       trendSeries.map((p) => 4.2 + (p.value / 50_000)),
@@ -105,10 +105,10 @@ export const headerKpis: KpiItem[] = [
   },
   {
     id: "aov",
-    label: "Avg. Order Value",
+    label: "Metric 5",
     value: `$${aov.toFixed(2)}`,
     change: 5.1,
-    changeLabel: "vs. previous period",
+    changeLabel: "",
     positiveIsGood: true,
     sparklineData: buildSparkline(
       trendSeries.map((p) => p.value / 28),
@@ -117,10 +117,10 @@ export const headerKpis: KpiItem[] = [
 ]
 
 export const campaignRows: CampaignRow[] = [
-  { id: "c-01", name: "Spring Launch", channel: "Paid Search", spend: 48_200, conversions: 612, roi: 4.8 },
-  { id: "c-02", name: "Brand Awareness Q1", channel: "Social", spend: 34_600, conversions: 421, roi: 3.4 },
-  { id: "c-03", name: "Lifecycle Email", channel: "Email", spend: 12_800, conversions: 308, roi: 6.9 },
-  { id: "c-04", name: "Affiliate Push", channel: "Affiliate", spend: 22_100, conversions: 254, roi: 4.1 },
-  { id: "c-05", name: "Retargeting Window", channel: "Display", spend: 18_400, conversions: 196, roi: 3.2 },
-  { id: "c-06", name: "Influencer Pilot", channel: "Social", spend: 14_300, conversions: 124, roi: 2.5 },
+  { id: "c-01", name: "Item 1", channel: "Group A", spend: 48_200, conversions: 612, roi: 4.8 },
+  { id: "c-02", name: "Item 2", channel: "Group B", spend: 34_600, conversions: 421, roi: 3.4 },
+  { id: "c-03", name: "Item 3", channel: "Group C", spend: 12_800, conversions: 308, roi: 6.9 },
+  { id: "c-04", name: "Item 4", channel: "Group D", spend: 22_100, conversions: 254, roi: 4.1 },
+  { id: "c-05", name: "Item 5", channel: "Group E", spend: 18_400, conversions: 196, roi: 3.2 },
+  { id: "c-06", name: "Item 6", channel: "Group B", spend: 14_300, conversions: 124, roi: 2.5 },
 ]

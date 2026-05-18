@@ -2,11 +2,10 @@ import type { LucideIcon } from "lucide-react"
 import {
   DashboardCard,
   DashboardCardHeader,
-  DashboardCardTitle,
   DashboardCardAction,
   DashboardCardContent,
 } from "@/components/common/dashboard-card"
-import { TrendIndicator } from "@/components/data/trend-indicator"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Sparkline } from "@/components/data/sparkline"
 import type { KpiItem } from "@/types/ui-template-kpi-chart-advanced"
 
@@ -16,30 +15,19 @@ interface KpiCardProps {
 }
 
 export function KpiCard({ item, icon: Icon }: KpiCardProps) {
-  const direction =
-    item.change > 0 ? "up" : item.change < 0 ? "down" : "neutral"
-
   return (
     <DashboardCard>
       <DashboardCardHeader>
-        <DashboardCardTitle className="font-medium text-muted-foreground">
-          {item.label}
-        </DashboardCardTitle>
+        <Skeleton className="h-4 w-20" />
         <DashboardCardAction>
           <Icon className="size-4 text-muted-foreground" />
         </DashboardCardAction>
       </DashboardCardHeader>
       <DashboardCardContent>
-        <div className="text-2xl font-bold tabular-nums">{item.value}</div>
-        <div className="mt-1 flex items-center gap-2">
-          <TrendIndicator
-            value={Math.abs(item.change)}
-            direction={direction}
-            positiveIsGood={item.positiveIsGood}
-          />
-          <span className="text-xs text-muted-foreground">
-            {item.changeLabel}
-          </span>
+        <Skeleton className="h-7 w-24" />
+        <div className="mt-2 flex items-center gap-2">
+          <Skeleton className="h-3.5 w-10" />
+          <Skeleton className="h-3 w-24" />
         </div>
         {item.sparklineData.length > 0 && (
           <Sparkline

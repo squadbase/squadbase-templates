@@ -7,6 +7,7 @@ import type {
 
 const BASE_DATE = new Date("2024-03-31")
 const DAYS = 30
+const ROW_COUNT = 24
 
 function seededRandom(seed: number): () => number {
   let s = seed
@@ -18,25 +19,16 @@ function seededRandom(seed: number): () => number {
 
 const rand = seededRandom(31)
 
-const NAMES = [
-  "Aurora ワイヤレスヘッドホン", "Halo スマートウォッチ", "Vista 4K アクションカメラ",
-  "Nimbus メカニカルキーボード", "Orbit ワイヤレスマウス", "Pulse フィットネストラッカー",
-  "Echo Bluetooth スピーカー", "Lumen デスクライト", "Drift スタンディングデスク", "Quasar USB-C ハブ",
-  "Beacon HD ウェブカメラ", "Stratus 冷却パッド", "Comet モバイルバッテリー 20K", "Solar ソーラー充電器",
-  "Nova エルゴノミックチェア", "Apex モニターアーム", "Glide 縦型マウス", "Zenith ヘッドセット",
-  "Tide エルゴマット", "Crest ワイヤレス充電器", "Forge ケーブルオーガナイザー", "Pulse スマートプラグ",
-  "Wave ノイズフィルター", "Atlas 海外用アダプター",
-]
-const OWNERS = ["田中 健", "佐藤 美咲", "鈴木 大樹", "高橋 真衣", "伊藤 翔", "山田 美穂"]
-const CATEGORIES = ["オーディオ", "ウェアラブル", "カメラ", "周辺機器", "ホーム"]
+const OWNERS = ["Owner 1", "Owner 2", "Owner 3", "Owner 4", "Owner 5", "Owner 6"]
+const CATEGORIES = ["Category 1", "Category 2", "Category 3", "Category 4", "Category 5"]
 const STATUSES: DetailRow["status"][] = ["active", "active", "active", "paused", "draft"]
 
-export const detailRows: DetailRow[] = NAMES.map((name, i) => {
-  const revenue = Math.round(4_000_000 + rand() * 16_000_000)
-  const units = Math.round(revenue / (4_000 + rand() * 22_000))
+export const detailRows: DetailRow[] = Array.from({ length: ROW_COUNT }, (_, i) => {
+  const revenue = Math.round(40_000 + rand() * 160_000)
+  const units = Math.round(revenue / (40 + rand() * 220))
   return {
     id: `row-${String(i + 1).padStart(2, "0")}`,
-    name,
+    name: `Item ${i + 1}`,
     owner: OWNERS[i % OWNERS.length],
     status: STATUSES[i % STATUSES.length],
     category: CATEGORIES[i % CATEGORIES.length],
@@ -68,10 +60,9 @@ export const summaryRows: SummaryRow[] = [...segmentMap.entries()]
 
 export const trendSeries: TrendPoint[] = Array.from({ length: DAYS }, (_, i) => {
   const date = addDays(BASE_DATE, i - DAYS + 1)
-  const base = 2_200_000 + i * 24_000 + (rand() - 0.5) * 600_000
+  const base = 22_000 + i * 240 + (rand() - 0.5) * 6_000
   return {
     date: format(date, "yyyy-MM-dd"),
-    value: Math.max(1_000_000, Math.round(base)),
+    value: Math.max(10_000, Math.round(base)),
   }
 })
-

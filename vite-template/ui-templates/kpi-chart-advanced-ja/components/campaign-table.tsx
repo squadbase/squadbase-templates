@@ -1,9 +1,12 @@
 import { useMemo } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
-import { DashboardCardPreset } from "@/components/common/dashboard-card"
-import { Badge } from "@/components/ui/badge"
-import { formatCurrency, formatNumber } from "./chart-helpers"
+import {
+  DashboardCard,
+  DashboardCardHeader,
+  DashboardCardContent,
+} from "@/components/common/dashboard-card"
+import { Skeleton } from "@/components/ui/skeleton"
 import type { CampaignRow } from "@/types/ui-template-kpi-chart-advanced"
 
 interface CampaignTableProps {
@@ -15,44 +18,38 @@ export function CampaignTable({ data }: CampaignTableProps) {
     () => [
       {
         accessorKey: "name",
-        header: "キャンペーン",
-        cell: ({ row }) => (
-          <span className="font-medium">{row.original.name}</span>
-        ),
+        header: "Column 1",
+        cell: () => <Skeleton className="h-4 w-32" />,
       },
       {
         accessorKey: "channel",
-        header: "チャネル",
-        cell: ({ row }) => (
-          <Badge variant="outline" className="text-xs font-medium">
-            {row.original.channel}
-          </Badge>
-        ),
+        header: "Column 2",
+        cell: () => <Skeleton className="h-5 w-20 rounded-full" />,
       },
       {
         accessorKey: "spend",
-        header: "費用",
-        cell: ({ row }) => (
-          <div className="text-right tabular-nums">
-            {formatCurrency(row.original.spend, { short: true })}
+        header: "Column 3",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-16" />
           </div>
         ),
       },
       {
         accessorKey: "conversions",
-        header: "CV数",
-        cell: ({ row }) => (
-          <div className="text-right tabular-nums text-muted-foreground">
-            {formatNumber(row.original.conversions)}
+        header: "Column 4",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-12" />
           </div>
         ),
       },
       {
         accessorKey: "roi",
-        header: "ROI",
-        cell: ({ row }) => (
-          <div className="text-right font-semibold tabular-nums">
-            {row.original.roi.toFixed(2)}x
+        header: "Column 5",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-10" />
           </div>
         ),
       },
@@ -61,11 +58,16 @@ export function CampaignTable({ data }: CampaignTableProps) {
   )
 
   return (
-    <DashboardCardPreset
-      title="キャンペーン成果"
-      description="アクティブなキャンペーンの ROI"
-    >
-      <DataTablePreset columns={columns} data={data} enableSorting />
-    </DashboardCardPreset>
+    <DashboardCard>
+      <DashboardCardHeader>
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="h-3.5 w-48" />
+        </div>
+      </DashboardCardHeader>
+      <DashboardCardContent>
+        <DataTablePreset columns={columns} data={data} enableSorting />
+      </DashboardCardContent>
+    </DashboardCard>
   )
 }

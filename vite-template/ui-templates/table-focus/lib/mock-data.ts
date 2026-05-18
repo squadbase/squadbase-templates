@@ -7,6 +7,7 @@ import type {
 
 const BASE_DATE = new Date("2024-03-31")
 const DAYS = 30
+const ROW_COUNT = 24
 
 function seededRandom(seed: number): () => number {
   let s = seed
@@ -18,25 +19,16 @@ function seededRandom(seed: number): () => number {
 
 const rand = seededRandom(31)
 
-const NAMES = [
-  "Aurora Wireless Headphones", "Halo Smart Watch", "Vista 4K Action Camera",
-  "Nimbus Mechanical Keyboard", "Orbit Wireless Mouse", "Pulse Fitness Tracker",
-  "Echo Bluetooth Speaker", "Lumen Desk Lamp", "Drift Standing Desk", "Quasar USB-C Hub",
-  "Beacon Webcam HD", "Stratus Cooling Pad", "Comet Power Bank 20K", "Solar Solar Charger",
-  "Nova Ergonomic Chair", "Apex Monitor Arm", "Glide Vertical Mouse", "Zenith Headset",
-  "Tide Ergonomic Mat", "Crest Wireless Charger", "Forge Cable Organizer", "Pulse Smart Plug",
-  "Wave Noise Filter", "Atlas Travel Adapter",
-]
-const OWNERS = ["Alex K.", "Mei L.", "Jordan S.", "Priya R.", "Devon T.", "Sam W."]
-const CATEGORIES = ["Audio", "Wearables", "Camera", "Accessories", "Home"]
+const OWNERS = ["Owner 1", "Owner 2", "Owner 3", "Owner 4", "Owner 5", "Owner 6"]
+const CATEGORIES = ["Category 1", "Category 2", "Category 3", "Category 4", "Category 5"]
 const STATUSES: DetailRow["status"][] = ["active", "active", "active", "paused", "draft"]
 
-export const detailRows: DetailRow[] = NAMES.map((name, i) => {
+export const detailRows: DetailRow[] = Array.from({ length: ROW_COUNT }, (_, i) => {
   const revenue = Math.round(40_000 + rand() * 160_000)
   const units = Math.round(revenue / (40 + rand() * 220))
   return {
     id: `row-${String(i + 1).padStart(2, "0")}`,
-    name,
+    name: `Item ${i + 1}`,
     owner: OWNERS[i % OWNERS.length],
     status: STATUSES[i % STATUSES.length],
     category: CATEGORIES[i % CATEGORIES.length],
@@ -74,4 +66,3 @@ export const trendSeries: TrendPoint[] = Array.from({ length: DAYS }, (_, i) => 
     value: Math.max(10_000, Math.round(base)),
   }
 })
-

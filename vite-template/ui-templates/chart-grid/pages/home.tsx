@@ -11,6 +11,7 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   AreaChart,
   LineChart,
@@ -51,9 +52,11 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>[Template] Multi-Chart View</PageShellTitle>
+          <PageShellTitle>
+            <Skeleton className="h-7 w-64" />
+          </PageShellTitle>
           <PageShellDescription>
-            A six-chart grid covering trend, ranking, distribution, capability, and intensity. Use the chips to focus.
+            <Skeleton className="mt-2 h-4 w-96" />
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd className="flex-row items-center gap-3">
@@ -65,9 +68,9 @@ export default function HomePage() {
             size="sm"
           >
             <ToggleGroupItem value="all">All</ToggleGroupItem>
-            <ToggleGroupItem value="trend">Trend</ToggleGroupItem>
-            <ToggleGroupItem value="ranking">Ranking</ToggleGroupItem>
-            <ToggleGroupItem value="distribution">Distribution</ToggleGroupItem>
+            <ToggleGroupItem value="trend">Group A</ToggleGroupItem>
+            <ToggleGroupItem value="ranking">Group B</ToggleGroupItem>
+            <ToggleGroupItem value="distribution">Group C</ToggleGroupItem>
           </ToggleGroup>
           <DateRangePicker
             value={filters.dateRange}

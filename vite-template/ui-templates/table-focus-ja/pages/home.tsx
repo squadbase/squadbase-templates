@@ -3,7 +3,11 @@ import { Download, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { DashboardCardPreset } from "@/components/common/dashboard-card"
+import {
+  DashboardCard,
+  DashboardCardHeader,
+  DashboardCardContent,
+} from "@/components/common/dashboard-card"
 import {
   PageShell,
   PageShellHeader,
@@ -13,9 +17,9 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
+import { Skeleton } from "@/components/ui/skeleton"
 import { DetailTable } from "@/components/ui-template-table-focus/detail-table"
 import { SupportChart } from "@/components/ui-template-table-focus/support-chart"
-import { formatCurrency } from "@/components/ui-template-table-focus/chart-helpers"
 import {
   detailRows,
   summaryRows,
@@ -42,9 +46,11 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>[テンプレート] カタログ運用</PageShellTitle>
+          <PageShellTitle>
+            <Skeleton className="h-7 w-64" />
+          </PageShellTitle>
           <PageShellDescription>
-            詳細テーブルを軸に、右サイドの活性度トレンドとセグメント内訳で補強する作業画面構成
+            <Skeleton className="mt-2 h-4 w-96" />
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd className="flex-row items-center gap-2">
@@ -53,13 +59,12 @@ export default function HomePage() {
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="アイテム・担当者で検索..."
+              placeholder="Search..."
               className="h-9 w-64 pl-8"
             />
           </div>
           <Button variant="outline" size="sm" className="gap-1.5">
             <Download className="size-4" />
-            エクスポート
           </Button>
         </PageShellHeaderEnd>
       </PageShellHeader>
@@ -73,14 +78,12 @@ export default function HomePage() {
             variant="outline"
             size="sm"
           >
-            <ToggleGroupItem value="all">すべて ({detailRows.length})</ToggleGroupItem>
-            <ToggleGroupItem value="active">稼働中</ToggleGroupItem>
-            <ToggleGroupItem value="paused">停止中</ToggleGroupItem>
-            <ToggleGroupItem value="draft">下書き</ToggleGroupItem>
+            <ToggleGroupItem value="all">All</ToggleGroupItem>
+            <ToggleGroupItem value="active">Option A</ToggleGroupItem>
+            <ToggleGroupItem value="paused">Option B</ToggleGroupItem>
+            <ToggleGroupItem value="draft">Option C</ToggleGroupItem>
           </ToggleGroup>
-          <p className="text-xs text-muted-foreground tabular-nums">
-            {detailRows.length} 件中 {filtered.length} 件を表示
-          </p>
+          <Skeleton className="h-3 w-24" />
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3">
@@ -89,29 +92,32 @@ export default function HomePage() {
           </div>
           <div className="space-y-4">
             <SupportChart data={trendSeries} />
-            <DashboardCardPreset
-              title="セグメント別"
-              description="カテゴリ別の売上構成比"
-            >
-              <div className="space-y-3">
-                {summaryRows.map((row) => (
-                  <div key={row.segment} className="space-y-1.5">
-                    <div className="flex items-baseline justify-between text-sm">
-                      <span className="font-medium">{row.segment}</span>
-                      <span className="text-muted-foreground tabular-nums">
-                        {formatCurrency(row.revenue, { short: true })}
-                      </span>
+            <DashboardCard>
+              <DashboardCardHeader>
+                <div className="space-y-2">
+                  <Skeleton className="h-5 w-32" />
+                  <Skeleton className="h-3.5 w-48" />
+                </div>
+              </DashboardCardHeader>
+              <DashboardCardContent>
+                <div className="space-y-3">
+                  {summaryRows.map((row) => (
+                    <div key={row.segment} className="space-y-1.5">
+                      <div className="flex items-baseline justify-between">
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-4 w-16" />
+                      </div>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                        <div
+                          className="h-full rounded-full bg-primary"
+                          style={{ width: `${(row.share * 100).toFixed(1)}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                      <div
-                        className="h-full rounded-full bg-primary"
-                        style={{ width: `${(row.share * 100).toFixed(1)}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </DashboardCardPreset>
+                  ))}
+                </div>
+              </DashboardCardContent>
+            </DashboardCard>
           </div>
         </div>
       </PageShellContent>

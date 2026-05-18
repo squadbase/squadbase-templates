@@ -48,19 +48,19 @@ const conversionRate = (totalOrders / activeUsers) * 100
 export const headerKpis: KpiItem[] = [
   {
     id: "total-revenue",
-    label: "Total Revenue",
+    label: "Metric 1",
     value: `$${(totalRevenue / 1_000_000).toFixed(2)}M`,
     change: 12.4,
-    changeLabel: "vs. previous 30 days",
+    changeLabel: "",
     positiveIsGood: true,
     sparklineData: buildSparkline(trendSeries.map((p) => p.revenue)),
   },
   {
     id: "active-users",
-    label: "Active Users",
+    label: "Metric 2",
     value: activeUsers.toLocaleString("en-US"),
     change: 8.1,
-    changeLabel: "vs. previous 30 days",
+    changeLabel: "",
     positiveIsGood: true,
     sparklineData: buildSparkline(
       trendSeries.map((p) => Math.round(p.orders * 2.4)),
@@ -68,10 +68,10 @@ export const headerKpis: KpiItem[] = [
   },
   {
     id: "conversion-rate",
-    label: "Conversion Rate",
+    label: "Metric 3",
     value: `${conversionRate.toFixed(2)}%`,
     change: -0.6,
-    changeLabel: "vs. previous 30 days",
+    changeLabel: "",
     positiveIsGood: true,
     sparklineData: buildSparkline(
       trendSeries.map((p) => (p.orders / (p.orders * 2.4)) * 100),
@@ -79,10 +79,10 @@ export const headerKpis: KpiItem[] = [
   },
   {
     id: "aov",
-    label: "Avg. Order Value",
+    label: "Metric 4",
     value: `$${aov.toFixed(2)}`,
     change: 3.7,
-    changeLabel: "vs. previous 30 days",
+    changeLabel: "",
     positiveIsGood: true,
     sparklineData: buildSparkline(
       trendSeries.map((p) => p.revenue / Math.max(1, p.orders)),
@@ -91,14 +91,14 @@ export const headerKpis: KpiItem[] = [
 ]
 
 export const topItems: TopItemRow[] = [
-  { id: "p-01", name: "Aurora Wireless Headphones", category: "Audio", revenue: 184_320, units: 1_232, share: 0.142 },
-  { id: "p-02", name: "Halo Smart Watch", category: "Wearables", revenue: 162_480, units: 812, share: 0.125 },
-  { id: "p-03", name: "Vista 4K Action Camera", category: "Camera", revenue: 138_750, units: 463, share: 0.107 },
-  { id: "p-04", name: "Nimbus Mechanical Keyboard", category: "Accessories", revenue: 121_900, units: 974, share: 0.094 },
-  { id: "p-05", name: "Orbit Wireless Mouse", category: "Accessories", revenue: 98_640, units: 1_644, share: 0.076 },
-  { id: "p-06", name: "Pulse Fitness Tracker", category: "Wearables", revenue: 87_220, units: 821, share: 0.067 },
-  { id: "p-07", name: "Echo Bluetooth Speaker", category: "Audio", revenue: 81_540, units: 679, share: 0.063 },
-  { id: "p-08", name: "Lumen Desk Lamp", category: "Home", revenue: 72_410, units: 905, share: 0.056 },
-  { id: "p-09", name: "Drift Standing Desk", category: "Home", revenue: 68_900, units: 138, share: 0.053 },
-  { id: "p-10", name: "Quasar USB-C Hub", category: "Accessories", revenue: 54_220, units: 1_356, share: 0.042 },
+  { id: "p-01", name: "Item 1", category: "Category A", revenue: 184_320, units: 1_232, share: 0.142 },
+  { id: "p-02", name: "Item 2", category: "Category B", revenue: 162_480, units: 812, share: 0.125 },
+  { id: "p-03", name: "Item 3", category: "Category C", revenue: 138_750, units: 463, share: 0.107 },
+  { id: "p-04", name: "Item 4", category: "Category D", revenue: 121_900, units: 974, share: 0.094 },
+  { id: "p-05", name: "Item 5", category: "Category D", revenue: 98_640, units: 1_644, share: 0.076 },
+  { id: "p-06", name: "Item 6", category: "Category B", revenue: 87_220, units: 821, share: 0.067 },
+  { id: "p-07", name: "Item 7", category: "Category A", revenue: 81_540, units: 679, share: 0.063 },
+  { id: "p-08", name: "Item 8", category: "Category E", revenue: 72_410, units: 905, share: 0.056 },
+  { id: "p-09", name: "Item 9", category: "Category E", revenue: 68_900, units: 138, share: 0.053 },
+  { id: "p-10", name: "Item 10", category: "Category D", revenue: 54_220, units: 1_356, share: 0.042 },
 ]

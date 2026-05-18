@@ -1,9 +1,12 @@
 import { useMemo } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
-import { DashboardCardPreset } from "@/components/common/dashboard-card"
-import { Badge } from "@/components/ui/badge"
-import { formatCurrency, formatNumber, formatPercent } from "./chart-helpers"
+import {
+  DashboardCard,
+  DashboardCardHeader,
+  DashboardCardContent,
+} from "@/components/common/dashboard-card"
+import { Skeleton } from "@/components/ui/skeleton"
 import type { TopItemRow } from "@/types/ui-template-kpi-chart-simple"
 
 interface TopItemsTableProps {
@@ -15,44 +18,38 @@ export function TopItemsTable({ data }: TopItemsTableProps) {
     () => [
       {
         accessorKey: "name",
-        header: "商品",
-        cell: ({ row }) => (
-          <span className="font-medium">{row.original.name}</span>
-        ),
+        header: "Column 1",
+        cell: () => <Skeleton className="h-4 w-32" />,
       },
       {
         accessorKey: "category",
-        header: "カテゴリ",
-        cell: ({ row }) => (
-          <Badge variant="outline" className="text-xs font-medium">
-            {row.original.category}
-          </Badge>
-        ),
+        header: "Column 2",
+        cell: () => <Skeleton className="h-5 w-20 rounded-full" />,
       },
       {
         accessorKey: "revenue",
-        header: "売上",
-        cell: ({ row }) => (
-          <div className="text-right font-semibold tabular-nums">
-            {formatCurrency(row.original.revenue, { short: true })}
+        header: "Column 3",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-16" />
           </div>
         ),
       },
       {
         accessorKey: "units",
-        header: "販売数",
-        cell: ({ row }) => (
-          <div className="text-right tabular-nums text-muted-foreground">
-            {formatNumber(row.original.units)}
+        header: "Column 4",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-12" />
           </div>
         ),
       },
       {
         accessorKey: "share",
-        header: "構成比",
-        cell: ({ row }) => (
-          <div className="text-right tabular-nums text-muted-foreground">
-            {formatPercent(row.original.share * 100)}
+        header: "Column 5",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-10" />
           </div>
         ),
       },
@@ -61,11 +58,16 @@ export function TopItemsTable({ data }: TopItemsTableProps) {
   )
 
   return (
-    <DashboardCardPreset
-      title="トップ商品"
-      description="期間内の売上上位商品"
-    >
-      <DataTablePreset columns={columns} data={data} enableSorting />
-    </DashboardCardPreset>
+    <DashboardCard>
+      <DashboardCardHeader>
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-3.5 w-56" />
+        </div>
+      </DashboardCardHeader>
+      <DashboardCardContent>
+        <DataTablePreset columns={columns} data={data} enableSorting />
+      </DashboardCardContent>
+    </DashboardCard>
   )
 }
