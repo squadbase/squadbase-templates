@@ -104,4 +104,4 @@ Where: desktop-first / mobile too
 ## Related skills
 
 - `squadbase-vite-react/component-generation` — page / child creation order in Vite template
-- `squadbase-vite-react/available-component-catalog` — KPI cards, charts, filters shipped in template
+- `squadbase-vite-react/preinstalled-component-catalog` — KPI cards, charts, filters pre-installed in the template (scope: pre-installed only — project-added components live elsewhere)
