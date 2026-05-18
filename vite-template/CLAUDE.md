@@ -120,6 +120,43 @@ node dist/index.js add --ui <name> --dry-run
 
 EN/JA は `<name>` と `<name>-ja` のペアで、`files[].dest` は EN/JA で同一 (上書き = 相互排他)、`name` だけ異なる。EN/JA を同時に add してはいけない。
 
+## AI カスタマイズ (`add --prompt`)
+
+`add` コマンドに `--prompt` を渡すと、テンプレート適用直後に **Vercel AI SDK 経由で AI が manifest.files の中身を書き換える**。コーディングエージェントが Read/Edit を多段で繰り返すよりはるかに高速。
+
+```bash
+npx @squadbase/vite-template add kpi-chart-simple --ui \
+  --prompt "SaaS の MRR / ARR / 解約率 / 新規MRR ダッシュボード化" \
+  --provider openai \
+  --model gpt-4o \
+  --apiKey $OPENAI_API_KEY
+```
+
+| Flag | 説明 |
+|---|---|
+| `--prompt <text>` | カスタマイズ意図。**未指定なら AI を起動せず従来挙動**。 |
+| `--provider <name>` | `openai` / `anthropic` / `google` / `mistral` / `xai` / `groq` 等。`open-ai` 表記も正規化。 |
+| `--model <id>` | モデル ID。provider ごとにデフォルトあり (`gpt-5.4-mini-2026-03-17`, `claude-sonnet-4-5`, `gemini-2.0-flash`, …)。 |
+| `--apiKey <key>` | 省略時は `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` 等の環境変数 fallback。 |
+| `--base-url <url>` | OpenAI 互換エンドポイント (任意)。 |
+| `--dry-run` | AI 出力を unified diff で表示するだけ、disk 書き込みなし。 |
+| `--json` | 結果 (edits, unchanged, skipped, notes) を JSON で stdout 出力。エージェント呼び出し用。 |
+
+**動作**:
+1. `applyTemplate()` でテンプレートを通常通りコピー
+2. `manifest.files[].dest` のファイル群を読み込み、system prompt (デザインルール焼き込み済み) + user prompt + ファイル本体を `generateObject` に渡す
+3. AI は構造化出力で `{ edits: [{ path, content, rationale }], notes }` を返す。`path` は JSON Schema enum で manifest.dest に拘束
+4. 受け取った edits を disk に書き戻し (dry-run なら diff 表示のみ)
+
+**制約**:
+- AI が編集できるのは **manifest.files に列挙された dest のみ**。それ以外のパスは `skipped[]` に積まれる
+- `routes.tsx` は触らない (ui-templates / templates は 1 ルート設計)
+- 部分編集 (diff/patch) ではなく **ファイル全体を返させる** 仕様
+
+**依存**: `ai` / `@ai-sdk/*` は `optionalDependencies`。`--prompt` 指定時のみ動的 import される。未 install 時は親切な `npm install` ガイダンスを表示して exit 1。
+
+**失敗時**: AI 呼び出しが途中で失敗した場合、書き換え済みファイルはそのまま残る。`git status` / `git diff` で確認し、必要なら revert すること。
+
 ## テンプレート開発ルール
 
 テンプレートのページ・コンポーネントを作成する際は、以下のルールに従うこと。

@@ -20,13 +20,26 @@ Options:
   --dry-run            Show what would be done without making changes
   --skip-install       Skip dependency installation after init
   --chart <preset>     Apply a chart preset during init (e.g. --chart sunset)
-  --json               Output as JSON (for the list command)
+  --json               Output as JSON (for the list / add commands)
   --lang <code>        Filter list by language (e.g. --lang ja)
   --ui                 Operate on UI-pattern templates (ui-templates/) instead of templates/
   --help               Show this help message
+
+AI customization (add only):
+  --prompt <text>      Customize the applied template with AI. Triggers AI mode.
+  --provider <name>    AI provider name (openai, anthropic, google, mistral, xai, groq, ...)
+  --model <id>         Model id. Defaults per provider (e.g. gpt-5.4-mini-2026-03-17, claude-sonnet-4-5).
+  --apiKey <key>       API key. Falls back to provider-specific env var if omitted.
+  --base-url <url>     Optional OpenAI-compatible endpoint.
+
+Examples:
+  npx @squadbase/vite-template add kpi-chart-simple --ui \\
+    --prompt "SaaS MRR/ARR dashboard" --provider openai --apiKey $OPENAI_API_KEY
+  npx @squadbase/vite-template add funnel --ui --prompt "..." \\
+    --provider anthropic --apiKey $ANTHROPIC_API_KEY --dry-run
 `.trim();
 
-function main(): void {
+async function main(): Promise<void> {
   const { values, positionals } = parseArgs({
     options: {
       force: { type: "boolean", default: false },
@@ -37,6 +50,11 @@ function main(): void {
       lang: { type: "string" },
       ui: { type: "boolean", default: false },
       help: { type: "boolean", default: false },
+      prompt: { type: "string" },
+      provider: { type: "string" },
+      model: { type: "string" },
+      apiKey: { type: "string" },
+      "base-url": { type: "string" },
     },
     allowPositionals: true,
     strict: true,
@@ -68,10 +86,29 @@ function main(): void {
       log("dim", "Usage: npx @squadbase/vite-template add <template-name>");
       process.exit(1);
     }
-    addTemplate(templateName, {
+    const source = values.ui ? "ui-templates" : "templates";
+    const ai = values.prompt
+      ? (() => {
+          if (!values.provider) {
+            log("red", "--prompt requires --provider (e.g. --provider openai).");
+            process.exit(1);
+          }
+          return {
+            prompt: values.prompt,
+            provider: values.provider,
+            model: values.model,
+            apiKey: values.apiKey,
+            baseUrl: values["base-url"],
+            dryRun: values["dry-run"] ?? false,
+            json: values.json ?? false,
+          };
+        })()
+      : undefined;
+    await addTemplate(templateName, {
       force: values.force ?? false,
       dryRun: values["dry-run"] ?? false,
-      source: values.ui ? "ui-templates" : "templates",
+      source,
+      ai,
     });
   } else if (command === "chart") {
     const presetName = positionals[1];
@@ -90,9 +127,7 @@ function main(): void {
   }
 }
 
-try {
-  main();
-} catch (err) {
+main().catch((err: unknown) => {
   log("red", err instanceof Error ? err.message : String(err));
   process.exit(1);
-}
+});

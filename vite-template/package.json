@@ -26,5 +26,11 @@
     "playwright": "^1.49.0",
     "tsup": "^8.4.0",
     "typescript": "~5.7.0"
+  },
+  "optionalDependencies": {
+    "ai": "^4.0.0",
+    "@ai-sdk/openai": "^1.0.0",
+    "@ai-sdk/anthropic": "^1.0.0",
+    "@ai-sdk/google": "^1.0.0"
   }
 }
