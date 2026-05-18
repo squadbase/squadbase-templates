@@ -57,7 +57,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Growth Analytics</PageShellTitle>
+          <PageShellTitle>[Template] Growth Analytics</PageShellTitle>
           <PageShellDescription>
             Headline KPIs, period-over-period comparison, channel mix, daily trend, and campaign performance
           </PageShellDescription>

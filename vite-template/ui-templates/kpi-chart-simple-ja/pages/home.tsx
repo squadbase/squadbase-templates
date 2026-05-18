@@ -38,7 +38,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>パフォーマンス概況</PageShellTitle>
+          <PageShellTitle>[テンプレート] パフォーマンス概況</PageShellTitle>
           <PageShellDescription>
             主要指標、日次売上トレンド、期間内トップ商品をひとつのページで確認
           </PageShellDescription>

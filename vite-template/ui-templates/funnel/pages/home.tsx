@@ -61,7 +61,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Conversion Pipeline</PageShellTitle>
+          <PageShellTitle>[Template] Conversion Pipeline</PageShellTitle>
           <PageShellDescription>
             End-to-end funnel as the centerpiece, with stage-by-stage volume on the side
           </PageShellDescription>

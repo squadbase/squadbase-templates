@@ -51,7 +51,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Multi-Chart View</PageShellTitle>
+          <PageShellTitle>[Template] Multi-Chart View</PageShellTitle>
           <PageShellDescription>
             A six-chart grid covering trend, ranking, distribution, capability, and intensity. Use the chips to focus.
           </PageShellDescription>

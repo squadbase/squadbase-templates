@@ -1,13 +1,19 @@
 ---
-name: available-component-catalog
-description: Catalog of React components available in the Squadbase Vite template (shadcn/ui primitives, app-level common components, data-display components). Read before building or modifying any page/UI so only existing components are reused and known gotchas are avoided.
+name: preinstalled-component-catalog
+description: Catalog of components PRE-INSTALLED in the Squadbase Vite template (shadcn/ui primitives in components/ui/, app-level common/ building blocks, data/ display components). Project-specific components added under src/components/<pageName>/ during development are NOT listed here — inspect those files directly. Read before building or modifying any page/UI to reuse what already ships and avoid known gotchas.
 ---
 
-# Available Component Catalog
+# Pre-installed Component Catalog
 
-Components shipped with the Squadbase Vite template. Read **before** adding / editing any page to reuse existing components and avoid the gotchas below.
+Components **pre-installed** with the Squadbase Vite template — i.e., what is available the moment a new project is scaffolded. Read **before** adding / editing any page to reuse what's already shipped and avoid the gotchas below.
 
-Components live under `src/components/` — import via `@/*` alias (`@/components/common/page-shell`).
+Pre-installed components live under `src/components/{ui,common,data}/` — import via `@/*` alias (`@/components/common/page-shell`).
+
+## Scope — what this catalog does and does NOT cover
+
+- **In scope:** every component this template ships with, under `src/components/ui/`, `src/components/common/`, `src/components/data/`.
+- **NOT in scope:** components the agent (or human) adds during project development — typically `src/components/<pageName>/<component-name>.tsx` (see `component-generation` skill for the file layout). Those evolve per-project and are not catalogued here.
+- **Before importing a non-catalogued path:** read the file directly (`Read`/`Glob` `src/components/<pageName>/`). Don't assume a component does/doesn't exist based on this catalog alone.
 
 ---
 

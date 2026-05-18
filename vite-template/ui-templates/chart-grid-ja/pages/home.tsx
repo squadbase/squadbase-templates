@@ -51,7 +51,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>マルチチャートビュー</PageShellTitle>
+          <PageShellTitle>[テンプレート] マルチチャートビュー</PageShellTitle>
           <PageShellDescription>
             トレンド・ランキング・分布・ケイパビリティ・活性度を6チャート格子で一望。チップで切り替えできます
           </PageShellDescription>

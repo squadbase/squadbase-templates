@@ -5,7 +5,7 @@ description: General rules for creating React component files (pages and child c
 
 # Component Generation Rules
 
-Rules for any React component file: `src/pages/*.tsx` (pages) and `src/components/**/*.tsx` (children). Applies to direct writes, `buildPageSection`, and edits. For props / gotchas / when-to-use, see `available-component-catalog`.
+Rules for any React component file: `src/pages/*.tsx` (pages) and `src/components/**/*.tsx` (children). Applies to direct writes, `buildPageSection`, and edits. For props / gotchas / when-to-use of the pre-installed components, see `preinstalled-component-catalog`.
 
 ## Creation order (strongly recommended)
 
@@ -86,7 +86,7 @@ const { data, isLoading, error } = useQuery({
 
 ## Related skills
 
-- `available-component-catalog` — props, gotchas, when-to-use map for every shipped component. Read before importing to confirm export names + pitfalls.
+- `preinstalled-component-catalog` — props, gotchas, when-to-use map for every component shipped with the template. Read before importing one of those to confirm export names + pitfalls. (For project-added components under `src/components/<pageName>/`, read the source file directly — they're not in the catalog.)
 - `server-logic-development` — defining the backend endpoint `useQuery` calls. `{ params }` body shape, response format, caching.
 - `chat-app-development` — when page is an LLM chat UI. `useChat` instead of `useQuery`, different body shape.
 - `general/dashboard-ui-design` — framework-agnostic principles to decide layout, hierarchy, chart selection before coding.

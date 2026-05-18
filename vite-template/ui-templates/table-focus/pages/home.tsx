@@ -42,7 +42,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Catalog Operations</PageShellTitle>
+          <PageShellTitle>[Template] Catalog Operations</PageShellTitle>
           <PageShellDescription>
             Detail-rich workbench layout with segment breakdown and a supporting activity trend
           </PageShellDescription>
