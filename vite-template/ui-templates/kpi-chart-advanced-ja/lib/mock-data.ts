@@ -22,13 +22,13 @@ const rand = seededRandom(91)
 
 export const trendSeries: TrendPoint[] = Array.from({ length: DAYS }, (_, i) => {
   const date = addDays(BASE_DATE, i - DAYS + 1)
-  const base = 2_800_000 + i * 28_000
-  const noise = (rand() - 0.5) * 600_000
+  const base = 28_000 + i * 280
+  const noise = (rand() - 0.5) * 6_000
   const weekday = date.getDay()
-  const weekendDip = weekday === 0 || weekday === 6 ? -450_000 : 0
+  const weekendDip = weekday === 0 || weekday === 6 ? -4_500 : 0
   return {
     date: format(date, "yyyy-MM-dd"),
-    value: Math.max(1_000_000, Math.round(base + noise + weekendDip)),
+    value: Math.max(10_000, Math.round(base + noise + weekendDip)),
   }
 })
 
@@ -37,22 +37,22 @@ const months = [
   "2024-01", "2024-02", "2024-03",
 ]
 export const comparisonSeries: ComparisonPoint[] = months.map((m, i) => {
-  const current = 32_000_000 + i * 2_800_000 + Math.round((rand() - 0.5) * 3_200_000)
+  const current = 320_000 + i * 28_000 + Math.round((rand() - 0.5) * 32_000)
   const previous = Math.round(current / (1 + (0.05 + rand() * 0.18)))
   const growth = ((current - previous) / previous) * 100
   return { period: m, current, previous, growth }
 })
 
 export const breakdownSlices: BreakdownSlice[] = [
-  { segment: "直接", value: 41_200_000 },
-  { segment: "自然検索", value: 31_800_000 },
-  { segment: "有料広告", value: 28_700_000 },
-  { segment: "リファラル", value: 16_400_000 },
-  { segment: "SNS", value: 13_200_000 },
+  { segment: "Segment 1", value: 412_000 },
+  { segment: "Segment 2", value: 318_000 },
+  { segment: "Segment 3", value: 287_000 },
+  { segment: "Segment 4", value: 164_000 },
+  { segment: "Segment 5", value: 132_000 },
 ]
 
 const totalRevenue = trendSeries.reduce((s, p) => s + p.value, 0)
-const sessions = Math.round(totalRevenue / 640)
+const sessions = Math.round(totalRevenue / 6.4)
 const users = Math.round(sessions * 0.62)
 const conversions = Math.round(users * 0.0418)
 const aov = totalRevenue / Math.max(1, conversions)
@@ -67,60 +67,60 @@ function buildSparkline(values: number[], length = 12): number[] {
 export const headerKpis: KpiItem[] = [
   {
     id: "revenue",
-    label: "総売上",
-    value: `¥${(totalRevenue / 100_000_000).toFixed(2)}億`,
+    label: "Metric 1",
+    value: `$${(totalRevenue / 1_000_000).toFixed(2)}M`,
     change: 14.2,
-    changeLabel: "前期比",
+    changeLabel: "",
     positiveIsGood: true,
     sparklineData: buildSparkline(trendSeries.map((p) => p.value)),
   },
   {
     id: "users",
-    label: "アクティブユーザー",
-    value: users.toLocaleString("ja-JP"),
+    label: "Metric 2",
+    value: users.toLocaleString("en-US"),
     change: 9.8,
-    changeLabel: "前期比",
+    changeLabel: "",
     positiveIsGood: true,
-    sparklineData: buildSparkline(trendSeries.map((p) => Math.round(p.value / 600))),
+    sparklineData: buildSparkline(trendSeries.map((p) => Math.round(p.value / 6))),
   },
   {
     id: "sessions",
-    label: "セッション数",
-    value: sessions.toLocaleString("ja-JP"),
+    label: "Metric 3",
+    value: sessions.toLocaleString("en-US"),
     change: 6.5,
-    changeLabel: "前期比",
+    changeLabel: "",
     positiveIsGood: true,
-    sparklineData: buildSparkline(trendSeries.map((p) => Math.round(p.value / 400))),
+    sparklineData: buildSparkline(trendSeries.map((p) => Math.round(p.value / 4))),
   },
   {
     id: "conversion",
-    label: "コンバージョン率",
+    label: "Metric 4",
     value: `${((conversions / users) * 100).toFixed(2)}%`,
     change: -0.4,
-    changeLabel: "前期比",
+    changeLabel: "",
     positiveIsGood: true,
     sparklineData: buildSparkline(
-      trendSeries.map((p) => 4.2 + (p.value / 5_000_000)),
+      trendSeries.map((p) => 4.2 + (p.value / 50_000)),
     ),
   },
   {
     id: "aov",
-    label: "平均注文額",
-    value: `¥${Math.round(aov).toLocaleString("ja-JP")}`,
+    label: "Metric 5",
+    value: `$${aov.toFixed(2)}`,
     change: 5.1,
-    changeLabel: "前期比",
+    changeLabel: "",
     positiveIsGood: true,
     sparklineData: buildSparkline(
-      trendSeries.map((p) => p.value / 2_800),
+      trendSeries.map((p) => p.value / 28),
     ),
   },
 ]
 
 export const campaignRows: CampaignRow[] = [
-  { id: "c-01", name: "春の新生活キャンペーン", channel: "リスティング", spend: 4_820_000, conversions: 612, roi: 4.8 },
-  { id: "c-02", name: "Q1 ブランド認知", channel: "SNS", spend: 3_460_000, conversions: 421, roi: 3.4 },
-  { id: "c-03", name: "ライフサイクルメール", channel: "メール", spend: 1_280_000, conversions: 308, roi: 6.9 },
-  { id: "c-04", name: "アフィリエイト強化", channel: "アフィリエイト", spend: 2_210_000, conversions: 254, roi: 4.1 },
-  { id: "c-05", name: "リターゲティング", channel: "ディスプレイ", spend: 1_840_000, conversions: 196, roi: 3.2 },
-  { id: "c-06", name: "インフルエンサーPilot", channel: "SNS", spend: 1_430_000, conversions: 124, roi: 2.5 },
+  { id: "c-01", name: "Item 1", channel: "Group A", spend: 48_200, conversions: 612, roi: 4.8 },
+  { id: "c-02", name: "Item 2", channel: "Group B", spend: 34_600, conversions: 421, roi: 3.4 },
+  { id: "c-03", name: "Item 3", channel: "Group C", spend: 12_800, conversions: 308, roi: 6.9 },
+  { id: "c-04", name: "Item 4", channel: "Group D", spend: 22_100, conversions: 254, roi: 4.1 },
+  { id: "c-05", name: "Item 5", channel: "Group E", spend: 18_400, conversions: 196, roi: 3.2 },
+  { id: "c-06", name: "Item 6", channel: "Group B", spend: 14_300, conversions: 124, roi: 2.5 },
 ]

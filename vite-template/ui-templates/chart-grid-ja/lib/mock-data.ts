@@ -22,44 +22,44 @@ const rand = seededRandom(123)
 
 export const timeSeries: TimePoint[] = Array.from({ length: DAYS }, (_, i) => {
   const date = addDays(BASE_DATE, i - DAYS + 1)
-  const base1 = 1_800_000 + i * 22_000 + (rand() - 0.5) * 400_000
-  const base2 = 1_200_000 + i * 18_000 + (rand() - 0.5) * 350_000
+  const base1 = 18_000 + i * 220 + (rand() - 0.5) * 4_000
+  const base2 = 12_000 + i * 180 + (rand() - 0.5) * 3_500
   return {
     date: format(date, "yyyy-MM-dd"),
-    series1: Math.max(800_000, Math.round(base1)),
-    series2: Math.max(600_000, Math.round(base2)),
+    series1: Math.max(8_000, Math.round(base1)),
+    series2: Math.max(6_000, Math.round(base2)),
   }
 })
 
 export const barSeries: BarPoint[] = [
-  { category: "セグメントA", value: 18_432_000 },
-  { category: "セグメントB", value: 16_248_000 },
-  { category: "セグメントC", value: 13_875_000 },
-  { category: "セグメントD", value: 12_190_000 },
-  { category: "セグメントE", value: 9_864_000 },
-  { category: "セグメントF", value: 8_722_000 },
-  { category: "セグメントG", value: 7_241_000 },
-  { category: "セグメントH", value: 5_422_000 },
+  { category: "Item 1", value: 184_320 },
+  { category: "Item 2", value: 162_480 },
+  { category: "Item 3", value: 138_750 },
+  { category: "Item 4", value: 121_900 },
+  { category: "Item 5", value: 98_640 },
+  { category: "Item 6", value: 87_220 },
+  { category: "Item 7", value: 72_410 },
+  { category: "Item 8", value: 54_220 },
 ]
 
 export const scatterPoints: ScatterPoint[] = Array.from({ length: 28 }, (_, i) => ({
   x: 20 + Math.round(rand() * 80),
   y: 100 + Math.round(rand() * 900),
   size: 8 + Math.round(rand() * 22),
-  label: `アイテム ${i + 1}`,
+  label: `Item ${i + 1}`,
 }))
 
 export const radarAxes: RadarPoint[] = [
-  { axis: "スピード", current: 82, benchmark: 70 },
-  { axis: "品質", current: 91, benchmark: 78 },
-  { axis: "コスト", current: 64, benchmark: 75 },
-  { axis: "カバレッジ", current: 88, benchmark: 80 },
-  { axis: "導入", current: 73, benchmark: 65 },
-  { axis: "サポート", current: 79, benchmark: 70 },
+  { axis: "Axis 1", current: 82, benchmark: 70 },
+  { axis: "Axis 2", current: 91, benchmark: 78 },
+  { axis: "Axis 3", current: 64, benchmark: 75 },
+  { axis: "Axis 4", current: 88, benchmark: 80 },
+  { axis: "Axis 5", current: 73, benchmark: 65 },
+  { axis: "Axis 6", current: 79, benchmark: 70 },
 ]
 
-const HEATMAP_X = ["0時", "4時", "8時", "12時", "16時", "20時"]
-const HEATMAP_Y = ["月", "火", "水", "木", "金", "土", "日"]
+const HEATMAP_X = ["0", "1", "2", "3", "4", "5"]
+const HEATMAP_Y = ["Row 1", "Row 2", "Row 3", "Row 4", "Row 5", "Row 6", "Row 7"]
 export const heatmapCells: HeatmapCell[] = HEATMAP_Y.flatMap((y, yi) =>
   HEATMAP_X.map((x, xi) => {
     const isPeak = xi >= 2 && xi <= 4 && yi < 5

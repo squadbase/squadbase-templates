@@ -1,5 +1,6 @@
 import { TrendingUp, PieChart, Activity } from "lucide-react"
 import { PageShellSummaryCard } from "@/components/common/page-shell"
+import { Skeleton } from "@/components/ui/skeleton"
 import { deriveInsights } from "@/lib/ui-template-kpi-chart-advanced-derive-insights"
 
 const iconMap = {
@@ -14,12 +15,6 @@ const accentMap = {
   attention: "amber",
 } as const
 
-const titleClassMap = {
-  positive: "text-chart-1",
-  neutral: "",
-  attention: "text-amber-700",
-}
-
 export function InsightCards() {
   const insights = deriveInsights()
 
@@ -33,13 +28,12 @@ export function InsightCards() {
             accent={accentMap[insight.sentiment]}
           >
             <Icon />
-            <div className="min-w-0 flex-1">
-              <div
-                className={`font-semibold mb-1 ${titleClassMap[insight.sentiment]}`}
-              >
-                {insight.label}
+            <div className="min-w-0 flex-1 space-y-2">
+              <Skeleton className="h-4 w-28" />
+              <div className="space-y-1.5">
+                <Skeleton className="h-3.5 w-full" />
+                <Skeleton className="h-3.5 w-4/5" />
               </div>
-              <p className="mt-1 text-sm leading-relaxed">{insight.text}</p>
             </div>
           </PageShellSummaryCard>
         )

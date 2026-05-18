@@ -2,29 +2,20 @@ import { useMemo, useState } from "react"
 import { Download, Search } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
-import { DashboardCardPreset } from "@/components/common/dashboard-card"
-import { Badge } from "@/components/ui/badge"
+import {
+  DashboardCard,
+  DashboardCardHeader,
+  DashboardCardContent,
+} from "@/components/common/dashboard-card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { cn } from "@/lib/utils"
-import { formatCurrency, formatNumber, formatSignedPercent } from "./chart-helpers"
 import {
   categoryRows,
   detailRows,
 } from "@/lib/ui-template-tabbed-dashboard-mock-data"
 import type { CategoryRow, DetailRow } from "@/types/ui-template-tabbed-dashboard"
-
-const statusConfig: Record<DetailRow["status"], { label: string; className: string }> = {
-  active: {
-    label: "公開",
-    className: "border-emerald-500/60 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
-  },
-  paused: {
-    label: "一時停止",
-    className: "border-amber-500/60 bg-amber-500/10 text-amber-700 dark:text-amber-300",
-  },
-}
 
 type StatusFilter = "all" | DetailRow["status"]
 
@@ -48,43 +39,35 @@ export function DetailTab() {
     () => [
       {
         accessorKey: "category",
-        header: "カテゴリ",
-        cell: ({ row }) => <span className="font-medium">{row.original.category}</span>,
+        header: "Column 1",
+        cell: () => <Skeleton className="h-4 w-24" />,
       },
       {
         accessorKey: "value",
-        header: "売上",
-        cell: ({ row }) => (
-          <div className="text-right font-semibold tabular-nums">
-            {formatCurrency(row.original.value, { short: true })}
+        header: "Column 2",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-16" />
           </div>
         ),
       },
       {
         accessorKey: "share",
-        header: "構成比",
-        cell: ({ row }) => (
-          <div className="text-right tabular-nums text-muted-foreground">
-            {(row.original.share * 100).toFixed(1)}%
+        header: "Column 3",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-10" />
           </div>
         ),
       },
       {
         accessorKey: "delta",
-        header: "差分",
-        cell: ({ row }) => {
-          const v = row.original.delta
-          return (
-            <div
-              className={cn(
-                "text-right tabular-nums font-medium",
-                v < 0 ? "text-rose-600" : "text-emerald-600",
-              )}
-            >
-              {formatSignedPercent(v)}
-            </div>
-          )
-        },
+        header: "Column 4",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-12" />
+          </div>
+        ),
       },
     ],
     [],
@@ -94,43 +77,34 @@ export function DetailTab() {
     () => [
       {
         accessorKey: "name",
-        header: "アイテム",
-        cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
+        header: "Column 1",
+        cell: () => <Skeleton className="h-4 w-32" />,
       },
       {
         accessorKey: "owner",
-        header: "担当",
-        cell: ({ row }) => (
-          <span className="text-muted-foreground text-sm">{row.original.owner}</span>
-        ),
+        header: "Column 2",
+        cell: () => <Skeleton className="h-4 w-20" />,
       },
       {
         accessorKey: "status",
-        header: "ステータス",
-        cell: ({ row }) => {
-          const cfg = statusConfig[row.original.status]
-          return (
-            <Badge variant="outline" className={cn("text-xs font-medium", cfg.className)}>
-              {cfg.label}
-            </Badge>
-          )
-        },
+        header: "Column 3",
+        cell: () => <Skeleton className="h-5 w-16 rounded-full" />,
       },
       {
         accessorKey: "value",
-        header: "売上",
-        cell: ({ row }) => (
-          <div className="text-right font-semibold tabular-nums">
-            {formatCurrency(row.original.value, { short: true })}
+        header: "Column 4",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-16" />
           </div>
         ),
       },
       {
         accessorKey: "units",
-        header: "販売数",
-        cell: ({ row }) => (
-          <div className="text-right tabular-nums text-muted-foreground">
-            {formatNumber(row.original.units)}
+        header: "Column 5",
+        cell: () => (
+          <div className="flex justify-end">
+            <Skeleton className="h-4 w-12" />
           </div>
         ),
       },
@@ -144,7 +118,7 @@ export function DetailTab() {
         <div className="relative w-full sm:max-w-sm">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="アイテム名・担当者で検索..."
+            placeholder="Search..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="pl-9"
@@ -158,30 +132,39 @@ export function DetailTab() {
             variant="outline"
             size="sm"
           >
-            <ToggleGroupItem value="all">すべて</ToggleGroupItem>
-            <ToggleGroupItem value="active">公開</ToggleGroupItem>
-            <ToggleGroupItem value="paused">一時停止</ToggleGroupItem>
+            <ToggleGroupItem value="all">All</ToggleGroupItem>
+            <ToggleGroupItem value="active">Option A</ToggleGroupItem>
+            <ToggleGroupItem value="paused">Option B</ToggleGroupItem>
           </ToggleGroup>
           <Button variant="outline" size="sm" className="gap-2">
             <Download className="size-4" />
-            エクスポート
           </Button>
         </div>
       </div>
 
-      <DashboardCardPreset
-        title="全アイテム"
-        description={`${detailRows.length} 件中 ${filteredRows.length} 件を表示`}
-      >
-        <DataTablePreset columns={detailColumns} data={filteredRows} enableSorting />
-      </DashboardCardPreset>
+      <DashboardCard>
+        <DashboardCardHeader>
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-3.5 w-48" />
+          </div>
+        </DashboardCardHeader>
+        <DashboardCardContent>
+          <DataTablePreset columns={detailColumns} data={filteredRows} enableSorting />
+        </DashboardCardContent>
+      </DashboardCard>
 
-      <DashboardCardPreset
-        title="カテゴリ別詳細"
-        description="カテゴリ別の売上・構成比・差分"
-      >
-        <DataTablePreset columns={categoryColumns} data={categoryRows} enableSorting />
-      </DashboardCardPreset>
+      <DashboardCard>
+        <DashboardCardHeader>
+          <div className="space-y-2">
+            <Skeleton className="h-5 w-40" />
+            <Skeleton className="h-3.5 w-56" />
+          </div>
+        </DashboardCardHeader>
+        <DashboardCardContent>
+          <DataTablePreset columns={categoryColumns} data={categoryRows} enableSorting />
+        </DashboardCardContent>
+      </DashboardCard>
     </div>
   )
 }

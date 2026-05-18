@@ -1,9 +1,14 @@
 import type { EChartsOption } from "echarts"
 import { DollarSign, ShoppingCart, Users, Activity } from "lucide-react"
 import { EChart } from "@/components/data/echart"
-import { DashboardCardPreset } from "@/components/common/dashboard-card"
+import {
+  DashboardCard,
+  DashboardCardHeader,
+  DashboardCardContent,
+} from "@/components/common/dashboard-card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { KpiCard } from "./kpi-card"
-import { formatCurrency, formatNumber, getBaseGrid } from "./chart-helpers"
+import { formatNumber, getBaseGrid } from "./chart-helpers"
 import {
   overviewKpis,
   trendSeries,
@@ -12,13 +17,23 @@ import {
 
 const kpiIcons = [DollarSign, ShoppingCart, Users, Activity] as const
 
+function ChartCard({ children }: { children: React.ReactNode }) {
+  return (
+    <DashboardCard>
+      <DashboardCardHeader>
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-3.5 w-48" />
+        </div>
+      </DashboardCardHeader>
+      <DashboardCardContent>{children}</DashboardCardContent>
+    </DashboardCard>
+  )
+}
+
 export function OverviewTab() {
   const trendOption: EChartsOption = {
-    tooltip: {
-      trigger: "axis",
-      valueFormatter: (v) =>
-        v === null || v === undefined ? "-" : formatCurrency(v as number, { short: true }),
-    },
+    tooltip: { trigger: "axis" },
     grid: getBaseGrid(),
     xAxis: {
       type: "category",
@@ -29,7 +44,7 @@ export function OverviewTab() {
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "売上",
+        name: "Series A",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -40,11 +55,7 @@ export function OverviewTab() {
   }
 
   const categoryOption: EChartsOption = {
-    tooltip: {
-      trigger: "item",
-      valueFormatter: (v) =>
-        v === null || v === undefined ? "-" : formatCurrency(v as number, { short: true }),
-    },
+    tooltip: { trigger: "item" },
     legend: { bottom: 0 },
     series: [
       {
@@ -68,19 +79,13 @@ export function OverviewTab() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <DashboardCardPreset
-            title="売上トレンド"
-            description="期間内の日次売上の推移"
-          >
+          <ChartCard>
             <EChart option={trendOption} height="320px" />
-          </DashboardCardPreset>
+          </ChartCard>
         </div>
-        <DashboardCardPreset
-          title="カテゴリ構成"
-          description="カテゴリ別の売上構成比"
-        >
+        <ChartCard>
           <EChart option={categoryOption} height="320px" />
-        </DashboardCardPreset>
+        </ChartCard>
       </div>
     </div>
   )

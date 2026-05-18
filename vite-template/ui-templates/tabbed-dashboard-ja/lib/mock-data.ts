@@ -21,38 +21,38 @@ const rand = seededRandom(57)
 
 export const trendSeries: TrendPoint[] = Array.from({ length: DAYS }, (_, i) => {
   const date = addDays(BASE_DATE, i - DAYS + 1)
-  const base = 3_800_000 + i * 32_000 + (rand() - 0.5) * 700_000
+  const base = 38_000 + i * 320 + (rand() - 0.5) * 7_000
   return {
     date: format(date, "yyyy-MM-dd"),
-    value: Math.max(1_500_000, Math.round(base)),
+    value: Math.max(15_000, Math.round(base)),
   }
 })
 
 const totalRev = trendSeries.reduce((s, p) => s + p.value, 0)
 
 export const categoryRows: CategoryRow[] = [
-  { category: "オーディオ", value: Math.round(totalRev * 0.28), share: 0.28, delta: 5.4 },
-  { category: "ウェアラブル", value: Math.round(totalRev * 0.22), share: 0.22, delta: 8.1 },
-  { category: "周辺機器", value: Math.round(totalRev * 0.20), share: 0.20, delta: -2.3 },
-  { category: "カメラ", value: Math.round(totalRev * 0.18), share: 0.18, delta: 3.7 },
-  { category: "ホーム", value: Math.round(totalRev * 0.12), share: 0.12, delta: 1.2 },
+  { category: "Category 1", value: Math.round(totalRev * 0.28), share: 0.28, delta: 5.4 },
+  { category: "Category 2", value: Math.round(totalRev * 0.22), share: 0.22, delta: 8.1 },
+  { category: "Category 3", value: Math.round(totalRev * 0.20), share: 0.20, delta: -2.3 },
+  { category: "Category 4", value: Math.round(totalRev * 0.18), share: 0.18, delta: 3.7 },
+  { category: "Category 5", value: Math.round(totalRev * 0.12), share: 0.12, delta: 1.2 },
 ]
 
 export const detailRows: DetailRow[] = [
-  { id: "d-01", name: "Aurora ワイヤレスヘッドホン", owner: "田中 健", status: "active", value: 18_432_000, units: 1_232 },
-  { id: "d-02", name: "Halo スマートウォッチ", owner: "佐藤 美咲", status: "active", value: 16_248_000, units: 812 },
-  { id: "d-03", name: "Vista 4K アクションカメラ", owner: "鈴木 大樹", status: "active", value: 13_875_000, units: 463 },
-  { id: "d-04", name: "Nimbus メカニカルキーボード", owner: "高橋 真衣", status: "paused", value: 12_190_000, units: 974 },
-  { id: "d-05", name: "Orbit ワイヤレスマウス", owner: "伊藤 翔", status: "active", value: 9_864_000, units: 1_644 },
-  { id: "d-06", name: "Pulse フィットネストラッカー", owner: "山田 美穂", status: "active", value: 8_722_000, units: 821 },
-  { id: "d-07", name: "Echo Bluetooth スピーカー", owner: "田中 健", status: "active", value: 8_154_000, units: 679 },
-  { id: "d-08", name: "Lumen デスクライト", owner: "佐藤 美咲", status: "paused", value: 7_241_000, units: 905 },
-  { id: "d-09", name: "Nova ポータブル SSD", owner: "鈴木 大樹", status: "active", value: 6_832_000, units: 412 },
-  { id: "d-10", name: "Glide エルゴノミクスチェアマット", owner: "高橋 真衣", status: "active", value: 5_418_000, units: 720 },
-  { id: "d-11", name: "Beacon スマート電球 4個セット", owner: "伊藤 翔", status: "active", value: 4_965_000, units: 1_103 },
-  { id: "d-12", name: "Forge USB-C ハブ", owner: "山田 美穂", status: "active", value: 4_290_000, units: 953 },
-  { id: "d-13", name: "Crest ノイズキャンセリングイヤホン", owner: "田中 健", status: "paused", value: 3_824_000, units: 488 },
-  { id: "d-14", name: "Spire スタンディングデスクライザー", owner: "佐藤 美咲", status: "active", value: 3_178_000, units: 256 },
+  { id: "d-01", name: "Item 1", owner: "Owner 1", status: "active", value: 184_320, units: 1_232 },
+  { id: "d-02", name: "Item 2", owner: "Owner 2", status: "active", value: 162_480, units: 812 },
+  { id: "d-03", name: "Item 3", owner: "Owner 3", status: "active", value: 138_750, units: 463 },
+  { id: "d-04", name: "Item 4", owner: "Owner 4", status: "paused", value: 121_900, units: 974 },
+  { id: "d-05", name: "Item 5", owner: "Owner 5", status: "active", value: 98_640, units: 1_644 },
+  { id: "d-06", name: "Item 6", owner: "Owner 6", status: "active", value: 87_220, units: 821 },
+  { id: "d-07", name: "Item 7", owner: "Owner 1", status: "active", value: 81_540, units: 679 },
+  { id: "d-08", name: "Item 8", owner: "Owner 2", status: "paused", value: 72_410, units: 905 },
+  { id: "d-09", name: "Item 9", owner: "Owner 3", status: "active", value: 68_320, units: 412 },
+  { id: "d-10", name: "Item 10", owner: "Owner 4", status: "active", value: 54_180, units: 720 },
+  { id: "d-11", name: "Item 11", owner: "Owner 5", status: "active", value: 49_650, units: 1_103 },
+  { id: "d-12", name: "Item 12", owner: "Owner 6", status: "active", value: 42_900, units: 953 },
+  { id: "d-13", name: "Item 13", owner: "Owner 1", status: "paused", value: 38_240, units: 488 },
+  { id: "d-14", name: "Item 14", owner: "Owner 2", status: "active", value: 31_780, units: 256 },
 ]
 
 function spark(values: number[], length = 12): number[] {
@@ -62,46 +62,45 @@ function spark(values: number[], length = 12): number[] {
   return out.slice(-length)
 }
 
-const orders = Math.round(totalRev / 7_800)
+const orders = Math.round(totalRev / 78)
 const users = Math.round(orders * 2.4)
 const aov = totalRev / orders
 
 export const overviewKpis: KpiItem[] = [
   {
     id: "revenue",
-    label: "総売上",
-    value: `¥${(totalRev / 100_000_000).toFixed(2)}億`,
+    label: "Metric 1",
+    value: `$${(totalRev / 1_000_000).toFixed(2)}M`,
     change: 12.4,
-    changeLabel: "前期比",
+    changeLabel: "",
     positiveIsGood: true,
     sparklineData: spark(trendSeries.map((p) => p.value)),
   },
   {
     id: "orders",
-    label: "総注文数",
-    value: orders.toLocaleString("ja-JP"),
+    label: "Metric 2",
+    value: orders.toLocaleString("en-US"),
     change: 9.6,
-    changeLabel: "前期比",
+    changeLabel: "",
     positiveIsGood: true,
-    sparklineData: spark(trendSeries.map((p) => p.value / 7_800)),
+    sparklineData: spark(trendSeries.map((p) => p.value / 78)),
   },
   {
     id: "users",
-    label: "アクティブユーザー",
-    value: users.toLocaleString("ja-JP"),
+    label: "Metric 3",
+    value: users.toLocaleString("en-US"),
     change: 6.8,
-    changeLabel: "前期比",
+    changeLabel: "",
     positiveIsGood: true,
-    sparklineData: spark(trendSeries.map((p) => p.value / 3_000)),
+    sparklineData: spark(trendSeries.map((p) => p.value / 30)),
   },
   {
     id: "aov",
-    label: "平均注文額",
-    value: `¥${Math.round(aov).toLocaleString("ja-JP")}`,
+    label: "Metric 4",
+    value: `$${aov.toFixed(2)}`,
     change: 3.1,
-    changeLabel: "前期比",
+    changeLabel: "",
     positiveIsGood: true,
-    sparklineData: spark(trendSeries.map((p) => p.value / Math.max(1, p.value / 7_800))),
+    sparklineData: spark(trendSeries.map((p) => p.value / Math.max(1, p.value / 78))),
   },
 ]
-

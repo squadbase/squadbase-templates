@@ -1,7 +1,11 @@
 import type { EChartsOption } from "echarts"
 import { EChart } from "@/components/data/echart"
-import { DashboardCardPreset } from "@/components/common/dashboard-card"
-import { formatCurrency } from "./chart-helpers"
+import {
+  DashboardCard,
+  DashboardCardHeader,
+  DashboardCardContent,
+} from "@/components/common/dashboard-card"
+import { Skeleton } from "@/components/ui/skeleton"
 import type { BreakdownSlice } from "@/types/ui-template-kpi-chart-advanced"
 
 interface BreakdownChartProps {
@@ -10,11 +14,7 @@ interface BreakdownChartProps {
 
 export function BreakdownChart({ data }: BreakdownChartProps) {
   const option: EChartsOption = {
-    tooltip: {
-      trigger: "item",
-      valueFormatter: (v) =>
-        v === null || v === undefined ? "-" : formatCurrency(v as number, { short: true }),
-    },
+    tooltip: { trigger: "item" },
     legend: { bottom: 0 },
     series: [
       {
@@ -29,11 +29,16 @@ export function BreakdownChart({ data }: BreakdownChartProps) {
   }
 
   return (
-    <DashboardCardPreset
-      title="Channel Breakdown"
-      description="Revenue distribution across channels"
-    >
-      <EChart option={option} height="320px" />
-    </DashboardCardPreset>
+    <DashboardCard>
+      <DashboardCardHeader>
+        <div className="space-y-2">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-3.5 w-48" />
+        </div>
+      </DashboardCardHeader>
+      <DashboardCardContent>
+        <EChart option={option} height="320px" />
+      </DashboardCardContent>
+    </DashboardCard>
   )
 }

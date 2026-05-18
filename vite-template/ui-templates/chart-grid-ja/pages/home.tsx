@@ -11,6 +11,7 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   AreaChart,
   LineChart,
@@ -51,9 +52,11 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>[テンプレート] マルチチャートビュー</PageShellTitle>
+          <PageShellTitle>
+            <Skeleton className="h-7 w-64" />
+          </PageShellTitle>
           <PageShellDescription>
-            トレンド・ランキング・分布・ケイパビリティ・活性度を6チャート格子で一望。チップで切り替えできます
+            <Skeleton className="mt-2 h-4 w-96" />
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd className="flex-row items-center gap-3">
@@ -64,10 +67,10 @@ export default function HomePage() {
             variant="outline"
             size="sm"
           >
-            <ToggleGroupItem value="all">すべて</ToggleGroupItem>
-            <ToggleGroupItem value="trend">トレンド</ToggleGroupItem>
-            <ToggleGroupItem value="ranking">ランキング</ToggleGroupItem>
-            <ToggleGroupItem value="distribution">分布</ToggleGroupItem>
+            <ToggleGroupItem value="all">All</ToggleGroupItem>
+            <ToggleGroupItem value="trend">Group A</ToggleGroupItem>
+            <ToggleGroupItem value="ranking">Group B</ToggleGroupItem>
+            <ToggleGroupItem value="distribution">Group C</ToggleGroupItem>
           </ToggleGroup>
           <DateRangePicker
             value={filters.dateRange}
