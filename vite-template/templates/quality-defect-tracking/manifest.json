@@ -1,0 +1,17 @@
+{
+  "name": "quality-defect-tracking",
+  "description": "Quality Defect Tracking — Pareto of defect causes, line × cause heatmap, and monthly defect trend with control limits",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/quality-defect-tracking/insight-cards.tsx", "action": "add" },
+    { "src": "components/defect-pareto-chart.tsx", "dest": "src/components/quality-defect-tracking/defect-pareto-chart.tsx", "action": "add" },
+    { "src": "components/line-cause-heatmap.tsx", "dest": "src/components/quality-defect-tracking/line-cause-heatmap.tsx", "action": "add" },
+    { "src": "components/monthly-trend-chart.tsx", "dest": "src/components/quality-defect-tracking/monthly-trend-chart.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/quality-defect-tracking/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/quality-defect-tracking-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/quality-defect-tracking-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/quality-defect-tracking.ts", "action": "add" }
+  ],
+  "routes": []
+}

@@ -1,0 +1,18 @@
+{
+  "name": "product-bestseller-deadstock-ranking-ja",
+  "description": "[日本語] 売れ筋／死に筋ランキング — 商品別ランキング表、ABC 分析パレート図 (シグネチャ)、売上×回転率の象限マップ",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/product-bestseller-deadstock-ranking/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/product-bestseller-deadstock-ranking/kpi-card.tsx", "action": "add" },
+    { "src": "components/product-ranking-table.tsx", "dest": "src/components/product-bestseller-deadstock-ranking/product-ranking-table.tsx", "action": "add" },
+    { "src": "components/abc-pareto-chart.tsx", "dest": "src/components/product-bestseller-deadstock-ranking/abc-pareto-chart.tsx", "action": "add" },
+    { "src": "components/quadrant-map.tsx", "dest": "src/components/product-bestseller-deadstock-ranking/quadrant-map.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/product-bestseller-deadstock-ranking/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/product-bestseller-deadstock-ranking-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/product-bestseller-deadstock-ranking-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/product-bestseller-deadstock-ranking.ts", "action": "add" }
+  ],
+  "routes": []
+}

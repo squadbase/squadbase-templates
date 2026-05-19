@@ -1,0 +1,18 @@
+{
+  "name": "lead-funnel",
+  "description": "Lead Funnel — Lead stage funnel, channel acquisition with CPL, and inside-sales appointment ranking for marketing & IS leaders",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/lead-funnel/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/lead-funnel/kpi-card.tsx", "action": "add" },
+    { "src": "components/lead-funnel-chart.tsx", "dest": "src/components/lead-funnel/lead-funnel-chart.tsx", "action": "add" },
+    { "src": "components/channel-acquisition.tsx", "dest": "src/components/lead-funnel/channel-acquisition.tsx", "action": "add" },
+    { "src": "components/is-ranking.tsx", "dest": "src/components/lead-funnel/is-ranking.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/lead-funnel/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/lead-funnel-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/lead-funnel-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/lead-funnel.ts", "action": "add" }
+  ],
+  "routes": []
+}

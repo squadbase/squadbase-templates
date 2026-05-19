@@ -68,7 +68,7 @@ export function AlertPanel() {
   return (
     <DashboardCardPreset
       title="Alerts"
-      description="Realtime notifications for metrics crossing thresholds"
+      description="Business alerts for metrics crossing thresholds"
       actions={
         <Button variant="ghost" size="sm" className="gap-1.5">
           <Settings className="size-3.5" />

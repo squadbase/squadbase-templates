@@ -1,0 +1,19 @@
+{
+  "name": "demand-forecast-vs-actual-ja",
+  "description": "[日本語] 需要予測 vs 実績モニタ — 週次予測精度 (MAPE/バイアス/在庫充足率/欠品率)、商品別 予測 vs 実績ライン、符号付き誤差ヒートマップ、6ヶ月精度トレンド",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/demand-forecast-vs-actual/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/demand-forecast-vs-actual/kpi-card.tsx", "action": "add" },
+    { "src": "components/forecast-vs-actual-chart.tsx", "dest": "src/components/demand-forecast-vs-actual/forecast-vs-actual-chart.tsx", "action": "add" },
+    { "src": "components/error-heatmap.tsx", "dest": "src/components/demand-forecast-vs-actual/error-heatmap.tsx", "action": "add" },
+    { "src": "components/monthly-accuracy-chart.tsx", "dest": "src/components/demand-forecast-vs-actual/monthly-accuracy-chart.tsx", "action": "add" },
+    { "src": "components/product-accuracy-table.tsx", "dest": "src/components/demand-forecast-vs-actual/product-accuracy-table.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/demand-forecast-vs-actual/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/demand-forecast-vs-actual-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/demand-forecast-vs-actual-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/demand-forecast-vs-actual.ts", "action": "add" }
+  ],
+  "routes": []
+}

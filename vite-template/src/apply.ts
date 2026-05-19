@@ -2,12 +2,18 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from
 import { dirname, join } from "node:path";
 
 import { log } from "./logger.js";
-import type { FileEntry, RouteEntry, TemplateManifest } from "./manifest.js";
+import type {
+  FileEntry,
+  RouteEntry,
+  TemplateManifest,
+  TemplateSource,
+} from "./manifest.js";
 import { getTemplateDir } from "./manifest.js";
 
 export interface ApplyOptions {
   force: boolean;
   dryRun: boolean;
+  source?: TemplateSource;
 }
 
 export function applyTemplate(
@@ -15,7 +21,7 @@ export function applyTemplate(
   manifest: TemplateManifest,
   options: ApplyOptions,
 ): void {
-  const templateDir = getTemplateDir(manifest.name);
+  const templateDir = getTemplateDir(manifest.name, options.source ?? "templates");
 
   // Check for conflicts before making any changes
   const conflicts = checkConflicts(projectRoot, manifest.files, options.force);

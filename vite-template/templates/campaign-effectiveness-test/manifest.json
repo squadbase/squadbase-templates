@@ -1,0 +1,18 @@
+{
+  "name": "campaign-effectiveness-test",
+  "description": "Campaign Effectiveness Test — Measure incremental lift by comparing exposed (test) vs unexposed (control) customers across pre/post windows, with per-campaign ROI ranking and coupon redemption performance",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/campaign-effectiveness-test/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/campaign-effectiveness-test/kpi-card.tsx", "action": "add" },
+    { "src": "components/pre-post-comparison-chart.tsx", "dest": "src/components/campaign-effectiveness-test/pre-post-comparison-chart.tsx", "action": "add" },
+    { "src": "components/roi-ranking-table.tsx", "dest": "src/components/campaign-effectiveness-test/roi-ranking-table.tsx", "action": "add" },
+    { "src": "components/coupon-redemption-table.tsx", "dest": "src/components/campaign-effectiveness-test/coupon-redemption-table.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/campaign-effectiveness-test/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/campaign-effectiveness-test-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/campaign-effectiveness-test-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/campaign-effectiveness-test.ts", "action": "add" }
+  ],
+  "routes": []
+}

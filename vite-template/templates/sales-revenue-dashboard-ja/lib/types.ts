@@ -116,14 +116,12 @@ export interface HourlyCumulativePoint {
   prevDayCumulative: number
 }
 
-export interface LiveOrder {
-  orderId: string
-  orderedAt: string
-  customerName: string
-  region: string
+export interface TodayCategoryItem {
+  rank: number
   category: ProductCategory
-  channel: Channel
-  amount: number
+  revenue: number
+  orders: number
+  vsAverage: number
 }
 
 export interface AlertEvent {

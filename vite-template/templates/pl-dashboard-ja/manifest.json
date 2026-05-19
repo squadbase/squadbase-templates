@@ -1,0 +1,16 @@
+{
+  "name": "pl-dashboard-ja",
+  "description": "[日本語] PLダッシュボード — 売上高・売上総利益・営業利益・経常利益・各利益率の主要KPI、PLウォーターフォール、費用カテゴリ別月次推移、前年比較テーブルを1ページに集約",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/pl-dashboard/kpi-card.tsx", "action": "add" },
+    { "src": "components/pl-waterfall-chart.tsx", "dest": "src/components/pl-dashboard/pl-waterfall-chart.tsx", "action": "add" },
+    { "src": "components/expense-trend-chart.tsx", "dest": "src/components/pl-dashboard/expense-trend-chart.tsx", "action": "add" },
+    { "src": "components/yoy-comparison-table.tsx", "dest": "src/components/pl-dashboard/yoy-comparison-table.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/pl-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/pl-dashboard-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/pl-dashboard.ts", "action": "add" }
+  ],
+  "routes": []
+}
