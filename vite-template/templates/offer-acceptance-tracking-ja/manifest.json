@@ -1,0 +1,18 @@
+{
+  "name": "offer-acceptance-tracking-ja",
+  "description": "内定者ステータス管理 — 内定者ステータスファネル、辞退理由カテゴリ集計、個別フォロー要否リストを新卒採用・人事向けに",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/offer-acceptance-tracking/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/offer-acceptance-tracking/kpi-card.tsx", "action": "add" },
+    { "src": "components/status-funnel.tsx", "dest": "src/components/offer-acceptance-tracking/status-funnel.tsx", "action": "add" },
+    { "src": "components/decline-reasons-chart.tsx", "dest": "src/components/offer-acceptance-tracking/decline-reasons-chart.tsx", "action": "add" },
+    { "src": "components/follow-up-table.tsx", "dest": "src/components/offer-acceptance-tracking/follow-up-table.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/offer-acceptance-tracking/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/offer-acceptance-tracking-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/offer-acceptance-tracking-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/offer-acceptance-tracking.ts", "action": "add" }
+  ],
+  "routes": []
+}

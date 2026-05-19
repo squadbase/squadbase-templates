@@ -15,11 +15,17 @@ vite-template/
 │   ├── apply.ts              # ファイルコピー + routes.tsx パッチ
 │   ├── manifest.ts           # 型定義 (TemplateManifest, FileEntry, RouteEntry) + ローダー
 │   └── logger.ts             # ANSI カラーログ
-├── templates/                # npm パッケージに同梱されるテンプレートデータ
+├── templates/                # ユースケース別テンプレート (sales, churn, ec, etc.)
 │   └── <template-name>/
 │       ├── manifest.json
 │       ├── pages/
 │       └── components/
+├── ui-templates/             # UIパターン別テンプレート (kpi-chart-simple, funnel, etc.)
+│   └── <template-name>/
+│       ├── manifest.json
+│       ├── pages/
+│       ├── components/
+│       └── lib/
 ├── base-template/            # ビルド時に ../vite/ からコピー（gitignore 対象）
 ├── tsup.config.ts            # dist/index.js にバンドル（#!/usr/bin/env node バナー付き）
 ├── tsconfig.json
@@ -38,7 +44,8 @@ vite-template/
 ### npm に公開される内容
 
 - `dist/` — コンパイル済み CLI
-- `templates/` — テンプレートデータ（pages, components, manifest.json）
+- `templates/` — ユースケース別テンプレートデータ
+- `ui-templates/` — UIパターン別テンプレートデータ
 - `base-template/` — Vite ベースプロジェクトのフルコピー（`init` コマンド用）
 
 ### パス解決
@@ -46,7 +53,10 @@ vite-template/
 tsup が全てを `dist/index.js` にバンドルするため、`__dirname` は常に `dist/` に解決される。アセットディレクトリは1階層上で参照:
 
 - `join(__dirname, "..", "templates")` → `vite-template/templates/`
+- `join(__dirname, "..", "ui-templates")` → `vite-template/ui-templates/`
 - `join(__dirname, "..", "base-template")` → `vite-template/base-template/`
+
+`manifest.ts` の `TemplateSource` 型 (`"templates" | "ui-templates"`) で切替する。`add` / `list` コマンドの `--ui` フラグが `source = "ui-templates"` を渡す。
 
 ## 開発コマンド
 
@@ -70,10 +80,45 @@ npm run release    # npm に公開（@squadbase:registry）
 
 **テンプレートは原則 1 ルート**: `routes[]` は空にし、追加ルートは作らない。UI ロジックは適切にコンポーネントに分割すること（`components/` 配下に配置し、`manifest.json` の `files[]` に `action: "add"` で追加）。ユーザーがルートを追加する起点は `home.tsx` とし、テンプレート自体でルートを増やさない設計にすること。
 
+### ユースケース別テンプレート (`templates/`)
+
 1. `templates/<name>/` ディレクトリを作成
 2. `manifest.json` に `name`, `description`, `version`, `files[]`（home.tsx + コンポーネントファイル `action: "add"`）, `routes[]`（空）を定義
 3. `pages/home.tsx` をエントリポイントとし、大きな UI ブロックは `components/` に分割
 4. `node dist/index.js add <name> --dry-run` でテスト（Vite プロジェクトディレクトリから実行）
+
+### UIパターン別テンプレート (`ui-templates/`)
+
+ユースケース非依存のUI骨格 (KPI重視、チャート格子、テーブル重視、ファネル、タブ構成 など)。命名規約は `ui-template-<slug>` プレフィックスで衝突回避:
+- コンポーネント: `src/components/ui-template-<slug>/`
+- ライブラリ: `src/lib/ui-template-<slug>-*.ts`
+- 型: `src/types/ui-template-<slug>.ts`
+
+**ui-templates 限定の例外ルール (DESIGN.md / 「テンプレート開発ルール」よりも優先)**:
+
+`ui-templates/` 配下のテンプレートは **「UI 構造の見本市」として、レイアウトの幅を意図的に出す** ことを目的とする。そのため以下の default を意図的に崩してよい (むしろ崩すべき):
+
+- **PageShellSummary (insight cards) は必須ではない** — 各テンプレが同じヘッダーになるのを避けるため、原則として KPI 重視のテンプレ (`kpi-chart-advanced`) のみに残し、他テンプレでは省く
+- **本体最初の行を KPI カードで始める必要はない** — テーブル中心 / チャート中心 / ファネル中心など、テンプレのテーマに合わせて開始要素を変える。KPI 行を完全に省くテンプレもあってよい
+- **PageShellHeaderEnd の中身は DateRangePicker 限定ではない** — 検索ボックス、Export ボタン、Filter chips、ステージ選択など、テンプレの用途に合わせる
+- **2 カラム (本体 + サイドバー) のレイアウトを使ってよい** — `PageShellContent` の中で grid を組み、左に主要素、右に補助要素を置く構成も歓迎
+
+ただし以下は維持する (テンプレ群としての一貫性のため):
+- `PageShell` / `PageShellHeader` / `PageShellHeading` / `PageShellTitle` の使用
+- `DashboardCard` / `DashboardCardPreset` の使用 (raw `Card` ではなく)
+- `EChart` ラッパ + `useEChartsContrastColor` の使用
+
+CLI 操作は `--ui` フラグを必ず付ける:
+
+```bash
+node dist/index.js list --ui                # UI テンプレートを列挙
+node dist/index.js list --ui --lang ja      # JA バリアントだけ列挙
+node dist/index.js list --ui --json         # JSON で取得 (preview 画像 URL 含む)
+node dist/index.js add --ui <name>          # UI テンプレートを適用
+node dist/index.js add --ui <name> --dry-run
+```
+
+EN/JA は `<name>` と `<name>-ja` のペアで、`files[].dest` は EN/JA で同一 (上書き = 相互排他)、`name` だけ異なる。EN/JA を同時に add してはいけない。
 
 ## テンプレート開発ルール
 

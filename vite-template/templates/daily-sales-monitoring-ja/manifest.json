@@ -1,0 +1,19 @@
+{
+  "name": "daily-sales-monitoring-ja",
+  "description": "[日本語] 日次売上モニタリング — 単一ページの朝チェックダッシュボード (当日サマリー、30日トレンドと7日移動平均、前年同期オーバーレイ、曜日別ヒートマップ)",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/daily-sales-monitoring/insight-cards.tsx", "action": "add" },
+    { "src": "components/today-snapshot.tsx", "dest": "src/components/daily-sales-monitoring/today-snapshot.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/daily-sales-monitoring/kpi-card.tsx", "action": "add" },
+    { "src": "components/sales-trend-chart.tsx", "dest": "src/components/daily-sales-monitoring/sales-trend-chart.tsx", "action": "add" },
+    { "src": "components/yoy-overlay-chart.tsx", "dest": "src/components/daily-sales-monitoring/yoy-overlay-chart.tsx", "action": "add" },
+    { "src": "components/day-of-week-heatmap.tsx", "dest": "src/components/daily-sales-monitoring/day-of-week-heatmap.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/daily-sales-monitoring/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/daily-sales-monitoring-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/daily-sales-monitoring-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/daily-sales-monitoring.ts", "action": "add" }
+  ],
+  "routes": []
+}

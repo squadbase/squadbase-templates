@@ -1,0 +1,18 @@
+{
+  "name": "bs-dashboard",
+  "description": "Balance Sheet Dashboard — Single-page financial-health view (BS structure, monthly account trend, key ratio trends)",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/bs-dashboard/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/bs-dashboard/kpi-card.tsx", "action": "add" },
+    { "src": "components/bs-structure-chart.tsx", "dest": "src/components/bs-dashboard/bs-structure-chart.tsx", "action": "add" },
+    { "src": "components/account-trend-chart.tsx", "dest": "src/components/bs-dashboard/account-trend-chart.tsx", "action": "add" },
+    { "src": "components/ratio-trend-chart.tsx", "dest": "src/components/bs-dashboard/ratio-trend-chart.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/bs-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/bs-dashboard-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/bs-dashboard-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/bs-dashboard.ts", "action": "add" }
+  ],
+  "routes": []
+}

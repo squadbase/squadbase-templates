@@ -1,0 +1,27 @@
+export function getBaseGrid() {
+  return { left: "3%", right: "4%", bottom: "12%", containLabel: true }
+}
+
+export function formatNumber(n: number): string {
+  if (n >= 100_000_000) return `${(n / 100_000_000).toFixed(1)}億`
+  if (n >= 10_000) return `${(n / 10_000).toFixed(1)}万`
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}千`
+  return n.toLocaleString("ja-JP")
+}
+
+export function formatDistanceKm(meters: number): string {
+  return `${(meters / 1000).toFixed(2)} km`
+}
+
+export function formatMinutes(min: number): string {
+  return `${Math.round(min)} 分`
+}
+
+export function formatPercent(value: number, digits = 1): string {
+  return `${value.toFixed(digits)}%`
+}
+
+export function formatSignedPercent(value: number, digits = 1): string {
+  const sign = value > 0 ? "+" : ""
+  return `${sign}${value.toFixed(digits)}%`
+}

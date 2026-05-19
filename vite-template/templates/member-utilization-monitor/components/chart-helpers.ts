@@ -1,0 +1,16 @@
+export function getBaseGrid() {
+  return { left: "3%", right: "4%", bottom: "12%", containLabel: true }
+}
+
+export function formatNumber(n: number): string {
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`
+  return n.toLocaleString("en-US")
+}
+
+export function formatHours(n: number): string {
+  return `${Math.round(n).toLocaleString("en-US")}h`
+}
+
+export function formatPercent(value: number, digits = 1): string {
+  return `${value.toFixed(digits)}%`
+}

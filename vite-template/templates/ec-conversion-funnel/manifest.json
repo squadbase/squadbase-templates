@@ -1,0 +1,18 @@
+{
+  "name": "ec-conversion-funnel",
+  "description": "EC Conversion Funnel — visit-to-purchase funnel, device CVR comparison, and top 10 exit pages",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/ec-conversion-funnel/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/ec-conversion-funnel/kpi-card.tsx", "action": "add" },
+    { "src": "components/conversion-funnel.tsx", "dest": "src/components/ec-conversion-funnel/conversion-funnel.tsx", "action": "add" },
+    { "src": "components/device-cvr-chart.tsx", "dest": "src/components/ec-conversion-funnel/device-cvr-chart.tsx", "action": "add" },
+    { "src": "components/exit-pages-table.tsx", "dest": "src/components/ec-conversion-funnel/exit-pages-table.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/ec-conversion-funnel/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/ec-conversion-funnel-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/ec-conversion-funnel-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/ec-conversion-funnel.ts", "action": "add" }
+  ],
+  "routes": []
+}

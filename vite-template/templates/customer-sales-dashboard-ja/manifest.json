@@ -1,0 +1,18 @@
+{
+  "name": "customer-sales-dashboard-ja",
+  "description": "[日本語] 得意先別売上ダッシュボード — 営業/アカウントマネージャー向け単一ページビュー (得意先別売上ランキング、ABCパレート分析、離反候補リスト)",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/customer-sales-dashboard/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/customer-sales-dashboard/kpi-card.tsx", "action": "add" },
+    { "src": "components/customer-ranking-table.tsx", "dest": "src/components/customer-sales-dashboard/customer-ranking-table.tsx", "action": "add" },
+    { "src": "components/abc-pareto-chart.tsx", "dest": "src/components/customer-sales-dashboard/abc-pareto-chart.tsx", "action": "add" },
+    { "src": "components/churn-risk-table.tsx", "dest": "src/components/customer-sales-dashboard/churn-risk-table.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/customer-sales-dashboard/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/customer-sales-dashboard-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/customer-sales-dashboard-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/customer-sales-dashboard.ts", "action": "add" }
+  ],
+  "routes": []
+}

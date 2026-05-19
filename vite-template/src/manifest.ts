@@ -25,16 +25,21 @@ export interface TemplateManifest {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export function getTemplatesDir(): string {
-  return join(__dirname, "..", "templates");
+export type TemplateSource = "templates" | "ui-templates";
+
+export function getTemplatesDir(source: TemplateSource = "templates"): string {
+  return join(__dirname, "..", source);
 }
 
-export function getTemplateDir(templateName: string): string {
-  return join(getTemplatesDir(), templateName);
+export function getTemplateDir(
+  templateName: string,
+  source: TemplateSource = "templates",
+): string {
+  return join(getTemplatesDir(source), templateName);
 }
 
-export function listTemplateNames(): string[] {
-  const templatesDir = getTemplatesDir();
+export function listTemplateNames(source: TemplateSource = "templates"): string[] {
+  const templatesDir = getTemplatesDir(source);
   if (!existsSync(templatesDir)) {
     return [];
   }
@@ -43,8 +48,11 @@ export function listTemplateNames(): string[] {
     .map((d) => d.name);
 }
 
-export function loadManifest(templateName: string): TemplateManifest {
-  const templateDir = getTemplateDir(templateName);
+export function loadManifest(
+  templateName: string,
+  source: TemplateSource = "templates",
+): TemplateManifest {
+  const templateDir = getTemplateDir(templateName, source);
   if (!existsSync(templateDir)) {
     throw new Error(`Template "${templateName}" not found.`);
   }

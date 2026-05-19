@@ -199,3 +199,5 @@ const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(function 
 MultiSelect.displayName = "MultiSelect"
 
 export { MultiSelect }
+
+export type { SelectOption, SelectGroup, SelectOptions } from "./select-types"

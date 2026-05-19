@@ -80,13 +80,16 @@ export function useResolvedTheme(themeProp?: string): SquadbaseThemeName {
  *   <App />
  * </SquadbaseTheme>
  */
+export interface SquadbaseThemeProps {
+  /** 適用するテーマ名。未指定時は `"default"`。 */
+  theme?: string;
+  children: ReactNode;
+}
+
 export function SquadbaseTheme({
   theme = "default",
   children,
-}: {
-  theme?: string;
-  children: ReactNode;
-}) {
+}: SquadbaseThemeProps) {
   const [currentTheme, setCurrentTheme] = useState(theme);
 
   useEffect(() => {

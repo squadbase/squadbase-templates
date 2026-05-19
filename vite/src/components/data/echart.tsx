@@ -1,6 +1,6 @@
 import * as React from "react"
-import ReactECharts from "echarts-for-react"
-import type { EChartsOption } from "echarts"
+import * as echarts from "echarts"
+import type { EChartsOption, ECharts } from "echarts"
 import { useEffect, useState } from "react"
 import { Check, Copy, Download } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -22,7 +22,7 @@ function resolveColor(cssVar: string): string {
     : `rgb(${r},${g},${b})`
 }
 
-export function withAlpha(color: string, alpha: number): string {
+function withAlpha(color: string, alpha: number): string {
   const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
   if (!match) return color
   const [, r, g, b, a] = match
@@ -190,7 +190,24 @@ function useEChartsDecalPatterns(): DecalObject[] {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-interface EChartProps {
+export interface EChartProps {
+  /**
+   * ECharts のオプション。
+   *
+   * 型推論を効かせるため、必ず `EChartsOption` を annotation するか
+   * `satisfies EChartsOption` を付けること。付けないと `type: "category"` などの
+   * literal が `string` に拡張され、ビルドが失敗する。
+   *
+   * @example
+   * import type { EChartsOption } from "@/registry/data/echart"
+   *
+   * const option: EChartsOption = {
+   *   xAxis: { type: "category", data: ["A", "B"] },
+   *   yAxis: { type: "value" },
+   *   series: [{ type: "bar", data: [1, 2] }],
+   * }
+   * <EChart option={option} />
+   */
   option: EChartsOption
   height?: string | number
   loading?: boolean
@@ -205,6 +222,8 @@ interface EChartProps {
   /** ダウンロード時のファイル名（拡張子含む）。省略時は "chart.png" */
   fileName?: string
 }
+
+type EChartsEventHandler = (params: unknown) => void
 
 export const EChart = React.forwardRef<HTMLDivElement, EChartProps>(
   function EChart(
@@ -225,44 +244,28 @@ export const EChart = React.forwardRef<HTMLDivElement, EChartProps>(
     const defaultTheme = useEChartsTheme()
     const contrastColor = useEChartsContrastColor()
     const decalPatterns = useEChartsDecalPatterns()
-    const chartRef = React.useRef<ReactECharts>(null)
+    const containerRef = React.useRef<HTMLDivElement | null>(null)
+    const [instance, setInstance] = useState<ECharts | null>(null)
     const [copied, setCopied] = useState(false)
 
-    const getPngDataUrl = React.useCallback(() => {
-      const chart = chartRef.current?.getEchartsInstance()
-      if (!chart) return null
-      return chart.getDataURL({
-        type: "png",
-        pixelRatio: 2,
-        backgroundColor: resolveColor("--background"),
-      })
-    }, [])
+    const activeTheme = theme ?? defaultTheme
 
-    const handleCopy = React.useCallback(async () => {
-      const dataUrl = getPngDataUrl()
-      if (!dataUrl) return
-      try {
-        const blob = await (await fetch(dataUrl)).blob()
-        await navigator.clipboard.write([
-          new ClipboardItem({ "image/png": blob }),
-        ])
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
-      } catch {
-        // ClipboardItem 未対応ブラウザでは silent fail
+    // init / re-init: テーマ変更時はインスタンスを破棄して作り直す
+    useEffect(() => {
+      const container = containerRef.current
+      if (!container) return
+      const inst = echarts.init(container, activeTheme, { renderer: "canvas" })
+      setInstance(inst)
+
+      const observer = new ResizeObserver(() => inst.resize())
+      observer.observe(container)
+
+      return () => {
+        observer.disconnect()
+        inst.dispose()
       }
-    }, [getPngDataUrl])
+    }, [activeTheme])
 
-    const handleDownload = React.useCallback(() => {
-      const dataUrl = getPngDataUrl()
-      if (!dataUrl) return
-      const link = document.createElement("a")
-      link.href = dataUrl
-      link.download = fileName
-      link.click()
-    }, [getPngDataUrl, fileName])
-
-    // 2系列時に --chart-1 / --chart-5 を自動適用する
     const effectiveOption = React.useMemo(() => {
       let result: EChartsOption = option
 
@@ -305,6 +308,64 @@ export const EChart = React.forwardRef<HTMLDivElement, EChartProps>(
       return result
     }, [option, contrastColor, defaultTheme, decal, decalPatterns])
 
+    useEffect(() => {
+      if (!instance) return
+      instance.setOption(effectiveOption, { notMerge: true, lazyUpdate: true })
+    }, [instance, effectiveOption])
+
+    useEffect(() => {
+      if (!instance) return
+      if (loading) instance.showLoading()
+      else instance.hideLoading()
+    }, [instance, loading])
+
+    useEffect(() => {
+      if (!instance || !onEvents) return
+      const entries = Object.entries(onEvents)
+      for (const [event, handler] of entries) {
+        instance.on(event, handler as EChartsEventHandler)
+      }
+      return () => {
+        if (instance.isDisposed()) return
+        for (const [event, handler] of entries) {
+          instance.off(event, handler as EChartsEventHandler)
+        }
+      }
+    }, [instance, onEvents])
+
+    const getPngDataUrl = React.useCallback(() => {
+      if (!instance) return null
+      return instance.getDataURL({
+        type: "png",
+        pixelRatio: 2,
+        backgroundColor: resolveColor("--background"),
+      })
+    }, [instance])
+
+    const handleCopy = React.useCallback(async () => {
+      const dataUrl = getPngDataUrl()
+      if (!dataUrl) return
+      try {
+        const blob = await (await fetch(dataUrl)).blob()
+        await navigator.clipboard.write([
+          new ClipboardItem({ "image/png": blob }),
+        ])
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      } catch {
+        // ClipboardItem 未対応ブラウザでは silent fail
+      }
+    }, [getPngDataUrl])
+
+    const handleDownload = React.useCallback(() => {
+      const dataUrl = getPngDataUrl()
+      if (!dataUrl) return
+      const link = document.createElement("a")
+      link.href = dataUrl
+      link.download = fileName
+      link.click()
+    }, [getPngDataUrl, fileName])
+
     return (
       <div
         ref={ref}
@@ -313,16 +374,13 @@ export const EChart = React.forwardRef<HTMLDivElement, EChartProps>(
         role="img"
         aria-label={ariaLabel ?? "チャート"}
       >
-        <ReactECharts
-          ref={chartRef}
-          option={effectiveOption}
-          theme={theme ?? defaultTheme}
-          style={{ height: typeof height === "number" ? `${height}px` : height, width: "100%" }}
-          showLoading={loading}
-          notMerge
-          lazyUpdate
-          onEvents={onEvents}
-          opts={{ renderer: "canvas" }}
+        <div
+          ref={containerRef}
+          data-slot="echart-canvas"
+          style={{
+            height: typeof height === "number" ? `${height}px` : height,
+            width: "100%",
+          }}
         />
         {actions && (
           <div
@@ -355,3 +413,5 @@ export const EChart = React.forwardRef<HTMLDivElement, EChartProps>(
 )
 
 EChart.displayName = "EChart"
+
+export type { EChartsOption } from "echarts"

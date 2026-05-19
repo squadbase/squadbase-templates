@@ -1,240 +1,83 @@
 ---
 name: chat-app-development
-description: LLM chat application patterns — TypeScript server logic backend with streaming, Vercel AI SDK frontend integration
+description: LLM chat application patterns with streaming. Read when implementing a chat UI, an LLM streaming endpoint, or integrating Vercel AI SDK (useChat) into the Squadbase Vite template.
 ---
 
 # Chat App Development Guide
 
-Build LLM-powered chat applications using TypeScript server logic handlers as the backend and Vercel AI SDK + React as the frontend.
+LLM chat: TypeScript server logic handler + Vercel AI SDK `useChat` frontend.
+
+Minimal setup below. Full handler / page code in `examples/`. Alternatives (non-streaming, connector, extra params, error UI) in `references/`.
 
 ## Architecture
 
 ```
-Frontend (React)              Backend (TypeScript server logic handler)
-┌──────────────┐   POST       ┌──────────────────────┐        ┌──────────┐
-│ useChat hook │ ──────────── │ /api/server-logic/chat │ ────── │ LLM API  │
+Frontend (React)              Backend (TS server logic handler)
+┌──────────────┐   POST       ┌───────────────────────┐        ┌──────────┐
+│ useChat hook │ ──────────── │ /api/server-logic/chat│ ────── │ LLM API  │
 │ (ai/react)   │   streaming  │ (handler.ts)          │        │ (OpenAI) │
-└──────────────┘ ◄─────────── └──────────────────────┘        └──────────┘
+└──────────────┘ ◄─────────── └───────────────────────┘        └──────────┘
 ```
 
-- **Backend**: TypeScript server logic handler → streams LLM responses via `Response` passthrough
-- **Frontend**: Vercel AI SDK `useChat` hook → manages conversation state and streaming automatically
+- Backend: returns `streamText().toDataStreamResponse()` — `Response` passes through.
+- Frontend: `useChat` manages state + stream consumption.
 
 ## Dependencies
-
-Install Vercel AI SDK and the OpenAI provider:
 
 ```bash
 npm install ai @ai-sdk/openai
 ```
 
-## Backend: Server Logic JSON Definition
+## Minimal setup (3 files)
 
-Create `server-logic/chat.json`:
+1. **`server-logic/chat.json`** — **no `cache` field** (streams not cacheable):
 
-```json
-{
-  "description": "LLM chat endpoint with streaming responses",
-  "type": "typescript",
-  "handlerPath": "./chat.ts"
-}
-```
+   ```json
+   {
+     "description": "LLM chat endpoint with streaming responses",
+     "type": "typescript",
+     "handlerPath": "./chat.ts"
+   }
+   ```
 
-**Important**: Do NOT add a `cache` field — chat responses are non-deterministic and streaming, so caching must be disabled.
+2. **`server-logic/chat.ts`** — copy [`examples/streaming-handler.ts`](./examples/streaming-handler.ts) (`streamText` + `toDataStreamResponse()`).
 
-## Backend: Handler Implementation (Streaming)
+3. **`src/pages/chat.tsx`** — copy [`examples/chat-page.tsx`](./examples/chat-page.tsx) (`useChat({ api: "/api/server-logic/chat" })`).
 
-Create `server-logic/chat.ts`:
+Set `OPENAI_API_KEY` in `.env`. Wire the page into `routes.tsx`.
 
-```typescript
-import { createOpenAI } from "@ai-sdk/openai";
-import { streamText } from "ai";
-
-const openai = createOpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-export default async function handler(c) {
-  const body = await c.req.json();
-  const { messages } = body;
-
-  const result = streamText({
-    model: openai("gpt-4o"),
-    system: "You are a helpful assistant.",
-    messages,
-  });
-
-  return result.toDataStreamResponse();
-}
-```
-
-**Key points:**
-- Handler receives Hono Context `c` as its parameter — use `c.req.json()` to read the request body
-- `useChat` sends `{ messages: [...] }` directly in the body (NOT wrapped in `{ params: {} }`)
-- `streamText().toDataStreamResponse()` returns a standard `Response` with a `ReadableStream` body — the server passes it through unchanged
-
-### Alternative: Using Squadbase OpenAI Connector
-
-If you have an OpenAI connection configured in `.squadbase/connections.json`:
-
-```typescript
-import { connection } from "@squadbase/vite-server/connectors/openai";
-import { streamText } from "ai";
-import { createOpenAI } from "@ai-sdk/openai";
-
-export default async function handler(c) {
-  const client = connection("my-openai-connection");
-  const openai = createOpenAI({ apiKey: client.apiKey });
-
-  const body = await c.req.json();
-  const { messages } = body;
-
-  const result = streamText({
-    model: openai("gpt-4o"),
-    system: "You are a helpful assistant.",
-    messages,
-  });
-
-  return result.toDataStreamResponse();
-}
-```
-
-## Backend: Non-Streaming Alternative
-
-For simple use cases where streaming is not needed:
-
-```typescript
-import { createOpenAI } from "@ai-sdk/openai";
-import { generateText } from "ai";
-
-const openai = createOpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-export default async function handler(c) {
-  const body = await c.req.json();
-  const { messages } = body;
-
-  const { text } = await generateText({
-    model: openai("gpt-4o"),
-    system: "You are a helpful assistant.",
-    messages,
-  });
-
-  return new Response(JSON.stringify({ data: { reply: text } }), {
-    headers: { "Content-Type": "application/json" },
-  });
-}
-```
-
-## Frontend: Chat Page with useChat
-
-Create `src/pages/chat.tsx`:
-
-```tsx
-import { useChat } from "ai/react";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-
-export default function ChatPage() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
-    api: "/api/server-logic/chat",
-  });
-
-  return (
-    <div className="container mx-auto max-w-3xl p-8">
-      <Card className="flex h-[600px] flex-col">
-        <CardHeader>
-          <CardTitle>Chat</CardTitle>
-        </CardHeader>
-        <CardContent className="flex-1 space-y-4 overflow-y-auto">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                  message.role === "user"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-foreground"
-                }`}
-              >
-                <p className="whitespace-pre-wrap">{message.content}</p>
-              </div>
-            </div>
-          ))}
-          {isLoading && <Skeleton className="h-12 w-3/4" />}
-          {error && <p className="text-destructive">{error.message}</p>}
-        </CardContent>
-        <CardFooter>
-          <form onSubmit={handleSubmit} className="flex w-full gap-2">
-            <Input
-              value={input}
-              onChange={handleInputChange}
-              placeholder="Type a message..."
-              disabled={isLoading}
-            />
-            <Button type="submit" disabled={isLoading}>
-              Send
-            </Button>
-          </form>
-        </CardFooter>
-      </Card>
-    </div>
-  );
-}
-```
-
-### Passing Additional Parameters
-
-Use the `body` option to send extra data alongside messages:
-
-```tsx
-const { messages, input, handleInputChange, handleSubmit } = useChat({
-  api: "/api/server-logic/chat",
-  body: {
-    model: "gpt-4o-mini",
-    temperature: 0.7,
-  },
-});
-```
-
-Access these in the handler:
-
-```typescript
-export default async function handler(c) {
-  const body = await c.req.json();
-  const { messages, model, temperature } = body;
-
-  const result = streamText({
-    model: openai(model ?? "gpt-4o"),
-    messages,
-    temperature: temperature ?? 1,
-  });
-
-  return result.toDataStreamResponse();
-}
-```
-
-## Complete File Tree
+## File tree
 
 ```
 server-logic/
-  chat.json          # Server logic definition (type: "typescript")
-  chat.ts            # TypeScript handler (streamText + toDataStreamResponse)
+  chat.json          # type: "typescript", no cache
+  chat.ts            # streamText + toDataStreamResponse
 src/
   pages/
-    chat.tsx          # Chat page (useChat hook)
+    chat.tsx         # useChat hook
 ```
 
 ## Important Notes
 
-1. **No caching**: Never add `cache` to chat server logic JSON — streaming responses are not cacheable.
-2. **Handler signature**: Chat handlers receive Hono Context `c` — use `c.req.json()` to access the full request body.
-3. **Body format**: `useChat` sends `{ messages: [...] }` directly in the POST body, NOT in `{ params: {} }`. Read messages from `body.messages`, not `body.params.messages`.
-4. **Streaming passthrough**: `toDataStreamResponse()` returns a standard `Response` — the server passes it through to the client unchanged.
-5. **Environment variables**: Set `OPENAI_API_KEY` in your `.env` file. Handlers have full access to `process.env`.
-6. **Other LLM providers**: Replace `@ai-sdk/openai` with `@ai-sdk/anthropic`, `@ai-sdk/google`, etc. The `streamText()` and `useChat()` patterns remain the same.
+1. **No caching** — never add `cache` to chat server logic JSON. Streams aren't cacheable.
+2. **Handler signature** — Hono `Context` `c`; read body via `c.req.json()`.
+3. **Body format** — `useChat` sends `{ messages: [...] }` directly (NOT `{ params: {} }`). Read as `body.messages`, not `body.params.messages`. Differs from standard server logic — see `server-logic-development`.
+4. **Streaming passthrough** — `toDataStreamResponse()` returns standard `Response`; server passes through unchanged.
+5. **Env vars** — handlers have `process.env`. For shared connections use `connection()` instead — see [`references/handler-patterns.md`](./references/handler-patterns.md).
+6. **Other LLM providers** — swap `@ai-sdk/openai` for `@ai-sdk/anthropic`, `@ai-sdk/google`, etc. Patterns identical.
+
+---
+
+## References
+
+- [`examples/streaming-handler.ts`](./examples/streaming-handler.ts) — default streaming handler
+- [`examples/chat-page.tsx`](./examples/chat-page.tsx) — minimal `useChat` page
+- [`examples/nonstreaming-handler.ts`](./examples/nonstreaming-handler.ts) — `generateText` variant
+- [`examples/connector-handler.ts`](./examples/connector-handler.ts) — Squadbase OpenAI connector variant
+- [`references/handler-patterns.md`](./references/handler-patterns.md) — non-streaming / connector / extra-params / other-provider variants
+- [`references/frontend-patterns.md`](./references/frontend-patterns.md) — `useChat` body params, error UI, stop / reload / clear, initial messages, markdown
+
+## Related skills
+
+- `server-logic-development` — general server-logic conventions. Chat is a streaming special case; read when defining `chat.json` or custom params.
+- `component-generation` — page creation order (Skeleton placeholders before child imports).

@@ -1,0 +1,18 @@
+{
+  "name": "product-category-performance-ja",
+  "description": "[日本語] 商品カテゴリ別パフォーマンス — カテゴリ別月次スタック、新商品 vs 既存商品の寄与分解 (シグネチャ)、カテゴリ × 月の YoY ヒートマップ",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/product-category-performance/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/product-category-performance/kpi-card.tsx", "action": "add" },
+    { "src": "components/category-stack-chart.tsx", "dest": "src/components/product-category-performance/category-stack-chart.tsx", "action": "add" },
+    { "src": "components/new-vs-existing-decomp.tsx", "dest": "src/components/product-category-performance/new-vs-existing-decomp.tsx", "action": "add" },
+    { "src": "components/category-month-heatmap.tsx", "dest": "src/components/product-category-performance/category-month-heatmap.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/product-category-performance/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/product-category-performance-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/product-category-performance-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/product-category-performance.ts", "action": "add" }
+  ],
+  "routes": []
+}

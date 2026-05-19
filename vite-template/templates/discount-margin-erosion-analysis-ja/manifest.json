@@ -1,0 +1,19 @@
+{
+  "name": "discount-margin-erosion-analysis-ja",
+  "description": "[日本語] 値引き・粗利劣化分析 — 値引き率の分布ヒストグラム (シグネチャ)、値引き率×数量散布図、顧客/チャネル別の値引きランキング",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
+    { "src": "components/insight-cards.tsx", "dest": "src/components/discount-margin-erosion-analysis/insight-cards.tsx", "action": "add" },
+    { "src": "components/kpi-card.tsx", "dest": "src/components/discount-margin-erosion-analysis/kpi-card.tsx", "action": "add" },
+    { "src": "components/discount-histogram.tsx", "dest": "src/components/discount-margin-erosion-analysis/discount-histogram.tsx", "action": "add" },
+    { "src": "components/discount-volume-scatter.tsx", "dest": "src/components/discount-margin-erosion-analysis/discount-volume-scatter.tsx", "action": "add" },
+    { "src": "components/customer-discount-ranking.tsx", "dest": "src/components/discount-margin-erosion-analysis/customer-discount-ranking.tsx", "action": "add" },
+    { "src": "components/channel-discount-ranking.tsx", "dest": "src/components/discount-margin-erosion-analysis/channel-discount-ranking.tsx", "action": "add" },
+    { "src": "components/chart-helpers.ts", "dest": "src/components/discount-margin-erosion-analysis/chart-helpers.ts", "action": "add" },
+    { "src": "lib/derive-insights.ts", "dest": "src/lib/discount-margin-erosion-analysis-derive-insights.ts", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/lib/discount-margin-erosion-analysis-mock-data.ts", "action": "add" },
+    { "src": "lib/types.ts", "dest": "src/types/discount-margin-erosion-analysis.ts", "action": "add" }
+  ],
+  "routes": []
+}

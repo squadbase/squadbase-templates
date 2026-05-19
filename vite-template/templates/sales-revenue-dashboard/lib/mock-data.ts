@@ -4,11 +4,9 @@ import type {
   ChannelBreakdown,
   CategoryRankingItem,
   HourlyCumulativePoint,
-  LiveOrder,
+  TodayCategoryItem,
   AlertEvent,
   FunnelStep,
-  ProductCategory,
-  Channel,
 } from "@/types/sales-revenue"
 
 // ── Helpers ──
@@ -234,174 +232,96 @@ export const CURRENT_HOUR = 14
 export const hourlyCumulative: HourlyCumulativePoint[] =
   generateHourlyCumulative()
 
-// ── Realtime KPIs ──
+export const DAILY_REVENUE_TARGET = 32_000
 
-function computeRealtimeKpis(): KpiItem[] {
+// ── Today KPIs (as of CURRENT_HOUR) ──
+
+function computeTodayKpis(): KpiItem[] {
   const current = hourlyCumulative[CURRENT_HOUR]
-  const previousHour =
-    CURRENT_HOUR > 0 ? hourlyCumulative[CURRENT_HOUR - 1] : null
-  const lastHourRevenue = previousHour
-    ? current.cumulativeRevenue - previousHour.cumulativeRevenue
-    : current.cumulativeRevenue
+  const todayRevenue = current.cumulativeRevenue
+  const prevDayRevenue = current.prevDayCumulative
 
-  const prevDaySameHour = current.prevDayCumulative
-  const prevDayHourDelta =
-    ((current.cumulativeRevenue - prevDaySameHour) / prevDaySameHour) * 100
+  // Approximate orders from an AOV baseline (baseline comes from daily trend generator)
+  const todayAov = 88
+  const prevDayAov = 85
+  const todayOrders = Math.round(todayRevenue / todayAov)
+  const prevDayOrders = Math.round(prevDayRevenue / prevDayAov)
 
-  const targetAchievementRate =
-    (current.cumulativeRevenue / current.target) * 100
+  const pct = (now: number, prev: number) =>
+    prev === 0 ? 0 : Math.round(((now - prev) / prev) * 1000) / 10
+
+  const hourlyRevenueDeltas = hourlyCumulative
+    .slice(0, CURRENT_HOUR + 1)
+    .map((h, i, a) => (i === 0 ? h.cumulativeRevenue : h.cumulativeRevenue - a[i - 1].cumulativeRevenue))
+
+  const expectedAtHour = DAILY_REVENUE_TARGET * ((CURRENT_HOUR + 1) / 24)
+  const paceVsTarget = (todayRevenue / expectedAtHour) * 100
 
   return [
     {
-      label: "Last Hour Revenue",
-      value: `$${Math.round(lastHourRevenue).toLocaleString("en-US")}`,
-      change: 12.4,
-      changeLabel: "vs previous hour",
+      label: "Today's Revenue",
+      value: `$${Math.round(todayRevenue).toLocaleString("en-US")}`,
+      change: pct(todayRevenue, prevDayRevenue),
+      changeLabel: "vs yesterday (same hour)",
       positiveIsGood: true,
-      sparklineData: hourlyCumulative.slice(0, CURRENT_HOUR + 1).map((h, i, a) => {
-        if (i === 0) return h.cumulativeRevenue
-        return h.cumulativeRevenue - a[i - 1].cumulativeRevenue
-      }),
+      sparklineData: hourlyRevenueDeltas,
     },
     {
-      label: "vs Previous Day (same hour)",
-      value: `${prevDayHourDelta > 0 ? "+" : ""}${prevDayHourDelta.toFixed(1)}%`,
-      change: prevDayHourDelta,
+      label: "Today's Orders",
+      value: todayOrders.toLocaleString("en-US"),
+      change: pct(todayOrders, prevDayOrders),
+      changeLabel: "vs yesterday (same hour)",
+      positiveIsGood: true,
+      sparklineData: hourlyRevenueDeltas.map((r) => Math.round(r / todayAov)),
+    },
+    {
+      label: "Today's AOV",
+      value: `$${Math.round(todayAov).toLocaleString("en-US")}`,
+      change: pct(todayAov, prevDayAov),
       changeLabel: "vs yesterday",
       positiveIsGood: true,
       sparklineData: hourlyCumulative
         .slice(0, CURRENT_HOUR + 1)
-        .map((h) => h.cumulativeRevenue - h.prevDayCumulative),
+        .map((_, i) => todayAov + (i - CURRENT_HOUR / 2) * 0.4),
     },
     {
-      label: "Target Achievement",
-      value: `${targetAchievementRate.toFixed(1)}%`,
-      change: targetAchievementRate - 100,
-      changeLabel: "vs hourly target",
+      label: "Pace vs Target",
+      value: `${paceVsTarget.toFixed(1)}%`,
+      change: Math.round((paceVsTarget - 100) * 10) / 10,
+      changeLabel: `as of ${String(CURRENT_HOUR).padStart(2, "0")}:00`,
       positiveIsGood: true,
       sparklineData: hourlyCumulative
         .slice(0, CURRENT_HOUR + 1)
-        .map((h) => (h.cumulativeRevenue / h.target) * 100),
-    },
-    {
-      label: "Active Alerts",
-      value: "2",
-      change: 2,
-      changeLabel: "last hour",
-      positiveIsGood: false,
-      sparklineData: [0, 0, 1, 1, 2, 1, 2, 3, 2, 2],
+        .map((h, i) => {
+          const expected = DAILY_REVENUE_TARGET * ((i + 1) / 24)
+          return (h.cumulativeRevenue / expected) * 100
+        }),
     },
   ]
 }
 
-export const realtimeKpis: KpiItem[] = computeRealtimeKpis()
+export const todayKpis: KpiItem[] = computeTodayKpis()
 
-// ── Live Orders (seed 20 records — more are appended by the UI) ──
+// ── Today: Channel breakdown (as of CURRENT_HOUR) ──
 
-const firstNames = [
-  "James",
-  "Olivia",
-  "Liam",
-  "Emma",
-  "Noah",
-  "Ava",
-  "Ethan",
-  "Sophia",
-  "Mason",
-  "Isabella",
-  "Lucas",
-  "Mia",
-]
-const lastNames = [
-  "Smith",
-  "Johnson",
-  "Williams",
-  "Brown",
-  "Jones",
-  "Garcia",
-  "Miller",
-  "Davis",
-]
-const regions = [
-  "New York",
-  "California",
-  "Texas",
-  "Florida",
-  "Illinois",
-  "Washington",
-]
-const categories: ProductCategory[] = [
-  "Apparel",
-  "Food & Beverage",
-  "Electronics",
-  "Household",
-  "Beauty",
-  "Sports",
-]
-const channels: Channel[] = [
-  "direct",
-  "organic",
-  "paid_search",
-  "social",
-  "email",
-  "affiliate",
+export const todayChannelBreakdown: ChannelBreakdown[] = [
+  { channel: "Organic Search", revenue: 7_840, percentage: 35.2 },
+  { channel: "Direct", revenue: 4_510, percentage: 20.3 },
+  { channel: "Paid Search", revenue: 3_320, percentage: 14.9 },
+  { channel: "Social", revenue: 2_780, percentage: 12.5 },
+  { channel: "Email", revenue: 2_390, percentage: 10.7 },
+  { channel: "Affiliate", revenue: 1_430, percentage: 6.4 },
 ]
 
-function generateSeedLiveOrders(): LiveOrder[] {
-  const orders: LiveOrder[] = []
-  for (let i = 0; i < 20; i++) {
-    const fn = firstNames[srand(0, firstNames.length - 1)]
-    const ln = lastNames[srand(0, lastNames.length - 1)]
-    const category = categories[srand(0, categories.length - 1)]
-    const baseAmount =
-      category === "Electronics"
-        ? 150 + srand(0, 450)
-        : category === "Apparel"
-          ? 40 + srand(0, 160)
-          : 20 + srand(0, 80)
+// ── Today: Top 5 categories (vs 30-day daily average) ──
 
-    // Starting at 14:00 (current time) and stepping backward in seconds
-    const secondsAgo = i * srand(15, 90)
-    const now = new Date(BASE_DATE)
-    now.setHours(CURRENT_HOUR, 0, 0, 0)
-    now.setSeconds(now.getSeconds() - secondsAgo)
-
-    orders.push({
-      orderId: `ORD-${String(100000 + srand(0, 899999))}`,
-      orderedAt: now.toISOString(),
-      customerName: `${fn} ${ln}`,
-      region: regions[srand(0, regions.length - 1)],
-      category,
-      channel: channels[srand(0, channels.length - 1)],
-      amount: baseAmount,
-    })
-  }
-  return orders
-}
-
-export const seedLiveOrders: LiveOrder[] = generateSeedLiveOrders()
-
-/** Order generator used by the pseudo-stream on the UI side (non-seeded) */
-export function generateRandomLiveOrder(): LiveOrder {
-  const pick = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)]
-  const category = pick(categories)
-  const baseAmount =
-    category === "Electronics"
-      ? 150 + Math.floor(Math.random() * 450)
-      : category === "Apparel"
-        ? 40 + Math.floor(Math.random() * 160)
-        : 20 + Math.floor(Math.random() * 80)
-
-  return {
-    orderId: `ORD-${String(100000 + Math.floor(Math.random() * 899999))}`,
-    orderedAt: new Date().toISOString(),
-    customerName: `${pick(firstNames)} ${pick(lastNames)}`,
-    region: pick(regions),
-    category,
-    channel: pick(channels),
-    amount: baseAmount,
-  }
-}
+export const todayCategoryTop5: TodayCategoryItem[] = [
+  { rank: 1, category: "Apparel", revenue: 6_820, orders: 79, vsAverage: 12.8 },
+  { rank: 2, category: "Electronics", revenue: 5_340, orders: 30, vsAverage: 18.4 },
+  { rank: 3, category: "Beauty", revenue: 3_960, orders: 71, vsAverage: -4.2 },
+  { rank: 4, category: "Food & Beverage", revenue: 2_910, orders: 91, vsAverage: 2.1 },
+  { rank: 5, category: "Household", revenue: 2_200, orders: 51, vsAverage: 6.7 },
+]
 
 // ── Alerts ──
 
@@ -465,8 +385,6 @@ export const categoryOptions: { label: string; value: string }[] = [
   { label: "Beauty", value: "Beauty" },
   { label: "Sports", value: "Sports" },
 ]
-
-export const DAILY_REVENUE_TARGET = 32_000
 
 // ── Monthly target / progress (Tab 1: Goal Achievement Card) ──
 
