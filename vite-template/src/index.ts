@@ -30,6 +30,7 @@ AI customization (add only):
   --provider <name>    AI provider name (openai, anthropic, google, mistral, xai, groq, ...)
   --model <id>         Model id. Defaults per provider (e.g. gpt-5.4-mini-2026-03-17, claude-sonnet-4-5).
   --apiKey <key>       API key. Falls back to provider-specific env var if omitted.
+  --env-file <path>    Load env vars from a .env file before invoking AI (existing process.env wins).
   --base-url <url>     Optional OpenAI-compatible endpoint.
 
 Examples:
@@ -37,6 +38,8 @@ Examples:
     --prompt "SaaS MRR/ARR dashboard" --provider openai --apiKey $OPENAI_API_KEY
   npx @squadbase/vite-template add funnel --ui --prompt "..." \\
     --provider anthropic --apiKey $ANTHROPIC_API_KEY --dry-run
+  npx @squadbase/vite-template add kpi-chart-simple --ui \\
+    --prompt "..." --provider openai --env-file ./.env.local
 `.trim();
 
 async function main(): Promise<void> {
@@ -55,6 +58,7 @@ async function main(): Promise<void> {
       model: { type: "string" },
       apiKey: { type: "string" },
       "base-url": { type: "string" },
+      "env-file": { type: "string" },
     },
     allowPositionals: true,
     strict: true,
@@ -87,6 +91,27 @@ async function main(): Promise<void> {
       process.exit(1);
     }
     const source = values.ui ? "ui-templates" : "templates";
+
+    const envFile = values["env-file"];
+    if (envFile !== undefined) {
+      if (!values.prompt) {
+        log("red", "--env-file requires --prompt (it only affects AI customization).");
+        process.exit(1);
+      }
+      if (typeof process.loadEnvFile !== "function") {
+        log("red", "--env-file requires Node.js 20.12.0 or later (process.loadEnvFile).");
+        log("dim", `Current version: ${process.version}`);
+        process.exit(1);
+      }
+      try {
+        process.loadEnvFile(envFile);
+      } catch (err) {
+        const reason = err instanceof Error ? err.message : String(err);
+        log("red", `Failed to load env file "${envFile}": ${reason}`);
+        process.exit(1);
+      }
+    }
+
     const ai = values.prompt
       ? (() => {
           if (!values.provider) {

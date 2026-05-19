@@ -3,6 +3,7 @@ interface ProviderEntry {
   factory: string;
   defaultModel: string;
   envKey: string;
+  envKeyAliases?: string[];
 }
 
 const PROVIDER_MAP: Record<string, ProviderEntry> = {
@@ -21,8 +22,9 @@ const PROVIDER_MAP: Record<string, ProviderEntry> = {
   google: {
     pkg: "@ai-sdk/google",
     factory: "createGoogleGenerativeAI",
-    defaultModel: "gemini-2.0-flash",
+    defaultModel: "gemini-3-flash-preview",
     envKey: "GOOGLE_GENERATIVE_AI_API_KEY",
+    envKeyAliases: ["GOOGLE_AI_API_KEY"],
   },
   mistral: {
     pkg: "@ai-sdk/mistral",
@@ -73,10 +75,14 @@ export async function resolveModel(opts: ResolveModelOptions): Promise<ResolvedM
       envKey: `${normalized.toUpperCase()}_API_KEY`,
     } satisfies ProviderEntry);
 
-  const apiKey = opts.apiKey ?? process.env[entry.envKey];
+  const apiKey =
+    opts.apiKey ??
+    process.env[entry.envKey] ??
+    entry.envKeyAliases?.map((k) => process.env[k]).find((v): v is string => Boolean(v));
   if (!apiKey) {
+    const envKeyList = [entry.envKey, ...(entry.envKeyAliases ?? [])].join(" or ");
     throw new Error(
-      `Missing API key for provider "${opts.provider}". Pass --apiKey, or set ${entry.envKey}.`,
+      `Missing API key for provider "${opts.provider}". Pass --apiKey, or set ${envKeyList}.`,
     );
   }
 
@@ -108,8 +114,17 @@ export async function resolveModel(opts: ResolveModelOptions): Promise<ResolvedM
     );
   }
 
-  const providerInstance = factory({ apiKey, baseURL: opts.baseUrl });
-  const model = providerInstance(modelId);
+  const providerInstance = factory({ apiKey, baseURL: opts.baseUrl }) as unknown as (
+    modelId: string,
+    settings?: Record<string, unknown>,
+  ) => unknown;
+  const modelSettings = normalized === "google"
+    // Gemini "thinking" tokens compete with the maxTokens budget, often
+    // truncating the structured-output JSON below ~800 completion tokens.
+    // We do not need chain-of-thought to emit a single file, so disable it.
+    ? { thinkingConfig: { thinkingBudget: 0, includeThoughts: false } }
+    : undefined;
+  const model = providerInstance(modelId, modelSettings);
 
   return { model, providerName: normalized, modelId };
 }

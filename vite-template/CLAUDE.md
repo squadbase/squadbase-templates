@@ -136,8 +136,9 @@ npx @squadbase/vite-template add kpi-chart-simple --ui \
 |---|---|
 | `--prompt <text>` | カスタマイズ意図。**未指定なら AI を起動せず従来挙動**。 |
 | `--provider <name>` | `openai` / `anthropic` / `google` / `mistral` / `xai` / `groq` 等。`open-ai` 表記も正規化。 |
-| `--model <id>` | モデル ID。provider ごとにデフォルトあり (`gpt-5.4-mini-2026-03-17`, `claude-sonnet-4-5`, `gemini-2.0-flash`, …)。 |
-| `--apiKey <key>` | 省略時は `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` 等の環境変数 fallback。 |
+| `--model <id>` | モデル ID。provider ごとにデフォルトあり (`gpt-5.4-mini-2026-03-17`, `claude-sonnet-4-5`, `gemini-3-flash-preview`, …)。 |
+| `--apiKey <key>` | 省略時は `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GOOGLE_GENERATIVE_AI_API_KEY` (alias: `GOOGLE_AI_API_KEY`) 等の環境変数 fallback。 |
+| `--env-file <path>` | 指定した .env ファイルを読み込んでから AI を起動。既存 `process.env` を優先 (`.env` は補完のみ)。Node.js 20.12+ 必須。`--prompt` 併用必須。dotenv 等の追加依存なし (Node 標準 `process.loadEnvFile` を使用、`${VAR}` 展開非対応)。 |
 | `--base-url <url>` | OpenAI 互換エンドポイント (任意)。 |
 | `--dry-run` | AI 出力を unified diff で表示するだけ、disk 書き込みなし。 |
 | `--json` | 結果 (edits, unchanged, skipped, notes) を JSON で stdout 出力。エージェント呼び出し用。 |
