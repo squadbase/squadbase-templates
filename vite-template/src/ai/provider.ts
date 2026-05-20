@@ -22,7 +22,7 @@ const PROVIDER_MAP: Record<string, ProviderEntry> = {
   google: {
     pkg: "@ai-sdk/google",
     factory: "createGoogleGenerativeAI",
-    defaultModel: "gemini-3-flash-preview",
+    defaultModel: "gemini-3.5-flash",
     envKey: "GOOGLE_GENERATIVE_AI_API_KEY",
     envKeyAliases: ["GOOGLE_AI_API_KEY"],
   },

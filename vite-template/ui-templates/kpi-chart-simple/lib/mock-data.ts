@@ -39,17 +39,11 @@ function buildSparkline(values: number[], length = 12): number[] {
   return series.slice(-length)
 }
 
-const totalRevenue = trendSeries.reduce((s, p) => s + p.revenue, 0)
-const totalOrders = trendSeries.reduce((s, p) => s + p.orders, 0)
-const aov = totalRevenue / totalOrders
-const activeUsers = Math.round(totalOrders * 2.4)
-const conversionRate = (totalOrders / activeUsers) * 100
-
 export const headerKpis: KpiItem[] = [
   {
     id: "total-revenue",
     label: "Metric 1",
-    value: `$${(totalRevenue / 1_000_000).toFixed(2)}M`,
+    value: "$2.41M",
     change: 12.4,
     changeLabel: "",
     positiveIsGood: true,
@@ -58,7 +52,7 @@ export const headerKpis: KpiItem[] = [
   {
     id: "active-users",
     label: "Metric 2",
-    value: activeUsers.toLocaleString("en-US"),
+    value: "38,200",
     change: 8.1,
     changeLabel: "",
     positiveIsGood: true,
@@ -69,7 +63,7 @@ export const headerKpis: KpiItem[] = [
   {
     id: "conversion-rate",
     label: "Metric 3",
-    value: `${conversionRate.toFixed(2)}%`,
+    value: "3.42%",
     change: -0.6,
     changeLabel: "",
     positiveIsGood: true,
@@ -80,7 +74,7 @@ export const headerKpis: KpiItem[] = [
   {
     id: "aov",
     label: "Metric 4",
-    value: `$${aov.toFixed(2)}`,
+    value: "$78.40",
     change: 3.7,
     changeLabel: "",
     positiveIsGood: true,

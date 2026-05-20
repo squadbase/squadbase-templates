@@ -3,9 +3,10 @@ import { EChart } from "@/components/data/echart"
 import {
   DashboardCard,
   DashboardCardHeader,
+  DashboardCardTitle,
+  DashboardCardDescription,
   DashboardCardContent,
 } from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
 import { formatNumber, getDualAxisGrid } from "./chart-helpers"
 import type { ComparisonPoint } from "@/types/ui-template-kpi-chart-advanced"
 
@@ -59,9 +60,11 @@ export function ComparisonChart({ data }: ComparisonChartProps) {
   return (
     <DashboardCard>
       <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-40" />
-          <Skeleton className="h-3.5 w-56" />
+        <div className="space-y-1">
+          <DashboardCardTitle>Comparison</DashboardCardTitle>
+          <DashboardCardDescription>
+            Current vs previous period
+          </DashboardCardDescription>
         </div>
       </DashboardCardHeader>
       <DashboardCardContent>

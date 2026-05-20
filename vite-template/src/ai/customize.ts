@@ -30,12 +30,18 @@ export interface CustomizeResult {
   edits: CustomizeEdit[];
   unchanged: string[];
   skipped: string[];
+  failedVerification: string[];
   notes?: string;
   provider: string;
   model: string;
 }
 
-type AIRawEdit = { path: string; content: string; rationale: string };
+type AIRawEdit = {
+  path: string;
+  old_content: string;
+  new_content: string;
+  rationale: string;
+};
 type AIResponse = { edits: AIRawEdit[]; notes?: string };
 
 async function importAI(): Promise<{
@@ -69,10 +75,11 @@ function buildSchema(allowedPaths: string[]): unknown {
         items: {
           type: "object",
           additionalProperties: false,
-          required: ["path", "content", "rationale"],
+          required: ["path", "old_content", "new_content", "rationale"],
           properties: {
             path: { type: "string", enum: allowedPaths },
-            content: { type: "string" },
+            old_content: { type: "string" },
+            new_content: { type: "string" },
             rationale: { type: "string" },
           },
         },
@@ -82,47 +89,11 @@ function buildSchema(allowedPaths: string[]): unknown {
   };
 }
 
-const ANY_IMPORT_STATEMENT_RE = /^\s*import\b[^;]*?;?\s*$/gm;
-
-function extractImportLines(source: string): string[] {
-  const out: string[] = [];
-  ANY_IMPORT_STATEMENT_RE.lastIndex = 0;
-  let m: RegExpExecArray | null;
-  while ((m = ANY_IMPORT_STATEMENT_RE.exec(source))) {
-    const line = m[0].trim();
-    if (line.startsWith("import")) out.push(line);
-  }
-  return out;
-}
-
-function buildImportCeilingBlock(files: Map<string, string>): string {
-  const parts: string[] = [];
-  parts.push(`<IMPORT_CEILING>`);
-  parts.push(`These are EVERY import statement currently in the input files. They define the absolute ceiling of what your output may use. You may remove entries that go unused, but you may NOT add a single new \`import\`.`);
-  parts.push(``);
-  for (const [path, content] of files) {
-    const lines = extractImportLines(content);
-    parts.push(`# ${path}`);
-    if (lines.length === 0) {
-      parts.push(`(no imports — your output must also have no imports in this file)`);
-    } else {
-      for (const line of lines) parts.push(line);
-    }
-    parts.push(``);
-  }
-  parts.push(`Anything outside this list — even a \`type\`-only import, even from a package that is installed — is forbidden. If the brief needs something you cannot express within these imports, build it from raw HTML + Tailwind classes instead.`);
-  parts.push(`</IMPORT_CEILING>`);
-  return parts.join("\n");
-}
-
 function buildUserPrompt(
   intent: string,
   files: Map<string, string>,
-  importCeiling: string,
 ): string {
   const parts: string[] = [];
-  parts.push(importCeiling);
-  parts.push("");
   parts.push(`<USER_INTENT>`);
   parts.push(intent);
   parts.push(`</USER_INTENT>`);
@@ -159,6 +130,23 @@ function readInputFiles(
   return files;
 }
 
+function applyEditsToFile(before: string, edits: AIRawEdit[]): string {
+  let text = before;
+  for (const edit of edits) {
+    const idx = text.indexOf(edit.old_content);
+    if (idx === -1) {
+      throw new Error(`old_content not found in file:\n${edit.old_content}`);
+    }
+    if (text.indexOf(edit.old_content, idx + 1) !== -1) {
+      throw new Error(
+        `old_content is not unique (matched more than once); include more surrounding context:\n${edit.old_content}`,
+      );
+    }
+    text = text.slice(0, idx) + edit.new_content + text.slice(idx + edit.old_content.length);
+  }
+  return text;
+}
+
 export async function customizeWithAI(
   projectRoot: string,
   manifest: TemplateManifest,
@@ -186,13 +174,8 @@ export async function customizeWithAI(
     baseUrl: options.baseUrl,
   });
 
-  const importCeiling = buildImportCeilingBlock(inputFiles);
-  if (process.env.SQUADBASE_AI_DEBUG && !options.json) {
-    log("dim", `[debug] import ceiling: ${importCeiling.length} chars`);
-  }
-
   const schema = jsonSchema(buildSchema(allowedPaths));
-  const userPrompt = buildUserPrompt(options.prompt, inputFiles, importCeiling);
+  const userPrompt = buildUserPrompt(options.prompt, inputFiles);
 
   let object: AIResponse;
   try {
@@ -235,11 +218,6 @@ export async function customizeWithAI(
     throw new Error(parts.join("\n"));
   }
 
-  const allowedSet = new Set(allowedPaths);
-  const editedPaths = new Set<string>();
-  const edits: CustomizeEdit[] = [];
-  const skipped: string[] = [];
-
   let editsArray: AIRawEdit[] = [];
   const rawEdits: unknown = object.edits;
   if (typeof rawEdits === "string") {
@@ -260,36 +238,64 @@ export async function customizeWithAI(
     throw new Error(`AI returned \`edits\` as ${typeof rawEdits}, expected array.`);
   }
 
+  const allowedSet = new Set(allowedPaths);
+  const skipped: string[] = [];
+  const editsByPath = new Map<string, AIRawEdit[]>();
   for (const raw of editsArray) {
     if (!allowedSet.has(raw.path)) {
       skipped.push(raw.path);
       continue;
     }
-    if (editedPaths.has(raw.path)) {
-      skipped.push(raw.path);
-      continue;
-    }
-    editedPaths.add(raw.path);
-    const before = inputFiles.get(raw.path) ?? "";
-    const after = raw.content;
-    const { added, removed } = diffStats(before, after);
-    edits.push({
-      path: raw.path,
-      rationale: raw.rationale,
-      before,
-      after,
-      added,
-      removed,
-    });
+    const arr = editsByPath.get(raw.path) ?? [];
+    arr.push(raw);
+    editsByPath.set(raw.path, arr);
   }
 
-  const unchanged = allowedPaths.filter((p) => !editedPaths.has(p));
+  const edits: CustomizeEdit[] = [];
+  const failedVerification: string[] = [];
+
+  for (const [path, rawForPath] of editsByPath) {
+    const before = inputFiles.get(path) ?? "";
+    try {
+      const after = applyEditsToFile(before, rawForPath);
+      if (after === before) continue;
+      const { added, removed } = diffStats(before, after);
+      const rationale = rawForPath
+        .map((e) => e.rationale)
+        .filter((s) => s && s.trim().length > 0)
+        .join("; ");
+      edits.push({
+        path,
+        rationale,
+        before,
+        after,
+        added,
+        removed,
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      failedVerification.push(path);
+      if (!options.json) {
+        log("red", `\n${path}: edit verification failed`);
+        log("dim", `  ${msg.split("\n")[0]}`);
+        if (process.env.SQUADBASE_AI_DEBUG) {
+          log("dim", msg);
+        }
+      }
+    }
+  }
+
+  const editedPaths = new Set(edits.map((e) => e.path));
+  const failedSet = new Set(failedVerification);
+  const unchanged = allowedPaths.filter(
+    (p) => !editedPaths.has(p) && !failedSet.has(p),
+  );
 
   if (options.dryRun) {
     if (!options.json) {
       for (const edit of edits) {
         log("cyan", `\n${edit.path}  (+${edit.added} -${edit.removed})`);
-        log("dim", `  ${edit.rationale}`);
+        if (edit.rationale) log("dim", `  ${edit.rationale}`);
         console.log(unifiedDiff(edit.before, edit.after, edit.path));
       }
     }
@@ -306,6 +312,7 @@ export async function customizeWithAI(
     edits,
     unchanged,
     skipped,
+    failedVerification,
     notes: object.notes,
     provider: providerName,
     model: modelId,

@@ -28,20 +28,20 @@ export function deriveInsights(): InsightItem[] {
   return [
     {
       id: "growth-direction",
-      label: "",
-      text: "",
+      label: "Growth",
+      text: "Overall performance is trending up versus the previous period.",
       sentiment: overallGrowth > 8 ? "positive" : overallGrowth > 2 ? "neutral" : "attention",
     },
     {
       id: "channel-mix",
-      label: "",
-      text: "",
+      label: "Mix",
+      text: "A single segment drives the largest share of the total.",
       sentiment: leaderShare > 45 ? "attention" : "neutral",
     },
     {
       id: "campaign-lever",
-      label: "",
-      text: "",
+      label: "Momentum",
+      text: "Recent activity points to a positive shift in the trend.",
       sentiment: trendDelta > 5 ? "positive" : trendDelta < -5 ? "attention" : "neutral",
     },
   ]

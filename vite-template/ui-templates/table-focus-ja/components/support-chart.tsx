@@ -3,9 +3,10 @@ import { EChart } from "@/components/data/echart"
 import {
   DashboardCard,
   DashboardCardHeader,
+  DashboardCardTitle,
+  DashboardCardDescription,
   DashboardCardContent,
 } from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
 import { formatNumber, getBaseGrid } from "./chart-helpers"
 import type { TrendPoint } from "@/types/ui-template-table-focus"
 
@@ -40,9 +41,11 @@ export function SupportChart({ data }: SupportChartProps) {
   return (
     <DashboardCard>
       <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-3.5 w-48" />
+        <div className="space-y-1">
+          <DashboardCardTitle>Trend</DashboardCardTitle>
+          <DashboardCardDescription>
+            Values over the selected period
+          </DashboardCardDescription>
         </div>
       </DashboardCardHeader>
       <DashboardCardContent>

@@ -4,9 +4,12 @@ import { DataTablePreset } from "@/components/data/data-table"
 import {
   DashboardCard,
   DashboardCardHeader,
+  DashboardCardTitle,
+  DashboardCardDescription,
   DashboardCardContent,
 } from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Placeholder } from "@/components/common/placeholder"
+import { formatCurrency, formatPercent } from "./chart-helpers"
 import type { DetailRow } from "@/types/ui-template-table-focus"
 
 interface DetailTableProps {
@@ -19,54 +22,56 @@ export function DetailTable({ data }: DetailTableProps) {
       {
         accessorKey: "name",
         header: "Column 1",
-        cell: () => <Skeleton className="h-4 w-32" />,
       },
       {
         accessorKey: "owner",
         header: "Column 2",
-        cell: () => <Skeleton className="h-4 w-20" />,
       },
       {
         accessorKey: "category",
         header: "Column 3",
-        cell: () => <Skeleton className="h-5 w-20 rounded-full" />,
       },
       {
         accessorKey: "status",
         header: "Column 4",
-        cell: () => <Skeleton className="h-5 w-16 rounded-full" />,
       },
       {
         accessorKey: "revenue",
         header: "Column 5",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-16" />
+            <Placeholder>
+              {formatCurrency(row.original.revenue, { short: true })}
+            </Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "units",
         header: "Column 6",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-12" />
+            <Placeholder>
+              {row.original.units.toLocaleString("en-US")}
+            </Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "margin",
         header: "Column 7",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-10" />
+            <Placeholder>{formatPercent(row.original.margin)}</Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "updated",
         header: "Column 8",
-        cell: () => <Skeleton className="h-3 w-20" />,
+        cell: ({ row }) => (
+          <Placeholder className="text-xs">{row.original.updated}</Placeholder>
+        ),
       },
     ],
     [],
@@ -75,9 +80,11 @@ export function DetailTable({ data }: DetailTableProps) {
   return (
     <DashboardCard>
       <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-3.5 w-56" />
+        <div className="space-y-1">
+          <DashboardCardTitle>Records</DashboardCardTitle>
+          <DashboardCardDescription>
+            Detailed rows for the current filter
+          </DashboardCardDescription>
         </div>
       </DashboardCardHeader>
       <DashboardCardContent>

@@ -3,9 +3,10 @@ import { EChart } from "@/components/data/echart"
 import {
   DashboardCard,
   DashboardCardHeader,
+  DashboardCardTitle,
+  DashboardCardDescription,
   DashboardCardContent,
 } from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
 import type { BreakdownSlice } from "@/types/ui-template-kpi-chart-advanced"
 
 interface BreakdownChartProps {
@@ -31,9 +32,9 @@ export function BreakdownChart({ data }: BreakdownChartProps) {
   return (
     <DashboardCard>
       <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-3.5 w-48" />
+        <div className="space-y-1">
+          <DashboardCardTitle>Breakdown</DashboardCardTitle>
+          <DashboardCardDescription>Share by segment</DashboardCardDescription>
         </div>
       </DashboardCardHeader>
       <DashboardCardContent>

@@ -4,9 +4,10 @@ import { EChart } from "@/components/data/echart"
 import {
   DashboardCard,
   DashboardCardHeader,
+  DashboardCardTitle,
+  DashboardCardDescription,
   DashboardCardContent,
 } from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
 import { KpiCard } from "./kpi-card"
 import { formatNumber, getBaseGrid } from "./chart-helpers"
 import {
@@ -17,13 +18,21 @@ import {
 
 const kpiIcons = [DollarSign, ShoppingCart, Users, Activity] as const
 
-function ChartCard({ children }: { children: React.ReactNode }) {
+function ChartCard({
+  title,
+  description,
+  children,
+}: {
+  title: string
+  description: string
+  children: React.ReactNode
+}) {
   return (
     <DashboardCard>
       <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-3.5 w-48" />
+        <div className="space-y-1">
+          <DashboardCardTitle>{title}</DashboardCardTitle>
+          <DashboardCardDescription>{description}</DashboardCardDescription>
         </div>
       </DashboardCardHeader>
       <DashboardCardContent>{children}</DashboardCardContent>
@@ -79,11 +88,11 @@ export function OverviewTab() {
 
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <ChartCard>
+          <ChartCard title="Trend" description="Values over the selected period">
             <EChart option={trendOption} height="320px" />
           </ChartCard>
         </div>
-        <ChartCard>
+        <ChartCard title="Breakdown" description="Share by category">
           <EChart option={categoryOption} height="320px" />
         </ChartCard>
       </div>

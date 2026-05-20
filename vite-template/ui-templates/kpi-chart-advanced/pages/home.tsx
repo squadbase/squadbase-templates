@@ -12,7 +12,6 @@ import {
   PageShellSummary,
   PageShellContent,
 } from "@/components/common/page-shell"
-import { Skeleton } from "@/components/ui/skeleton"
 import { InsightCards } from "@/components/ui-template-kpi-chart-advanced/insight-cards"
 import { HeroKpiCard } from "@/components/ui-template-kpi-chart-advanced/hero-kpi-card"
 import { KpiCard } from "@/components/ui-template-kpi-chart-advanced/kpi-card"
@@ -47,11 +46,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>
-            <Skeleton className="h-7 w-64" />
-          </PageShellTitle>
+          <PageShellTitle>Performance dashboard</PageShellTitle>
           <PageShellDescription>
-            <Skeleton className="mt-2 h-4 w-96" />
+            Headline KPIs, comparisons, and detail for the selected period.
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd>

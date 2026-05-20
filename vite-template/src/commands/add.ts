@@ -60,6 +60,7 @@ export async function addTemplate(templateName: string, options: AddOptions): Pr
             })),
             unchanged: result.unchanged,
             skipped: result.skipped,
+            failedVerification: result.failedVerification,
             notes: result.notes,
             dryRun: options.dryRun,
           },
@@ -71,9 +72,12 @@ export async function addTemplate(templateName: string, options: AddOptions): Pr
     }
 
     log("green", `\nAI customization complete (${result.provider}:${result.model})`);
-    log("dim", `  edited: ${result.edits.length}, unchanged: ${result.unchanged.length}, skipped: ${result.skipped.length}`);
+    log("dim", `  edited: ${result.edits.length}, unchanged: ${result.unchanged.length}, skipped: ${result.skipped.length}, failed: ${result.failedVerification.length}`);
     if (result.skipped.length > 0) {
       log("yellow", `  skipped paths (not in manifest): ${result.skipped.join(", ")}`);
+    }
+    if (result.failedVerification.length > 0) {
+      log("yellow", `  failed verification (left unchanged): ${result.failedVerification.join(", ")}`);
     }
     if (result.notes) {
       log("cyan", `\nNotes from AI:`);

@@ -62,15 +62,11 @@ function spark(values: number[], length = 12): number[] {
   return out.slice(-length)
 }
 
-const orders = Math.round(totalRev / 78)
-const users = Math.round(orders * 2.4)
-const aov = totalRev / orders
-
 export const overviewKpis: KpiItem[] = [
   {
     id: "revenue",
     label: "Metric 1",
-    value: `$${(totalRev / 1_000_000).toFixed(2)}M`,
+    value: "$1.32M",
     change: 12.4,
     changeLabel: "",
     positiveIsGood: true,
@@ -79,7 +75,7 @@ export const overviewKpis: KpiItem[] = [
   {
     id: "orders",
     label: "Metric 2",
-    value: orders.toLocaleString("en-US"),
+    value: "16,900",
     change: 9.6,
     changeLabel: "",
     positiveIsGood: true,
@@ -88,7 +84,7 @@ export const overviewKpis: KpiItem[] = [
   {
     id: "users",
     label: "Metric 3",
-    value: users.toLocaleString("en-US"),
+    value: "40,600",
     change: 6.8,
     changeLabel: "",
     positiveIsGood: true,
@@ -97,7 +93,7 @@ export const overviewKpis: KpiItem[] = [
   {
     id: "aov",
     label: "Metric 4",
-    value: `$${aov.toFixed(2)}`,
+    value: "$78.20",
     change: 3.1,
     changeLabel: "",
     positiveIsGood: true,

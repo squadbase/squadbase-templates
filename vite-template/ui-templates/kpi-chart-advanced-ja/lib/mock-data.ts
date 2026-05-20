@@ -51,12 +51,6 @@ export const breakdownSlices: BreakdownSlice[] = [
   { segment: "Segment 5", value: 132_000 },
 ]
 
-const totalRevenue = trendSeries.reduce((s, p) => s + p.value, 0)
-const sessions = Math.round(totalRevenue / 6.4)
-const users = Math.round(sessions * 0.62)
-const conversions = Math.round(users * 0.0418)
-const aov = totalRevenue / Math.max(1, conversions)
-
 function buildSparkline(values: number[], length = 12): number[] {
   const step = Math.max(1, Math.floor(values.length / length))
   const out: number[] = []
@@ -68,7 +62,7 @@ export const headerKpis: KpiItem[] = [
   {
     id: "revenue",
     label: "Metric 1",
-    value: `$${(totalRevenue / 1_000_000).toFixed(2)}M`,
+    value: "$1.04M",
     change: 14.2,
     changeLabel: "",
     positiveIsGood: true,
@@ -77,7 +71,7 @@ export const headerKpis: KpiItem[] = [
   {
     id: "users",
     label: "Metric 2",
-    value: users.toLocaleString("en-US"),
+    value: "82,400",
     change: 9.8,
     changeLabel: "",
     positiveIsGood: true,
@@ -86,7 +80,7 @@ export const headerKpis: KpiItem[] = [
   {
     id: "sessions",
     label: "Metric 3",
-    value: sessions.toLocaleString("en-US"),
+    value: "132,900",
     change: 6.5,
     changeLabel: "",
     positiveIsGood: true,
@@ -95,7 +89,7 @@ export const headerKpis: KpiItem[] = [
   {
     id: "conversion",
     label: "Metric 4",
-    value: `${((conversions / users) * 100).toFixed(2)}%`,
+    value: "4.18%",
     change: -0.4,
     changeLabel: "",
     positiveIsGood: true,
@@ -106,7 +100,7 @@ export const headerKpis: KpiItem[] = [
   {
     id: "aov",
     label: "Metric 5",
-    value: `$${aov.toFixed(2)}`,
+    value: "$12.62",
     change: 5.1,
     changeLabel: "",
     positiveIsGood: true,

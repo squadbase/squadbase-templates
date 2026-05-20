@@ -6,6 +6,8 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   DashboardCard,
   DashboardCardHeader,
+  DashboardCardTitle,
+  DashboardCardDescription,
   DashboardCardAction,
   DashboardCardContent,
 } from "@/components/common/dashboard-card"
@@ -18,7 +20,7 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Placeholder } from "@/components/common/placeholder"
 import { FunnelChart } from "@/components/ui-template-funnel/funnel-chart"
 import { StageTable } from "@/components/ui-template-funnel/stage-table"
 import {
@@ -41,11 +43,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>
-            <Skeleton className="h-7 w-64" />
-          </PageShellTitle>
+          <PageShellTitle>Conversion funnel</PageShellTitle>
           <PageShellDescription>
-            <Skeleton className="mt-2 h-4 w-96" />
+            Stage-by-stage conversion for the selected period.
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd className="flex-row items-center gap-2">
@@ -70,15 +70,27 @@ export default function HomePage() {
       <PageShellContent className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <SummaryCard
+            label="Entered"
+            value="124,500"
+            sub="Total entering the funnel"
             icon={<Users className="size-4 text-muted-foreground" />}
           />
           <SummaryCard
+            label="Converted"
+            value="1,186"
+            sub="Completed conversions"
             icon={<Target className="size-4 text-muted-foreground" />}
           />
           <SummaryCard
+            label="Best step"
+            value="31.9%"
+            sub="Highest step conversion"
             icon={<TrendingUp className="size-4 text-emerald-600" />}
           />
           <SummaryCard
+            label="Biggest drop"
+            value="68.2%"
+            sub="Largest step drop-off"
             icon={<TrendingDown className="size-4 text-rose-600" />}
           />
         </div>
@@ -89,9 +101,11 @@ export default function HomePage() {
           </div>
           <DashboardCard>
             <DashboardCardHeader>
-              <div className="space-y-2">
-                <Skeleton className="h-5 w-24" />
-                <Skeleton className="h-3.5 w-48" />
+              <div className="space-y-1">
+                <DashboardCardTitle>Stages</DashboardCardTitle>
+                <DashboardCardDescription>
+                  Conversion by stage
+                </DashboardCardDescription>
               </div>
             </DashboardCardHeader>
             <DashboardCardContent>
@@ -107,19 +121,24 @@ export default function HomePage() {
 }
 
 interface SummaryCardProps {
+  label: string
+  value: string
+  sub: string
   icon: React.ReactNode
 }
 
-function SummaryCard({ icon }: SummaryCardProps) {
+function SummaryCard({ label, value, sub, icon }: SummaryCardProps) {
   return (
     <DashboardCard>
       <DashboardCardHeader>
-        <Skeleton className="h-4 w-28" />
+        <DashboardCardTitle className="text-muted-foreground">
+          {label}
+        </DashboardCardTitle>
         <DashboardCardAction>{icon}</DashboardCardAction>
       </DashboardCardHeader>
       <DashboardCardContent>
-        <Skeleton className="h-8 w-24" />
-        <Skeleton className="mt-2 h-3 w-40" />
+        <Placeholder className="text-2xl font-bold">{value}</Placeholder>
+        <p className="mt-2 text-xs text-muted-foreground">{sub}</p>
       </DashboardCardContent>
     </DashboardCard>
   )
@@ -138,14 +157,16 @@ function StagesSidebar() {
                 <span className="text-xs font-semibold text-muted-foreground tabular-nums">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <Skeleton className="h-4 w-20" />
+                <span className="truncate text-sm font-medium">{s.stage}</span>
               </div>
-              <Skeleton className="h-4 w-16" />
+              <Placeholder className="text-sm font-medium">
+                {s.value.toLocaleString("en-US")}
+              </Placeholder>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <Skeleton className="h-3 w-24" />
+            <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground">
+              <span>Conversion rate</span>
               <div className="flex justify-end">
-                <Skeleton className="h-3 w-20" />
+                <Placeholder>{`${s.conversionRate.toFixed(1)}%`}</Placeholder>
               </div>
             </div>
             {prev && (

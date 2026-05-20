@@ -7,9 +7,10 @@ import {
 import {
   DashboardCard,
   DashboardCardHeader,
+  DashboardCardTitle,
+  DashboardCardDescription,
   DashboardCardContent,
 } from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
 import type { FunnelStage } from "@/types/ui-template-funnel"
 
 interface FunnelChartProps {
@@ -92,9 +93,11 @@ export function FunnelChart({
   return (
     <DashboardCard>
       <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-40" />
-          <Skeleton className="h-3.5 w-56" />
+        <div className="space-y-1">
+          <DashboardCardTitle>Conversion funnel</DashboardCardTitle>
+          <DashboardCardDescription>
+            Stage-by-stage conversion
+          </DashboardCardDescription>
         </div>
       </DashboardCardHeader>
       <DashboardCardContent>

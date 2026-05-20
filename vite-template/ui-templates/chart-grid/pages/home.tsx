@@ -11,7 +11,6 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
-import { Skeleton } from "@/components/ui/skeleton"
 import {
   AreaChart,
   LineChart,
@@ -52,11 +51,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>
-            <Skeleton className="h-7 w-64" />
-          </PageShellTitle>
+          <PageShellTitle>Charts overview</PageShellTitle>
           <PageShellDescription>
-            <Skeleton className="mt-2 h-4 w-96" />
+            A grid of charts for the selected period.
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd className="flex-row items-center gap-3">

@@ -6,6 +6,8 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   DashboardCard,
   DashboardCardHeader,
+  DashboardCardTitle,
+  DashboardCardDescription,
   DashboardCardContent,
 } from "@/components/common/dashboard-card"
 import {
@@ -17,7 +19,7 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Placeholder } from "@/components/common/placeholder"
 import { DetailTable } from "@/components/ui-template-table-focus/detail-table"
 import { SupportChart } from "@/components/ui-template-table-focus/support-chart"
 import {
@@ -46,11 +48,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>
-            <Skeleton className="h-7 w-64" />
-          </PageShellTitle>
+          <PageShellTitle>Records</PageShellTitle>
           <PageShellDescription>
-            <Skeleton className="mt-2 h-4 w-96" />
+            Browse, filter, and search the full record list.
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd className="flex-row items-center gap-2">
@@ -83,7 +83,9 @@ export default function HomePage() {
             <ToggleGroupItem value="paused">Option B</ToggleGroupItem>
             <ToggleGroupItem value="draft">Option C</ToggleGroupItem>
           </ToggleGroup>
-          <Skeleton className="h-3 w-24" />
+          <span className="text-xs text-muted-foreground">
+            {filtered.length} results
+          </span>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3">
@@ -94,9 +96,11 @@ export default function HomePage() {
             <SupportChart data={trendSeries} />
             <DashboardCard>
               <DashboardCardHeader>
-                <div className="space-y-2">
-                  <Skeleton className="h-5 w-32" />
-                  <Skeleton className="h-3.5 w-48" />
+                <div className="space-y-1">
+                  <DashboardCardTitle>By segment</DashboardCardTitle>
+                  <DashboardCardDescription>
+                    Share of total
+                  </DashboardCardDescription>
                 </div>
               </DashboardCardHeader>
               <DashboardCardContent>
@@ -104,8 +108,10 @@ export default function HomePage() {
                   {summaryRows.map((row) => (
                     <div key={row.segment} className="space-y-1.5">
                       <div className="flex items-baseline justify-between">
-                        <Skeleton className="h-4 w-24" />
-                        <Skeleton className="h-4 w-16" />
+                        <span className="text-sm font-medium">{row.segment}</span>
+                        <Placeholder className="text-sm">
+                          {row.revenue.toLocaleString("en-US")}
+                        </Placeholder>
                       </div>
                       <div className="h-1.5 overflow-hidden rounded-full bg-muted">
                         <div

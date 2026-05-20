@@ -122,7 +122,7 @@ EN/JA は `<name>` と `<name>-ja` のペアで、`files[].dest` は EN/JA で�
 
 ## AI カスタマイズ (`add --prompt`)
 
-`add` コマンドに `--prompt` を渡すと、テンプレート適用直後に **Vercel AI SDK 経由で AI が manifest.files の中身を書き換える**。コーディングエージェントが Read/Edit を多段で繰り返すよりはるかに高速。
+`add` コマンドに `--prompt` を渡すと、テンプレート適用直後に **Vercel AI SDK 経由で AI が画面コピーとモックデータ内のテキストを最小限ドメインに寄せる (見た目アライン)**。完成済みテンプレの構造・データ・ロジックはそのままに、表示文言だけを軽く相対替えする軽量パスで、コーディングエージェントが Read/Edit を多段で繰り返すよりはるかに高速。
 
 ```bash
 npx @squadbase/vite-template add kpi-chart-simple --ui \
@@ -136,23 +136,26 @@ npx @squadbase/vite-template add kpi-chart-simple --ui \
 |---|---|
 | `--prompt <text>` | カスタマイズ意図。**未指定なら AI を起動せず従来挙動**。 |
 | `--provider <name>` | `openai` / `anthropic` / `google` / `mistral` / `xai` / `groq` 等。`open-ai` 表記も正規化。 |
-| `--model <id>` | モデル ID。provider ごとにデフォルトあり (`gpt-5.4-mini-2026-03-17`, `claude-sonnet-4-5`, `gemini-3-flash-preview`, …)。 |
+| `--model <id>` | モデル ID。provider ごとにデフォルトあり (`gpt-5.4-mini-2026-03-17`, `claude-sonnet-4-5`, `gemini-3.5-flash`, …)。 |
 | `--apiKey <key>` | 省略時は `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GOOGLE_GENERATIVE_AI_API_KEY` (alias: `GOOGLE_AI_API_KEY`) 等の環境変数 fallback。 |
 | `--env-file <path>` | 指定した .env ファイルを読み込んでから AI を起動。既存 `process.env` を優先 (`.env` は補完のみ)。Node.js 20.12+ 必須。`--prompt` 併用必須。dotenv 等の追加依存なし (Node 標準 `process.loadEnvFile` を使用、`${VAR}` 展開非対応)。 |
 | `--base-url <url>` | OpenAI 互換エンドポイント (任意)。 |
 | `--dry-run` | AI 出力を unified diff で表示するだけ、disk 書き込みなし。 |
-| `--json` | 結果 (edits, unchanged, skipped, notes) を JSON で stdout 出力。エージェント呼び出し用。 |
+| `--json` | 結果 (edits, unchanged, skipped, failedVerification, notes) を JSON で stdout 出力。エージェント呼び出し用。 |
 
 **動作**:
 1. `applyTemplate()` でテンプレートを通常通りコピー
-2. `manifest.files[].dest` のファイル群を読み込み、system prompt (デザインルール焼き込み済み) + user prompt + ファイル本体を `generateObject` に渡す
-3. AI は構造化出力で `{ edits: [{ path, content, rationale }], notes }` を返す。`path` は JSON Schema enum で manifest.dest に拘束
-4. 受け取った edits を disk に書き戻し (dry-run なら diff 表示のみ)
+2. `manifest.files[].dest` のファイル群を読み込み、各ファイルの内容を user prompt に埋め込み、system prompt (コピー整列ルール) と共に `generateObject` に渡す
+3. AI は構造化出力で `{ edits: [{ path, old_content, new_content, rationale }], notes }` を返す。`path` は JSON Schema enum で manifest.dest に拘束、`old_content` は置換対象の現在のスニペット (search/replace 方式)
+4. 各 edit を適用前に **`old_content` を現在のファイル内容と照合** (`applyEditsToFile()`)。見つからない / 複数一致 (非一意) なら、そのファイルの全 edits は破棄して `failedVerification[]` に積む (他ファイルは独立して適用)
+5. 検証成功した edits をファイル単位で適用し disk に書き戻し (dry-run なら unified diff 表示のみ)
 
 **制約**:
+- AI が書き換えるのは **文字列リテラル (表示コピー + モックデータ内のテキスト的な値) の改名のみ**。数値・配列長・データ形状・`import` 行・ロジック・型・JSX 構造は変更しない (system prompt で明示)。新規 import を増やす余地が無いため、旧 IMPORT_CEILING 機構は廃止済み
 - AI が編集できるのは **manifest.files に列挙された dest のみ**。それ以外のパスは `skipped[]` に積まれる
 - `routes.tsx` は触らない (ui-templates / templates は 1 ルート設計)
-- 部分編集 (diff/patch) ではなく **ファイル全体を返させる** 仕様
+- 全文書き換えではなく **コンテンツアンカーの search/replace 差分編集** で、変更スニペットのみを AI に出力させる (出力トークン削減 + 大きなファイル対応)
+- `old_content` は **ファイル内で一意** である必要がある。AI には system prompt で「曖昧なら周辺コンテキストを足して一意にせよ」と指示済み
 
 **依存**: `ai` / `@ai-sdk/*` は `optionalDependencies`。`--prompt` 指定時のみ動的 import される。未 install 時は親切な `npm install` ガイダンスを表示して exit 1。
 
