@@ -1,70 +1,67 @@
-import { useState } from "react"
-import { subMonths } from "date-fns"
-import { TrendingUp, BarChart3, AlertTriangle, Sparkles } from "lucide-react"
-import { DateRangePicker } from "@/components/data/date-range-picker"
-import {
-  PageShell,
-  PageShellHeader,
-  PageShellHeading,
-  PageShellTitle,
-  PageShellDescription,
-  PageShellHeaderEnd,
-  PageShellContent,
-} from "@/components/common/page-shell"
-import { KpiCard } from "@/components/ui-template-kpi-chart-simple/kpi-card"
-import { TrendChart } from "@/components/ui-template-kpi-chart-simple/trend-chart"
-import { TopItemsTable } from "@/components/ui-template-kpi-chart-simple/top-items-table"
-import {
-  headerKpis,
-  trendSeries,
-  topItems,
-} from "@/lib/ui-template-kpi-chart-simple-mock-data"
-import type { DashboardFilters } from "@/types/ui-template-kpi-chart-simple"
-
-const today = new Date()
-const initialFilters: DashboardFilters = {
-  dateRange: {
-    from: subMonths(today, 11),
-    to: today,
-  },
-}
-
-const kpiIcons = [TrendingUp, BarChart3, AlertTriangle, Sparkles] as const
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function HomePage() {
-  const [filters, setFilters] = useState<DashboardFilters>(initialFilters)
-
   return (
-    <PageShell>
-      <PageShellHeader>
-        <PageShellHeading>
-          <PageShellTitle>SaaS Revenue Dashboard</PageShellTitle>
-          <PageShellDescription>
-            MRR・ARR・解約率・新規 MRR をひと目で把握できる収益モニタリングダッシュボード
-          </PageShellDescription>
-        </PageShellHeading>
-        <PageShellHeaderEnd>
-          <DateRangePicker
-            value={filters.dateRange}
-            onChange={(range) =>
-              setFilters((prev) => ({ ...prev, dateRange: range }))
-            }
-            maxDate={today}
-          />
-        </PageShellHeaderEnd>
-      </PageShellHeader>
+    <div className="container mx-auto max-w-7xl space-y-6 p-8">
+      <header className="space-y-2">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-4 w-72" />
+      </header>
 
-      <PageShellContent className="space-y-6">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {headerKpis.map((kpi, i) => (
-            <KpiCard key={kpi.id} item={kpi} icon={kpiIcons[i]} />
-          ))}
-        </div>
+      <section className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <Skeleton className="h-4 w-24" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-8 w-32" />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <Skeleton className="h-4 w-24" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-8 w-32" />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <Skeleton className="h-4 w-24" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-8 w-32" />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <Skeleton className="h-4 w-24" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-8 w-32" />
+          </CardContent>
+        </Card>
+      </section>
 
-        <TrendChart data={trendSeries} />
-
-        <TopItemsTable data={topItems} />
-      </PageShellContent>
-    </PageShell>
-  )
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-5 w-40" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-64 w-full" />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-5 w-40" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-64 w-full" />
+          </CardContent>
+        </Card>
+      </section>
+    </div>
+  );
 }
