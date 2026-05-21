@@ -22,6 +22,7 @@ export default defineConfig(({ command, mode }) => {
             "@google-analytics/data",
             "@kintone/rest-api-client",
             "@clickhouse/client",
+            "ssh2",
           ],
         }),
       ],
@@ -40,6 +41,9 @@ export default defineConfig(({ command, mode }) => {
     server: {
       host: "0.0.0.0",
       allowedHosts: [".vercel.run"],
+      hmr: {
+        overlay: false,
+      },
       forwardConsole: {
         unhandledErrors: true,
         logLevels: ["warn", "error"],

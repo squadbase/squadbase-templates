@@ -8,7 +8,7 @@ Guidance for coding agents working in this template. A Squadbase project is a fu
 - Tailwind CSS **v4** (zero-config via `@tailwindcss/vite`) + shadcn/ui + `tw-animate-css`
 - React Router **v7** (`react-router`, not `react-router-dom`)
 - TanStack Query **v5** + TanStack Table **v8**
-- ECharts **v6** via `echarts-for-react`
+- ECharts **v6** via `echarts.tsx`
 - Server: `@squadbase/vite-server` (Hono + Node 20, reads `server-logic/*.json`)
 - Auth: `@squadbase/react` (`SquadbaseProvider`)
 

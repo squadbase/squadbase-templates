@@ -10,6 +10,7 @@ export default defineConfig({
   sourcemap: false,
   clean: true,
   platform: "node",
+  external: ["ai", /^@ai-sdk\//],
   banner: {
     js: "#!/usr/bin/env node",
   },

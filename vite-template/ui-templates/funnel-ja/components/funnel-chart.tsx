@@ -4,22 +4,18 @@ import {
   useEChartsContrastColor,
   withAlpha,
 } from "@/components/data/echart"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
 import type { FunnelStage } from "@/types/ui-template-funnel"
 
 interface FunnelChartProps {
   data: FunnelStage[]
+  labels: string[]
   height?: string
   display?: "count" | "percent"
 }
 
 export function FunnelChart({
   data,
+  labels,
   height = "440px",
   display = "count",
 }: FunnelChartProps) {
@@ -57,7 +53,7 @@ export function FunnelChart({
             const main =
               display === "percent"
                 ? `${params.data.share.toFixed(1)}%`
-                : params.value.toLocaleString("en-US")
+                : params.value.toLocaleString("ja-JP")
             return `{name|${params.name}}\n{value|${main}}`
           },
           rich: {
@@ -79,7 +75,7 @@ export function FunnelChart({
         },
         labelLine: { show: false },
         data: data.map((d, i) => ({
-          name: d.stage,
+          name: labels[i],
           value: d.value,
           conversionRate: d.conversionRate,
           share: (d.value / Math.max(1, max)) * 100,
@@ -89,17 +85,5 @@ export function FunnelChart({
     ] as EChartsOption["series"],
   }
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-40" />
-          <Skeleton className="h-3.5 w-56" />
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <EChart option={option} height={height} />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <EChart option={option} height={height} />
 }

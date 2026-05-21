@@ -1,13 +1,11 @@
 import { useMemo } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Placeholder } from "@/components/common/placeholder"
+import { formatNumber, formatPercent } from "./chart-helpers"
 import type { StageRow } from "@/types/ui-template-funnel"
+
+const STEP_NAMES = ["Stage 1 → 2", "Stage 2 → 3", "Stage 3 → 4", "Stage 4 → 5"]
 
 interface StageTableProps {
   data: StageRow[]
@@ -17,43 +15,43 @@ export function StageTable({ data }: StageTableProps) {
   const columns = useMemo<ColumnDef<StageRow>[]>(
     () => [
       {
-        accessorKey: "stage",
+        id: "step",
         header: "Column 1",
-        cell: () => <Skeleton className="h-4 w-32" />,
+        cell: ({ row }) => STEP_NAMES[row.index],
       },
       {
         accessorKey: "count",
         header: "Column 2",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-16" />
+            <Placeholder>{formatNumber(row.original.count)}</Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "conversionRate",
         header: "Column 3",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-12" />
+            <Placeholder>{formatPercent(row.original.conversionRate)}</Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "avgDays",
         header: "Column 4",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-10" />
+            <Placeholder>{`${row.original.avgDays.toFixed(1)}d`}</Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "dropoff",
         header: "Column 5",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-16" />
+            <Placeholder>{formatNumber(row.original.dropoff)}</Placeholder>
           </div>
         ),
       },
@@ -61,17 +59,5 @@ export function StageTable({ data }: StageTableProps) {
     [],
   )
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-40" />
-          <Skeleton className="h-3.5 w-56" />
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <DataTablePreset columns={columns} data={data} enableSorting />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <DataTablePreset columns={columns} data={data} enableSorting />
 }

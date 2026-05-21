@@ -6,6 +6,10 @@ export interface FileEntry {
   src: string;
   dest: string;
   action: "add" | "replace";
+  // When false, the file is still copied/applied but excluded from the AI
+  // relabel pass. Use for data files (mock data, types) whose dense literals
+  // the AI must not edit. Defaults to true (relabeled).
+  relabel?: boolean;
 }
 
 export interface RouteEntry {
