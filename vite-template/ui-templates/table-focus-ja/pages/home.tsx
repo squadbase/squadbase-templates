@@ -3,13 +3,7 @@ import { Download, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardTitle,
-  DashboardCardDescription,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
+import { DashboardCardPreset } from "@/components/common/dashboard-card"
 import {
   PageShell,
   PageShellHeader,
@@ -90,40 +84,40 @@ export default function HomePage() {
 
         <div className="grid gap-4 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <DetailTable data={filtered} />
+            <DashboardCardPreset
+              title="Records"
+              description="Detailed rows for the current filter"
+            >
+              <DetailTable data={filtered} />
+            </DashboardCardPreset>
           </div>
           <div className="space-y-4">
-            <SupportChart data={trendSeries} />
-            <DashboardCard>
-              <DashboardCardHeader>
-                <div className="space-y-1">
-                  <DashboardCardTitle>By segment</DashboardCardTitle>
-                  <DashboardCardDescription>
-                    Share of total
-                  </DashboardCardDescription>
-                </div>
-              </DashboardCardHeader>
-              <DashboardCardContent>
-                <div className="space-y-3">
-                  {summaryRows.map((row) => (
-                    <div key={row.segment} className="space-y-1.5">
-                      <div className="flex items-baseline justify-between">
-                        <span className="text-sm font-medium">{row.segment}</span>
-                        <Placeholder className="text-sm">
-                          {row.revenue.toLocaleString("en-US")}
-                        </Placeholder>
-                      </div>
-                      <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                        <div
-                          className="h-full rounded-full bg-primary"
-                          style={{ width: `${(row.share * 100).toFixed(1)}%` }}
-                        />
-                      </div>
+            <DashboardCardPreset
+              title="Trend"
+              description="Values over the selected period"
+            >
+              <SupportChart data={trendSeries} />
+            </DashboardCardPreset>
+            <DashboardCardPreset title="By segment" description="Share of total">
+              <div className="space-y-3">
+                {summaryRows.map((row) => (
+                  <div key={row.segment} className="space-y-1.5">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-sm font-medium">{row.segment}</span>
+                      <Placeholder className="text-sm">
+                        {row.revenue.toLocaleString("en-US")}
+                      </Placeholder>
                     </div>
-                  ))}
-                </div>
-              </DashboardCardContent>
-            </DashboardCard>
+                    <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-primary"
+                        style={{ width: `${(row.share * 100).toFixed(1)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </DashboardCardPreset>
           </div>
         </div>
       </PageShellContent>

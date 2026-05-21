@@ -1,13 +1,6 @@
 import { useMemo } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardTitle,
-  DashboardCardDescription,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
 import { Placeholder } from "@/components/common/placeholder"
 import { formatCurrency } from "./chart-helpers"
 import type { CampaignRow } from "@/types/ui-template-kpi-chart-advanced"
@@ -62,19 +55,5 @@ export function CampaignTable({ data }: CampaignTableProps) {
     [],
   )
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-1">
-          <DashboardCardTitle>Campaigns</DashboardCardTitle>
-          <DashboardCardDescription>
-            Performance by campaign
-          </DashboardCardDescription>
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <DataTablePreset columns={columns} data={data} enableSorting />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <DataTablePreset columns={columns} data={data} enableSorting />
 }

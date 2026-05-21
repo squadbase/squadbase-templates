@@ -1,12 +1,5 @@
 import type { EChartsOption } from "echarts"
 import { EChart } from "@/components/data/echart"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardTitle,
-  DashboardCardDescription,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
 import { formatNumber, getBaseGrid } from "./chart-helpers"
 import type { TrendPoint } from "@/types/ui-template-table-focus"
 
@@ -38,19 +31,5 @@ export function SupportChart({ data }: SupportChartProps) {
     ],
   }
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-1">
-          <DashboardCardTitle>Trend</DashboardCardTitle>
-          <DashboardCardDescription>
-            Values over the selected period
-          </DashboardCardDescription>
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <EChart option={option} height="220px" />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <EChart option={option} height="220px" />
 }

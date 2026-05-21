@@ -1,13 +1,6 @@
 import { useMemo } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardTitle,
-  DashboardCardDescription,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
 import { Placeholder } from "@/components/common/placeholder"
 import { formatCurrency, formatPercent } from "./chart-helpers"
 import type { TopItemRow } from "@/types/ui-template-kpi-chart-simple"
@@ -62,17 +55,5 @@ export function TopItemsTable({ data }: TopItemsTableProps) {
     [],
   )
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-1">
-          <DashboardCardTitle>Top items</DashboardCardTitle>
-          <DashboardCardDescription>Ranked by value</DashboardCardDescription>
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <DataTablePreset columns={columns} data={data} enableSorting />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <DataTablePreset columns={columns} data={data} enableSorting />
 }

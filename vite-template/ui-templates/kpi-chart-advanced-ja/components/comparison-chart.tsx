@@ -1,12 +1,5 @@
 import type { EChartsOption } from "echarts"
 import { EChart } from "@/components/data/echart"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardTitle,
-  DashboardCardDescription,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
 import { formatNumber, getDualAxisGrid } from "./chart-helpers"
 import type { ComparisonPoint } from "@/types/ui-template-kpi-chart-advanced"
 
@@ -57,19 +50,5 @@ export function ComparisonChart({ data }: ComparisonChartProps) {
     ],
   }
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-1">
-          <DashboardCardTitle>Comparison</DashboardCardTitle>
-          <DashboardCardDescription>
-            Current vs previous period
-          </DashboardCardDescription>
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <EChart option={option} height="320px" />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <EChart option={option} height="320px" />
 }

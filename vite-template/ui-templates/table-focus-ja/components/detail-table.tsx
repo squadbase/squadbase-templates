@@ -1,13 +1,6 @@
 import { useMemo } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardTitle,
-  DashboardCardDescription,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
 import { Placeholder } from "@/components/common/placeholder"
 import { formatCurrency, formatPercent } from "./chart-helpers"
 import type { DetailRow } from "@/types/ui-template-table-focus"
@@ -77,19 +70,5 @@ export function DetailTable({ data }: DetailTableProps) {
     [],
   )
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-1">
-          <DashboardCardTitle>Records</DashboardCardTitle>
-          <DashboardCardDescription>
-            Detailed rows for the current filter
-          </DashboardCardDescription>
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <DataTablePreset columns={columns} data={data} enableSorting />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <DataTablePreset columns={columns} data={data} enableSorting />
 }

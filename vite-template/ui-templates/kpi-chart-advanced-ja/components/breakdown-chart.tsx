@@ -1,12 +1,5 @@
 import type { EChartsOption } from "echarts"
 import { EChart } from "@/components/data/echart"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardTitle,
-  DashboardCardDescription,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
 import type { BreakdownSlice } from "@/types/ui-template-kpi-chart-advanced"
 
 interface BreakdownChartProps {
@@ -29,17 +22,5 @@ export function BreakdownChart({ data }: BreakdownChartProps) {
     ],
   }
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-1">
-          <DashboardCardTitle>Breakdown</DashboardCardTitle>
-          <DashboardCardDescription>Share by segment</DashboardCardDescription>
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <EChart option={option} height="320px" />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <EChart option={option} height="320px" />
 }

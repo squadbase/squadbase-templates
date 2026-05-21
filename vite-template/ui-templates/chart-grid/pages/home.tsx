@@ -11,6 +11,7 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
+import { DashboardCardPreset } from "@/components/common/dashboard-card"
 import {
   AreaChart,
   LineChart,
@@ -81,19 +82,45 @@ export default function HomePage() {
 
       <PageShellContent>
         <div className="grid gap-4 lg:grid-cols-2">
-          {show("trend") && <AreaChart data={timeSeries} />}
-          {show("trend") && <LineChart data={timeSeries} />}
-          {show("ranking") && <BarChart data={barSeries} />}
-          {show("distribution") && (
-            <ScatterChart data={scatterPoints} />
+          {show("trend") && (
+            <DashboardCardPreset
+              title="Trend (area)"
+              description="Two series over the selected period"
+            >
+              <AreaChart data={timeSeries} />
+            </DashboardCardPreset>
           )}
-          {show("distribution") && <RadarChart data={radarAxes} />}
+          {show("trend") && (
+            <DashboardCardPreset
+              title="Trend (line)"
+              description="Two series over the selected period"
+            >
+              <LineChart data={timeSeries} />
+            </DashboardCardPreset>
+          )}
+          {show("ranking") && (
+            <DashboardCardPreset title="Top categories" description="Ranked by value">
+              <BarChart data={barSeries} />
+            </DashboardCardPreset>
+          )}
           {show("distribution") && (
-            <HeatmapChart
-              data={heatmapCells}
-              xAxis={HEATMAP_X_AXIS}
-              yAxis={HEATMAP_Y_AXIS}
-            />
+            <DashboardCardPreset title="Correlation" description="Each point is an item">
+              <ScatterChart data={scatterPoints} />
+            </DashboardCardPreset>
+          )}
+          {show("distribution") && (
+            <DashboardCardPreset title="Profile" description="Current vs benchmark">
+              <RadarChart data={radarAxes} />
+            </DashboardCardPreset>
+          )}
+          {show("distribution") && (
+            <DashboardCardPreset title="Activity" description="Intensity by cell">
+              <HeatmapChart
+                data={heatmapCells}
+                xAxis={HEATMAP_X_AXIS}
+                yAxis={HEATMAP_Y_AXIS}
+              />
+            </DashboardCardPreset>
           )}
         </div>
       </PageShellContent>

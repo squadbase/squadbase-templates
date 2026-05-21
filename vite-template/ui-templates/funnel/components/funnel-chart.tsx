@@ -4,23 +4,18 @@ import {
   useEChartsContrastColor,
   withAlpha,
 } from "@/components/data/echart"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardTitle,
-  DashboardCardDescription,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
 import type { FunnelStage } from "@/types/ui-template-funnel"
 
 interface FunnelChartProps {
   data: FunnelStage[]
+  labels: string[]
   height?: string
   display?: "count" | "percent"
 }
 
 export function FunnelChart({
   data,
+  labels,
   height = "440px",
   display = "count",
 }: FunnelChartProps) {
@@ -80,7 +75,7 @@ export function FunnelChart({
         },
         labelLine: { show: false },
         data: data.map((d, i) => ({
-          name: d.stage,
+          name: labels[i],
           value: d.value,
           conversionRate: d.conversionRate,
           share: (d.value / Math.max(1, max)) * 100,
@@ -90,19 +85,5 @@ export function FunnelChart({
     ] as EChartsOption["series"],
   }
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-1">
-          <DashboardCardTitle>Conversion funnel</DashboardCardTitle>
-          <DashboardCardDescription>
-            Stage-by-stage conversion
-          </DashboardCardDescription>
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <EChart option={option} height={height} />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <EChart option={option} height={height} />
 }

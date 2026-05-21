@@ -1,86 +1,70 @@
-import { addDays, format } from "date-fns"
 import type { KpiItem, TrendPoint, TopItemRow } from "@/types/ui-template-kpi-chart-simple"
 
-const BASE_DATE = new Date("2024-03-31")
-const DAYS = 30
-
-function seededRandom(seed: number): () => number {
-  let s = seed
-  return () => {
-    s = (s * 9301 + 49297) % 233280
-    return s / 233280
-  }
-}
-
-const rand = seededRandom(42)
-
-export const trendSeries: TrendPoint[] = Array.from({ length: DAYS }, (_, i) => {
-  const date = addDays(BASE_DATE, i - DAYS + 1)
-  const weekday = date.getDay()
-  const weekend = weekday === 0 || weekday === 6
-  const base = 42_000 + i * 380
-  const noise = (rand() - 0.5) * 9_000
-  const weekendDip = weekend ? -7_000 : 0
-  const revenue = Math.max(15_000, Math.round(base + noise + weekendDip))
-  const orders = Math.round(revenue / 78 + (rand() - 0.5) * 30)
-  return {
-    date: format(date, "yyyy-MM-dd"),
-    revenue,
-    orders,
-  }
-})
-
-function buildSparkline(values: number[], length = 12): number[] {
-  const step = Math.max(1, Math.floor(values.length / length))
-  const series: number[] = []
-  for (let i = 0; i < values.length; i += step) {
-    series.push(values[i])
-  }
-  return series.slice(-length)
-}
+export const trendSeries: TrendPoint[] = [
+  { date: "2024-03-02", revenue: 38473, orders: 503 },
+  { date: "2024-03-03", revenue: 39511, orders: 515 },
+  { date: "2024-03-04", revenue: 43317, orders: 562 },
+  { date: "2024-03-05", revenue: 44003, orders: 551 },
+  { date: "2024-03-06", revenue: 45347, orders: 590 },
+  { date: "2024-03-07", revenue: 45792, orders: 582 },
+  { date: "2024-03-08", revenue: 46451, orders: 609 },
+  { date: "2024-03-09", revenue: 42100, orders: 552 },
+  { date: "2024-03-10", revenue: 35184, orders: 440 },
+  { date: "2024-03-11", revenue: 46814, orders: 610 },
+  { date: "2024-03-12", revenue: 42769, orders: 547 },
+  { date: "2024-03-13", revenue: 44492, orders: 570 },
+  { date: "2024-03-14", revenue: 48095, orders: 603 },
+  { date: "2024-03-15", revenue: 47355, orders: 615 },
+  { date: "2024-03-16", revenue: 39717, orders: 516 },
+  { date: "2024-03-17", revenue: 37292, orders: 490 },
+  { date: "2024-03-18", revenue: 47858, orders: 604 },
+  { date: "2024-03-19", revenue: 51859, orders: 655 },
+  { date: "2024-03-20", revenue: 47406, orders: 616 },
+  { date: "2024-03-21", revenue: 47277, orders: 592 },
+  { date: "2024-03-22", revenue: 53917, orders: 682 },
+  { date: "2024-03-23", revenue: 44437, orders: 583 },
+  { date: "2024-03-24", revenue: 41613, orders: 538 },
+  { date: "2024-03-25", revenue: 46892, orders: 588 },
+  { date: "2024-03-26", revenue: 50384, orders: 654 },
+  { date: "2024-03-27", revenue: 54866, orders: 700 },
+  { date: "2024-03-28", revenue: 51784, orders: 654 },
+  { date: "2024-03-29", revenue: 56248, orders: 724 },
+  { date: "2024-03-30", revenue: 44035, orders: 566 },
+  { date: "2024-03-31", revenue: 46592, orders: 606 },
+]
 
 export const headerKpis: KpiItem[] = [
   {
     id: "total-revenue",
-    label: "Metric 1",
     value: "$2.41M",
     change: 12.4,
     changeLabel: "",
     positiveIsGood: true,
-    sparklineData: buildSparkline(trendSeries.map((p) => p.revenue)),
+    sparklineData: [46451, 35184, 42769, 48095, 39717, 47858, 47406, 53917, 41613, 50384, 51784, 44035],
   },
   {
     id: "active-users",
-    label: "Metric 2",
     value: "38,200",
     change: 8.1,
     changeLabel: "",
     positiveIsGood: true,
-    sparklineData: buildSparkline(
-      trendSeries.map((p) => Math.round(p.orders * 2.4)),
-    ),
+    sparklineData: [1462, 1056, 1313, 1447, 1238, 1450, 1478, 1637, 1291, 1570, 1570, 1358],
   },
   {
     id: "conversion-rate",
-    label: "Metric 3",
     value: "3.42%",
     change: -0.6,
     changeLabel: "",
     positiveIsGood: true,
-    sparklineData: buildSparkline(
-      trendSeries.map((p) => (p.orders / (p.orders * 2.4)) * 100),
-    ),
+    sparklineData: [3.2, 3.5, 3.3, 3.6, 3.4, 3.5, 3.3, 3.6, 3.4, 3.5, 3.4, 3.42],
   },
   {
     id: "aov",
-    label: "Metric 4",
     value: "$78.40",
     change: 3.7,
     changeLabel: "",
     positiveIsGood: true,
-    sparklineData: buildSparkline(
-      trendSeries.map((p) => p.revenue / Math.max(1, p.orders)),
-    ),
+    sparklineData: [76.27, 79.96, 78.19, 79.76, 76.97, 79.24, 76.96, 79.06, 77.35, 77.04, 79.18, 77.8],
   },
 ]
 

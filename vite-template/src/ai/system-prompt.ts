@@ -7,7 +7,7 @@ Only string literals that a user reads on screen or that act as labels:
 - Page / section titles, descriptions, and headings.
 - KPI names, chart titles & descriptions, axis & series & legend text.
 - Filter labels and option text, table column headers.
-- Textual *values* inside mock data — category, product, channel, status, entity names and the like.
+- Label lists and copy maps that appear as plain string literals in the provided files — KPI name lists, stage names, chart axis names, and the like. (Mock data files are not provided; you only relabel the display copy in the component and page files you are given.)
 
 # What you must not touch
 You edit only the *text inside* an existing string literal, or the text *between* two existing tags — never the code around it.
@@ -17,7 +17,7 @@ You edit only the *text inside* an existing string literal, or the text *between
 - Every edit must leave all existing imports and variables still referenced. If a rename would orphan an import or a variable, skip it.
 
 # How to choose wording
-Treat <USER_INTENT> as a hint about the domain, not a spec. Pick natural, concrete labels a real dashboard for that domain would use — never \`foo / bar / baz\`. Keep each replacement close to the original in length and tone so the layout still fits. If a label already suits the domain, leave it.
+Treat <USER_INTENT> as a hint about the domain, not a spec. Pick natural, concrete labels a real dashboard for that domain would use — never \`foo / bar / baz\`. Keep each replacement close to the original in length and tone so the layout still fits. If a label already suits the domain, leave it. Files are relabeled independently, so use the same wording for a given concept (e.g. a recurring metric name) everywhere it appears, drawn from <USER_INTENT>, to keep repeated labels consistent across files.
 
 # Output
 Return search/replace edits. Each has \`path\` (a dest from the schema enum), \`old_content\` (the exact current snippet, matched byte-for-byte and unique within the file — include surrounding context if needed), \`new_content\` (the renamed text), and \`rationale\` (one short sentence). You are renaming, so \`new_content\` is never empty. Return an empty array if nothing needs renaming. Use \`notes\` only to flag something noteworthy.

@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { log } from "../logger.js";
-import type { TemplateManifest } from "../manifest.js";
+import type { FileEntry, TemplateManifest } from "../manifest.js";
 import { diffStats, unifiedDiff } from "./diff.js";
 import { resolveModel } from "./provider.js";
 import { SYSTEM_PROMPT } from "./system-prompt.js";
@@ -31,6 +31,7 @@ export interface CustomizeResult {
   unchanged: string[];
   skipped: string[];
   failedVerification: string[];
+  aiError: string[];
   notes?: string;
   provider: string;
   model: string;
@@ -111,11 +112,11 @@ function buildUserPrompt(
 function readInputFiles(
   projectRoot: string,
   templateDir: string,
-  manifest: TemplateManifest,
+  entries: FileEntry[],
   fromTemplate: boolean,
 ): Map<string, string> {
   const files = new Map<string, string>();
-  for (const entry of manifest.files) {
+  for (const entry of entries) {
     const path = fromTemplate
       ? join(templateDir, entry.src)
       : join(projectRoot, entry.dest);
@@ -147,17 +148,116 @@ function applyEditsToFile(before: string, edits: AIRawEdit[]): string {
   return text;
 }
 
+// Max number of files relabeled concurrently. Each file is its own generateObject
+// call, so this caps in-flight requests to stay well under provider rate limits
+// while keeping the largest templates (~9 relabel files) to a few waves.
+const RELABEL_CONCURRENCY = 4;
+
+// Promise.allSettled with a concurrency cap. Preserves input order in the result
+// array. No runtime dependency (repo policy: only `ai`/`@ai-sdk/*` are optional).
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  limit: number,
+  fn: (item: T, index: number) => Promise<R>,
+): Promise<PromiseSettledResult<R>[]> {
+  const results: PromiseSettledResult<R>[] = new Array(items.length);
+  let next = 0;
+  const worker = async (): Promise<void> => {
+    while (true) {
+      const i = next++;
+      if (i >= items.length) return;
+      try {
+        results[i] = { status: "fulfilled", value: await fn(items[i], i) };
+      } catch (reason) {
+        results[i] = { status: "rejected", reason };
+      }
+    }
+  };
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, () => worker()),
+  );
+  return results;
+}
+
+// Relabel a single file: one generateObject call scoped to just this file. The
+// schema enum pins every edit's `path` to this file, and the prompt carries only
+// this file's content. Small outputs avoid the truncation that a whole-batch call
+// hit (see case-07). Throws on AI/parse failure so the caller can isolate it.
+async function relabelFile(
+  generateObject: (args: Record<string, unknown>) => Promise<{ object: AIResponse }>,
+  jsonSchema: (schema: unknown) => unknown,
+  model: unknown,
+  intent: string,
+  path: string,
+  content: string,
+): Promise<{ edits: AIRawEdit[]; notes?: string }> {
+  const schema = jsonSchema(buildSchema([path]));
+  const userPrompt = buildUserPrompt(intent, new Map([[path, content]]));
+  const result = await generateObject({
+    model,
+    schema,
+    system: SYSTEM_PROMPT,
+    prompt: userPrompt,
+    temperature: 0.3,
+    maxTokens: 8000,
+  });
+  const object = result.object;
+  if (process.env.SQUADBASE_AI_DEBUG) {
+    const r = result as { usage?: unknown; finishReason?: string };
+    log(
+      "dim",
+      `[debug] ${path} finishReason=${r.finishReason ?? "?"} usage=${JSON.stringify(r.usage ?? {})}`,
+    );
+  }
+  let edits: AIRawEdit[] = [];
+  const rawEdits: unknown = object.edits;
+  if (typeof rawEdits === "string") {
+    edits = parseEditsString(rawEdits);
+  } else if (Array.isArray(rawEdits)) {
+    edits = rawEdits as AIRawEdit[];
+  } else if (rawEdits != null) {
+    throw new Error(`AI returned \`edits\` as ${typeof rawEdits}, expected array.`);
+  }
+  return { edits, notes: object.notes };
+}
+
+function formatAIError(err: unknown, modelId: string): string {
+  const e = err as {
+    message?: string;
+    text?: string;
+    cause?: unknown;
+    usage?: unknown;
+    finishReason?: string;
+  };
+  const parts: string[] = [];
+  parts.push(`AI did not return a valid object (model=${modelId}).`);
+  if (e.message) parts.push(`Message: ${e.message}`);
+  if (e.finishReason) parts.push(`finishReason: ${e.finishReason}`);
+  if (typeof e.text === "string" && e.text.length > 0) {
+    const snippet =
+      e.text.length > 800 ? `${e.text.slice(0, 800)}…(${e.text.length} chars)` : e.text;
+    parts.push(`Raw response text:\n${snippet}`);
+  }
+  if (e.cause) {
+    const causeMsg = e.cause instanceof Error ? e.cause.message : String(e.cause);
+    parts.push(`Cause: ${causeMsg}`);
+  }
+  if (e.usage) parts.push(`Usage: ${JSON.stringify(e.usage)}`);
+  return parts.join("\n");
+}
+
 export async function customizeWithAI(
   projectRoot: string,
   manifest: TemplateManifest,
   templateDir: string,
   options: CustomizeOptions,
 ): Promise<CustomizeResult> {
-  const allowedPaths = manifest.files.map((f) => f.dest);
+  const relabelFiles = manifest.files.filter((f) => f.relabel !== false);
+  const allowedPaths = relabelFiles.map((f) => f.dest);
   const inputFiles = readInputFiles(
     projectRoot,
     templateDir,
-    manifest,
+    relabelFiles,
     options.dryRun,
   );
 
@@ -174,69 +274,46 @@ export async function customizeWithAI(
     baseUrl: options.baseUrl,
   });
 
-  const schema = jsonSchema(buildSchema(allowedPaths));
-  const userPrompt = buildUserPrompt(options.prompt, inputFiles);
+  // One generateObject call per file, run with a concurrency cap and full
+  // failure isolation: a file whose call fails (truncated JSON, parse error) is
+  // recorded in aiError and left unchanged — it never discards the other files.
+  const aiError: string[] = [];
+  const editsArray: AIRawEdit[] = [];
+  const noteParts: string[] = [];
 
-  let object: AIResponse;
-  try {
-    const result = await generateObject({
-      model,
-      schema,
-      system: SYSTEM_PROMPT,
-      prompt: userPrompt,
-      temperature: 0.3,
-      maxTokens: 20000,
-    });
-    object = result.object;
-    if (process.env.SQUADBASE_AI_DEBUG) {
-      const r = result as { usage?: unknown; finishReason?: string };
-      log("dim", `[debug] finishReason=${r.finishReason ?? "?"} usage=${JSON.stringify(r.usage ?? {})}`);
-      log("dim", `[debug] raw object: ${JSON.stringify(object, null, 2).slice(0, 4000)}`);
-    }
-  } catch (err) {
-    const e = err as {
-      message?: string;
-      text?: string;
-      cause?: unknown;
-      usage?: unknown;
-      finishReason?: string;
-      response?: { body?: unknown };
-    };
-    const parts: string[] = [];
-    parts.push(`AI did not return a valid object (model=${modelId}).`);
-    if (e.message) parts.push(`Message: ${e.message}`);
-    if (e.finishReason) parts.push(`finishReason: ${e.finishReason}`);
-    if (typeof e.text === "string" && e.text.length > 0) {
-      const snippet = e.text.length > 800 ? `${e.text.slice(0, 800)}…(${e.text.length} chars)` : e.text;
-      parts.push(`Raw response text:\n${snippet}`);
-    }
-    if (e.cause) {
-      const causeMsg = e.cause instanceof Error ? e.cause.message : String(e.cause);
-      parts.push(`Cause: ${causeMsg}`);
-    }
-    if (e.usage) parts.push(`Usage: ${JSON.stringify(e.usage)}`);
-    throw new Error(parts.join("\n"));
-  }
+  const settled = await mapWithConcurrency(
+    allowedPaths,
+    RELABEL_CONCURRENCY,
+    (path) =>
+      relabelFile(
+        generateObject,
+        jsonSchema,
+        model,
+        options.prompt,
+        path,
+        inputFiles.get(path) ?? "",
+      ),
+  );
 
-  let editsArray: AIRawEdit[] = [];
-  const rawEdits: unknown = object.edits;
-  if (typeof rawEdits === "string") {
-    try {
-      editsArray = parseEditsString(rawEdits);
-      if (process.env.SQUADBASE_AI_DEBUG) {
-        log("dim", `[debug] recovered edits from JSON string (length=${rawEdits.length})`);
+  settled.forEach((r, i) => {
+    const path = allowedPaths[i];
+    if (r.status === "fulfilled") {
+      editsArray.push(...r.value.edits);
+      if (r.value.notes && r.value.notes.trim().length > 0) {
+        noteParts.push(`${path}: ${r.value.notes.trim()}`);
       }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      throw new Error(
-        `AI returned \`edits\` as a JSON-escaped string but it could not be parsed as an array: ${msg}`,
-      );
+    } else {
+      aiError.push(path);
+      if (!options.json) {
+        const msg = formatAIError(r.reason, modelId);
+        log("red", `\n${path}: AI call failed (left unchanged)`);
+        log("dim", `  ${msg.split("\n")[0]}`);
+        if (process.env.SQUADBASE_AI_DEBUG) {
+          log("dim", msg);
+        }
+      }
     }
-  } else if (Array.isArray(rawEdits)) {
-    editsArray = rawEdits as AIRawEdit[];
-  } else if (rawEdits != null) {
-    throw new Error(`AI returned \`edits\` as ${typeof rawEdits}, expected array.`);
-  }
+  });
 
   const allowedSet = new Set(allowedPaths);
   const skipped: string[] = [];
@@ -287,8 +364,9 @@ export async function customizeWithAI(
 
   const editedPaths = new Set(edits.map((e) => e.path));
   const failedSet = new Set(failedVerification);
+  const erroredSet = new Set(aiError);
   const unchanged = allowedPaths.filter(
-    (p) => !editedPaths.has(p) && !failedSet.has(p),
+    (p) => !editedPaths.has(p) && !failedSet.has(p) && !erroredSet.has(p),
   );
 
   if (options.dryRun) {
@@ -313,7 +391,8 @@ export async function customizeWithAI(
     unchanged,
     skipped,
     failedVerification,
-    notes: object.notes,
+    aiError,
+    notes: noteParts.length > 0 ? noteParts.join("\n") : undefined,
     provider: providerName,
     model: modelId,
   };

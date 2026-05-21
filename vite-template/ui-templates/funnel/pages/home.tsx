@@ -7,9 +7,9 @@ import {
   DashboardCard,
   DashboardCardHeader,
   DashboardCardTitle,
-  DashboardCardDescription,
   DashboardCardAction,
   DashboardCardContent,
+  DashboardCardPreset,
 } from "@/components/common/dashboard-card"
 import {
   PageShell,
@@ -29,6 +29,35 @@ import {
 } from "@/lib/ui-template-funnel-mock-data"
 
 const today = new Date()
+
+const STAGE_NAMES = ["Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5"]
+
+const summaryCards = [
+  {
+    label: "Entered",
+    value: "124,500",
+    sub: "Total entering the funnel",
+    icon: <Users className="size-4 text-muted-foreground" />,
+  },
+  {
+    label: "Converted",
+    value: "1,186",
+    sub: "Completed conversions",
+    icon: <Target className="size-4 text-muted-foreground" />,
+  },
+  {
+    label: "Best step",
+    value: "31.9%",
+    sub: "Highest step conversion",
+    icon: <TrendingUp className="size-4 text-emerald-600" />,
+  },
+  {
+    label: "Biggest drop",
+    value: "68.2%",
+    sub: "Largest step drop-off",
+    icon: <TrendingDown className="size-4 text-rose-600" />,
+  },
+]
 
 type DisplayMode = "count" | "percent"
 
@@ -69,78 +98,49 @@ export default function HomePage() {
 
       <PageShellContent className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <SummaryCard
-            label="Entered"
-            value="124,500"
-            sub="Total entering the funnel"
-            icon={<Users className="size-4 text-muted-foreground" />}
-          />
-          <SummaryCard
-            label="Converted"
-            value="1,186"
-            sub="Completed conversions"
-            icon={<Target className="size-4 text-muted-foreground" />}
-          />
-          <SummaryCard
-            label="Best step"
-            value="31.9%"
-            sub="Highest step conversion"
-            icon={<TrendingUp className="size-4 text-emerald-600" />}
-          />
-          <SummaryCard
-            label="Biggest drop"
-            value="68.2%"
-            sub="Largest step drop-off"
-            icon={<TrendingDown className="size-4 text-rose-600" />}
-          />
+          {summaryCards.map(({ label, value, sub, icon }) => (
+            <DashboardCard key={label}>
+              <DashboardCardHeader>
+                <DashboardCardTitle className="text-muted-foreground">
+                  {label}
+                </DashboardCardTitle>
+                <DashboardCardAction>{icon}</DashboardCardAction>
+              </DashboardCardHeader>
+              <DashboardCardContent>
+                <Placeholder className="text-2xl font-bold">{value}</Placeholder>
+                <p className="mt-2 text-xs text-muted-foreground">{sub}</p>
+              </DashboardCardContent>
+            </DashboardCard>
+          ))}
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <FunnelChart data={funnelStages} height="440px" display={display} />
+            <DashboardCardPreset
+              title="Conversion funnel"
+              description="Stage-by-stage conversion"
+            >
+              <FunnelChart
+                data={funnelStages}
+                labels={STAGE_NAMES}
+                height="440px"
+                display={display}
+              />
+            </DashboardCardPreset>
           </div>
-          <DashboardCard>
-            <DashboardCardHeader>
-              <div className="space-y-1">
-                <DashboardCardTitle>Stages</DashboardCardTitle>
-                <DashboardCardDescription>
-                  Conversion by stage
-                </DashboardCardDescription>
-              </div>
-            </DashboardCardHeader>
-            <DashboardCardContent>
-              <StagesSidebar />
-            </DashboardCardContent>
-          </DashboardCard>
+          <DashboardCardPreset title="Stages" description="Conversion by stage">
+            <StagesSidebar />
+          </DashboardCardPreset>
         </div>
 
-        <StageTable data={stageRows} />
+        <DashboardCardPreset
+          title="Stage breakdown"
+          description="Conversion between stages"
+        >
+          <StageTable data={stageRows} />
+        </DashboardCardPreset>
       </PageShellContent>
     </PageShell>
-  )
-}
-
-interface SummaryCardProps {
-  label: string
-  value: string
-  sub: string
-  icon: React.ReactNode
-}
-
-function SummaryCard({ label, value, sub, icon }: SummaryCardProps) {
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <DashboardCardTitle className="text-muted-foreground">
-          {label}
-        </DashboardCardTitle>
-        <DashboardCardAction>{icon}</DashboardCardAction>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <Placeholder className="text-2xl font-bold">{value}</Placeholder>
-        <p className="mt-2 text-xs text-muted-foreground">{sub}</p>
-      </DashboardCardContent>
-    </DashboardCard>
   )
 }
 
@@ -151,13 +151,13 @@ function StagesSidebar() {
         const prev = i > 0 ? funnelStages[i - 1] : null
         const dropoffPct = prev ? ((prev.value - s.value) / prev.value) * 100 : 0
         return (
-          <li key={s.stage} className="space-y-2">
+          <li key={i} className="space-y-2">
             <div className="flex items-baseline justify-between gap-2">
               <div className="flex items-baseline gap-2 min-w-0">
                 <span className="text-xs font-semibold text-muted-foreground tabular-nums">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="truncate text-sm font-medium">{s.stage}</span>
+                <span className="truncate text-sm font-medium">{STAGE_NAMES[i]}</span>
               </div>
               <Placeholder className="text-sm font-medium">
                 {s.value.toLocaleString("en-US")}

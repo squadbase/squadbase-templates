@@ -2,13 +2,7 @@ import { useMemo, useState } from "react"
 import { Download, Search } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardTitle,
-  DashboardCardDescription,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
+import { DashboardCardPreset } from "@/components/common/dashboard-card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -147,31 +141,16 @@ export function DetailTab() {
         </div>
       </div>
 
-      <DashboardCard>
-        <DashboardCardHeader>
-          <div className="space-y-1">
-            <DashboardCardTitle>Records</DashboardCardTitle>
-            <DashboardCardDescription>
-              Detailed rows for the current filter
-            </DashboardCardDescription>
-          </div>
-        </DashboardCardHeader>
-        <DashboardCardContent>
-          <DataTablePreset columns={detailColumns} data={filteredRows} enableSorting />
-        </DashboardCardContent>
-      </DashboardCard>
+      <DashboardCardPreset
+        title="Records"
+        description="Detailed rows for the current filter"
+      >
+        <DataTablePreset columns={detailColumns} data={filteredRows} enableSorting />
+      </DashboardCardPreset>
 
-      <DashboardCard>
-        <DashboardCardHeader>
-          <div className="space-y-1">
-            <DashboardCardTitle>By category</DashboardCardTitle>
-            <DashboardCardDescription>Share of total</DashboardCardDescription>
-          </div>
-        </DashboardCardHeader>
-        <DashboardCardContent>
-          <DataTablePreset columns={categoryColumns} data={categoryRows} enableSorting />
-        </DashboardCardContent>
-      </DashboardCard>
+      <DashboardCardPreset title="By category" description="Share of total">
+        <DataTablePreset columns={categoryColumns} data={categoryRows} enableSorting />
+      </DashboardCardPreset>
     </div>
   )
 }

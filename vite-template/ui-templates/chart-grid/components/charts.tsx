@@ -1,12 +1,5 @@
 import type { EChartsOption } from "echarts"
 import { EChart } from "@/components/data/echart"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardTitle,
-  DashboardCardDescription,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
 import { formatNumber, getBaseGrid } from "./chart-helpers"
 import type {
   TimePoint,
@@ -15,26 +8,6 @@ import type {
   RadarPoint,
   HeatmapCell,
 } from "@/types/ui-template-chart-grid"
-
-interface ChartCardProps {
-  title: string
-  description: string
-  children: React.ReactNode
-}
-
-function ChartCard({ title, description, children }: ChartCardProps) {
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-1">
-          <DashboardCardTitle>{title}</DashboardCardTitle>
-          <DashboardCardDescription>{description}</DashboardCardDescription>
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>{children}</DashboardCardContent>
-    </DashboardCard>
-  )
-}
 
 interface AreaChartProps {
   data: TimePoint[]
@@ -70,11 +43,7 @@ export function AreaChart({ data }: AreaChartProps) {
       },
     ],
   }
-  return (
-    <ChartCard title="Trend (area)" description="Two series over the selected period">
-      <EChart option={option} height="280px" />
-    </ChartCard>
-  )
+  return <EChart option={option} height="280px" />
 }
 
 interface LineChartProps {
@@ -109,12 +78,19 @@ export function LineChart({ data }: LineChartProps) {
       },
     ],
   }
-  return (
-    <ChartCard title="Trend (line)" description="Two series over the selected period">
-      <EChart option={option} height="280px" />
-    </ChartCard>
-  )
+  return <EChart option={option} height="280px" />
 }
+
+const BAR_CATEGORIES = [
+  "Item 1",
+  "Item 2",
+  "Item 3",
+  "Item 4",
+  "Item 5",
+  "Item 6",
+  "Item 7",
+  "Item 8",
+]
 
 interface BarChartProps {
   data: BarPoint[]
@@ -123,7 +99,7 @@ export function BarChart({ data }: BarChartProps) {
   const option: EChartsOption = {
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
     grid: getBaseGrid(),
-    xAxis: { type: "category", data: data.map((d) => d.category) },
+    xAxis: { type: "category", data: BAR_CATEGORIES },
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
@@ -134,11 +110,7 @@ export function BarChart({ data }: BarChartProps) {
       },
     ],
   }
-  return (
-    <ChartCard title="Top categories" description="Ranked by value">
-      <EChart option={option} height="280px" />
-    </ChartCard>
-  )
+  return <EChart option={option} height="280px" />
 }
 
 interface ScatterChartProps {
@@ -164,12 +136,10 @@ export function ScatterChart({ data }: ScatterChartProps) {
       },
     ] as EChartsOption["series"],
   }
-  return (
-    <ChartCard title="Correlation" description="Each point is an item">
-      <EChart option={option} height="280px" />
-    </ChartCard>
-  )
+  return <EChart option={option} height="280px" />
 }
+
+const RADAR_AXES = ["Axis 1", "Axis 2", "Axis 3", "Axis 4", "Axis 5", "Axis 6"]
 
 interface RadarChartProps {
   data: RadarPoint[]
@@ -179,7 +149,7 @@ export function RadarChart({ data }: RadarChartProps) {
     tooltip: { trigger: "item" },
     legend: { bottom: 0 },
     radar: {
-      indicator: data.map((r) => ({ name: r.axis, max: 100 })),
+      indicator: data.map((_, i) => ({ name: RADAR_AXES[i], max: 100 })),
       radius: "65%",
     },
     series: [
@@ -200,11 +170,7 @@ export function RadarChart({ data }: RadarChartProps) {
       },
     ],
   }
-  return (
-    <ChartCard title="Profile" description="Current vs benchmark">
-      <EChart option={option} height="280px" />
-    </ChartCard>
-  )
+  return <EChart option={option} height="280px" />
 }
 
 interface HeatmapChartProps {
@@ -235,9 +201,5 @@ export function HeatmapChart({ data, xAxis, yAxis }: HeatmapChartProps) {
       },
     ],
   }
-  return (
-    <ChartCard title="Activity" description="Intensity by cell">
-      <EChart option={option} height="280px" />
-    </ChartCard>
-  )
+  return <EChart option={option} height="280px" />
 }

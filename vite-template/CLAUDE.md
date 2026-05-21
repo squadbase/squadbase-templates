@@ -122,7 +122,9 @@ EN/JA は `<name>` と `<name>-ja` のペアで、`files[].dest` は EN/JA で�
 
 ## AI カスタマイズ (`add --prompt`)
 
-`add` コマンドに `--prompt` を渡すと、テンプレート適用直後に **Vercel AI SDK 経由で AI が画面コピーとモックデータ内のテキストを最小限ドメインに寄せる (見た目アライン)**。完成済みテンプレの構造・データ・ロジックはそのままに、表示文言だけを軽く相対替えする軽量パスで、コーディングエージェントが Read/Edit を多段で繰り返すよりはるかに高速。
+`add` コマンドに `--prompt` を渡すと、テンプレート適用直後に **Vercel AI SDK 経由で AI が画面コピー (表示文言) を最小限ドメインに寄せる (見た目アライン)**。完成済みテンプレの構造・データ・ロジックはそのままに、表示文言だけを軽く相対替えする軽量パスで、コーディングエージェントが Read/Edit を多段で繰り返すよりはるかに高速。
+
+> **設計前提 (重要)**: 表示ラベルは component / page の **プレーンな文字列リテラル** に置き、`lib/*.ts` のデータ配列 (mock-data, derive-insights, types) は `manifest.files[].relabel: false` で **relabel 対象から除外** する。これにより AI は数値・構造が密に混在するデータ配列を一切開かず、構文破壊や数値改変を構造的に防ぐ。テンプレ作成時もこの規約に従うこと (KPI 名・stage 名・chart 軸名などの表示ラベルは描画 component 側に literal/const として持たせ、データ配列には値・id・generic な sample text のみを置く)。
 
 ```bash
 npx @squadbase/vite-template add kpi-chart-simple --ui \
@@ -141,25 +143,27 @@ npx @squadbase/vite-template add kpi-chart-simple --ui \
 | `--env-file <path>` | 指定した .env ファイルを読み込んでから AI を起動。既存 `process.env` を優先 (`.env` は補完のみ)。Node.js 20.12+ 必須。`--prompt` 併用必須。dotenv 等の追加依存なし (Node 標準 `process.loadEnvFile` を使用、`${VAR}` 展開非対応)。 |
 | `--base-url <url>` | OpenAI 互換エンドポイント (任意)。 |
 | `--dry-run` | AI 出力を unified diff で表示するだけ、disk 書き込みなし。 |
-| `--json` | 結果 (edits, unchanged, skipped, failedVerification, notes) を JSON で stdout 出力。エージェント呼び出し用。 |
+| `--json` | 結果 (edits, unchanged, skipped, failedVerification, aiError, notes) を JSON で stdout 出力。エージェント呼び出し用。 |
 
 **動作**:
-1. `applyTemplate()` でテンプレートを通常通りコピー
-2. `manifest.files[].dest` のファイル群を読み込み、各ファイルの内容を user prompt に埋め込み、system prompt (コピー整列ルール) と共に `generateObject` に渡す
-3. AI は構造化出力で `{ edits: [{ path, old_content, new_content, rationale }], notes }` を返す。`path` は JSON Schema enum で manifest.dest に拘束、`old_content` は置換対象の現在のスニペット (search/replace 方式)
-4. 各 edit を適用前に **`old_content` を現在のファイル内容と照合** (`applyEditsToFile()`)。見つからない / 複数一致 (非一意) なら、そのファイルの全 edits は破棄して `failedVerification[]` に積む (他ファイルは独立して適用)
-5. 検証成功した edits をファイル単位で適用し disk に書き戻し (dry-run なら unified diff 表示のみ)
+1. `applyTemplate()` でテンプレートを通常通りコピー (全ファイル。`relabel: false` も**コピーはされる**)
+2. `manifest.files` のうち **`relabel !== false` のファイルだけ**を relabel 対象集合とし、内容を読み込む (`readInputFiles`)
+3. **ファイル 1 つにつき 1 回の `generateObject` を並列実行** (`mapWithConcurrency`, 上限 `RELABEL_CONCURRENCY=4`)。各 call は自ファイル内容のみを user prompt に埋め、schema enum の `path` をそのファイルに固定。出力は小さく切断しにくい
+4. AI は各 call で `{ edits: [{ path, old_content, new_content, rationale }], notes }` を返す。`old_content` は置換対象の現在のスニペット (search/replace 方式)
+5. **失敗隔離**: あるファイルの call が失敗 (JSON 切断・パース失敗) しても `aiError[]` に積んで継続。他ファイルは巻き添えにならない (旧・単発一括呼び出しの致命点を解消)
+6. 各 edit を適用前に **`old_content` を現在のファイル内容と照合** (`applyEditsToFile()`)。見つからない / 複数一致 (非一意) なら、そのファイルの全 edits は破棄して `failedVerification[]` に積む
+7. 検証成功した edits をファイル単位で適用し disk に書き戻し (dry-run なら unified diff 表示のみ)
 
 **制約**:
-- AI が書き換えるのは **文字列リテラル (表示コピー + モックデータ内のテキスト的な値) の改名のみ**。数値・配列長・データ形状・`import` 行・ロジック・型・JSX 構造は変更しない (system prompt で明示)。新規 import を増やす余地が無いため、旧 IMPORT_CEILING 機構は廃止済み
-- AI が編集できるのは **manifest.files に列挙された dest のみ**。それ以外のパスは `skipped[]` に積まれる
+- AI が書き換えるのは **文字列リテラル (表示コピー) の改名のみ**。数値・配列長・データ形状・`import` 行・ロジック・型・JSX 構造は変更しない (system prompt で明示)。新規 import を増やす余地が無いため、旧 IMPORT_CEILING 機構は廃止済み
+- AI が編集できるのは **manifest.files のうち `relabel !== false` の dest のみ**。`relabel: false` のデータファイル (mock-data / derive-insights / types) や列挙外のパスは relabel 集合に含めず、万一返ってきても `skipped[]` に積まれる
 - `routes.tsx` は触らない (ui-templates / templates は 1 ルート設計)
 - 全文書き換えではなく **コンテンツアンカーの search/replace 差分編集** で、変更スニペットのみを AI に出力させる (出力トークン削減 + 大きなファイル対応)
 - `old_content` は **ファイル内で一意** である必要がある。AI には system prompt で「曖昧なら周辺コンテキストを足して一意にせよ」と指示済み
 
 **依存**: `ai` / `@ai-sdk/*` は `optionalDependencies`。`--prompt` 指定時のみ動的 import される。未 install 時は親切な `npm install` ガイダンスを表示して exit 1。
 
-**失敗時**: AI 呼び出しが途中で失敗した場合、書き換え済みファイルはそのまま残る。`git status` / `git diff` で確認し、必要なら revert すること。
+**失敗時**: per-file 並列なので、あるファイルの AI 呼び出しが失敗してもそのファイルだけ未変更 (`aiError[]`) で済み、成功した他ファイルは適用される。書き換え済みファイルはそのまま残るので `git status` / `git diff` で確認し、必要なら revert すること。
 
 ## テンプレート開発ルール
 

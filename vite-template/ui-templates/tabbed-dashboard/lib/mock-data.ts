@@ -1,4 +1,3 @@
-import { addDays, format } from "date-fns"
 import type {
   KpiItem,
   TrendPoint,
@@ -6,36 +5,45 @@ import type {
   DetailRow,
 } from "@/types/ui-template-tabbed-dashboard"
 
-const BASE_DATE = new Date("2024-03-31")
-const DAYS = 30
-
-function seededRandom(seed: number): () => number {
-  let s = seed
-  return () => {
-    s = (s * 9301 + 49297) % 233280
-    return s / 233280
-  }
-}
-
-const rand = seededRandom(57)
-
-export const trendSeries: TrendPoint[] = Array.from({ length: DAYS }, (_, i) => {
-  const date = addDays(BASE_DATE, i - DAYS + 1)
-  const base = 38_000 + i * 320 + (rand() - 0.5) * 7_000
-  return {
-    date: format(date, "yyyy-MM-dd"),
-    value: Math.max(15_000, Math.round(base)),
-  }
-})
-
-const totalRev = trendSeries.reduce((s, p) => s + p.value, 0)
+export const trendSeries: TrendPoint[] = [
+  { date: "2024-03-02", value: 37888 },
+  { date: "2024-03-03", value: 37314 },
+  { date: "2024-03-04", value: 41383 },
+  { date: "2024-03-05", value: 42427 },
+  { date: "2024-03-06", value: 41070 },
+  { date: "2024-03-07", value: 40791 },
+  { date: "2024-03-08", value: 40144 },
+  { date: "2024-03-09", value: 43643 },
+  { date: "2024-03-10", value: 42322 },
+  { date: "2024-03-11", value: 40956 },
+  { date: "2024-03-12", value: 40949 },
+  { date: "2024-03-13", value: 41892 },
+  { date: "2024-03-14", value: 40779 },
+  { date: "2024-03-15", value: 42906 },
+  { date: "2024-03-16", value: 42417 },
+  { date: "2024-03-17", value: 42531 },
+  { date: "2024-03-18", value: 45431 },
+  { date: "2024-03-19", value: 46816 },
+  { date: "2024-03-20", value: 42128 },
+  { date: "2024-03-21", value: 44439 },
+  { date: "2024-03-22", value: 44004 },
+  { date: "2024-03-23", value: 42487 },
+  { date: "2024-03-24", value: 42847 },
+  { date: "2024-03-25", value: 43898 },
+  { date: "2024-03-26", value: 46523 },
+  { date: "2024-03-27", value: 43573 },
+  { date: "2024-03-28", value: 49414 },
+  { date: "2024-03-29", value: 43155 },
+  { date: "2024-03-30", value: 49532 },
+  { date: "2024-03-31", value: 49470 },
+]
 
 export const categoryRows: CategoryRow[] = [
-  { category: "Category 1", value: Math.round(totalRev * 0.28), share: 0.28, delta: 5.4 },
-  { category: "Category 2", value: Math.round(totalRev * 0.22), share: 0.22, delta: 8.1 },
-  { category: "Category 3", value: Math.round(totalRev * 0.20), share: 0.20, delta: -2.3 },
-  { category: "Category 4", value: Math.round(totalRev * 0.18), share: 0.18, delta: 3.7 },
-  { category: "Category 5", value: Math.round(totalRev * 0.12), share: 0.12, delta: 1.2 },
+  { category: "Category 1", value: 362076, share: 0.28, delta: 5.4 },
+  { category: "Category 2", value: 284488, share: 0.22, delta: 8.1 },
+  { category: "Category 3", value: 258626, share: 0.20, delta: -2.3 },
+  { category: "Category 4", value: 232763, share: 0.18, delta: 3.7 },
+  { category: "Category 5", value: 155175, share: 0.12, delta: 1.2 },
 ]
 
 export const detailRows: DetailRow[] = [
@@ -55,48 +63,37 @@ export const detailRows: DetailRow[] = [
   { id: "d-14", name: "Item 14", owner: "Owner 2", status: "active", value: 31_780, units: 256 },
 ]
 
-function spark(values: number[], length = 12): number[] {
-  const step = Math.max(1, Math.floor(values.length / length))
-  const out: number[] = []
-  for (let i = 0; i < values.length; i += step) out.push(values[i])
-  return out.slice(-length)
-}
-
 export const overviewKpis: KpiItem[] = [
   {
     id: "revenue",
-    label: "Metric 1",
     value: "$1.32M",
     change: 12.4,
     changeLabel: "",
     positiveIsGood: true,
-    sparklineData: spark(trendSeries.map((p) => p.value)),
+    sparklineData: [40144, 42322, 40949, 40779, 42417, 45431, 42128, 44004, 42847, 46523, 49414, 49532],
   },
   {
     id: "orders",
-    label: "Metric 2",
     value: "16,900",
     change: 9.6,
     changeLabel: "",
     positiveIsGood: true,
-    sparklineData: spark(trendSeries.map((p) => p.value / 78)),
+    sparklineData: [515, 543, 525, 523, 544, 582, 540, 564, 549, 596, 634, 635],
   },
   {
     id: "users",
-    label: "Metric 3",
     value: "40,600",
     change: 6.8,
     changeLabel: "",
     positiveIsGood: true,
-    sparklineData: spark(trendSeries.map((p) => p.value / 30)),
+    sparklineData: [1338, 1411, 1365, 1359, 1414, 1514, 1404, 1467, 1428, 1551, 1647, 1651],
   },
   {
     id: "aov",
-    label: "Metric 4",
     value: "$78.20",
     change: 3.1,
     changeLabel: "",
     positiveIsGood: true,
-    sparklineData: spark(trendSeries.map((p) => p.value / Math.max(1, p.value / 78))),
+    sparklineData: [76.4, 79.1, 77.8, 80.2, 78.5, 79.6, 77.2, 80.1, 78.9, 79.4, 78.0, 78.2],
   },
 ]

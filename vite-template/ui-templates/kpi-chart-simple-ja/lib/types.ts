@@ -1,6 +1,5 @@
 export interface KpiItem {
   id: "total-revenue" | "active-users" | "conversion-rate" | "aov"
-  label: string
   value: string
   change: number
   changeLabel: string
