@@ -1,12 +1,8 @@
 import { useMemo } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Placeholder } from "@/components/common/placeholder"
+import { formatCurrency, formatPercent } from "./chart-helpers"
 import type { TopItemRow } from "@/types/ui-template-kpi-chart-simple"
 
 interface TopItemsTableProps {
@@ -19,37 +15,39 @@ export function TopItemsTable({ data }: TopItemsTableProps) {
       {
         accessorKey: "name",
         header: "Column 1",
-        cell: () => <Skeleton className="h-4 w-32" />,
       },
       {
         accessorKey: "category",
         header: "Column 2",
-        cell: () => <Skeleton className="h-5 w-20 rounded-full" />,
       },
       {
         accessorKey: "revenue",
         header: "Column 3",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-16" />
+            <Placeholder>
+              {formatCurrency(row.original.revenue, { short: true })}
+            </Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "units",
         header: "Column 4",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-12" />
+            <Placeholder>
+              {row.original.units.toLocaleString("en-US")}
+            </Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "share",
         header: "Column 5",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-10" />
+            <Placeholder>{formatPercent(row.original.share * 100)}</Placeholder>
           </div>
         ),
       },
@@ -57,17 +55,5 @@ export function TopItemsTable({ data }: TopItemsTableProps) {
     [],
   )
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-3.5 w-56" />
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <DataTablePreset columns={columns} data={data} enableSorting />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <DataTablePreset columns={columns} data={data} enableSorting />
 }

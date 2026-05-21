@@ -1,6 +1,5 @@
 export interface KpiItem {
   id: string
-  label: string
   value: string
   change: number
   changeLabel: string

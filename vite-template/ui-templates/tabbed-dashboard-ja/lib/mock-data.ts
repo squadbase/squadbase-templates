@@ -1,4 +1,3 @@
-import { addDays, format } from "date-fns"
 import type {
   KpiItem,
   TrendPoint,
@@ -6,101 +5,95 @@ import type {
   DetailRow,
 } from "@/types/ui-template-tabbed-dashboard"
 
-const BASE_DATE = new Date("2024-03-31")
-const DAYS = 30
-
-function seededRandom(seed: number): () => number {
-  let s = seed
-  return () => {
-    s = (s * 9301 + 49297) % 233280
-    return s / 233280
-  }
-}
-
-const rand = seededRandom(57)
-
-export const trendSeries: TrendPoint[] = Array.from({ length: DAYS }, (_, i) => {
-  const date = addDays(BASE_DATE, i - DAYS + 1)
-  const base = 38_000 + i * 320 + (rand() - 0.5) * 7_000
-  return {
-    date: format(date, "yyyy-MM-dd"),
-    value: Math.max(15_000, Math.round(base)),
-  }
-})
-
-const totalRev = trendSeries.reduce((s, p) => s + p.value, 0)
+export const trendSeries: TrendPoint[] = [
+  { date: "2024-03-02", value: 37888 },
+  { date: "2024-03-03", value: 37314 },
+  { date: "2024-03-04", value: 41383 },
+  { date: "2024-03-05", value: 42427 },
+  { date: "2024-03-06", value: 41070 },
+  { date: "2024-03-07", value: 40791 },
+  { date: "2024-03-08", value: 40144 },
+  { date: "2024-03-09", value: 43643 },
+  { date: "2024-03-10", value: 42322 },
+  { date: "2024-03-11", value: 40956 },
+  { date: "2024-03-12", value: 40949 },
+  { date: "2024-03-13", value: 41892 },
+  { date: "2024-03-14", value: 40779 },
+  { date: "2024-03-15", value: 42906 },
+  { date: "2024-03-16", value: 42417 },
+  { date: "2024-03-17", value: 42531 },
+  { date: "2024-03-18", value: 45431 },
+  { date: "2024-03-19", value: 46816 },
+  { date: "2024-03-20", value: 42128 },
+  { date: "2024-03-21", value: 44439 },
+  { date: "2024-03-22", value: 44004 },
+  { date: "2024-03-23", value: 42487 },
+  { date: "2024-03-24", value: 42847 },
+  { date: "2024-03-25", value: 43898 },
+  { date: "2024-03-26", value: 46523 },
+  { date: "2024-03-27", value: 43573 },
+  { date: "2024-03-28", value: 49414 },
+  { date: "2024-03-29", value: 43155 },
+  { date: "2024-03-30", value: 49532 },
+  { date: "2024-03-31", value: 49470 },
+]
 
 export const categoryRows: CategoryRow[] = [
-  { category: "Category 1", value: Math.round(totalRev * 0.28), share: 0.28, delta: 5.4 },
-  { category: "Category 2", value: Math.round(totalRev * 0.22), share: 0.22, delta: 8.1 },
-  { category: "Category 3", value: Math.round(totalRev * 0.20), share: 0.20, delta: -2.3 },
-  { category: "Category 4", value: Math.round(totalRev * 0.18), share: 0.18, delta: 3.7 },
-  { category: "Category 5", value: Math.round(totalRev * 0.12), share: 0.12, delta: 1.2 },
+  { category: "カテゴリ1", value: 362076, share: 0.28, delta: 5.4 },
+  { category: "カテゴリ2", value: 284488, share: 0.22, delta: 8.1 },
+  { category: "カテゴリ3", value: 258626, share: 0.20, delta: -2.3 },
+  { category: "カテゴリ4", value: 232763, share: 0.18, delta: 3.7 },
+  { category: "カテゴリ5", value: 155175, share: 0.12, delta: 1.2 },
 ]
 
 export const detailRows: DetailRow[] = [
-  { id: "d-01", name: "Item 1", owner: "Owner 1", status: "active", value: 184_320, units: 1_232 },
-  { id: "d-02", name: "Item 2", owner: "Owner 2", status: "active", value: 162_480, units: 812 },
-  { id: "d-03", name: "Item 3", owner: "Owner 3", status: "active", value: 138_750, units: 463 },
-  { id: "d-04", name: "Item 4", owner: "Owner 4", status: "paused", value: 121_900, units: 974 },
-  { id: "d-05", name: "Item 5", owner: "Owner 5", status: "active", value: 98_640, units: 1_644 },
-  { id: "d-06", name: "Item 6", owner: "Owner 6", status: "active", value: 87_220, units: 821 },
-  { id: "d-07", name: "Item 7", owner: "Owner 1", status: "active", value: 81_540, units: 679 },
-  { id: "d-08", name: "Item 8", owner: "Owner 2", status: "paused", value: 72_410, units: 905 },
-  { id: "d-09", name: "Item 9", owner: "Owner 3", status: "active", value: 68_320, units: 412 },
-  { id: "d-10", name: "Item 10", owner: "Owner 4", status: "active", value: 54_180, units: 720 },
-  { id: "d-11", name: "Item 11", owner: "Owner 5", status: "active", value: 49_650, units: 1_103 },
-  { id: "d-12", name: "Item 12", owner: "Owner 6", status: "active", value: 42_900, units: 953 },
-  { id: "d-13", name: "Item 13", owner: "Owner 1", status: "paused", value: 38_240, units: 488 },
-  { id: "d-14", name: "Item 14", owner: "Owner 2", status: "active", value: 31_780, units: 256 },
+  { id: "d-01", name: "項目1", owner: "担当者1", status: "active", value: 184_320, units: 1_232 },
+  { id: "d-02", name: "項目2", owner: "担当者2", status: "active", value: 162_480, units: 812 },
+  { id: "d-03", name: "項目3", owner: "担当者3", status: "active", value: 138_750, units: 463 },
+  { id: "d-04", name: "項目4", owner: "担当者4", status: "paused", value: 121_900, units: 974 },
+  { id: "d-05", name: "項目5", owner: "担当者5", status: "active", value: 98_640, units: 1_644 },
+  { id: "d-06", name: "項目6", owner: "担当者6", status: "active", value: 87_220, units: 821 },
+  { id: "d-07", name: "項目7", owner: "担当者1", status: "active", value: 81_540, units: 679 },
+  { id: "d-08", name: "項目8", owner: "担当者2", status: "paused", value: 72_410, units: 905 },
+  { id: "d-09", name: "項目9", owner: "担当者3", status: "active", value: 68_320, units: 412 },
+  { id: "d-10", name: "項目10", owner: "担当者4", status: "active", value: 54_180, units: 720 },
+  { id: "d-11", name: "項目11", owner: "担当者5", status: "active", value: 49_650, units: 1_103 },
+  { id: "d-12", name: "項目12", owner: "担当者6", status: "active", value: 42_900, units: 953 },
+  { id: "d-13", name: "項目13", owner: "担当者1", status: "paused", value: 38_240, units: 488 },
+  { id: "d-14", name: "項目14", owner: "担当者2", status: "active", value: 31_780, units: 256 },
 ]
-
-function spark(values: number[], length = 12): number[] {
-  const step = Math.max(1, Math.floor(values.length / length))
-  const out: number[] = []
-  for (let i = 0; i < values.length; i += step) out.push(values[i])
-  return out.slice(-length)
-}
-
-const orders = Math.round(totalRev / 78)
-const users = Math.round(orders * 2.4)
-const aov = totalRev / orders
 
 export const overviewKpis: KpiItem[] = [
   {
     id: "revenue",
-    label: "Metric 1",
-    value: `$${(totalRev / 1_000_000).toFixed(2)}M`,
+    value: "¥132万",
     change: 12.4,
     changeLabel: "",
     positiveIsGood: true,
-    sparklineData: spark(trendSeries.map((p) => p.value)),
+    sparklineData: [40144, 42322, 40949, 40779, 42417, 45431, 42128, 44004, 42847, 46523, 49414, 49532],
   },
   {
     id: "orders",
-    label: "Metric 2",
-    value: orders.toLocaleString("en-US"),
+    value: "16,900",
     change: 9.6,
     changeLabel: "",
     positiveIsGood: true,
-    sparklineData: spark(trendSeries.map((p) => p.value / 78)),
+    sparklineData: [515, 543, 525, 523, 544, 582, 540, 564, 549, 596, 634, 635],
   },
   {
     id: "users",
-    label: "Metric 3",
-    value: users.toLocaleString("en-US"),
+    value: "40,600",
     change: 6.8,
     changeLabel: "",
     positiveIsGood: true,
-    sparklineData: spark(trendSeries.map((p) => p.value / 30)),
+    sparklineData: [1338, 1411, 1365, 1359, 1414, 1514, 1404, 1467, 1428, 1551, 1647, 1651],
   },
   {
     id: "aov",
-    label: "Metric 4",
-    value: `$${aov.toFixed(2)}`,
+    value: "¥78.20",
     change: 3.1,
     changeLabel: "",
     positiveIsGood: true,
-    sparklineData: spark(trendSeries.map((p) => p.value / Math.max(1, p.value / 78))),
+    sparklineData: [76.4, 79.1, 77.8, 80.2, 78.5, 79.6, 77.2, 80.1, 78.9, 79.4, 78.0, 78.2],
   },
 ]

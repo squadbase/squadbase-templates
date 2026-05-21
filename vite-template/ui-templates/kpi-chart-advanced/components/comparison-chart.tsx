@@ -1,11 +1,5 @@
 import type { EChartsOption } from "echarts"
 import { EChart } from "@/components/data/echart"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
 import { formatNumber, getDualAxisGrid } from "./chart-helpers"
 import type { ComparisonPoint } from "@/types/ui-template-kpi-chart-advanced"
 
@@ -56,17 +50,5 @@ export function ComparisonChart({ data }: ComparisonChartProps) {
     ],
   }
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-40" />
-          <Skeleton className="h-3.5 w-56" />
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <EChart option={option} height="320px" />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <EChart option={option} height="320px" />
 }

@@ -18,11 +18,19 @@ export const root = join(__dirname, "..");
 export const baseTemplateDir = join(root, "base-template");
 export const devDir = join(root, "dev");
 export const templatesDir = join(root, "templates");
+export const uiTemplatesDir = join(root, "ui-templates");
 export const chartPresetsDir = join(root, "chart-presets");
 
 export function listTemplateNames() {
   return readdirSync(templatesDir).filter((d) =>
     existsSync(join(templatesDir, d, "manifest.json")),
+  );
+}
+
+export function listUiTemplateNames() {
+  if (!existsSync(uiTemplatesDir)) return [];
+  return readdirSync(uiTemplatesDir).filter((d) =>
+    existsSync(join(uiTemplatesDir, d, "manifest.json")),
   );
 }
 
@@ -34,9 +42,12 @@ export function listChartPresetNames() {
     .sort();
 }
 
-export function setupDev(templateName, { chartPreset } = {}) {
-  const name = templateName ?? listTemplateNames()[0];
-  if (!name) throw new Error("No template found in templates/");
+export function setupDev(templateName, { chartPreset, ui = false } = {}) {
+  const baseDir = ui ? uiTemplatesDir : templatesDir;
+  const sourceLabel = ui ? "ui-templates" : "templates";
+  const name =
+    templateName ?? (ui ? listUiTemplateNames() : listTemplateNames())[0];
+  if (!name) throw new Error(`No template found in ${sourceLabel}/`);
 
   if (chartPreset) {
     const available = listChartPresetNames();
@@ -47,9 +58,9 @@ export function setupDev(templateName, { chartPreset } = {}) {
     }
   }
 
-  const manifestPath = join(templatesDir, name, "manifest.json");
+  const manifestPath = join(baseDir, name, "manifest.json");
   if (!existsSync(manifestPath)) {
-    throw new Error(`Template not found: ${name}`);
+    throw new Error(`Template not found in ${sourceLabel}/: ${name}`);
   }
 
   execSync(
@@ -73,7 +84,7 @@ export function setupDev(templateName, { chartPreset } = {}) {
 
   for (const file of manifest.files) {
     const destPath = join(devDir, file.dest);
-    const srcPath = join(templatesDir, name, file.src);
+    const srcPath = join(baseDir, name, file.src);
     mkdirSync(dirname(destPath), { recursive: true });
     if (existsSync(destPath)) unlinkSync(destPath);
     symlinkSync(relative(dirname(destPath), srcPath), destPath);
@@ -111,5 +122,10 @@ export function setupDev(templateName, { chartPreset } = {}) {
     writeFileSync(targetPath, presetCss, "utf-8");
   }
 
-  return { devDir, templateName: name, chartPreset: chartPreset ?? null };
+  return {
+    devDir,
+    templateName: name,
+    chartPreset: chartPreset ?? null,
+    source: sourceLabel,
+  };
 }
