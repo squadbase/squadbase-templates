@@ -14,15 +14,15 @@ export function TopItemsTable({ data }: TopItemsTableProps) {
     () => [
       {
         accessorKey: "name",
-        header: "Column 1",
+        header: "列1",
       },
       {
         accessorKey: "category",
-        header: "Column 2",
+        header: "列2",
       },
       {
         accessorKey: "revenue",
-        header: "Column 3",
+        header: "列3",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>
@@ -33,18 +33,18 @@ export function TopItemsTable({ data }: TopItemsTableProps) {
       },
       {
         accessorKey: "units",
-        header: "Column 4",
+        header: "列4",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>
-              {row.original.units.toLocaleString("en-US")}
+              {row.original.units.toLocaleString("ja-JP")}
             </Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "share",
-        header: "Column 5",
+        header: "列5",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>{formatPercent(row.original.share * 100)}</Placeholder>

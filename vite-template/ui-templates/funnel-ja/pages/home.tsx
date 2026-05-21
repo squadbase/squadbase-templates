@@ -30,31 +30,31 @@ import {
 
 const today = new Date()
 
-const STAGE_NAMES = ["Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5"]
+const STAGE_NAMES = ["ステージ1", "ステージ2", "ステージ3", "ステージ4", "ステージ5"]
 
 const summaryCards = [
   {
-    label: "Entered",
+    label: "流入数",
     value: "124,500",
-    sub: "Total entering the funnel",
+    sub: "ファネルへの総流入数",
     icon: <Users className="size-4 text-muted-foreground" />,
   },
   {
-    label: "Converted",
+    label: "コンバージョン数",
     value: "1,186",
-    sub: "Completed conversions",
+    sub: "完了したコンバージョン",
     icon: <Target className="size-4 text-muted-foreground" />,
   },
   {
-    label: "Best step",
+    label: "最良ステップ",
     value: "31.9%",
-    sub: "Highest step conversion",
+    sub: "最も高いステップ転換率",
     icon: <TrendingUp className="size-4 text-emerald-600" />,
   },
   {
-    label: "Biggest drop",
+    label: "最大の離脱",
     value: "68.2%",
-    sub: "Largest step drop-off",
+    sub: "最大のステップ離脱率",
     icon: <TrendingDown className="size-4 text-rose-600" />,
   },
 ]
@@ -72,9 +72,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Conversion funnel</PageShellTitle>
+          <PageShellTitle>コンバージョンファネル</PageShellTitle>
           <PageShellDescription>
-            Stage-by-stage conversion for the selected period.
+            選択期間のステージ別コンバージョン。
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd className="flex-row items-center gap-2">
@@ -85,8 +85,8 @@ export default function HomePage() {
             variant="outline"
             size="sm"
           >
-            <ToggleGroupItem value="count">Option A</ToggleGroupItem>
-            <ToggleGroupItem value="percent">Option B</ToggleGroupItem>
+            <ToggleGroupItem value="count">選択肢A</ToggleGroupItem>
+            <ToggleGroupItem value="percent">選択肢B</ToggleGroupItem>
           </ToggleGroup>
           <DateRangePicker
             value={dateRange}
@@ -117,8 +117,8 @@ export default function HomePage() {
         <div className="grid gap-4 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <DashboardCardPreset
-              title="Conversion funnel"
-              description="Stage-by-stage conversion"
+              title="コンバージョンファネル"
+              description="ステージ別コンバージョン"
             >
               <FunnelChart
                 data={funnelStages}
@@ -128,14 +128,14 @@ export default function HomePage() {
               />
             </DashboardCardPreset>
           </div>
-          <DashboardCardPreset title="Stages" description="Conversion by stage">
+          <DashboardCardPreset title="ステージ" description="ステージ別コンバージョン">
             <StagesSidebar />
           </DashboardCardPreset>
         </div>
 
         <DashboardCardPreset
-          title="Stage breakdown"
-          description="Conversion between stages"
+          title="ステージ内訳"
+          description="ステージ間のコンバージョン"
         >
           <StageTable data={stageRows} />
         </DashboardCardPreset>
@@ -160,11 +160,11 @@ function StagesSidebar() {
                 <span className="truncate text-sm font-medium">{STAGE_NAMES[i]}</span>
               </div>
               <Placeholder className="text-sm font-medium">
-                {s.value.toLocaleString("en-US")}
+                {s.value.toLocaleString("ja-JP")}
               </Placeholder>
             </div>
             <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground">
-              <span>Conversion rate</span>
+              <span>転換率</span>
               <div className="flex justify-end">
                 <Placeholder>{`${s.conversionRate.toFixed(1)}%`}</Placeholder>
               </div>

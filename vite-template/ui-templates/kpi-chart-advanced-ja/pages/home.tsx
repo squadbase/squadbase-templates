@@ -53,10 +53,10 @@ const initialFilters: DashboardFilters = {
 }
 
 const smallKpiCards = [
-  { label: "Metric 2", icon: Users, kpi: headerKpis[1] },
-  { label: "Metric 3", icon: MousePointer, kpi: headerKpis[2] },
-  { label: "Metric 4", icon: Activity, kpi: headerKpis[3] },
-  { label: "Metric 5", icon: ShoppingCart, kpi: headerKpis[4] },
+  { label: "指標2", icon: Users, kpi: headerKpis[1] },
+  { label: "指標3", icon: MousePointer, kpi: headerKpis[2] },
+  { label: "指標4", icon: Activity, kpi: headerKpis[3] },
+  { label: "指標5", icon: ShoppingCart, kpi: headerKpis[4] },
 ]
 
 export default function HomePage() {
@@ -67,9 +67,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Performance dashboard</PageShellTitle>
+          <PageShellTitle>パフォーマンスダッシュボード</PageShellTitle>
           <PageShellDescription>
-            Headline KPIs, comparisons, and detail for the selected period.
+            選択期間の主要KPI・比較・詳細。
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd>
@@ -85,27 +85,27 @@ export default function HomePage() {
           <PageShellSummaryCard accent="accent">
             <TrendingUp />
             <div className="min-w-0 flex-1 space-y-1">
-              <p className="text-sm font-semibold">Growth</p>
+              <p className="text-sm font-semibold">成長</p>
               <p className="text-xs text-muted-foreground">
-                Overall performance is trending up versus the previous period.
+                全体のパフォーマンスは前期比で上昇傾向です。
               </p>
             </div>
           </PageShellSummaryCard>
           <PageShellSummaryCard accent="default">
             <PieChart />
             <div className="min-w-0 flex-1 space-y-1">
-              <p className="text-sm font-semibold">Mix</p>
+              <p className="text-sm font-semibold">構成</p>
               <p className="text-xs text-muted-foreground">
-                A single segment drives the largest share of the total.
+                単一セグメントが全体で最大のシェアを占めています。
               </p>
             </div>
           </PageShellSummaryCard>
           <PageShellSummaryCard accent="accent">
             <Activity />
             <div className="min-w-0 flex-1 space-y-1">
-              <p className="text-sm font-semibold">Momentum</p>
+              <p className="text-sm font-semibold">勢い</p>
               <p className="text-xs text-muted-foreground">
-                Recent activity points to a positive shift in the trend.
+                直近の動きはトレンドの好転を示しています。
               </p>
             </div>
           </PageShellSummaryCard>
@@ -117,7 +117,7 @@ export default function HomePage() {
           <DashboardCard className="h-full">
             <DashboardCardHeader>
               <DashboardCardTitle className="text-muted-foreground">
-                Metric 1
+                指標1
               </DashboardCardTitle>
               <DashboardCardAction>
                 <DollarSign className="size-5 text-muted-foreground" />
@@ -143,11 +143,11 @@ export default function HomePage() {
               />
               <div className="grid grid-cols-2 gap-3 border-t pt-3">
                 <div className="space-y-1.5">
-                  <p className="text-xs text-muted-foreground">Metric A</p>
-                  <Placeholder className="text-sm font-medium">$0.92M</Placeholder>
+                  <p className="text-xs text-muted-foreground">指標A</p>
+                  <Placeholder className="text-sm font-medium">¥92万</Placeholder>
                 </div>
                 <div className="space-y-1.5">
-                  <p className="text-xs text-muted-foreground">Metric B</p>
+                  <p className="text-xs text-muted-foreground">指標B</p>
                   <Placeholder className="text-sm font-medium">+8.4%</Placeholder>
                 </div>
               </div>
@@ -189,25 +189,25 @@ export default function HomePage() {
         <div className="grid gap-4 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <DashboardCardPreset
-              title="Comparison"
-              description="Current vs previous period"
+              title="比較"
+              description="今期 vs 前期"
             >
               <ComparisonChart data={comparisonSeries} />
             </DashboardCardPreset>
           </div>
-          <DashboardCardPreset title="Breakdown" description="Share by segment">
+          <DashboardCardPreset title="内訳" description="セグメント別シェア">
             <BreakdownChart data={breakdownSlices} />
           </DashboardCardPreset>
         </div>
 
         <DashboardCardPreset
-          title="Trend"
-          description="Values over the selected period"
+          title="トレンド"
+          description="選択期間の値"
         >
           <TrendChart data={trendSeries} />
         </DashboardCardPreset>
 
-        <DashboardCardPreset title="Campaigns" description="Performance by campaign">
+        <DashboardCardPreset title="キャンペーン" description="キャンペーン別パフォーマンス">
           <CampaignTable data={campaignRows} />
         </DashboardCardPreset>
       </PageShellContent>

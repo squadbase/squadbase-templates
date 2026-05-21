@@ -26,7 +26,7 @@ export function AreaChart({ data }: AreaChartProps) {
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "Series A",
+        name: "系列A",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -34,7 +34,7 @@ export function AreaChart({ data }: AreaChartProps) {
         areaStyle: { opacity: 0.22 },
       },
       {
-        name: "Series B",
+        name: "系列B",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -63,14 +63,14 @@ export function LineChart({ data }: LineChartProps) {
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "Series A",
+        name: "系列A",
         type: "line",
         smooth: true,
         showSymbol: false,
         data: data.map((d) => d.series1),
       },
       {
-        name: "Series B",
+        name: "系列B",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -82,14 +82,14 @@ export function LineChart({ data }: LineChartProps) {
 }
 
 const BAR_CATEGORIES = [
-  "Item 1",
-  "Item 2",
-  "Item 3",
-  "Item 4",
-  "Item 5",
-  "Item 6",
-  "Item 7",
-  "Item 8",
+  "項目1",
+  "項目2",
+  "項目3",
+  "項目4",
+  "項目5",
+  "項目6",
+  "項目7",
+  "項目8",
 ]
 
 interface BarChartProps {
@@ -103,7 +103,7 @@ export function BarChart({ data }: BarChartProps) {
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "Series A",
+        name: "系列A",
         type: "bar",
         data: data.map((d) => d.value),
         barMaxWidth: 28,
@@ -139,7 +139,7 @@ export function ScatterChart({ data }: ScatterChartProps) {
   return <EChart option={option} height="280px" />
 }
 
-const RADAR_AXES = ["Axis 1", "Axis 2", "Axis 3", "Axis 4", "Axis 5", "Axis 6"]
+const RADAR_AXES = ["軸1", "軸2", "軸3", "軸4", "軸5", "軸6"]
 
 interface RadarChartProps {
   data: RadarPoint[]
@@ -158,12 +158,12 @@ export function RadarChart({ data }: RadarChartProps) {
         data: [
           {
             value: data.map((r) => r.current),
-            name: "Series A",
+            name: "系列A",
             areaStyle: { opacity: 0.28 },
           },
           {
             value: data.map((r) => r.benchmark),
-            name: "Series B",
+            name: "系列B",
             areaStyle: { opacity: 0.18 },
           },
         ],

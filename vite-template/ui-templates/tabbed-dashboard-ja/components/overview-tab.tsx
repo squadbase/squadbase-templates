@@ -19,10 +19,10 @@ import {
 } from "@/lib/ui-template-tabbed-dashboard-mock-data"
 
 const kpiCards = [
-  { label: "Metric 1", icon: DollarSign, kpi: overviewKpis[0] },
-  { label: "Metric 2", icon: ShoppingCart, kpi: overviewKpis[1] },
-  { label: "Metric 3", icon: Users, kpi: overviewKpis[2] },
-  { label: "Metric 4", icon: Activity, kpi: overviewKpis[3] },
+  { label: "指標1", icon: DollarSign, kpi: overviewKpis[0] },
+  { label: "指標2", icon: ShoppingCart, kpi: overviewKpis[1] },
+  { label: "指標3", icon: Users, kpi: overviewKpis[2] },
+  { label: "指標4", icon: Activity, kpi: overviewKpis[3] },
 ]
 
 export function OverviewTab() {
@@ -38,7 +38,7 @@ export function OverviewTab() {
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "Series A",
+        name: "系列A",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -97,13 +97,13 @@ export function OverviewTab() {
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <DashboardCardPreset
-            title="Trend"
-            description="Values over the selected period"
+            title="トレンド"
+            description="選択期間の値"
           >
             <EChart option={trendOption} height="320px" />
           </DashboardCardPreset>
         </div>
-        <DashboardCardPreset title="Breakdown" description="Share by category">
+        <DashboardCardPreset title="内訳" description="カテゴリ別シェア">
           <EChart option={categoryOption} height="320px" />
         </DashboardCardPreset>
       </div>

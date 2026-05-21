@@ -21,7 +21,7 @@ export function SupportChart({ data }: SupportChartProps) {
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "Series A",
+        name: "系列A",
         type: "line",
         smooth: true,
         showSymbol: false,

@@ -36,7 +36,7 @@ export const trendSeries: TrendPoint[] = [
 export const headerKpis: KpiItem[] = [
   {
     id: "total-revenue",
-    value: "$2.41M",
+    value: "¥241万",
     change: 12.4,
     changeLabel: "",
     positiveIsGood: true,
@@ -60,7 +60,7 @@ export const headerKpis: KpiItem[] = [
   },
   {
     id: "aov",
-    value: "$78.40",
+    value: "¥78.40",
     change: 3.7,
     changeLabel: "",
     positiveIsGood: true,
@@ -69,14 +69,14 @@ export const headerKpis: KpiItem[] = [
 ]
 
 export const topItems: TopItemRow[] = [
-  { id: "p-01", name: "Item 1", category: "Category A", revenue: 184_320, units: 1_232, share: 0.142 },
-  { id: "p-02", name: "Item 2", category: "Category B", revenue: 162_480, units: 812, share: 0.125 },
-  { id: "p-03", name: "Item 3", category: "Category C", revenue: 138_750, units: 463, share: 0.107 },
-  { id: "p-04", name: "Item 4", category: "Category D", revenue: 121_900, units: 974, share: 0.094 },
-  { id: "p-05", name: "Item 5", category: "Category D", revenue: 98_640, units: 1_644, share: 0.076 },
-  { id: "p-06", name: "Item 6", category: "Category B", revenue: 87_220, units: 821, share: 0.067 },
-  { id: "p-07", name: "Item 7", category: "Category A", revenue: 81_540, units: 679, share: 0.063 },
-  { id: "p-08", name: "Item 8", category: "Category E", revenue: 72_410, units: 905, share: 0.056 },
-  { id: "p-09", name: "Item 9", category: "Category E", revenue: 68_900, units: 138, share: 0.053 },
-  { id: "p-10", name: "Item 10", category: "Category D", revenue: 54_220, units: 1_356, share: 0.042 },
+  { id: "p-01", name: "項目1", category: "カテゴリA", revenue: 184_320, units: 1_232, share: 0.142 },
+  { id: "p-02", name: "項目2", category: "カテゴリB", revenue: 162_480, units: 812, share: 0.125 },
+  { id: "p-03", name: "項目3", category: "カテゴリC", revenue: 138_750, units: 463, share: 0.107 },
+  { id: "p-04", name: "項目4", category: "カテゴリD", revenue: 121_900, units: 974, share: 0.094 },
+  { id: "p-05", name: "項目5", category: "カテゴリD", revenue: 98_640, units: 1_644, share: 0.076 },
+  { id: "p-06", name: "項目6", category: "カテゴリB", revenue: 87_220, units: 821, share: 0.067 },
+  { id: "p-07", name: "項目7", category: "カテゴリA", revenue: 81_540, units: 679, share: 0.063 },
+  { id: "p-08", name: "項目8", category: "カテゴリE", revenue: 72_410, units: 905, share: 0.056 },
+  { id: "p-09", name: "項目9", category: "カテゴリE", revenue: 68_900, units: 138, share: 0.053 },
+  { id: "p-10", name: "項目10", category: "カテゴリD", revenue: 54_220, units: 1_356, share: 0.042 },
 ]

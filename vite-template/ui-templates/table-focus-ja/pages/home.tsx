@@ -42,9 +42,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Records</PageShellTitle>
+          <PageShellTitle>レコード</PageShellTitle>
           <PageShellDescription>
-            Browse, filter, and search the full record list.
+            全レコードを閲覧・絞り込み・検索できます。
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd className="flex-row items-center gap-2">
@@ -53,7 +53,7 @@ export default function HomePage() {
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search..."
+              placeholder="検索..."
               className="h-9 w-64 pl-8"
             />
           </div>
@@ -72,40 +72,40 @@ export default function HomePage() {
             variant="outline"
             size="sm"
           >
-            <ToggleGroupItem value="all">All</ToggleGroupItem>
-            <ToggleGroupItem value="active">Option A</ToggleGroupItem>
-            <ToggleGroupItem value="paused">Option B</ToggleGroupItem>
-            <ToggleGroupItem value="draft">Option C</ToggleGroupItem>
+            <ToggleGroupItem value="all">すべて</ToggleGroupItem>
+            <ToggleGroupItem value="active">選択肢A</ToggleGroupItem>
+            <ToggleGroupItem value="paused">選択肢B</ToggleGroupItem>
+            <ToggleGroupItem value="draft">選択肢C</ToggleGroupItem>
           </ToggleGroup>
           <span className="text-xs text-muted-foreground">
-            {filtered.length} results
+            {filtered.length} 件
           </span>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <DashboardCardPreset
-              title="Records"
-              description="Detailed rows for the current filter"
+              title="レコード"
+              description="現在のフィルタに該当する行"
             >
               <DetailTable data={filtered} />
             </DashboardCardPreset>
           </div>
           <div className="space-y-4">
             <DashboardCardPreset
-              title="Trend"
-              description="Values over the selected period"
+              title="トレンド"
+              description="選択期間の値"
             >
               <SupportChart data={trendSeries} />
             </DashboardCardPreset>
-            <DashboardCardPreset title="By segment" description="Share of total">
+            <DashboardCardPreset title="セグメント別" description="全体に占める割合">
               <div className="space-y-3">
                 {summaryRows.map((row) => (
                   <div key={row.segment} className="space-y-1.5">
                     <div className="flex items-baseline justify-between">
                       <span className="text-sm font-medium">{row.segment}</span>
                       <Placeholder className="text-sm">
-                        {row.revenue.toLocaleString("en-US")}
+                        {row.revenue.toLocaleString("ja-JP")}
                       </Placeholder>
                     </div>
                     <div className="h-1.5 overflow-hidden rounded-full bg-muted">

@@ -52,9 +52,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Charts overview</PageShellTitle>
+          <PageShellTitle>チャート概要</PageShellTitle>
           <PageShellDescription>
-            A grid of charts for the selected period.
+            選択期間のチャートをグリッド表示。
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd className="flex-row items-center gap-3">
@@ -65,10 +65,10 @@ export default function HomePage() {
             variant="outline"
             size="sm"
           >
-            <ToggleGroupItem value="all">All</ToggleGroupItem>
-            <ToggleGroupItem value="trend">Group A</ToggleGroupItem>
-            <ToggleGroupItem value="ranking">Group B</ToggleGroupItem>
-            <ToggleGroupItem value="distribution">Group C</ToggleGroupItem>
+            <ToggleGroupItem value="all">すべて</ToggleGroupItem>
+            <ToggleGroupItem value="trend">グループA</ToggleGroupItem>
+            <ToggleGroupItem value="ranking">グループB</ToggleGroupItem>
+            <ToggleGroupItem value="distribution">グループC</ToggleGroupItem>
           </ToggleGroup>
           <DateRangePicker
             value={filters.dateRange}
@@ -84,37 +84,37 @@ export default function HomePage() {
         <div className="grid gap-4 lg:grid-cols-2">
           {show("trend") && (
             <DashboardCardPreset
-              title="Trend (area)"
-              description="Two series over the selected period"
+              title="トレンド (エリア)"
+              description="選択期間の2系列"
             >
               <AreaChart data={timeSeries} />
             </DashboardCardPreset>
           )}
           {show("trend") && (
             <DashboardCardPreset
-              title="Trend (line)"
-              description="Two series over the selected period"
+              title="トレンド (折れ線)"
+              description="選択期間の2系列"
             >
               <LineChart data={timeSeries} />
             </DashboardCardPreset>
           )}
           {show("ranking") && (
-            <DashboardCardPreset title="Top categories" description="Ranked by value">
+            <DashboardCardPreset title="上位カテゴリ" description="値で並べ替え">
               <BarChart data={barSeries} />
             </DashboardCardPreset>
           )}
           {show("distribution") && (
-            <DashboardCardPreset title="Correlation" description="Each point is an item">
+            <DashboardCardPreset title="相関" description="各点が1項目">
               <ScatterChart data={scatterPoints} />
             </DashboardCardPreset>
           )}
           {show("distribution") && (
-            <DashboardCardPreset title="Profile" description="Current vs benchmark">
+            <DashboardCardPreset title="プロファイル" description="現在 vs ベンチマーク">
               <RadarChart data={radarAxes} />
             </DashboardCardPreset>
           )}
           {show("distribution") && (
-            <DashboardCardPreset title="Activity" description="Intensity by cell">
+            <DashboardCardPreset title="アクティビティ" description="セルごとの強度">
               <HeatmapChart
                 data={heatmapCells}
                 xAxis={HEATMAP_X_AXIS}

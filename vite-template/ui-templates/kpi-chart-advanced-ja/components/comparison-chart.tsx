@@ -29,19 +29,19 @@ export function ComparisonChart({ data }: ComparisonChartProps) {
     ],
     series: [
       {
-        name: "Series A",
+        name: "系列A",
         type: "bar",
         data: data.map((d) => d.current),
         barMaxWidth: 28,
       },
       {
-        name: "Series B",
+        name: "系列B",
         type: "bar",
         data: data.map((d) => d.previous),
         barMaxWidth: 28,
       },
       {
-        name: "Series C",
+        name: "系列C",
         type: "line",
         yAxisIndex: 1,
         smooth: true,

@@ -39,34 +39,34 @@ export const trendSeries: TrendPoint[] = [
 ]
 
 export const categoryRows: CategoryRow[] = [
-  { category: "Category 1", value: 362076, share: 0.28, delta: 5.4 },
-  { category: "Category 2", value: 284488, share: 0.22, delta: 8.1 },
-  { category: "Category 3", value: 258626, share: 0.20, delta: -2.3 },
-  { category: "Category 4", value: 232763, share: 0.18, delta: 3.7 },
-  { category: "Category 5", value: 155175, share: 0.12, delta: 1.2 },
+  { category: "カテゴリ1", value: 362076, share: 0.28, delta: 5.4 },
+  { category: "カテゴリ2", value: 284488, share: 0.22, delta: 8.1 },
+  { category: "カテゴリ3", value: 258626, share: 0.20, delta: -2.3 },
+  { category: "カテゴリ4", value: 232763, share: 0.18, delta: 3.7 },
+  { category: "カテゴリ5", value: 155175, share: 0.12, delta: 1.2 },
 ]
 
 export const detailRows: DetailRow[] = [
-  { id: "d-01", name: "Item 1", owner: "Owner 1", status: "active", value: 184_320, units: 1_232 },
-  { id: "d-02", name: "Item 2", owner: "Owner 2", status: "active", value: 162_480, units: 812 },
-  { id: "d-03", name: "Item 3", owner: "Owner 3", status: "active", value: 138_750, units: 463 },
-  { id: "d-04", name: "Item 4", owner: "Owner 4", status: "paused", value: 121_900, units: 974 },
-  { id: "d-05", name: "Item 5", owner: "Owner 5", status: "active", value: 98_640, units: 1_644 },
-  { id: "d-06", name: "Item 6", owner: "Owner 6", status: "active", value: 87_220, units: 821 },
-  { id: "d-07", name: "Item 7", owner: "Owner 1", status: "active", value: 81_540, units: 679 },
-  { id: "d-08", name: "Item 8", owner: "Owner 2", status: "paused", value: 72_410, units: 905 },
-  { id: "d-09", name: "Item 9", owner: "Owner 3", status: "active", value: 68_320, units: 412 },
-  { id: "d-10", name: "Item 10", owner: "Owner 4", status: "active", value: 54_180, units: 720 },
-  { id: "d-11", name: "Item 11", owner: "Owner 5", status: "active", value: 49_650, units: 1_103 },
-  { id: "d-12", name: "Item 12", owner: "Owner 6", status: "active", value: 42_900, units: 953 },
-  { id: "d-13", name: "Item 13", owner: "Owner 1", status: "paused", value: 38_240, units: 488 },
-  { id: "d-14", name: "Item 14", owner: "Owner 2", status: "active", value: 31_780, units: 256 },
+  { id: "d-01", name: "項目1", owner: "担当者1", status: "active", value: 184_320, units: 1_232 },
+  { id: "d-02", name: "項目2", owner: "担当者2", status: "active", value: 162_480, units: 812 },
+  { id: "d-03", name: "項目3", owner: "担当者3", status: "active", value: 138_750, units: 463 },
+  { id: "d-04", name: "項目4", owner: "担当者4", status: "paused", value: 121_900, units: 974 },
+  { id: "d-05", name: "項目5", owner: "担当者5", status: "active", value: 98_640, units: 1_644 },
+  { id: "d-06", name: "項目6", owner: "担当者6", status: "active", value: 87_220, units: 821 },
+  { id: "d-07", name: "項目7", owner: "担当者1", status: "active", value: 81_540, units: 679 },
+  { id: "d-08", name: "項目8", owner: "担当者2", status: "paused", value: 72_410, units: 905 },
+  { id: "d-09", name: "項目9", owner: "担当者3", status: "active", value: 68_320, units: 412 },
+  { id: "d-10", name: "項目10", owner: "担当者4", status: "active", value: 54_180, units: 720 },
+  { id: "d-11", name: "項目11", owner: "担当者5", status: "active", value: 49_650, units: 1_103 },
+  { id: "d-12", name: "項目12", owner: "担当者6", status: "active", value: 42_900, units: 953 },
+  { id: "d-13", name: "項目13", owner: "担当者1", status: "paused", value: 38_240, units: 488 },
+  { id: "d-14", name: "項目14", owner: "担当者2", status: "active", value: 31_780, units: 256 },
 ]
 
 export const overviewKpis: KpiItem[] = [
   {
     id: "revenue",
-    value: "$1.32M",
+    value: "¥132万",
     change: 12.4,
     changeLabel: "",
     positiveIsGood: true,
@@ -90,7 +90,7 @@ export const overviewKpis: KpiItem[] = [
   },
   {
     id: "aov",
-    value: "$78.20",
+    value: "¥78.20",
     change: 3.1,
     changeLabel: "",
     positiveIsGood: true,

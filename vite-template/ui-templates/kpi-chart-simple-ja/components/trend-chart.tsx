@@ -26,7 +26,7 @@ export function TrendChart({ data }: TrendChartProps) {
     },
     series: [
       {
-        name: "Series A",
+        name: "系列A",
         type: "line",
         smooth: true,
         showSymbol: false,

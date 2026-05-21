@@ -14,15 +14,15 @@ export function CampaignTable({ data }: CampaignTableProps) {
     () => [
       {
         accessorKey: "name",
-        header: "Column 1",
+        header: "列1",
       },
       {
         accessorKey: "channel",
-        header: "Column 2",
+        header: "列2",
       },
       {
         accessorKey: "spend",
-        header: "Column 3",
+        header: "列3",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>
@@ -33,21 +33,21 @@ export function CampaignTable({ data }: CampaignTableProps) {
       },
       {
         accessorKey: "conversions",
-        header: "Column 4",
+        header: "列4",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>
-              {row.original.conversions.toLocaleString("en-US")}
+              {row.original.conversions.toLocaleString("ja-JP")}
             </Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "roi",
-        header: "Column 5",
+        header: "列5",
         cell: ({ row }) => (
           <div className="flex justify-end">
-            <Placeholder>{`${row.original.roi.toFixed(1)}x`}</Placeholder>
+            <Placeholder>{`${row.original.roi.toFixed(1)}倍`}</Placeholder>
           </div>
         ),
       },

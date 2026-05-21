@@ -27,9 +27,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Team overview</PageShellTitle>
+          <PageShellTitle>チーム概要</PageShellTitle>
           <PageShellDescription>
-            Overview and detail for the selected period.
+            選択期間の概要と詳細。
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd>
@@ -47,11 +47,11 @@ export default function HomePage() {
             <TabsList variant="line" className="gap-4 bg-transparent -mb-px">
               <TabsTrigger value="overview" className="gap-2 px-1">
                 <LayoutDashboard className="size-4" />
-                Tab 1
+                タブ1
               </TabsTrigger>
               <TabsTrigger value="detail" className="gap-2 px-1">
                 <Table2 className="size-4" />
-                Tab 2
+                タブ2
               </TabsTrigger>
             </TabsList>
           </div>

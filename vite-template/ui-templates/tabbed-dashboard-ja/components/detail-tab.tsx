@@ -16,6 +16,11 @@ import type { CategoryRow, DetailRow } from "@/types/ui-template-tabbed-dashboar
 
 type StatusFilter = "all" | DetailRow["status"]
 
+const STATUS_LABELS: Record<DetailRow["status"], string> = {
+  active: "有効",
+  paused: "一時停止",
+}
+
 export function DetailTab() {
   const [query, setQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all")
@@ -36,11 +41,11 @@ export function DetailTab() {
     () => [
       {
         accessorKey: "category",
-        header: "Column 1",
+        header: "列1",
       },
       {
         accessorKey: "value",
-        header: "Column 2",
+        header: "列2",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>
@@ -51,7 +56,7 @@ export function DetailTab() {
       },
       {
         accessorKey: "share",
-        header: "Column 3",
+        header: "列3",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>{formatPercent(row.original.share * 100)}</Placeholder>
@@ -60,7 +65,7 @@ export function DetailTab() {
       },
       {
         accessorKey: "delta",
-        header: "Column 4",
+        header: "列4",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>{formatSignedPercent(row.original.delta)}</Placeholder>
@@ -75,19 +80,20 @@ export function DetailTab() {
     () => [
       {
         accessorKey: "name",
-        header: "Column 1",
+        header: "列1",
       },
       {
         accessorKey: "owner",
-        header: "Column 2",
+        header: "列2",
       },
       {
         accessorKey: "status",
-        header: "Column 3",
+        header: "列3",
+        cell: ({ row }) => STATUS_LABELS[row.original.status],
       },
       {
         accessorKey: "value",
-        header: "Column 4",
+        header: "列4",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>
@@ -98,11 +104,11 @@ export function DetailTab() {
       },
       {
         accessorKey: "units",
-        header: "Column 5",
+        header: "列5",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>
-              {row.original.units.toLocaleString("en-US")}
+              {row.original.units.toLocaleString("ja-JP")}
             </Placeholder>
           </div>
         ),
@@ -117,7 +123,7 @@ export function DetailTab() {
         <div className="relative w-full sm:max-w-sm">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search..."
+            placeholder="検索..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="pl-9"
@@ -131,9 +137,9 @@ export function DetailTab() {
             variant="outline"
             size="sm"
           >
-            <ToggleGroupItem value="all">All</ToggleGroupItem>
-            <ToggleGroupItem value="active">Option A</ToggleGroupItem>
-            <ToggleGroupItem value="paused">Option B</ToggleGroupItem>
+            <ToggleGroupItem value="all">すべて</ToggleGroupItem>
+            <ToggleGroupItem value="active">選択肢A</ToggleGroupItem>
+            <ToggleGroupItem value="paused">選択肢B</ToggleGroupItem>
           </ToggleGroup>
           <Button variant="outline" size="sm" className="gap-2">
             <Download className="size-4" />
@@ -142,13 +148,13 @@ export function DetailTab() {
       </div>
 
       <DashboardCardPreset
-        title="Records"
-        description="Detailed rows for the current filter"
+        title="レコード"
+        description="現在のフィルタに該当する行"
       >
         <DataTablePreset columns={detailColumns} data={filteredRows} enableSorting />
       </DashboardCardPreset>
 
-      <DashboardCardPreset title="By category" description="Share of total">
+      <DashboardCardPreset title="カテゴリ別" description="全体に占める割合">
         <DataTablePreset columns={categoryColumns} data={categoryRows} enableSorting />
       </DashboardCardPreset>
     </div>

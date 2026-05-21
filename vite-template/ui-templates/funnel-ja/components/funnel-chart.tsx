@@ -53,7 +53,7 @@ export function FunnelChart({
             const main =
               display === "percent"
                 ? `${params.data.share.toFixed(1)}%`
-                : params.value.toLocaleString("en-US")
+                : params.value.toLocaleString("ja-JP")
             return `{name|${params.name}}\n{value|${main}}`
           },
           rich: {

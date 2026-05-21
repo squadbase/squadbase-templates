@@ -49,17 +49,17 @@ export const comparisonSeries: ComparisonPoint[] = [
 ]
 
 export const breakdownSlices: BreakdownSlice[] = [
-  { segment: "Segment 1", value: 412_000 },
-  { segment: "Segment 2", value: 318_000 },
-  { segment: "Segment 3", value: 287_000 },
-  { segment: "Segment 4", value: 164_000 },
-  { segment: "Segment 5", value: 132_000 },
+  { segment: "セグメント1", value: 412_000 },
+  { segment: "セグメント2", value: 318_000 },
+  { segment: "セグメント3", value: 287_000 },
+  { segment: "セグメント4", value: 164_000 },
+  { segment: "セグメント5", value: 132_000 },
 ]
 
 export const headerKpis: KpiItem[] = [
   {
     id: "revenue",
-    value: "$1.04M",
+    value: "¥104万",
     change: 14.2,
     changeLabel: "",
     positiveIsGood: true,
@@ -91,7 +91,7 @@ export const headerKpis: KpiItem[] = [
   },
   {
     id: "aov",
-    value: "$12.62",
+    value: "¥12.62",
     change: 5.1,
     changeLabel: "",
     positiveIsGood: true,
@@ -100,10 +100,10 @@ export const headerKpis: KpiItem[] = [
 ]
 
 export const campaignRows: CampaignRow[] = [
-  { id: "c-01", name: "Item 1", channel: "Group A", spend: 48_200, conversions: 612, roi: 4.8 },
-  { id: "c-02", name: "Item 2", channel: "Group B", spend: 34_600, conversions: 421, roi: 3.4 },
-  { id: "c-03", name: "Item 3", channel: "Group C", spend: 12_800, conversions: 308, roi: 6.9 },
-  { id: "c-04", name: "Item 4", channel: "Group D", spend: 22_100, conversions: 254, roi: 4.1 },
-  { id: "c-05", name: "Item 5", channel: "Group E", spend: 18_400, conversions: 196, roi: 3.2 },
-  { id: "c-06", name: "Item 6", channel: "Group B", spend: 14_300, conversions: 124, roi: 2.5 },
+  { id: "c-01", name: "項目1", channel: "グループA", spend: 48_200, conversions: 612, roi: 4.8 },
+  { id: "c-02", name: "項目2", channel: "グループB", spend: 34_600, conversions: 421, roi: 3.4 },
+  { id: "c-03", name: "項目3", channel: "グループC", spend: 12_800, conversions: 308, roi: 6.9 },
+  { id: "c-04", name: "項目4", channel: "グループD", spend: 22_100, conversions: 254, roi: 4.1 },
+  { id: "c-05", name: "項目5", channel: "グループE", spend: 18_400, conversions: 196, roi: 3.2 },
+  { id: "c-06", name: "項目6", channel: "グループB", spend: 14_300, conversions: 124, roi: 2.5 },
 ]

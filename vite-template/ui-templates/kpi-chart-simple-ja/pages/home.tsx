@@ -39,10 +39,10 @@ const initialFilters: DashboardFilters = {
 }
 
 const kpiCards = [
-  { label: "Metric 1", icon: DollarSign, kpi: headerKpis[0] },
-  { label: "Metric 2", icon: Users, kpi: headerKpis[1] },
-  { label: "Metric 3", icon: Activity, kpi: headerKpis[2] },
-  { label: "Metric 4", icon: ShoppingCart, kpi: headerKpis[3] },
+  { label: "指標1", icon: DollarSign, kpi: headerKpis[0] },
+  { label: "指標2", icon: Users, kpi: headerKpis[1] },
+  { label: "指標3", icon: Activity, kpi: headerKpis[2] },
+  { label: "指標4", icon: ShoppingCart, kpi: headerKpis[3] },
 ]
 
 export default function HomePage() {
@@ -52,9 +52,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Performance overview</PageShellTitle>
+          <PageShellTitle>パフォーマンス概要</PageShellTitle>
           <PageShellDescription>
-            Key metrics and trends for the selected period.
+            選択期間の主要指標とトレンド。
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd>
@@ -101,13 +101,13 @@ export default function HomePage() {
         </div>
 
         <DashboardCardPreset
-          title="Trend"
-          description="Values over the selected period"
+          title="トレンド"
+          description="選択期間の値"
         >
           <TrendChart data={trendSeries} />
         </DashboardCardPreset>
 
-        <DashboardCardPreset title="Top items" description="Ranked by value">
+        <DashboardCardPreset title="上位項目" description="値で並べ替え">
           <TopItemsTable data={topItems} />
         </DashboardCardPreset>
       </PageShellContent>

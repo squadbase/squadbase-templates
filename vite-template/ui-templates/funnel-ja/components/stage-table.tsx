@@ -5,7 +5,7 @@ import { Placeholder } from "@/components/common/placeholder"
 import { formatNumber, formatPercent } from "./chart-helpers"
 import type { StageRow } from "@/types/ui-template-funnel"
 
-const STEP_NAMES = ["Stage 1 → 2", "Stage 2 → 3", "Stage 3 → 4", "Stage 4 → 5"]
+const STEP_NAMES = ["ステージ1 → 2", "ステージ2 → 3", "ステージ3 → 4", "ステージ4 → 5"]
 
 interface StageTableProps {
   data: StageRow[]
@@ -16,12 +16,12 @@ export function StageTable({ data }: StageTableProps) {
     () => [
       {
         id: "step",
-        header: "Column 1",
+        header: "列1",
         cell: ({ row }) => STEP_NAMES[row.index],
       },
       {
         accessorKey: "count",
-        header: "Column 2",
+        header: "列2",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>{formatNumber(row.original.count)}</Placeholder>
@@ -30,7 +30,7 @@ export function StageTable({ data }: StageTableProps) {
       },
       {
         accessorKey: "conversionRate",
-        header: "Column 3",
+        header: "列3",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>{formatPercent(row.original.conversionRate)}</Placeholder>
@@ -39,16 +39,16 @@ export function StageTable({ data }: StageTableProps) {
       },
       {
         accessorKey: "avgDays",
-        header: "Column 4",
+        header: "列4",
         cell: ({ row }) => (
           <div className="flex justify-end">
-            <Placeholder>{`${row.original.avgDays.toFixed(1)}d`}</Placeholder>
+            <Placeholder>{`${row.original.avgDays.toFixed(1)}日`}</Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "dropoff",
-        header: "Column 5",
+        header: "列5",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>{formatNumber(row.original.dropoff)}</Placeholder>

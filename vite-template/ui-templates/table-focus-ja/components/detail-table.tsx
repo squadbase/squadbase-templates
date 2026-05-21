@@ -5,6 +5,12 @@ import { Placeholder } from "@/components/common/placeholder"
 import { formatCurrency, formatPercent } from "./chart-helpers"
 import type { DetailRow } from "@/types/ui-template-table-focus"
 
+const STATUS_LABELS: Record<DetailRow["status"], string> = {
+  active: "有効",
+  paused: "一時停止",
+  draft: "下書き",
+}
+
 interface DetailTableProps {
   data: DetailRow[]
 }
@@ -14,23 +20,24 @@ export function DetailTable({ data }: DetailTableProps) {
     () => [
       {
         accessorKey: "name",
-        header: "Column 1",
+        header: "列1",
       },
       {
         accessorKey: "owner",
-        header: "Column 2",
+        header: "列2",
       },
       {
         accessorKey: "category",
-        header: "Column 3",
+        header: "列3",
       },
       {
         accessorKey: "status",
-        header: "Column 4",
+        header: "列4",
+        cell: ({ row }) => STATUS_LABELS[row.original.status],
       },
       {
         accessorKey: "revenue",
-        header: "Column 5",
+        header: "列5",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>
@@ -41,18 +48,18 @@ export function DetailTable({ data }: DetailTableProps) {
       },
       {
         accessorKey: "units",
-        header: "Column 6",
+        header: "列6",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>
-              {row.original.units.toLocaleString("en-US")}
+              {row.original.units.toLocaleString("ja-JP")}
             </Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "margin",
-        header: "Column 7",
+        header: "列7",
         cell: ({ row }) => (
           <div className="flex justify-end">
             <Placeholder>{formatPercent(row.original.margin)}</Placeholder>
@@ -61,7 +68,7 @@ export function DetailTable({ data }: DetailTableProps) {
       },
       {
         accessorKey: "updated",
-        header: "Column 8",
+        header: "列8",
         cell: ({ row }) => (
           <Placeholder className="text-xs">{row.original.updated}</Placeholder>
         ),
