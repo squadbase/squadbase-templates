@@ -29,10 +29,12 @@ Routes are explicit in `src/routes.tsx` — the single source of route truth. To
 - `src/components/ui/` holds shadcn/ui primitives — **DO NOT edit or recreate them.**
 - Files prefixed `_` in `src/pages/` (e.g. `_router.tsx`) are infrastructure, not pages — do not register them as routes.
 - Every **page** (`src/pages/*.tsx`) uses `export default function` — required by the `lazy()` loader in `routes.tsx`. Components under `src/components/` may use named or default exports.
+- **Keep a component/page file to component, constant, and type exports only.** `react-refresh/only-export-components` (Fast Refresh) warns when a file that exports a component *also* exports a hook, helper function, or other runtime value — move those into a separate module. Plain constants and type-only exports are fine.
 - Page files default to `PageShell` (Header → Content, optional Footer). Only switch to a custom layout when the requested design explicitly cannot be expressed with `PageShell`.
 - Framed / bordered content defaults to `DashboardCard` (or `DashboardCardPreset`). Reach for `ui/Card` only when `DashboardCard` genuinely cannot meet the requirement.
 - Before using any component, open its source file to confirm the exact Props and usage — do not rely on assumptions.
 - Import React hooks as named imports (`import { useState } from "react"`). Never `import React from "react"` — the JSX transform is automatic.
+- **Unused imports, variables, and parameters fail the build — not just lint.** `tsconfig` enables `noUnusedLocals`/`noUnusedParameters`, so `tsc` (and therefore `npm run build`) errors on any leftover. Delete them. A parameter you must keep in the signature but don't use may be prefixed with `_` to silence the check; there is no such exemption for imports or local variables — those must actually be removed.
 - **Select-family `value` cannot be an empty string.** `Select`/`SelectItem`, `MultiSelect`, `SearchableSelect`, and `FilterBar` all inherit the Radix rule — an empty-string value **throws**. Use a non-empty sentinel like `"all"` for null-like options.
 - **`MarkdownRenderer` does NOT sanitize input.** Run user-generated content through DOMPurify (or equivalent) before passing it in.
 - **`DataTable`**: every column needs an `id` or `accessorKey`, and `useDataTable()` **throws** outside the table context.
