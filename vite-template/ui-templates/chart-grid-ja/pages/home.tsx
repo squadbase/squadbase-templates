@@ -52,7 +52,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>チャート概要</PageShellTitle>
+          <PageShellTitle>[テンプレート] チャート概要</PageShellTitle>
           <PageShellDescription>
             選択期間のチャートをグリッド表示。
           </PageShellDescription>

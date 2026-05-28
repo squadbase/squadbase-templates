@@ -52,7 +52,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>パフォーマンス概要</PageShellTitle>
+          <PageShellTitle>[テンプレート] パフォーマンス概要</PageShellTitle>
           <PageShellDescription>
             選択期間の主要指標とトレンド。
           </PageShellDescription>

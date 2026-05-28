@@ -27,7 +27,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>チーム概要</PageShellTitle>
+          <PageShellTitle>[テンプレート] チーム概要</PageShellTitle>
           <PageShellDescription>
             選択期間の概要と詳細。
           </PageShellDescription>
