@@ -52,7 +52,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Performance overview</PageShellTitle>
+          <PageShellTitle>[Template] Performance overview</PageShellTitle>
           <PageShellDescription>
             Key metrics and trends for the selected period.
           </PageShellDescription>

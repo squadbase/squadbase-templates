@@ -42,7 +42,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>レコード</PageShellTitle>
+          <PageShellTitle>[テンプレート] レコード</PageShellTitle>
           <PageShellDescription>
             全レコードを閲覧・絞り込み・検索できます。
           </PageShellDescription>

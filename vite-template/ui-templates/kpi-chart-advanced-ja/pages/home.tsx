@@ -67,7 +67,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>パフォーマンスダッシュボード</PageShellTitle>
+          <PageShellTitle>[テンプレート] パフォーマンスダッシュボード</PageShellTitle>
           <PageShellDescription>
             選択期間の主要KPI・比較・詳細。
           </PageShellDescription>

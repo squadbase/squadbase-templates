@@ -67,7 +67,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Performance dashboard</PageShellTitle>
+          <PageShellTitle>[Template] Performance dashboard</PageShellTitle>
           <PageShellDescription>
             Headline KPIs, comparisons, and detail for the selected period.
           </PageShellDescription>

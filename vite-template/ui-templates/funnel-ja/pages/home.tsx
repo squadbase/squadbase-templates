@@ -72,7 +72,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>コンバージョンファネル</PageShellTitle>
+          <PageShellTitle>[テンプレート] コンバージョンファネル</PageShellTitle>
           <PageShellDescription>
             選択期間のステージ別コンバージョン。
           </PageShellDescription>

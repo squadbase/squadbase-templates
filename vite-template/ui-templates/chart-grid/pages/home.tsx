@@ -52,7 +52,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Charts overview</PageShellTitle>
+          <PageShellTitle>[Template] Charts overview</PageShellTitle>
           <PageShellDescription>
             A grid of charts for the selected period.
           </PageShellDescription>

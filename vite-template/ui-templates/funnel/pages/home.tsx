@@ -72,7 +72,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Conversion funnel</PageShellTitle>
+          <PageShellTitle>[Template] Conversion funnel</PageShellTitle>
           <PageShellDescription>
             Stage-by-stage conversion for the selected period.
           </PageShellDescription>

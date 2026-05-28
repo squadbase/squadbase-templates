@@ -27,7 +27,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Team overview</PageShellTitle>
+          <PageShellTitle>[Template] Team overview</PageShellTitle>
           <PageShellDescription>
             Overview and detail for the selected period.
           </PageShellDescription>

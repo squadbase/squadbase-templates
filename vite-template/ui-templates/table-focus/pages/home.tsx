@@ -42,7 +42,7 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>Records</PageShellTitle>
+          <PageShellTitle>[Template] Records</PageShellTitle>
           <PageShellDescription>
             Browse, filter, and search the full record list.
           </PageShellDescription>
