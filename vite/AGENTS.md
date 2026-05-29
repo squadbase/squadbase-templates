@@ -44,6 +44,7 @@ Routes are explicit in `src/routes.tsx` — the single source of route truth. To
 
 - **Type `option` with a `: EChartsOption` annotation or `satisfies EChartsOption` — never an `as` cast.** A cast hides the very error this catches: without annotation, literals like `type: "category"` widen to `string` and the build fails. Import the `EChartsOption` type from `"echarts"`; import the `EChart` component from `@/components/data/echart` (the only chart component — `@/components/ui/chart` does not exist).
 - **Do not hardcode chart colors.** `EChart` resolves the `--chart-1`…`--chart-5` tokens at runtime and re-themes on the `squadbase-theme-change` event for light/dark. Leave `option.color` unset and let the wrapper color the series (its 2-series auto-coloring fires when `series` has length 2; an explicit `option.color` takes precedence).
+- **Size is controlled by the `height` prop only.** Width is always 100% of the parent — there is no `width` prop. Height defaults to `400` (px); pass a number for pixels (`height={300}`) or a CSS string (`height="50vh"`). **Tailwind `h-*` / `w-*` classes on `className` only style the outer wrapper and do NOT resize the chart canvas** — use `height` for the canvas, and constrain horizontal size by wrapping the chart in a sized container (e.g. a `DashboardCard` or a grid cell).
 - Note the asymmetry with data fetching: server-logic responses **require** an `as` cast (they are untyped), whereas ECharts options **forbid** one.
 
 ### Component splitting
