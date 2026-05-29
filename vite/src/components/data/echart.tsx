@@ -209,6 +209,14 @@ export interface EChartProps {
    * <EChart option={option} />
    */
   option: EChartsOption
+  /**
+   * チャートの高さ。数値は px、文字列は CSS 値（例: `"50vh"`）として扱う。
+   *
+   * 省略した場合は外側ラッパーに `h-[400px]` がデフォルトで当たるが、`className` に
+   * `h-full` や `h-[360px]` などの高さクラスを渡せばそちらが優先される
+   * （`h-full` を使う場合は親要素に確定した高さが必要）。
+   * `height` と `className` の高さを両方指定した場合は `height`（インライン style）が勝つ。
+   */
   height?: string | number
   loading?: boolean
   theme?: string | object
@@ -229,7 +237,7 @@ export const EChart = React.forwardRef<HTMLDivElement, EChartProps>(
   function EChart(
     {
       option,
-      height = 400,
+      height,
       loading = false,
       theme,
       onEvents,
@@ -366,21 +374,31 @@ export const EChart = React.forwardRef<HTMLDivElement, EChartProps>(
       link.click()
     }, [getPngDataUrl, fileName])
 
+    // 高さの解決:
+    // - height prop を渡した場合はそれをインライン style に反映（後方互換）。
+    // - 未指定の場合は外側ラッパーに h-[400px] をデフォルトとして当てる。className に
+    //   h-full / h-[360px] などがあれば tailwind-merge で後勝ち上書きされ、className 側が効く。
+    // 注意: height prop と className の高さを両方渡した場合はインライン style（height prop）が勝つ。
+    const styleHeight =
+      height == null ? undefined : typeof height === "number" ? `${height}px` : height
+
     return (
       <div
         ref={ref}
         data-slot="echart"
-        className={cn("group relative w-full", className)}
+        className={cn(
+          "group relative w-full",
+          height == null && "h-[400px]",
+          className,
+        )}
+        style={styleHeight != null ? { height: styleHeight } : undefined}
         role="img"
         aria-label={ariaLabel ?? "チャート"}
       >
         <div
           ref={containerRef}
           data-slot="echart-canvas"
-          style={{
-            height: typeof height === "number" ? `${height}px` : height,
-            width: "100%",
-          }}
+          className="h-full w-full"
         />
         {actions && (
           <div
