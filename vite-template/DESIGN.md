@@ -412,7 +412,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 ### やってはいけないこと
 
-- `height` を省略しない（デフォルトの 400px で問題ない場合は明示的に指定）
+- チャートの高さを曖昧にしない（`height` prop で px / CSS 値を指定するか、`className` に `h-full` / `h-[360px]` などの高さクラスを渡す。未指定だと `h-[400px]` になる。`h-full` を使う場合は親に確定した高さが必要）
 - Y軸の `min` を 0 以外に設定しない（視覚的な誇張になる）
 - `tooltip` を省略しない（データ読み取りに必須）
 - 凡例（`legend`）は系列が2つ以上ある場合は必ず設定する
