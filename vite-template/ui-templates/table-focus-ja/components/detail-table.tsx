@@ -1,13 +1,15 @@
 import { useMemo } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Placeholder } from "@/components/common/placeholder"
+import { formatCurrency, formatPercent } from "./chart-helpers"
 import type { DetailRow } from "@/types/ui-template-table-focus"
+
+const STATUS_LABELS: Record<DetailRow["status"], string> = {
+  active: "有効",
+  paused: "一時停止",
+  draft: "下書き",
+}
 
 interface DetailTableProps {
   data: DetailRow[]
@@ -18,71 +20,62 @@ export function DetailTable({ data }: DetailTableProps) {
     () => [
       {
         accessorKey: "name",
-        header: "Column 1",
-        cell: () => <Skeleton className="h-4 w-32" />,
+        header: "列1",
       },
       {
         accessorKey: "owner",
-        header: "Column 2",
-        cell: () => <Skeleton className="h-4 w-20" />,
+        header: "列2",
       },
       {
         accessorKey: "category",
-        header: "Column 3",
-        cell: () => <Skeleton className="h-5 w-20 rounded-full" />,
+        header: "列3",
       },
       {
         accessorKey: "status",
-        header: "Column 4",
-        cell: () => <Skeleton className="h-5 w-16 rounded-full" />,
+        header: "列4",
+        cell: ({ row }) => STATUS_LABELS[row.original.status],
       },
       {
         accessorKey: "revenue",
-        header: "Column 5",
-        cell: () => (
+        header: "列5",
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-16" />
+            <Placeholder>
+              {formatCurrency(row.original.revenue, { short: true })}
+            </Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "units",
-        header: "Column 6",
-        cell: () => (
+        header: "列6",
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-12" />
+            <Placeholder>
+              {row.original.units.toLocaleString("ja-JP")}
+            </Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "margin",
-        header: "Column 7",
-        cell: () => (
+        header: "列7",
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-10" />
+            <Placeholder>{formatPercent(row.original.margin)}</Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "updated",
-        header: "Column 8",
-        cell: () => <Skeleton className="h-3 w-20" />,
+        header: "列8",
+        cell: ({ row }) => (
+          <Placeholder className="text-xs">{row.original.updated}</Placeholder>
+        ),
       },
     ],
     [],
   )
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-3.5 w-56" />
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <DataTablePreset columns={columns} data={data} enableSorting />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <DataTablePreset columns={columns} data={data} enableSorting />
 }

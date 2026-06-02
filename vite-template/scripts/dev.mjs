@@ -5,17 +5,21 @@ import { setupDev } from "./dev-setup.mjs";
 
 const { values, positionals } = parseArgs({
   args: process.argv.slice(2),
-  options: { chart: { type: "string" } },
+  options: {
+    chart: { type: "string" },
+    ui: { type: "boolean" },
+  },
   allowPositionals: true,
 });
 
-const { devDir, templateName, chartPreset } = setupDev(positionals[0], {
+const { devDir, templateName, chartPreset, source } = setupDev(positionals[0], {
   chartPreset: values.chart,
+  ui: values.ui,
 });
 
 console.log(
   `✓ Dev environment ready (template: ${templateName}${chartPreset ? `, chart: ${chartPreset}` : ""})`,
 );
-console.log(`  Edit files in templates/${templateName}/ to see live changes.`);
+console.log(`  Edit files in ${source}/${templateName}/ to see live changes.`);
 
 spawn("npx", ["vite"], { cwd: devDir, stdio: "inherit" });

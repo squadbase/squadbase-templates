@@ -1,11 +1,5 @@
 import type { EChartsOption } from "echarts"
 import { EChart } from "@/components/data/echart"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
 import { formatNumber, getBaseGrid } from "./chart-helpers"
 import type {
   TimePoint,
@@ -14,24 +8,6 @@ import type {
   RadarPoint,
   HeatmapCell,
 } from "@/types/ui-template-chart-grid"
-
-interface ChartCardProps {
-  children: React.ReactNode
-}
-
-function ChartCard({ children }: ChartCardProps) {
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-3.5 w-48" />
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>{children}</DashboardCardContent>
-    </DashboardCard>
-  )
-}
 
 interface AreaChartProps {
   data: TimePoint[]
@@ -50,7 +26,7 @@ export function AreaChart({ data }: AreaChartProps) {
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "Series A",
+        name: "系列A",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -58,7 +34,7 @@ export function AreaChart({ data }: AreaChartProps) {
         areaStyle: { opacity: 0.22 },
       },
       {
-        name: "Series B",
+        name: "系列B",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -67,11 +43,7 @@ export function AreaChart({ data }: AreaChartProps) {
       },
     ],
   }
-  return (
-    <ChartCard>
-      <EChart option={option} height="280px" />
-    </ChartCard>
-  )
+  return <EChart option={option} height="280px" />
 }
 
 interface LineChartProps {
@@ -91,14 +63,14 @@ export function LineChart({ data }: LineChartProps) {
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "Series A",
+        name: "系列A",
         type: "line",
         smooth: true,
         showSymbol: false,
         data: data.map((d) => d.series1),
       },
       {
-        name: "Series B",
+        name: "系列B",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -106,12 +78,19 @@ export function LineChart({ data }: LineChartProps) {
       },
     ],
   }
-  return (
-    <ChartCard>
-      <EChart option={option} height="280px" />
-    </ChartCard>
-  )
+  return <EChart option={option} height="280px" />
 }
+
+const BAR_CATEGORIES = [
+  "項目1",
+  "項目2",
+  "項目3",
+  "項目4",
+  "項目5",
+  "項目6",
+  "項目7",
+  "項目8",
+]
 
 interface BarChartProps {
   data: BarPoint[]
@@ -120,22 +99,18 @@ export function BarChart({ data }: BarChartProps) {
   const option: EChartsOption = {
     tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
     grid: getBaseGrid(),
-    xAxis: { type: "category", data: data.map((d) => d.category) },
+    xAxis: { type: "category", data: BAR_CATEGORIES },
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "Series A",
+        name: "系列A",
         type: "bar",
         data: data.map((d) => d.value),
         barMaxWidth: 28,
       },
     ],
   }
-  return (
-    <ChartCard>
-      <EChart option={option} height="280px" />
-    </ChartCard>
-  )
+  return <EChart option={option} height="280px" />
 }
 
 interface ScatterChartProps {
@@ -161,12 +136,10 @@ export function ScatterChart({ data }: ScatterChartProps) {
       },
     ] as EChartsOption["series"],
   }
-  return (
-    <ChartCard>
-      <EChart option={option} height="280px" />
-    </ChartCard>
-  )
+  return <EChart option={option} height="280px" />
 }
+
+const RADAR_AXES = ["軸1", "軸2", "軸3", "軸4", "軸5", "軸6"]
 
 interface RadarChartProps {
   data: RadarPoint[]
@@ -176,7 +149,7 @@ export function RadarChart({ data }: RadarChartProps) {
     tooltip: { trigger: "item" },
     legend: { bottom: 0 },
     radar: {
-      indicator: data.map((r) => ({ name: r.axis, max: 100 })),
+      indicator: data.map((_, i) => ({ name: RADAR_AXES[i], max: 100 })),
       radius: "65%",
     },
     series: [
@@ -185,23 +158,19 @@ export function RadarChart({ data }: RadarChartProps) {
         data: [
           {
             value: data.map((r) => r.current),
-            name: "Series A",
+            name: "系列A",
             areaStyle: { opacity: 0.28 },
           },
           {
             value: data.map((r) => r.benchmark),
-            name: "Series B",
+            name: "系列B",
             areaStyle: { opacity: 0.18 },
           },
         ],
       },
     ],
   }
-  return (
-    <ChartCard>
-      <EChart option={option} height="280px" />
-    </ChartCard>
-  )
+  return <EChart option={option} height="280px" />
 }
 
 interface HeatmapChartProps {
@@ -232,9 +201,5 @@ export function HeatmapChart({ data, xAxis, yAxis }: HeatmapChartProps) {
       },
     ],
   }
-  return (
-    <ChartCard>
-      <EChart option={option} height="280px" />
-    </ChartCard>
-  )
+  return <EChart option={option} height="280px" />
 }

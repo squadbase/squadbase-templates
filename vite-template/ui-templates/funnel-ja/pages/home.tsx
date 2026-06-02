@@ -6,8 +6,10 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   DashboardCard,
   DashboardCardHeader,
+  DashboardCardTitle,
   DashboardCardAction,
   DashboardCardContent,
+  DashboardCardPreset,
 } from "@/components/common/dashboard-card"
 import {
   PageShell,
@@ -18,7 +20,7 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Placeholder } from "@/components/common/placeholder"
 import { FunnelChart } from "@/components/ui-template-funnel/funnel-chart"
 import { StageTable } from "@/components/ui-template-funnel/stage-table"
 import {
@@ -27,6 +29,35 @@ import {
 } from "@/lib/ui-template-funnel-mock-data"
 
 const today = new Date()
+
+const STAGE_NAMES = ["ステージ1", "ステージ2", "ステージ3", "ステージ4", "ステージ5"]
+
+const summaryCards = [
+  {
+    label: "流入数",
+    value: "124,500",
+    sub: "ファネルへの総流入数",
+    icon: <Users className="size-4 text-muted-foreground" />,
+  },
+  {
+    label: "コンバージョン数",
+    value: "1,186",
+    sub: "完了したコンバージョン",
+    icon: <Target className="size-4 text-muted-foreground" />,
+  },
+  {
+    label: "最良ステップ",
+    value: "31.9%",
+    sub: "最も高いステップ転換率",
+    icon: <TrendingUp className="size-4 text-emerald-600" />,
+  },
+  {
+    label: "最大の離脱",
+    value: "68.2%",
+    sub: "最大のステップ離脱率",
+    icon: <TrendingDown className="size-4 text-rose-600" />,
+  },
+]
 
 type DisplayMode = "count" | "percent"
 
@@ -41,11 +72,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>
-            <Skeleton className="h-7 w-64" />
-          </PageShellTitle>
+          <PageShellTitle>[テンプレート] コンバージョンファネル</PageShellTitle>
           <PageShellDescription>
-            <Skeleton className="mt-2 h-4 w-96" />
+            選択期間のステージ別コンバージョン。
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd className="flex-row items-center gap-2">
@@ -56,8 +85,8 @@ export default function HomePage() {
             variant="outline"
             size="sm"
           >
-            <ToggleGroupItem value="count">Option A</ToggleGroupItem>
-            <ToggleGroupItem value="percent">Option B</ToggleGroupItem>
+            <ToggleGroupItem value="count">選択肢A</ToggleGroupItem>
+            <ToggleGroupItem value="percent">選択肢B</ToggleGroupItem>
           </ToggleGroup>
           <DateRangePicker
             value={dateRange}
@@ -69,59 +98,49 @@ export default function HomePage() {
 
       <PageShellContent className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <SummaryCard
-            icon={<Users className="size-4 text-muted-foreground" />}
-          />
-          <SummaryCard
-            icon={<Target className="size-4 text-muted-foreground" />}
-          />
-          <SummaryCard
-            icon={<TrendingUp className="size-4 text-emerald-600" />}
-          />
-          <SummaryCard
-            icon={<TrendingDown className="size-4 text-rose-600" />}
-          />
+          {summaryCards.map(({ label, value, sub, icon }) => (
+            <DashboardCard key={label}>
+              <DashboardCardHeader>
+                <DashboardCardTitle className="text-muted-foreground">
+                  {label}
+                </DashboardCardTitle>
+                <DashboardCardAction>{icon}</DashboardCardAction>
+              </DashboardCardHeader>
+              <DashboardCardContent>
+                <Placeholder className="text-2xl font-bold">{value}</Placeholder>
+                <p className="mt-2 text-xs text-muted-foreground">{sub}</p>
+              </DashboardCardContent>
+            </DashboardCard>
+          ))}
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <FunnelChart data={funnelStages} height="440px" display={display} />
+            <DashboardCardPreset
+              title="コンバージョンファネル"
+              description="ステージ別コンバージョン"
+            >
+              <FunnelChart
+                data={funnelStages}
+                labels={STAGE_NAMES}
+                height="440px"
+                display={display}
+              />
+            </DashboardCardPreset>
           </div>
-          <DashboardCard>
-            <DashboardCardHeader>
-              <div className="space-y-2">
-                <Skeleton className="h-5 w-24" />
-                <Skeleton className="h-3.5 w-48" />
-              </div>
-            </DashboardCardHeader>
-            <DashboardCardContent>
-              <StagesSidebar />
-            </DashboardCardContent>
-          </DashboardCard>
+          <DashboardCardPreset title="ステージ" description="ステージ別コンバージョン">
+            <StagesSidebar />
+          </DashboardCardPreset>
         </div>
 
-        <StageTable data={stageRows} />
+        <DashboardCardPreset
+          title="ステージ内訳"
+          description="ステージ間のコンバージョン"
+        >
+          <StageTable data={stageRows} />
+        </DashboardCardPreset>
       </PageShellContent>
     </PageShell>
-  )
-}
-
-interface SummaryCardProps {
-  icon: React.ReactNode
-}
-
-function SummaryCard({ icon }: SummaryCardProps) {
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <Skeleton className="h-4 w-28" />
-        <DashboardCardAction>{icon}</DashboardCardAction>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <Skeleton className="h-8 w-24" />
-        <Skeleton className="mt-2 h-3 w-40" />
-      </DashboardCardContent>
-    </DashboardCard>
   )
 }
 
@@ -132,20 +151,22 @@ function StagesSidebar() {
         const prev = i > 0 ? funnelStages[i - 1] : null
         const dropoffPct = prev ? ((prev.value - s.value) / prev.value) * 100 : 0
         return (
-          <li key={s.stage} className="space-y-2">
+          <li key={i} className="space-y-2">
             <div className="flex items-baseline justify-between gap-2">
               <div className="flex items-baseline gap-2 min-w-0">
                 <span className="text-xs font-semibold text-muted-foreground tabular-nums">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <Skeleton className="h-4 w-20" />
+                <span className="truncate text-sm font-medium">{STAGE_NAMES[i]}</span>
               </div>
-              <Skeleton className="h-4 w-16" />
+              <Placeholder className="text-sm font-medium">
+                {s.value.toLocaleString("ja-JP")}
+              </Placeholder>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <Skeleton className="h-3 w-24" />
+            <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground">
+              <span>転換率</span>
               <div className="flex justify-end">
-                <Skeleton className="h-3 w-20" />
+                <Placeholder>{`${s.conversionRate.toFixed(1)}%`}</Placeholder>
               </div>
             </div>
             {prev && (

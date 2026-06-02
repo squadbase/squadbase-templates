@@ -5,7 +5,6 @@ export interface TimePoint {
 }
 
 export interface BarPoint {
-  category: string
   value: number
 }
 
@@ -17,7 +16,6 @@ export interface ScatterPoint {
 }
 
 export interface RadarPoint {
-  axis: string
   current: number
   benchmark: number
 }

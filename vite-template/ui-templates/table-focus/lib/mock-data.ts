@@ -1,68 +1,73 @@
-import { addDays, format } from "date-fns"
 import type {
   DetailRow,
   SummaryRow,
   TrendPoint,
 } from "@/types/ui-template-table-focus"
 
-const BASE_DATE = new Date("2024-03-31")
-const DAYS = 30
-const ROW_COUNT = 24
+export const detailRows: DetailRow[] = [
+  { id: "row-01", name: "Item 1", owner: "Owner 1", status: "active", category: "Category 1", revenue: 111569, units: 630, margin: 24.7, updated: "2024-03-26" },
+  { id: "row-02", name: "Item 2", owner: "Owner 2", status: "active", category: "Category 2", revenue: 64510, units: 1418, margin: 42.8, updated: "2024-03-24" },
+  { id: "row-03", name: "Item 3", owner: "Owner 3", status: "active", category: "Category 3", revenue: 178768, units: 700, margin: 27.3, updated: "2024-03-29" },
+  { id: "row-04", name: "Item 4", owner: "Owner 4", status: "paused", category: "Category 4", revenue: 108664, units: 541, margin: 27.4, updated: "2024-03-24" },
+  { id: "row-05", name: "Item 5", owner: "Owner 5", status: "draft", category: "Category 5", revenue: 89259, units: 453, margin: 41.7, updated: "2024-03-25" },
+  { id: "row-06", name: "Item 6", owner: "Owner 6", status: "active", category: "Category 1", revenue: 171912, units: 1271, margin: 35.2, updated: "2024-03-31" },
+  { id: "row-07", name: "Item 7", owner: "Owner 1", status: "active", category: "Category 2", revenue: 46499, units: 1024, margin: 43.3, updated: "2024-03-18" },
+  { id: "row-08", name: "Item 8", owner: "Owner 2", status: "active", category: "Category 3", revenue: 90305, units: 624, margin: 39.3, updated: "2024-03-20" },
+  { id: "row-09", name: "Item 9", owner: "Owner 3", status: "paused", category: "Category 4", revenue: 123575, units: 804, margin: 49.1, updated: "2024-03-27" },
+  { id: "row-10", name: "Item 10", owner: "Owner 4", status: "draft", category: "Category 5", revenue: 191742, units: 2477, margin: 29.4, updated: "2024-03-26" },
+  { id: "row-11", name: "Item 11", owner: "Owner 5", status: "active", category: "Category 1", revenue: 174313, units: 682, margin: 25.1, updated: "2024-03-26" },
+  { id: "row-12", name: "Item 12", owner: "Owner 6", status: "active", category: "Category 2", revenue: 140422, units: 592, margin: 26.2, updated: "2024-03-21" },
+  { id: "row-13", name: "Item 13", owner: "Owner 1", status: "active", category: "Category 3", revenue: 171059, units: 765, margin: 39.3, updated: "2024-03-26" },
+  { id: "row-14", name: "Item 14", owner: "Owner 2", status: "paused", category: "Category 4", revenue: 127951, units: 542, margin: 20.4, updated: "2024-03-20" },
+  { id: "row-15", name: "Item 15", owner: "Owner 3", status: "draft", category: "Category 5", revenue: 169122, units: 1824, margin: 19.8, updated: "2024-03-20" },
+  { id: "row-16", name: "Item 16", owner: "Owner 4", status: "active", category: "Category 1", revenue: 91117, units: 479, margin: 30.2, updated: "2024-03-21" },
+  { id: "row-17", name: "Item 17", owner: "Owner 5", status: "active", category: "Category 2", revenue: 57885, units: 249, margin: 46.5, updated: "2024-03-21" },
+  { id: "row-18", name: "Item 18", owner: "Owner 6", status: "active", category: "Category 3", revenue: 156340, units: 1804, margin: 19.5, updated: "2024-03-27" },
+  { id: "row-19", name: "Item 19", owner: "Owner 1", status: "paused", category: "Category 4", revenue: 58582, units: 471, margin: 23.5, updated: "2024-03-31" },
+  { id: "row-20", name: "Item 20", owner: "Owner 2", status: "draft", category: "Category 5", revenue: 70782, units: 411, margin: 28.7, updated: "2024-03-19" },
+  { id: "row-21", name: "Item 21", owner: "Owner 3", status: "active", category: "Category 1", revenue: 48743, units: 334, margin: 46.3, updated: "2024-03-18" },
+  { id: "row-22", name: "Item 22", owner: "Owner 4", status: "active", category: "Category 2", revenue: 180121, units: 1042, margin: 40.5, updated: "2024-03-18" },
+  { id: "row-23", name: "Item 23", owner: "Owner 5", status: "active", category: "Category 3", revenue: 113309, units: 562, margin: 20.4, updated: "2024-03-19" },
+  { id: "row-24", name: "Item 24", owner: "Owner 6", status: "paused", category: "Category 4", revenue: 112999, units: 574, margin: 25.8, updated: "2024-03-27" },
+]
 
-function seededRandom(seed: number): () => number {
-  let s = seed
-  return () => {
-    s = (s * 9301 + 49297) % 233280
-    return s / 233280
-  }
-}
+export const summaryRows: SummaryRow[] = [
+  { segment: "Category 3", count: 5, revenue: 709781, avgMargin: 29.2, share: 0.2491 },
+  { segment: "Category 1", count: 5, revenue: 597654, avgMargin: 32.3, share: 0.2097 },
+  { segment: "Category 4", count: 5, revenue: 531771, avgMargin: 29.2, share: 0.1866 },
+  { segment: "Category 5", count: 4, revenue: 520905, avgMargin: 29.9, share: 0.1828 },
+  { segment: "Category 2", count: 5, revenue: 489437, avgMargin: 39.9, share: 0.1718 },
+]
 
-const rand = seededRandom(31)
-
-const OWNERS = ["Owner 1", "Owner 2", "Owner 3", "Owner 4", "Owner 5", "Owner 6"]
-const CATEGORIES = ["Category 1", "Category 2", "Category 3", "Category 4", "Category 5"]
-const STATUSES: DetailRow["status"][] = ["active", "active", "active", "paused", "draft"]
-
-export const detailRows: DetailRow[] = Array.from({ length: ROW_COUNT }, (_, i) => {
-  const revenue = Math.round(40_000 + rand() * 160_000)
-  const units = Math.round(revenue / (40 + rand() * 220))
-  return {
-    id: `row-${String(i + 1).padStart(2, "0")}`,
-    name: `Item ${i + 1}`,
-    owner: OWNERS[i % OWNERS.length],
-    status: STATUSES[i % STATUSES.length],
-    category: CATEGORIES[i % CATEGORIES.length],
-    revenue,
-    units,
-    margin: Math.round((18 + rand() * 32) * 10) / 10,
-    updated: format(addDays(BASE_DATE, -Math.floor(rand() * 14)), "yyyy-MM-dd"),
-  }
-})
-
-const segmentMap = new Map<string, { count: number; revenue: number; marginSum: number }>()
-for (const r of detailRows) {
-  const cur = segmentMap.get(r.category) ?? { count: 0, revenue: 0, marginSum: 0 }
-  cur.count += 1
-  cur.revenue += r.revenue
-  cur.marginSum += r.margin
-  segmentMap.set(r.category, cur)
-}
-const totalRev = [...segmentMap.values()].reduce((s, v) => s + v.revenue, 0)
-export const summaryRows: SummaryRow[] = [...segmentMap.entries()]
-  .map(([segment, v]) => ({
-    segment,
-    count: v.count,
-    revenue: v.revenue,
-    avgMargin: Math.round((v.marginSum / v.count) * 10) / 10,
-    share: v.revenue / totalRev,
-  }))
-  .sort((a, b) => b.revenue - a.revenue)
-
-export const trendSeries: TrendPoint[] = Array.from({ length: DAYS }, (_, i) => {
-  const date = addDays(BASE_DATE, i - DAYS + 1)
-  const base = 22_000 + i * 240 + (rand() - 0.5) * 6_000
-  return {
-    date: format(date, "yyyy-MM-dd"),
-    value: Math.max(10_000, Math.round(base)),
-  }
-})
+export const trendSeries: TrendPoint[] = [
+  { date: "2024-03-02", value: 20590 },
+  { date: "2024-03-03", value: 19289 },
+  { date: "2024-03-04", value: 23339 },
+  { date: "2024-03-05", value: 20609 },
+  { date: "2024-03-06", value: 23415 },
+  { date: "2024-03-07", value: 25849 },
+  { date: "2024-03-08", value: 25114 },
+  { date: "2024-03-09", value: 22860 },
+  { date: "2024-03-10", value: 24511 },
+  { date: "2024-03-11", value: 24606 },
+  { date: "2024-03-12", value: 26125 },
+  { date: "2024-03-13", value: 21827 },
+  { date: "2024-03-14", value: 27583 },
+  { date: "2024-03-15", value: 23709 },
+  { date: "2024-03-16", value: 26295 },
+  { date: "2024-03-17", value: 24547 },
+  { date: "2024-03-18", value: 24112 },
+  { date: "2024-03-19", value: 28416 },
+  { date: "2024-03-20", value: 23997 },
+  { date: "2024-03-21", value: 23835 },
+  { date: "2024-03-22", value: 24690 },
+  { date: "2024-03-23", value: 28432 },
+  { date: "2024-03-24", value: 25377 },
+  { date: "2024-03-25", value: 29616 },
+  { date: "2024-03-26", value: 28354 },
+  { date: "2024-03-27", value: 25239 },
+  { date: "2024-03-28", value: 27696 },
+  { date: "2024-03-29", value: 26262 },
+  { date: "2024-03-30", value: 25920 },
+  { date: "2024-03-31", value: 27428 },
+]

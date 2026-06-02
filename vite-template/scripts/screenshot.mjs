@@ -2,8 +2,15 @@
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { spawn } from "node:child_process";
+import { parseArgs } from "node:util";
 import { chromium } from "playwright";
-import { setupDev, listTemplateNames, root, devDir } from "./dev-setup.mjs";
+import {
+  setupDev,
+  listTemplateNames,
+  listUiTemplateNames,
+  root,
+  devDir,
+} from "./dev-setup.mjs";
 
 const VIEWPORT = { width: 1440, height: 900 };
 const PORT = 5273;
@@ -14,8 +21,19 @@ const CHART_WAIT_MS = 1500;
 const screenshotsDir = join(root, "screenshots");
 mkdirSync(screenshotsDir, { recursive: true });
 
-const argNames = process.argv.slice(2);
-const names = argNames.length > 0 ? argNames : listTemplateNames();
+const { values, positionals } = parseArgs({
+  args: process.argv.slice(2),
+  options: { ui: { type: "boolean" } },
+  allowPositionals: true,
+});
+
+const ui = values.ui ?? false;
+const names =
+  positionals.length > 0
+    ? positionals
+    : ui
+      ? listUiTemplateNames()
+      : listTemplateNames();
 
 const results = [];
 
@@ -23,7 +41,7 @@ for (const name of names) {
   console.log(`\n▶ ${name}`);
   let viteProc;
   try {
-    setupDev(name);
+    setupDev(name, { ui });
 
     viteProc = spawn(
       "npx",
