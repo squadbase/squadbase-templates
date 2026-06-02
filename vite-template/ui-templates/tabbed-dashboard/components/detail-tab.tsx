@@ -2,15 +2,12 @@ import { useMemo, useState } from "react"
 import { Download, Search } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
+import { DashboardCardPreset } from "@/components/common/dashboard-card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Skeleton } from "@/components/ui/skeleton"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Placeholder } from "@/components/common/placeholder"
+import { formatCurrency, formatPercent, formatSignedPercent } from "./chart-helpers"
 import {
   categoryRows,
   detailRows,
@@ -40,32 +37,33 @@ export function DetailTab() {
       {
         accessorKey: "category",
         header: "Column 1",
-        cell: () => <Skeleton className="h-4 w-24" />,
       },
       {
         accessorKey: "value",
         header: "Column 2",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-16" />
+            <Placeholder>
+              {formatCurrency(row.original.value, { short: true })}
+            </Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "share",
         header: "Column 3",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-10" />
+            <Placeholder>{formatPercent(row.original.share * 100)}</Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "delta",
         header: "Column 4",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-12" />
+            <Placeholder>{formatSignedPercent(row.original.delta)}</Placeholder>
           </div>
         ),
       },
@@ -78,33 +76,34 @@ export function DetailTab() {
       {
         accessorKey: "name",
         header: "Column 1",
-        cell: () => <Skeleton className="h-4 w-32" />,
       },
       {
         accessorKey: "owner",
         header: "Column 2",
-        cell: () => <Skeleton className="h-4 w-20" />,
       },
       {
         accessorKey: "status",
         header: "Column 3",
-        cell: () => <Skeleton className="h-5 w-16 rounded-full" />,
       },
       {
         accessorKey: "value",
         header: "Column 4",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-16" />
+            <Placeholder>
+              {formatCurrency(row.original.value, { short: true })}
+            </Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "units",
         header: "Column 5",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-12" />
+            <Placeholder>
+              {row.original.units.toLocaleString("en-US")}
+            </Placeholder>
           </div>
         ),
       },
@@ -142,29 +141,16 @@ export function DetailTab() {
         </div>
       </div>
 
-      <DashboardCard>
-        <DashboardCardHeader>
-          <div className="space-y-2">
-            <Skeleton className="h-5 w-32" />
-            <Skeleton className="h-3.5 w-48" />
-          </div>
-        </DashboardCardHeader>
-        <DashboardCardContent>
-          <DataTablePreset columns={detailColumns} data={filteredRows} enableSorting />
-        </DashboardCardContent>
-      </DashboardCard>
+      <DashboardCardPreset
+        title="Records"
+        description="Detailed rows for the current filter"
+      >
+        <DataTablePreset columns={detailColumns} data={filteredRows} enableSorting />
+      </DashboardCardPreset>
 
-      <DashboardCard>
-        <DashboardCardHeader>
-          <div className="space-y-2">
-            <Skeleton className="h-5 w-40" />
-            <Skeleton className="h-3.5 w-56" />
-          </div>
-        </DashboardCardHeader>
-        <DashboardCardContent>
-          <DataTablePreset columns={categoryColumns} data={categoryRows} enableSorting />
-        </DashboardCardContent>
-      </DashboardCard>
+      <DashboardCardPreset title="By category" description="Share of total">
+        <DataTablePreset columns={categoryColumns} data={categoryRows} enableSorting />
+      </DashboardCardPreset>
     </div>
   )
 }

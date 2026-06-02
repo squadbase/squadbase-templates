@@ -12,7 +12,6 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
-import { Skeleton } from "@/components/ui/skeleton"
 import { OverviewTab } from "@/components/ui-template-tabbed-dashboard/overview-tab"
 import { DetailTab } from "@/components/ui-template-tabbed-dashboard/detail-tab"
 
@@ -28,11 +27,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>
-            <Skeleton className="h-7 w-64" />
-          </PageShellTitle>
+          <PageShellTitle>[Template] Team overview</PageShellTitle>
           <PageShellDescription>
-            <Skeleton className="mt-2 h-4 w-96" />
+            Overview and detail for the selected period.
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd>

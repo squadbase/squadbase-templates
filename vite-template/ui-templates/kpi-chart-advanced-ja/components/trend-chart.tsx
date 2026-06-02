@@ -1,11 +1,5 @@
 import type { EChartsOption } from "echarts"
 import { EChart } from "@/components/data/echart"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
 import { formatNumber, getBaseGrid } from "./chart-helpers"
 import type { TrendPoint } from "@/types/ui-template-kpi-chart-advanced"
 
@@ -30,7 +24,7 @@ export function TrendChart({ data }: TrendChartProps) {
     },
     series: [
       {
-        name: "Series A",
+        name: "系列A",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -40,17 +34,5 @@ export function TrendChart({ data }: TrendChartProps) {
     ],
   }
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-32" />
-          <Skeleton className="h-3.5 w-56" />
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <EChart option={option} height="280px" />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <EChart option={option} height="280px" />
 }

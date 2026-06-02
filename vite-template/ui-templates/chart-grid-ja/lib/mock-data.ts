@@ -1,4 +1,3 @@
-import { addDays, format } from "date-fns"
 import type {
   TimePoint,
   BarPoint,
@@ -7,66 +6,134 @@ import type {
   HeatmapCell,
 } from "@/types/ui-template-chart-grid"
 
-const BASE_DATE = new Date("2024-03-31")
-const DAYS = 30
-
-function seededRandom(seed: number): () => number {
-  let s = seed
-  return () => {
-    s = (s * 9301 + 49297) % 233280
-    return s / 233280
-  }
-}
-
-const rand = seededRandom(123)
-
-export const timeSeries: TimePoint[] = Array.from({ length: DAYS }, (_, i) => {
-  const date = addDays(BASE_DATE, i - DAYS + 1)
-  const base1 = 18_000 + i * 220 + (rand() - 0.5) * 4_000
-  const base2 = 12_000 + i * 180 + (rand() - 0.5) * 3_500
-  return {
-    date: format(date, "yyyy-MM-dd"),
-    series1: Math.max(8_000, Math.round(base1)),
-    series2: Math.max(6_000, Math.round(base2)),
-  }
-})
+export const timeSeries: TimePoint[] = [
+  { date: "2024-03-02", series1: 16462, series2: 12092 },
+  { date: "2024-03-03", series1: 17807, series2: 11084 },
+  { date: "2024-03-04", series1: 17272, series2: 13572 },
+  { date: "2024-03-05", series1: 18462, series2: 13897 },
+  { date: "2024-03-06", series1: 19943, series2: 12100 },
+  { date: "2024-03-07", series1: 21026, series2: 13152 },
+  { date: "2024-03-08", series1: 18203, series2: 14502 },
+  { date: "2024-03-09", series1: 20265, series2: 13472 },
+  { date: "2024-03-10", series1: 18075, series2: 13476 },
+  { date: "2024-03-11", series1: 21018, series2: 15075 },
+  { date: "2024-03-12", series1: 20104, series2: 12868 },
+  { date: "2024-03-13", series1: 21755, series2: 15713 },
+  { date: "2024-03-14", series1: 20240, series2: 13282 },
+  { date: "2024-03-15", series1: 20796, series2: 14953 },
+  { date: "2024-03-16", series1: 21397, series2: 14028 },
+  { date: "2024-03-17", series1: 21203, series2: 13791 },
+  { date: "2024-03-18", series1: 19673, series2: 13895 },
+  { date: "2024-03-19", series1: 22335, series2: 16589 },
+  { date: "2024-03-20", series1: 21241, series2: 14266 },
+  { date: "2024-03-21", series1: 22068, series2: 14360 },
+  { date: "2024-03-22", series1: 21903, series2: 14062 },
+  { date: "2024-03-23", series1: 21685, series2: 15876 },
+  { date: "2024-03-24", series1: 21315, series2: 17515 },
+  { date: "2024-03-25", series1: 21435, series2: 14613 },
+  { date: "2024-03-26", series1: 23871, series2: 16287 },
+  { date: "2024-03-27", series1: 22747, series2: 17526 },
+  { date: "2024-03-28", series1: 22262, series2: 15910 },
+  { date: "2024-03-29", series1: 25130, series2: 16666 },
+  { date: "2024-03-30", series1: 23698, series2: 15561 },
+  { date: "2024-03-31", series1: 25719, series2: 15619 },
+]
 
 export const barSeries: BarPoint[] = [
-  { category: "Item 1", value: 184_320 },
-  { category: "Item 2", value: 162_480 },
-  { category: "Item 3", value: 138_750 },
-  { category: "Item 4", value: 121_900 },
-  { category: "Item 5", value: 98_640 },
-  { category: "Item 6", value: 87_220 },
-  { category: "Item 7", value: 72_410 },
-  { category: "Item 8", value: 54_220 },
+  { value: 184_320 },
+  { value: 162_480 },
+  { value: 138_750 },
+  { value: 121_900 },
+  { value: 98_640 },
+  { value: 87_220 },
+  { value: 72_410 },
+  { value: 54_220 },
 ]
 
-export const scatterPoints: ScatterPoint[] = Array.from({ length: 28 }, (_, i) => ({
-  x: 20 + Math.round(rand() * 80),
-  y: 100 + Math.round(rand() * 900),
-  size: 8 + Math.round(rand() * 22),
-  label: `Item ${i + 1}`,
-}))
+export const scatterPoints: ScatterPoint[] = [
+  { x: 24, y: 750, size: 23, label: "項目1" },
+  { x: 30, y: 572, size: 23, label: "項目2" },
+  { x: 79, y: 692, size: 19, label: "項目3" },
+  { x: 43, y: 585, size: 20, label: "項目4" },
+  { x: 35, y: 626, size: 13, label: "項目5" },
+  { x: 90, y: 289, size: 29, label: "項目6" },
+  { x: 80, y: 851, size: 11, label: "項目7" },
+  { x: 39, y: 885, size: 13, label: "項目8" },
+  { x: 79, y: 768, size: 21, label: "項目9" },
+  { x: 75, y: 873, size: 24, label: "項目10" },
+  { x: 60, y: 676, size: 29, label: "項目11" },
+  { x: 67, y: 552, size: 25, label: "項目12" },
+  { x: 49, y: 876, size: 20, label: "項目13" },
+  { x: 40, y: 223, size: 23, label: "項目14" },
+  { x: 73, y: 768, size: 22, label: "項目15" },
+  { x: 21, y: 186, size: 26, label: "項目16" },
+  { x: 78, y: 652, size: 22, label: "項目17" },
+  { x: 37, y: 740, size: 19, label: "項目18" },
+  { x: 92, y: 827, size: 26, label: "項目19" },
+  { x: 35, y: 386, size: 9, label: "項目20" },
+  { x: 60, y: 694, size: 21, label: "項目21" },
+  { x: 41, y: 324, size: 26, label: "項目22" },
+  { x: 90, y: 552, size: 12, label: "項目23" },
+  { x: 81, y: 853, size: 11, label: "項目24" },
+  { x: 48, y: 702, size: 9, label: "項目25" },
+  { x: 23, y: 474, size: 15, label: "項目26" },
+  { x: 41, y: 544, size: 17, label: "項目27" },
+  { x: 53, y: 387, size: 24, label: "項目28" },
+]
 
 export const radarAxes: RadarPoint[] = [
-  { axis: "Axis 1", current: 82, benchmark: 70 },
-  { axis: "Axis 2", current: 91, benchmark: 78 },
-  { axis: "Axis 3", current: 64, benchmark: 75 },
-  { axis: "Axis 4", current: 88, benchmark: 80 },
-  { axis: "Axis 5", current: 73, benchmark: 65 },
-  { axis: "Axis 6", current: 79, benchmark: 70 },
+  { current: 82, benchmark: 70 },
+  { current: 91, benchmark: 78 },
+  { current: 64, benchmark: 75 },
+  { current: 88, benchmark: 80 },
+  { current: 73, benchmark: 65 },
+  { current: 79, benchmark: 70 },
 ]
 
-const HEATMAP_X = ["0", "1", "2", "3", "4", "5"]
-const HEATMAP_Y = ["Row 1", "Row 2", "Row 3", "Row 4", "Row 5", "Row 6", "Row 7"]
-export const heatmapCells: HeatmapCell[] = HEATMAP_Y.flatMap((y, yi) =>
-  HEATMAP_X.map((x, xi) => {
-    const isPeak = xi >= 2 && xi <= 4 && yi < 5
-    const base = isPeak ? 70 + rand() * 30 : 10 + rand() * 50
-    return { x, y, value: Math.round(base) }
-  }),
-)
+export const HEATMAP_X_AXIS = ["0", "1", "2", "3", "4", "5"]
+export const HEATMAP_Y_AXIS = ["行1", "行2", "行3", "行4", "行5", "行6", "行7"]
 
-export const HEATMAP_X_AXIS = HEATMAP_X
-export const HEATMAP_Y_AXIS = HEATMAP_Y
+export const heatmapCells: HeatmapCell[] = [
+  { x: "0", y: "行1", value: 57 },
+  { x: "1", y: "行1", value: 25 },
+  { x: "2", y: "行1", value: 91 },
+  { x: "3", y: "行1", value: 77 },
+  { x: "4", y: "行1", value: 96 },
+  { x: "5", y: "行1", value: 45 },
+  { x: "0", y: "行2", value: 46 },
+  { x: "1", y: "行2", value: 32 },
+  { x: "2", y: "行2", value: 75 },
+  { x: "3", y: "行2", value: 94 },
+  { x: "4", y: "行2", value: 83 },
+  { x: "5", y: "行2", value: 37 },
+  { x: "0", y: "行3", value: 56 },
+  { x: "1", y: "行3", value: 22 },
+  { x: "2", y: "行3", value: 76 },
+  { x: "3", y: "行3", value: 85 },
+  { x: "4", y: "行3", value: 79 },
+  { x: "5", y: "行3", value: 39 },
+  { x: "0", y: "行4", value: 56 },
+  { x: "1", y: "行4", value: 12 },
+  { x: "2", y: "行4", value: 73 },
+  { x: "3", y: "行4", value: 88 },
+  { x: "4", y: "行4", value: 95 },
+  { x: "5", y: "行4", value: 19 },
+  { x: "0", y: "行5", value: 60 },
+  { x: "1", y: "行5", value: 17 },
+  { x: "2", y: "行5", value: 77 },
+  { x: "3", y: "行5", value: 85 },
+  { x: "4", y: "行5", value: 81 },
+  { x: "5", y: "行5", value: 43 },
+  { x: "0", y: "行6", value: 36 },
+  { x: "1", y: "行6", value: 56 },
+  { x: "2", y: "行6", value: 55 },
+  { x: "3", y: "行6", value: 34 },
+  { x: "4", y: "行6", value: 20 },
+  { x: "5", y: "行6", value: 27 },
+  { x: "0", y: "行7", value: 50 },
+  { x: "1", y: "行7", value: 44 },
+  { x: "2", y: "行7", value: 32 },
+  { x: "3", y: "行7", value: 55 },
+  { x: "4", y: "行7", value: 46 },
+  { x: "5", y: "行7", value: 39 },
+]

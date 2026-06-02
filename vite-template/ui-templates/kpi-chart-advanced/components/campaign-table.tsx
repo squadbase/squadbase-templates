@@ -1,12 +1,8 @@
 import { useMemo } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
-import {
-  DashboardCard,
-  DashboardCardHeader,
-  DashboardCardContent,
-} from "@/components/common/dashboard-card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Placeholder } from "@/components/common/placeholder"
+import { formatCurrency } from "./chart-helpers"
 import type { CampaignRow } from "@/types/ui-template-kpi-chart-advanced"
 
 interface CampaignTableProps {
@@ -19,37 +15,39 @@ export function CampaignTable({ data }: CampaignTableProps) {
       {
         accessorKey: "name",
         header: "Column 1",
-        cell: () => <Skeleton className="h-4 w-32" />,
       },
       {
         accessorKey: "channel",
         header: "Column 2",
-        cell: () => <Skeleton className="h-5 w-20 rounded-full" />,
       },
       {
         accessorKey: "spend",
         header: "Column 3",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-16" />
+            <Placeholder>
+              {formatCurrency(row.original.spend, { short: true })}
+            </Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "conversions",
         header: "Column 4",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-12" />
+            <Placeholder>
+              {row.original.conversions.toLocaleString("en-US")}
+            </Placeholder>
           </div>
         ),
       },
       {
         accessorKey: "roi",
         header: "Column 5",
-        cell: () => (
+        cell: ({ row }) => (
           <div className="flex justify-end">
-            <Skeleton className="h-4 w-10" />
+            <Placeholder>{`${row.original.roi.toFixed(1)}x`}</Placeholder>
           </div>
         ),
       },
@@ -57,17 +55,5 @@ export function CampaignTable({ data }: CampaignTableProps) {
     [],
   )
 
-  return (
-    <DashboardCard>
-      <DashboardCardHeader>
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-40" />
-          <Skeleton className="h-3.5 w-48" />
-        </div>
-      </DashboardCardHeader>
-      <DashboardCardContent>
-        <DataTablePreset columns={columns} data={data} enableSorting />
-      </DashboardCardContent>
-    </DashboardCard>
-  )
+  return <DataTablePreset columns={columns} data={data} enableSorting />
 }
