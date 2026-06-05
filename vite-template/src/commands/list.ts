@@ -6,8 +6,7 @@ import {
   type TemplateSource,
 } from "../manifest.js";
 
-// TODO: switch to "main" once feature/vite-templates is merged.
-const PREVIEW_BRANCH = "feature/vite-templates";
+const PREVIEW_BRANCH = "main";
 
 function previewUrls(
   templateName: string,
