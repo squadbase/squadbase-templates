@@ -4,13 +4,9 @@
   "version": "0.1.0",
   "files": [
     { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
-    { "src": "components/comparison-chart.tsx", "dest": "src/components/ui-template-kpi-chart-advanced/comparison-chart.tsx", "action": "add" },
-    { "src": "components/breakdown-chart.tsx", "dest": "src/components/ui-template-kpi-chart-advanced/breakdown-chart.tsx", "action": "add" },
-    { "src": "components/trend-chart.tsx", "dest": "src/components/ui-template-kpi-chart-advanced/trend-chart.tsx", "action": "add" },
-    { "src": "components/campaign-table.tsx", "dest": "src/components/ui-template-kpi-chart-advanced/campaign-table.tsx", "action": "add" },
-    { "src": "components/chart-helpers.ts", "dest": "src/components/ui-template-kpi-chart-advanced/chart-helpers.ts", "action": "add" },
-    { "src": "lib/mock-data.ts", "dest": "src/lib/ui-template-kpi-chart-advanced-mock-data.ts", "action": "add", "relabel": false },
-    { "src": "lib/types.ts", "dest": "src/types/ui-template-kpi-chart-advanced.ts", "action": "add", "relabel": false }
+    { "src": "components/campaign-table.tsx", "dest": "src/templates/kpi-chart-advanced/campaign-table.tsx", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/templates/kpi-chart-advanced/mock-data.ts", "action": "add", "relabel": false },
+    { "src": "lib/types.ts", "dest": "src/templates/kpi-chart-advanced/types.ts", "action": "add", "relabel": false }
   ],
   "routes": []
 }

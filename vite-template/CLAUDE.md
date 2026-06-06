@@ -21,11 +21,11 @@ vite-template/
 │       ├── pages/
 │       └── components/
 ├── ui-templates/             # UIパターン別テンプレート (kpi-chart-simple, funnel, etc.)
+│   ├── CLAUDE.md             # ★ファイル構成ルール (コロケーション/インライン優先)。下記の命名規約を上書き
 │   └── <template-name>/
 │       ├── manifest.json
-│       ├── pages/
-│       ├── components/
-│       └── lib/
+│       ├── pages/            # home.tsx (チャートは inline のオプションビルダ関数)
+│       └── lib/              # mock-data.ts / types.ts (relabel:false のデータ層)
 ├── base-template/            # ビルド時に ../vite/ からコピー（gitignore 対象）
 ├── tsup.config.ts            # dist/index.js にバンドル（#!/usr/bin/env node バナー付き）
 ├── tsconfig.json
@@ -89,10 +89,13 @@ npm run release    # npm に公開（@squadbase:registry）
 
 ### UIパターン別テンプレート (`ui-templates/`)
 
-ユースケース非依存のUI骨格 (KPI重視、チャート格子、テーブル重視、ファネル、タブ構成 など)。命名規約は `ui-template-<slug>` プレフィックスで衝突回避:
-- コンポーネント: `src/components/ui-template-<slug>/`
-- ライブラリ: `src/lib/ui-template-<slug>-*.ts`
-- 型: `src/types/ui-template-<slug>.ts`
+ユースケース非依存のUI骨格 (KPI重視、チャート格子、テーブル重視、ファネル、タブ構成 など)。
+
+**ファイル構成ルールは [`ui-templates/CLAUDE.md`](./ui-templates/CLAUDE.md) を参照** (このセクションより優先)。要点:
+
+- **1テンプレ = 1ディレクトリ (コロケーション)**: テンプレ固有ファイルは適用先 `src/templates/<slug>/` に集約する。旧来の `src/components/ui-template-<slug>/` / `src/lib/ui-template-<slug>-*.ts` / `src/types/ui-template-<slug>.ts` というプレフィックス分散方式は**廃止**
+- **インライン優先**: `data → EChartsOption → <EChart>` の薄いチャートラッパ component は作らず、`home.tsx` 内のオプションビルダ関数 + `EChart` 直レンダにする
+- **データ層は分離**: `mock-data.ts` / `types.ts` は `src/templates/<slug>/` の別ファイルに保ち `relabel: false` を付ける
 
 **ui-templates 限定の例外ルール (DESIGN.md / 「テンプレート開発ルール」よりも優先)**:
 

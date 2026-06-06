@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { subDays } from "date-fns"
+import type { EChartsOption } from "echarts"
 import {
   DollarSign,
   Users,
@@ -10,6 +11,7 @@ import {
   PieChart,
 } from "lucide-react"
 import { DateRangePicker } from "@/components/data/date-range-picker"
+import { EChart } from "@/components/data/echart"
 import {
   PageShell,
   PageShellHeader,
@@ -31,18 +33,131 @@ import {
 } from "@/components/common/dashboard-card"
 import { Placeholder } from "@/components/common/placeholder"
 import { Sparkline } from "@/components/data/sparkline"
-import { ComparisonChart } from "@/components/ui-template-kpi-chart-advanced/comparison-chart"
-import { BreakdownChart } from "@/components/ui-template-kpi-chart-advanced/breakdown-chart"
-import { TrendChart } from "@/components/ui-template-kpi-chart-advanced/trend-chart"
-import { CampaignTable } from "@/components/ui-template-kpi-chart-advanced/campaign-table"
+import { CampaignTable } from "@/templates/kpi-chart-advanced/campaign-table"
 import {
   headerKpis,
   trendSeries,
   comparisonSeries,
   breakdownSlices,
   campaignRows,
-} from "@/lib/ui-template-kpi-chart-advanced-mock-data"
-import type { DashboardFilters } from "@/types/ui-template-kpi-chart-advanced"
+} from "@/templates/kpi-chart-advanced/mock-data"
+import type {
+  ComparisonPoint,
+  BreakdownSlice,
+  TrendPoint,
+  DashboardFilters,
+} from "@/templates/kpi-chart-advanced/types"
+
+// ── chart helpers ───────────────────────────────────────────────────────────
+
+function getBaseGrid() {
+  return { left: "3%", right: "4%", bottom: "12%", containLabel: true }
+}
+
+function getDualAxisGrid() {
+  return { left: "3%", right: "6%", bottom: "12%", containLabel: true }
+}
+
+function formatNumber(n: number): string {
+  const sign = n < 0 ? "-" : ""
+  const abs = Math.abs(n)
+  if (abs >= 1_000_000) return `${sign}${(abs / 1_000_000).toFixed(1)}M`
+  if (abs >= 1_000) return `${sign}${(abs / 1_000).toFixed(1)}K`
+  return n.toLocaleString("en-US")
+}
+
+// ── chart options ────────────────────────────────────────────────────────────
+
+function comparisonOption(data: ComparisonPoint[]): EChartsOption {
+  return {
+    tooltip: { trigger: "axis" },
+    legend: { bottom: 0 },
+    grid: getDualAxisGrid(),
+    xAxis: {
+      type: "category",
+      data: data.map((d) => d.period),
+    },
+    yAxis: [
+      {
+        type: "value",
+        axisLabel: { formatter: (v: number) => formatNumber(v) },
+      },
+      {
+        type: "value",
+        axisLabel: { formatter: (v: number) => `${v.toFixed(0)}%` },
+        splitLine: { show: false },
+      },
+    ],
+    series: [
+      {
+        name: "Series A",
+        type: "bar",
+        data: data.map((d) => d.current),
+        barMaxWidth: 28,
+      },
+      {
+        name: "Series B",
+        type: "bar",
+        data: data.map((d) => d.previous),
+        barMaxWidth: 28,
+      },
+      {
+        name: "Series C",
+        type: "line",
+        yAxisIndex: 1,
+        smooth: true,
+        data: data.map((d) => d.growth),
+      },
+    ],
+  }
+}
+
+function breakdownOption(data: BreakdownSlice[]): EChartsOption {
+  return {
+    tooltip: { trigger: "item" },
+    legend: { bottom: 0 },
+    series: [
+      {
+        type: "pie",
+        radius: ["52%", "78%"],
+        avoidLabelOverlap: true,
+        itemStyle: { borderRadius: 6, borderColor: "transparent", borderWidth: 2 },
+        label: { show: false },
+        data: data.map((d) => ({ name: d.segment, value: d.value })),
+      },
+    ],
+  }
+}
+
+function trendOption(data: TrendPoint[]): EChartsOption {
+  return {
+    tooltip: { trigger: "axis" },
+    legend: { bottom: 0 },
+    grid: getBaseGrid(),
+    xAxis: {
+      type: "category",
+      data: data.map((d) => d.date),
+      boundaryGap: false,
+      axisLabel: { formatter: (v: string) => v.slice(5) },
+    },
+    yAxis: {
+      type: "value",
+      axisLabel: { formatter: (v: number) => formatNumber(v) },
+    },
+    series: [
+      {
+        name: "Series A",
+        type: "line",
+        smooth: true,
+        showSymbol: false,
+        data: data.map((d) => d.value),
+        areaStyle: { opacity: 0.18 },
+      },
+    ],
+  }
+}
+
+// ── page ─────────────────────────────────────────────────────────────────────
 
 const today = new Date()
 const initialFilters: DashboardFilters = {
@@ -192,11 +307,11 @@ export default function HomePage() {
               title="Comparison"
               description="Current vs previous period"
             >
-              <ComparisonChart data={comparisonSeries} />
+              <EChart option={comparisonOption(comparisonSeries)} height="320px" />
             </DashboardCardPreset>
           </div>
           <DashboardCardPreset title="Breakdown" description="Share by segment">
-            <BreakdownChart data={breakdownSlices} />
+            <EChart option={breakdownOption(breakdownSlices)} height="320px" />
           </DashboardCardPreset>
         </div>
 
@@ -204,7 +319,7 @@ export default function HomePage() {
           title="Trend"
           description="Values over the selected period"
         >
-          <TrendChart data={trendSeries} />
+          <EChart option={trendOption(trendSeries)} height="280px" />
         </DashboardCardPreset>
 
         <DashboardCardPreset title="Campaigns" description="Performance by campaign">

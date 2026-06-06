@@ -12,8 +12,8 @@ import {
   PageShellHeaderEnd,
   PageShellContent,
 } from "@/components/common/page-shell"
-import { OverviewTab } from "@/components/ui-template-tabbed-dashboard/overview-tab"
-import { DetailTab } from "@/components/ui-template-tabbed-dashboard/detail-tab"
+import { OverviewTab } from "@/templates/tabbed-dashboard/overview-tab"
+import { DetailTab } from "@/templates/tabbed-dashboard/detail-tab"
 
 const today = new Date()
 

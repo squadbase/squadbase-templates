@@ -16,7 +16,7 @@ import {
   overviewKpis,
   trendSeries,
   categoryRows,
-} from "@/lib/ui-template-tabbed-dashboard-mock-data"
+} from "@/templates/tabbed-dashboard/mock-data"
 
 const kpiCards = [
   { label: "Metric 1", icon: DollarSign, kpi: overviewKpis[0] },

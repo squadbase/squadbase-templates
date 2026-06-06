@@ -2,8 +2,18 @@ import { useMemo } from "react"
 import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
 import { Placeholder } from "@/components/common/placeholder"
-import { formatCurrency } from "./chart-helpers"
-import type { CampaignRow } from "@/types/ui-template-kpi-chart-advanced"
+import type { CampaignRow } from "@/templates/kpi-chart-advanced/types"
+
+function formatCurrency(n: number, opts: { short?: boolean } = {}): string {
+  const sign = n < 0 ? "-" : ""
+  const abs = Math.abs(n)
+  if (opts.short) {
+    if (abs >= 1_000_000) return `${sign}$${(abs / 1_000_000).toFixed(2)}M`
+    if (abs >= 1_000) return `${sign}$${(abs / 1_000).toFixed(1)}K`
+    return `${sign}$${abs.toLocaleString("en-US")}`
+  }
+  return `${sign}$${Math.round(abs).toLocaleString("en-US")}`
+}
 
 interface CampaignTableProps {
   data: CampaignRow[]
