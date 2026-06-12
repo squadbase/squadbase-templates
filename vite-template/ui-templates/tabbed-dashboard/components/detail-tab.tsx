@@ -11,8 +11,8 @@ import { formatCurrency, formatPercent, formatSignedPercent } from "./chart-help
 import {
   categoryRows,
   detailRows,
-} from "@/lib/ui-template-tabbed-dashboard-mock-data"
-import type { CategoryRow, DetailRow } from "@/types/ui-template-tabbed-dashboard"
+} from "@/templates/tabbed-dashboard/mock-data"
+import type { CategoryRow, DetailRow } from "@/templates/tabbed-dashboard/types"
 
 type StatusFilter = "all" | DetailRow["status"]
 

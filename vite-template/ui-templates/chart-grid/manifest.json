@@ -4,10 +4,8 @@
   "version": "0.1.0",
   "files": [
     { "src": "pages/home.tsx", "dest": "src/pages/home.tsx", "action": "replace" },
-    { "src": "components/charts.tsx", "dest": "src/components/ui-template-chart-grid/charts.tsx", "action": "add" },
-    { "src": "components/chart-helpers.ts", "dest": "src/components/ui-template-chart-grid/chart-helpers.ts", "action": "add" },
-    { "src": "lib/mock-data.ts", "dest": "src/lib/ui-template-chart-grid-mock-data.ts", "action": "add", "relabel": false },
-    { "src": "lib/types.ts", "dest": "src/types/ui-template-chart-grid.ts", "action": "add", "relabel": false }
+    { "src": "lib/mock-data.ts", "dest": "src/templates/chart-grid/mock-data.ts", "action": "add", "relabel": false },
+    { "src": "lib/types.ts", "dest": "src/templates/chart-grid/types.ts", "action": "add", "relabel": false }
   ],
   "routes": []
 }

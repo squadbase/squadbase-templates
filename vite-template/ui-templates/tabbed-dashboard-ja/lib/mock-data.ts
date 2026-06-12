@@ -3,7 +3,7 @@ import type {
   TrendPoint,
   CategoryRow,
   DetailRow,
-} from "@/types/ui-template-tabbed-dashboard"
+} from "@/templates/tabbed-dashboard/types"
 
 export const trendSeries: TrendPoint[] = [
   { date: "2024-03-02", value: 37888 },

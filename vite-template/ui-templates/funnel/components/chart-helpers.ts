@@ -1,7 +1,3 @@
-export function getBaseGrid() {
-  return { left: "3%", right: "4%", bottom: "10%", containLabel: true }
-}
-
 export function formatNumber(n: number): string {
   const sign = n < 0 ? "-" : ""
   const abs = Math.abs(n)

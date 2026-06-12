@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { subDays } from "date-fns"
+import type { EChartsOption } from "echarts"
 import { TrendingDown, TrendingUp, Users, Target } from "lucide-react"
 import { DateRangePicker } from "@/components/data/date-range-picker"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -21,16 +22,92 @@ import {
   PageShellContent,
 } from "@/components/common/page-shell"
 import { Placeholder } from "@/components/common/placeholder"
-import { FunnelChart } from "@/components/ui-template-funnel/funnel-chart"
-import { StageTable } from "@/components/ui-template-funnel/stage-table"
 import {
-  funnelStages,
-  stageRows,
-} from "@/lib/ui-template-funnel-mock-data"
+  EChart,
+  useEChartsContrastColor,
+  withAlpha,
+} from "@/components/data/echart"
+import { StageTable } from "@/templates/funnel/stage-table"
+import { funnelStages, stageRows } from "@/templates/funnel/mock-data"
+import type { FunnelStage } from "@/templates/funnel/types"
 
 const today = new Date()
 
 const STAGE_NAMES = ["ステージ1", "ステージ2", "ステージ3", "ステージ4", "ステージ5"]
+
+type DisplayMode = "count" | "percent"
+
+function funnelOption(
+  data: FunnelStage[],
+  labels: string[],
+  display: DisplayMode,
+  baseColor: string,
+  labelColor: string,
+): EChartsOption {
+  const max = data[0]?.value ?? 0
+
+  const alphas = [1, 0.82, 0.66, 0.5, 0.36]
+  const palette = alphas.map((a) => (a === 1 ? baseColor : withAlpha(baseColor, a)))
+
+  return {
+    tooltip: { trigger: "item" },
+    series: [
+      {
+        type: "funnel",
+        orient: "horizontal",
+        funnelAlign: "center",
+        left: "2%",
+        right: "2%",
+        top: 16,
+        bottom: 64,
+        min: 0,
+        max,
+        sort: "descending",
+        gap: 4,
+        label: {
+          show: true,
+          position: "bottom",
+          formatter: (p: unknown) => {
+            const params = p as {
+              name: string
+              value: number
+              data: { conversionRate: number; share: number }
+            }
+            const main =
+              display === "percent"
+                ? `${params.data.share.toFixed(1)}%`
+                : params.value.toLocaleString("ja-JP")
+            return `{name|${params.name}}\n{value|${main}}`
+          },
+          rich: {
+            name: {
+              fontSize: 12,
+              fontWeight: 600,
+              color: labelColor,
+              lineHeight: 16,
+              align: "center",
+            },
+            value: {
+              fontSize: 11,
+              color: labelColor,
+              opacity: 0.6,
+              lineHeight: 14,
+              align: "center",
+            },
+          },
+        },
+        labelLine: { show: false },
+        data: data.map((d, i) => ({
+          name: labels[i],
+          value: d.value,
+          conversionRate: d.conversionRate,
+          share: (d.value / Math.max(1, max)) * 100,
+          itemStyle: { color: palette[i % palette.length] },
+        })),
+      },
+    ] as EChartsOption["series"],
+  }
+}
 
 const summaryCards = [
   {
@@ -59,14 +136,14 @@ const summaryCards = [
   },
 ]
 
-type DisplayMode = "count" | "percent"
-
 export default function HomePage() {
   const [dateRange, setDateRange] = useState({
     from: subDays(today, 29) as Date | undefined,
     to: today as Date | undefined,
   })
   const [display, setDisplay] = useState<DisplayMode>("count")
+  const baseColor = useEChartsContrastColor("--chart-1")
+  const labelColor = useEChartsContrastColor("--foreground")
 
   return (
     <PageShell>
@@ -120,11 +197,15 @@ export default function HomePage() {
               title="コンバージョンファネル"
               description="ステージ別コンバージョン"
             >
-              <FunnelChart
-                data={funnelStages}
-                labels={STAGE_NAMES}
+              <EChart
+                option={funnelOption(
+                  funnelStages,
+                  STAGE_NAMES,
+                  display,
+                  baseColor,
+                  labelColor,
+                )}
                 height="440px"
-                display={display}
               />
             </DashboardCardPreset>
           </div>

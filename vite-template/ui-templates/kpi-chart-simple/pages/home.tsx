@@ -1,7 +1,9 @@
 import { useState } from "react"
 import { subDays } from "date-fns"
+import type { EChartsOption } from "echarts"
 import { DollarSign, Users, Activity, ShoppingCart } from "lucide-react"
 import { DateRangePicker } from "@/components/data/date-range-picker"
+import { EChart } from "@/components/data/echart"
 import {
   PageShell,
   PageShellHeader,
@@ -21,14 +23,64 @@ import {
 } from "@/components/common/dashboard-card"
 import { Placeholder } from "@/components/common/placeholder"
 import { Sparkline } from "@/components/data/sparkline"
-import { TrendChart } from "@/components/ui-template-kpi-chart-simple/trend-chart"
-import { TopItemsTable } from "@/components/ui-template-kpi-chart-simple/top-items-table"
+import { TopItemsTable } from "@/templates/kpi-chart-simple/top-items-table"
 import {
   headerKpis,
   trendSeries,
   topItems,
-} from "@/lib/ui-template-kpi-chart-simple-mock-data"
-import type { DashboardFilters } from "@/types/ui-template-kpi-chart-simple"
+} from "@/templates/kpi-chart-simple/mock-data"
+import type {
+  DashboardFilters,
+  TrendPoint,
+} from "@/templates/kpi-chart-simple/types"
+
+// ── chart helpers ───────────────────────────────────────────────────────────
+
+function getBaseGrid() {
+  return { left: "3%", right: "4%", bottom: "10%", containLabel: true }
+}
+
+function formatNumber(n: number): string {
+  const sign = n < 0 ? "-" : ""
+  const abs = Math.abs(n)
+  if (abs >= 1_000_000) return `${sign}${(abs / 1_000_000).toFixed(1)}M`
+  if (abs >= 1_000) return `${sign}${(abs / 1_000).toFixed(1)}K`
+  return n.toLocaleString("en-US")
+}
+
+// ── chart options ────────────────────────────────────────────────────────────
+
+function trendOption(data: TrendPoint[]): EChartsOption {
+  return {
+    tooltip: { trigger: "axis" },
+    legend: { bottom: 0 },
+    grid: getBaseGrid(),
+    xAxis: {
+      type: "category",
+      data: data.map((d) => d.date),
+      boundaryGap: false,
+      axisLabel: {
+        formatter: (value: string) => value.slice(5),
+      },
+    },
+    yAxis: {
+      type: "value",
+      axisLabel: { formatter: (v: number) => formatNumber(v) },
+    },
+    series: [
+      {
+        name: "Series A",
+        type: "line",
+        smooth: true,
+        showSymbol: false,
+        data: data.map((d) => d.revenue),
+        areaStyle: { opacity: 0.18 },
+      },
+    ],
+  }
+}
+
+// ── page ─────────────────────────────────────────────────────────────────────
 
 const today = new Date()
 const initialFilters: DashboardFilters = {
@@ -104,7 +156,7 @@ export default function HomePage() {
           title="Trend"
           description="Values over the selected period"
         >
-          <TrendChart data={trendSeries} />
+          <EChart option={trendOption(trendSeries)} height="320px" />
         </DashboardCardPreset>
 
         <DashboardCardPreset title="Top items" description="Ranked by value">

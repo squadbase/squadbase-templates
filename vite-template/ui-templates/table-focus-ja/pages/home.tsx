@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react"
 import { Download, Search } from "lucide-react"
+import type { EChartsOption } from "echarts"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { EChart } from "@/components/data/echart"
 import { DashboardCardPreset } from "@/components/common/dashboard-card"
 import {
   PageShell,
@@ -14,14 +16,56 @@ import {
   PageShellContent,
 } from "@/components/common/page-shell"
 import { Placeholder } from "@/components/common/placeholder"
-import { DetailTable } from "@/components/ui-template-table-focus/detail-table"
-import { SupportChart } from "@/components/ui-template-table-focus/support-chart"
+import { DetailTable } from "@/templates/table-focus/detail-table"
 import {
   detailRows,
   summaryRows,
   trendSeries,
-} from "@/lib/ui-template-table-focus-mock-data"
-import type { DetailRow } from "@/types/ui-template-table-focus"
+} from "@/templates/table-focus/mock-data"
+import type { DetailRow, TrendPoint } from "@/templates/table-focus/types"
+
+// ── chart helpers ───────────────────────────────────────────────────────────
+
+function getBaseGrid() {
+  return { left: "3%", right: "4%", bottom: "10%", containLabel: true }
+}
+
+function formatNumber(n: number): string {
+  const sign = n < 0 ? "-" : ""
+  const abs = Math.abs(n)
+  if (abs >= 100_000_000) return `${sign}${(abs / 100_000_000).toFixed(1)}億`
+  if (abs >= 10_000) return `${sign}${(abs / 10_000).toFixed(0)}万`
+  return n.toLocaleString("ja-JP")
+}
+
+// ── chart options ────────────────────────────────────────────────────────────
+
+function trendOption(data: TrendPoint[]): EChartsOption {
+  return {
+    tooltip: { trigger: "axis" },
+    legend: { bottom: 0 },
+    grid: getBaseGrid(),
+    xAxis: {
+      type: "category",
+      data: data.map((d) => d.date),
+      boundaryGap: false,
+      axisLabel: { formatter: (v: string) => v.slice(5) },
+    },
+    yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
+    series: [
+      {
+        name: "系列A",
+        type: "line",
+        smooth: true,
+        showSymbol: false,
+        data: data.map((d) => d.value),
+        areaStyle: { opacity: 0.18 },
+      },
+    ],
+  }
+}
+
+// ── page ─────────────────────────────────────────────────────────────────────
 
 type StatusFilter = "all" | DetailRow["status"]
 
@@ -96,7 +140,7 @@ export default function HomePage() {
               title="トレンド"
               description="選択期間の値"
             >
-              <SupportChart data={trendSeries} />
+              <EChart option={trendOption(trendSeries)} height="220px" />
             </DashboardCardPreset>
             <DashboardCardPreset title="セグメント別" description="全体に占める割合">
               <div className="space-y-3">

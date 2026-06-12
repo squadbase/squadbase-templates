@@ -1,4 +1,4 @@
-import type { FunnelStage, StageRow } from "@/types/ui-template-funnel"
+import type { FunnelStage, StageRow } from "@/templates/funnel/types"
 
 const VISITORS = 124_500
 const LEADS = 38_240

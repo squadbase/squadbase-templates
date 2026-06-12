@@ -2,7 +2,7 @@ import type {
   DetailRow,
   SummaryRow,
   TrendPoint,
-} from "@/types/ui-template-table-focus"
+} from "@/templates/table-focus/types"
 
 export const detailRows: DetailRow[] = [
   { id: "row-01", name: "Item 1", owner: "Owner 1", status: "active", category: "Category 1", revenue: 111569, units: 630, margin: 24.7, updated: "2024-03-26" },
