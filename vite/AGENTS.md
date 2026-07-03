@@ -89,6 +89,10 @@ Split a page into child components when it has **3+ sections**, **multiple `useQ
 Call server logic via `useQuery` + `POST /api/server-logic/<slug>` (`<slug>` is the server-logic filename, without extension):
 
 ```tsx
+import { useQuery } from "@tanstack/react-query";
+
+// ...
+
 const { data, isLoading, error } = useQuery({
   queryKey: ["server-logic", "sales-summary", params],
   queryFn: async () => {
