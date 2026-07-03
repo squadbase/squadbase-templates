@@ -19,9 +19,42 @@ export function setViteServer(server: import("vite").ViteDevServer): void {
   viteServer = server;
 }
 
+// Production runtime loader for TypeScript handlers.
+//
+// In production the server runs as a bundled `node dist/server/index.js`, but
+// the `server-logic/*.ts` handler files are NOT bundled — they are shipped as
+// raw `.ts` and imported dynamically at request time. Plain `import()` cannot
+// load `.ts` (ERR_UNKNOWN_FILE_EXTENSION), so we transpile on the fly with jiti.
+//
+// jiti is loaded lazily (and marked external in the build config) so that
+// SQL-only apps never pay for it, and Lambda's read-only filesystem never
+// breaks: fsCache is disabled and transpiled modules are cached in memory only.
+let jitiInstance: { import: (id: string) => Promise<unknown> } | null = null;
+
+async function getJiti(): Promise<{ import: (id: string) => Promise<unknown> }> {
+  if (jitiInstance) return jitiInstance;
+  const { createJiti } = await import("jiti");
+  jitiInstance = createJiti(import.meta.url, {
+    fsCache: false,
+    moduleCache: true,
+  });
+  return jitiInstance;
+}
+
 function validateHandlerPath(dirPath: string, handlerPath: string): string {
-  const absolute = path.resolve(dirPath, handlerPath);
   const normalizedDir = path.resolve(dirPath);
+  // handlerPath is expected to be relative to the server-logic directory
+  // (e.g. "my-logic.ts"). Coding agents occasionally emit a path that already
+  // includes the directory name (e.g. "server-logic/my-logic.ts"), which would
+  // otherwise resolve to "server-logic/server-logic/my-logic.ts" and 404. Strip
+  // a redundant leading "<dirBasename>/" (or "./") so those files still load.
+  const dirName = path.basename(normalizedDir);
+  let relative = handlerPath.replace(/^\.\//, "");
+  if (relative.startsWith(`${dirName}/`)) {
+    relative = relative.slice(dirName.length + 1);
+  }
+
+  const absolute = path.resolve(normalizedDir, relative);
   if (!absolute.startsWith(normalizedDir + path.sep)) {
     throw new Error(`Handler path escapes server-logic directory: ${handlerPath}`);
   }
@@ -42,9 +75,10 @@ export async function loadTypeScriptHandler(
     if (module) viteServer.moduleGraph.invalidateModule(module);
     mod = (await viteServer.ssrLoadModule(absolutePath)) as Record<string, unknown>;
   } else {
-    // Production: standard ES dynamic import (expects pre-built JS)
-    const { pathToFileURL } = await import("node:url");
-    mod = (await import(pathToFileURL(absolutePath).href)) as Record<string, unknown>;
+    // Production: transpile the raw .ts handler at runtime via jiti.
+    // (Node cannot import .ts directly, and the handler files are not bundled.)
+    const jiti = await getJiti();
+    mod = (await jiti.import(absolutePath)) as Record<string, unknown>;
   }
 
   const handler = mod.default;
