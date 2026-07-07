@@ -54,6 +54,7 @@ export function squadbasePlugin(options: SquadbasePluginOptions = {}): Plugin[] 
       "@aws-sdk/client-redshift-data",
       "@google-analytics/data",
       "@kintone/rest-api-client",
+      "jiti",
     ],
     exclude = DEFAULT_EXCLUDE,
   } = options;

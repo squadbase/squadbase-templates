@@ -23,6 +23,7 @@ export default defineConfig(({ command, mode }) => {
             "@kintone/rest-api-client",
             "@clickhouse/client",
             "ssh2",
+            "jiti",
           ],
         }),
       ],

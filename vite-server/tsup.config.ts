@@ -45,5 +45,6 @@ export default defineConfig({
     "@hono/vite-dev-server",
     "@hono/vite-dev-server/node",
     "vite",
+    "jiti",
   ],
 });

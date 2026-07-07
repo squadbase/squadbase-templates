@@ -3,7 +3,7 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { DataTablePreset } from "@/components/data/data-table"
 import { Placeholder } from "@/components/common/placeholder"
 import { formatNumber, formatPercent } from "./chart-helpers"
-import type { StageRow } from "@/types/ui-template-funnel"
+import type { StageRow } from "@/templates/funnel/types"
 
 const STEP_NAMES = ["ステージ1 → 2", "ステージ2 → 3", "ステージ3 → 4", "ステージ4 → 5"]
 

@@ -148,7 +148,7 @@ export default async function handler(c: Context) {
   - **Exception** — chat handlers using `useChat` receive `{ messages }` directly. See `chat-app-development`.
 - Return `Response` directly (`new Response(JSON.stringify(...))`) — server passes through.
 - Non-SQL connectors: `connection()` from `@squadbase/vite-server/connectors/<type>` (see Connectors section).
-- `handlerPath` relative to server-logic dir, points to `.ts` within it (no path traversal).
+- `handlerPath` relative to server-logic dir, points to `.ts` within it (no path traversal). Use the bare filename (e.g. `my-logic.ts`) — do **not** prefix it with `server-logic/`.
 - Handlers have full Node.js access including `process.env`.
 
 ### Response shape
