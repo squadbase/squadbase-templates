@@ -136,6 +136,7 @@
     "@kintone/rest-api-client": "^5.5.0",
     "@squadbase/connectors": "^0.1.2-dev.9",
     "hono": "^4.11.9",
+    "jiti": "^2.7.0",
     "mysql2": "^3.11.0",
     "pg": "^8.18.0",
     "snowflake-sdk": "^1.15.0",

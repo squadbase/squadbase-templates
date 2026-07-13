@@ -89,4 +89,5 @@ const { data, isLoading, error } = useQuery({
 - `preinstalled-component-catalog` — props, gotchas, when-to-use map for every component shipped with the template. Read before importing one of those to confirm export names + pitfalls. (For project-added components under `src/components/<pageName>/`, read the source file directly — they're not in the catalog.)
 - `server-logic-development` — defining the backend endpoint `useQuery` calls. `{ params }` body shape, response format, caching.
 - `chat-app-development` — when page is an LLM chat UI. `useChat` instead of `useQuery`, different body shape.
+- `project-storage` — reading or writing the project's uploaded files from a component (list files; embed images / video / PDFs; upload). Load via `readSkill` when a page displays or uploads stored files.
 - `general/dashboard-ui-design` — framework-agnostic principles to decide layout, hierarchy, chart selection before coding.
