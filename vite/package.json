@@ -1,5 +1,5 @@
 {
-  "name": "vibe-app",
+  "name": "squadbase-vite-app",
   "private": true,
   "type": "module",
   "scripts": {
