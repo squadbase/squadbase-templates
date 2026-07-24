@@ -105,7 +105,7 @@ npx @squadbase/vantage-template chart ocean   # チャート配色プリセッ�
 
 ## ドキュメント
 
-各テンプレートの詳細なドキュメントは、`skills/source/` 配下の Skill ファイルを参照してください。Vantage テンプレートはエージェント向けガイダンスを `vantage/AGENTS.md` と `vantage/.claude/skills/` に同梱しています（どちらもフレームワークが所有し、`npx vantage upgrade` で再同期されます）。
+各テンプレートの詳細なドキュメントは、`skills/source/` 配下の Skill ファイルを参照してください。Vantage テンプレートはエージェント向けガイダンスを `vantage/AGENTS.md` と `vantage/.squadbase/skills/` に同梱しています（どちらもフレームワーク由来で、`AGENTS.md` は `npx vantage upgrade` で再同期されます）。
 
 Squadbase プラットフォームのドキュメントは [Squadbase Docs](https://www.squadbase.dev/ja/docs) をご覧ください。
 
