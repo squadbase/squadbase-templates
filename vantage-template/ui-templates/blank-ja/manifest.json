@@ -1,0 +1,9 @@
+{
+  "name": "blank-ja",
+  "description": "[日本語] ブランク — タイトルと説明のみの PageShell。ダッシュボードをゼロから構築するための最小骨格",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "index.tsx", "action": "replace" }
+  ],
+  "nav": []
+}

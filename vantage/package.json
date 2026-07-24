@@ -1,0 +1,27 @@
+{
+  "name": "vibe-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vantage dev",
+    "build": "vantage build",
+    "start": "node dist/server/index.mjs",
+    "preview": "vantage preview",
+    "check": "vantage check",
+    "routes": "vantage routes"
+  },
+  "dependencies": {
+    "@squadbase/react": "^0.0.1",
+    "@squadbase/vantage": "^0.1.0",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "~5.7.0"
+  }
+}

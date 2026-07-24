@@ -16,6 +16,7 @@ While Squadbase comes with several built-in data connections, this repository of
 |----------|-------------|
 | [Core Template](./core/) | A core template for squadbase |
 | [Vite Template](./vite/) | Full-stack template: Vite 8 + React 19 + @squadbase/vite-server + TypeScript + Tailwind CSS v4 + shadcn/ui |
+| [Vantage Template](./vantage/) | Config-free dashboard template built on @squadbase/vantage — file-based routing, managed UI kit |
 
 ### Vite Template
 
@@ -49,9 +50,33 @@ To sync skill files to `vite/skills/`:
 cd vite && npx @squadbase/skills --clean
 ```
 
+### Vantage Template
+
+A dashboard template built on [`@squadbase/vantage`](https://vantage-framework-vantage.vercel.app/), a config-free React framework. There is no `vite.config.ts`, no `main.tsx`, and no route table — you write `index.tsx` and the framework owns routing, TanStack Query, Tailwind v4, the UI kit, the dev server, the optional API server, and the build.
+
+**Stack:** @squadbase/vantage (Vite 8 · React 19 · TanStack Router/Query · Tailwind CSS v4 · Base UI · Apache ECharts)
+
+**Commands:**
+
+```bash
+npm run dev      # vantage dev — dev server + API on :5173 (HMR)
+npm run build    # vantage build → dist/ (client + server)
+npm start        # Run production server
+npm run check    # vantage check — static diagnostics (routes, boundaries, forbidden files)
+```
+
+**Scaffolding CLI** — [`@squadbase/vantage-template`](./vantage-template/) initializes a project and applies UI-pattern templates:
+
+```bash
+npx @squadbase/vantage-template init          # Scaffold the base template
+npx @squadbase/vantage-template list          # List available UI templates
+npx @squadbase/vantage-template add funnel    # Apply one
+npx @squadbase/vantage-template chart ocean   # Switch the chart color preset
+```
+
 ## Documentation
 
-For detailed documentation on each template, refer to the skill files in `skills/source/`.
+For detailed documentation on each template, refer to the skill files in `skills/source/`. The Vantage template bundles its own agent guidance in `vantage/AGENTS.md` and `vantage/.claude/skills/` (both owned by the framework and re-synced by `npx vantage upgrade`).
 
 For Squadbase platform documentation, visit [Squadbase Docs](https://www.squadbase.dev/en/docs).
 

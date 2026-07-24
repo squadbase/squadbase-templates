@@ -16,6 +16,7 @@ Squadbase にはいくつかのデータ接続が標準搭載されています�
 |----------|-------------|
 | [Core Template](./core/) | Squadbase のコアテンプレート |
 | [Vite Template](./vite/) | フルスタックテンプレート: Vite 8 + React 19 + @squadbase/vite-server + TypeScript + Tailwind CSS v4 + shadcn/ui |
+| [Vantage Template](./vantage/) | @squadbase/vantage ベースの設定ファイル不要テンプレート — ファイルベースルーティング + マネージド UI キット |
 
 ### Vite テンプレート
 
@@ -76,9 +77,35 @@ Skill ファイルを `vite/skills/` に同期するには:
 cd vite && npx @squadbase/skills --clean
 ```
 
+### Vantage テンプレート
+
+設定ファイル不要（config-free）な React フレームワーク [`@squadbase/vantage`](https://vantage-framework-vantage.vercel.app/) の上に構築したダッシュボードテンプレートです。`vite.config.ts` も `main.tsx` もルートテーブルもありません。書くのは `index.tsx` だけで、ルーティング・TanStack Query・Tailwind v4・UI キット・開発サーバー・API サーバー・ビルドはすべてフレームワークが所有します。
+
+**スタック:** @squadbase/vantage（Vite 8 · React 19 · TanStack Router/Query · Tailwind CSS v4 · Base UI · Apache ECharts）
+
+**コマンド:**
+
+```bash
+npm run dev      # vantage dev — 開発サーバー + API を :5173 で起動（HMR）
+npm run build    # vantage build → dist/（クライアント + サーバー）
+npm start        # プロダクションサーバーを起動
+npm run check    # vantage check — 静的診断（ルート・境界・禁止ファイル）
+```
+
+**開発手順（[`@squadbase/vantage-template`](./vantage-template/) CLI）:**
+
+プロジェクトの初期化と、UI パターン別テンプレートの適用を行います。
+
+```bash
+npx @squadbase/vantage-template init          # ベーステンプレートを展開
+npx @squadbase/vantage-template list          # 利用可能な UI テンプレートを列挙
+npx @squadbase/vantage-template add funnel    # 適用
+npx @squadbase/vantage-template chart ocean   # チャート配色プリセットを切り替え
+```
+
 ## ドキュメント
 
-各テンプレートの詳細なドキュメントは、`skills/source/` 配下の Skill ファイルを参照してください。
+各テンプレートの詳細なドキュメントは、`skills/source/` 配下の Skill ファイルを参照してください。Vantage テンプレートはエージェント向けガイダンスを `vantage/AGENTS.md` と `vantage/.claude/skills/` に同梱しています（どちらもフレームワークが所有し、`npx vantage upgrade` で再同期されます）。
 
 Squadbase プラットフォームのドキュメントは [Squadbase Docs](https://www.squadbase.dev/ja/docs) をご覧ください。
 

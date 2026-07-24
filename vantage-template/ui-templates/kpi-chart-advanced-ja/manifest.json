@@ -1,0 +1,12 @@
+{
+  "name": "kpi-chart-advanced-ja",
+  "description": "[日本語] KPI + チャート (アドバンスト) — ヒーローKPI (大1+小4の2×2) ・棒+折れ線比較チャート・ドーナツ・日次トレンド・明細テーブルを搭載したKPI主役のダッシュボード構成",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "index.tsx", "action": "replace" },
+    { "src": "components/campaign-table.tsx", "dest": "components/kpi-chart-advanced/campaign-table.tsx", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "components/kpi-chart-advanced/mock-data.ts", "action": "add", "relabel": false },
+    { "src": "lib/types.ts", "dest": "components/kpi-chart-advanced/types.ts", "action": "add", "relabel": false }
+  ],
+  "nav": []
+}

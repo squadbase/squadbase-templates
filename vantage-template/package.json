@@ -1,0 +1,33 @@
+{
+  "name": "@squadbase/vantage-template",
+  "version": "0.0.1",
+  "type": "module",
+  "bin": {
+    "squadbase-vantage-template": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "ui-templates",
+    "base-template",
+    "chart-presets"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "sync-base": "rsync -a --delete --exclude='node_modules' --exclude='dist' --exclude='.vantage' --exclude='package-lock.json' --exclude='*.tsbuildinfo' --exclude='*.log' ../vantage/ base-template/",
+    "build": "npm run sync-base && tsup",
+    "release": "npm publish --@squadbase:registry=https://registry.npmjs.org"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "tsup": "^8.4.0",
+    "typescript": "~5.7.0"
+  },
+  "optionalDependencies": {
+    "@ai-sdk/anthropic": "^1.0.0",
+    "@ai-sdk/google": "^1.0.0",
+    "@ai-sdk/openai": "^1.0.0",
+    "ai": "^4.0.0"
+  }
+}

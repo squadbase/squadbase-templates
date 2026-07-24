@@ -1,0 +1,12 @@
+{
+  "name": "table-focus-ja",
+  "description": "[日本語] テーブル重視 — ヘッダーに検索+エクスポート、ステータスフィルタチップ、詳細テーブル(24行以上、ソート可)を主役とし、右サイドにトレンドチャートとセグメント内訳を配置する作業画面構成",
+  "version": "0.1.0",
+  "files": [
+    { "src": "pages/home.tsx", "dest": "index.tsx", "action": "replace" },
+    { "src": "components/detail-table.tsx", "dest": "components/table-focus/detail-table.tsx", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "components/table-focus/mock-data.ts", "action": "add", "relabel": false },
+    { "src": "lib/types.ts", "dest": "components/table-focus/types.ts", "action": "add", "relabel": false }
+  ],
+  "nav": []
+}
