@@ -70,13 +70,6 @@ tsup が全てを `dist/index.js` にバンドルするため、`__dirname` は�
 - `join(__dirname, "..", "chart-presets")` → `vantage-template/chart-presets/`
 - `join(__dirname, "..", "base-template")` → `vantage-template/base-template/`
 
-## 開発コマンド
-
-```bash
-npm run build      # ../vantage/ からベーステンプレートを同期 + tsup でビルド
-npm run release    # npm に公開（@squadbase:registry）
-```
-
 ## CLI
 
 ```bash
