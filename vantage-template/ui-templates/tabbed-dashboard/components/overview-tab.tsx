@@ -12,7 +12,7 @@ import {
 } from "@squadbase/vantage/components"
 import type { EChartsOption } from "@squadbase/vantage/components"
 
-import { overviewKpis, trendSeries, categoryRows } from "./mock-data.js"
+import { overviewKpis, trendSeries, categoryRows } from "./mock-data"
 
 function getBaseGrid() {
   return { left: "3%", right: "4%", bottom: "10%", containLabel: true }

@@ -1,4 +1,4 @@
-import type { FunnelStage, StageRow } from "./types.js"
+import type { FunnelStage, StageRow } from "./types"
 
 const VISITORS = 124_500
 const LEADS = 38_240

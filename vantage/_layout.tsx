@@ -4,7 +4,7 @@ import { Link, Outlet, useCurrentRoute, useRoutes } from "@squadbase/vantage/rou
 import { AppShell } from "@squadbase/vantage/components"
 import type { NavGroup } from "@squadbase/vantage/components"
 
-import { UserCard } from "./components/user-card.js"
+import { UserCard } from "./components/user-card"
 
 /**
  * `AppShell` is router-agnostic and renders nav entries through whatever

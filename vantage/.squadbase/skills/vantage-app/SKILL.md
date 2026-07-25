@@ -22,8 +22,6 @@ Tailwind・UI キット・開発サーバー・API サーバー・ビルドは�
   `echarts`・`hono`・`vite`・`tailwindcss` を直接 import しない。`lucide-react` のアイコンだけは
   直接 import してよい。
 - **`.vantage/` と `dist/` は生成物。** 編集しない・読みにいかない(gitignore 済み)。
-- **モジュール間 import はランタイムの `.js` 指定子を使う**(例: `./components/revenue-chart.js`)。
-  ソースは `.tsx`/`.ts` でも、相対 import の拡張子は `.js` と書く。ESM の Node 解決に必要。
 
 ## サブパスの地図
 
@@ -62,7 +60,7 @@ Tailwind・UI キット・開発サーバー・API サーバー・ビルドは�
     "routes": "vantage routes"
   },
   "dependencies": {
-    "@squadbase/vantage": "^0.1.0",
+    "@squadbase/vantage": "^0.2.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }

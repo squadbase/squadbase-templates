@@ -1,6 +1,6 @@
 ---
 name: vantage-pitfalls
-description: Vantage(@squadbase/vantage)アプリを書くときに静かに壊れる落とし穴のリファレンス。Base UI は Radix ではない(asChild 無し・render プロップ)、SelectValue は value を描く、クライアントから server/ を import しない、EChart はテーマ非追従、相対 import は .js 指定子、動的パラメータの3綴り同期、PUBLIC_ env、HttpError など。Vantage の UI コンポーネントやルーティングが思った通りに動かないとき、ビルドやスタイルが静かに欠落するときに参照する。
+description: Vantage(@squadbase/vantage)アプリを書くときに静かに壊れる落とし穴のリファレンス。Base UI は Radix ではない(asChild 無し・render プロップ)、SelectValue は value を描く、クライアントから server/ を import しない、EChart はテーマ非追従、動的パラメータの3綴り同期、PUBLIC_ env、HttpError など。Vantage の UI コンポーネントやルーティングが思った通りに動かないとき、ビルドやスタイルが静かに欠落するときに参照する。
 ---
 
 # Vantage アプリの落とし穴リファレンス
@@ -51,16 +51,6 @@ Vantage の UI キットは shadcn/ui の **Base UI バリアント**。Radix �
 - クライアントで読めるのは `import.meta.env.PUBLIC_*` と `MODE`/`DEV`/`PROD`/`SSR`/`BASE_URL` のみ。
   それ以外を `import.meta.env` で読むと `PUBLIC_ENV_MISUSE` 警告。
 - `VITE_` 系の公開 API は無い。サーバーのシークレットは `ctx.env` で読む。
-
-## import:相対 import はランタイムの `.js` 指定子で書く
-
-ソースが `.tsx`/`.ts` でも、**モジュール間の相対 import は `.js`** と書く(ESM の Node 解決に必要):
-
-```tsx
-import { RevenueChart } from "./components/revenue-chart.js"  // ← .tsx ではなく .js
-```
-
-`@squadbase/vantage` のサブパス import はこの限りではない(`@squadbase/vantage/ui` 等)。
 
 ## ルーティング:動的パラメータは「3つの綴り」を同期させる
 

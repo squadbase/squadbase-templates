@@ -10,7 +10,7 @@
 > アプリ固有のメモは別ファイル(例: `README.md`)に書いてください。
 >
 > 手順を伴う踏み込んだワークフローは、同梱の Claude Code Skill に分かれています
-> (`vantage add skill --all` で `.claude/skills/` に配置)。このファイルは「地図」、Skill は
+> (`vantage add skill --all --dir .claude/skills` で配置)。このファイルは「地図」、Skill は
 > 「手順書」という役割分担です。詰まったら `vantage-app` / `vantage-add-feature` /
 > `vantage-pitfalls` を参照してください。
 
@@ -29,9 +29,6 @@ UI キット・開発サーバー・API サーバー・ビルドはすべて Van
 - **import は必ず `@squadbase/vantage` のサブパス経由。** `@tanstack/*`・`@base-ui/react`・
   `echarts`・`hono`・`vite`・`tailwindcss` を直接 import しない。`lucide-react` のアイコンだけは
   直接 import してよい。
-- **モジュール間の相対 import はランタイムの `.js` 指定子で書く**(例:
-  `./components/revenue-chart.js`)。ソースが `.tsx`/`.ts` でも拡張子は `.js` と書く。
-  ESM の Node 解決に必要。`@squadbase/vantage` のサブパスはこの限りではない。
 - **クライアントコードは `server/` を import してはならない。** 違反は `CLIENT_IMPORTS_SERVER`
   エラー(静的にもビルド時にも弾かれる)。共有したいコードは `lib/` に置く。
 - **クライアントに届く env は `PUBLIC_` 接頭辞のものだけ。** `import.meta.env.PUBLIC_FOO`。
@@ -74,7 +71,7 @@ UI キット・開発サーバー・API サーバー・ビルドはすべて Van
     "routes": "vantage routes"
   },
   "dependencies": {
-    "@squadbase/vantage": "^0.1.0",
+    "@squadbase/vantage": "^0.2.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }
@@ -305,7 +302,7 @@ pnpm preview   # 本番ビルドをローカル実行
 
 ## さらに詳しく(同梱 Skill)
 
-`vantage add skill --all` で `.claude/skills/` に配置される:
+`vantage add skill --all --dir .claude/skills` で配置される(`--dir` を省くとルート直下):
 
 - **`vantage-app`** — アプリを一から作る / SPA を fullstack に広げる手順
 - **`vantage-add-feature`** — 既存アプリに page / api / ui / block を 1 つ足す定型

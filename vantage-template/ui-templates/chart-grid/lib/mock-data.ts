@@ -4,7 +4,7 @@ import type {
   ScatterPoint,
   RadarPoint,
   HeatmapCell,
-} from "./types.js"
+} from "./types"
 
 export const timeSeries: TimePoint[] = [
   { date: "2024-03-02", series1: 16462, series2: 12092 },

@@ -35,20 +35,20 @@ import {
   type EChartsOption,
 } from "@squadbase/vantage/components"
 
-import { CampaignTable } from "./components/kpi-chart-advanced/campaign-table.js"
+import { CampaignTable } from "./components/kpi-chart-advanced/campaign-table"
 import {
   breakdownSlices,
   campaignRows,
   comparisonSeries,
   headerKpis,
   trendSeries,
-} from "./components/kpi-chart-advanced/mock-data.js"
+} from "./components/kpi-chart-advanced/mock-data"
 import type {
   BreakdownSlice,
   ComparisonPoint,
   DashboardFilters,
   TrendPoint,
-} from "./components/kpi-chart-advanced/types.js"
+} from "./components/kpi-chart-advanced/types"
 
 export const page = definePage({
   title: "KPI + チャート (アドバンスト)",

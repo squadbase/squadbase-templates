@@ -76,7 +76,7 @@ npx @squadbase/vantage-template chart ocean   # Switch the chart color preset
 
 ## Documentation
 
-For detailed documentation on each template, refer to the skill files in `skills/source/`. The Vantage template bundles its own agent guidance in `vantage/AGENTS.md` and `vantage/.squadbase/skills/` — both originate from the framework, and `npx vantage upgrade` re-syncs `AGENTS.md`.
+For detailed documentation on each template, refer to the skill files in `skills/source/`. The Vantage template bundles its own agent guidance in `vantage/AGENTS.md` and `vantage/.squadbase/skills/` — both originate from the framework. `npx vantage upgrade` re-syncs `AGENTS.md`, and `npx vantage add skill --all --dir .squadbase/skills` re-syncs the skills.
 
 For Squadbase platform documentation, visit [Squadbase Docs](https://www.squadbase.dev/en/docs).
 

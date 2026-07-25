@@ -24,7 +24,7 @@ Both are React dashboard templates, but they hand off responsibility differently
 | Framework | App owns `vite.config.ts`, `main.tsx`, `routes.tsx` | `@squadbase/vantage` owns all of it; config files are forbidden |
 | Routing | Explicit table in `src/routes.tsx` | File-based (`index.tsx` → `/`, `sales/[id].tsx` → `/sales/:id`) |
 | Building blocks | Copied into `src/components/` (editable) | Imported from `@squadbase/vantage/{ui,components}` (managed) |
-| Import style | `@/` alias | Package subpaths + relative specifiers ending in `.js` |
+| Import style | `@/` alias | Package subpaths + extensionless relative specifiers |
 | Backend | `@squadbase/vite-server` + `server-logic/` | `server/api/**` handlers built into the framework |
 | UI primitives | Radix (`asChild`) | Base UI (`render` prop) |
 

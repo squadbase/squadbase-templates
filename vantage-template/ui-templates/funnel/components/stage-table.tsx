@@ -2,8 +2,8 @@ import { useMemo } from "react"
 import { DataTablePreset, Placeholder } from "@squadbase/vantage/components"
 import type { ColumnDef } from "@squadbase/vantage/components"
 
-import { formatNumber, formatPercent } from "./chart-helpers.js"
-import type { StageRow } from "./types.js"
+import { formatNumber, formatPercent } from "./chart-helpers"
+import type { StageRow } from "./types"
 
 const STEP_NAMES = ["Stage 1 → 2", "Stage 2 → 3", "Stage 3 → 4", "Stage 4 → 5"]
 

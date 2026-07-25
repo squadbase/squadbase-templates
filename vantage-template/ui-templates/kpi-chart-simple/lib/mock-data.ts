@@ -1,4 +1,4 @@
-import type { KpiItem, TrendPoint, TopItemRow } from "./types.js"
+import type { KpiItem, TrendPoint, TopItemRow } from "./types"
 
 export const trendSeries: TrendPoint[] = [
   { date: "2024-03-02", revenue: 38473, orders: 503 },

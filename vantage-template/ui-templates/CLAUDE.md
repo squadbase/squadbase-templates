@@ -76,14 +76,14 @@ function areaOption(data: TimePoint[]): EChartsOption {
 
 **禁止**: `echarts` / `@tanstack/*` / `@base-ui/react` / `hono` / `vite` / `tailwindcss` の直接 import。`EChartsOption` は `@squadbase/vantage/components` から、`ColumnDef` も同じくそこから取る。`lucide-react` と `date-fns` の直接 import は可（ベーステンプレートの dependencies に入っている）。
 
-**相対 import には `.js` 拡張子を付ける**（ソースが `.tsx`/`.ts` でも）。ESM の解決に必要。
+**相対 import は拡張子なしで書く**（`@squadbase/vantage` v0.2.0 で `.js` 指定子の規約は廃止。既存の `.js` 付き import も動くが、新規テンプレでは付けない）。
 
 ```tsx
 // index.tsx から
-import { MOCK_SERIES } from "./components/<slug>/mock-data.js"
+import { MOCK_SERIES } from "./components/<slug>/mock-data"
 
 // components/<slug>/detail-table.tsx から
-import type { Row } from "./types.js"
+import type { Row } from "./types"
 ```
 
 `Placeholder` / `Sparkline` はローカルコピーではなく `@squadbase/vantage/components` から取る（v0.1.1 でフレームワークに入った）。
@@ -164,7 +164,7 @@ ui-templates/<slug>/
 
 1. テンプレ固有ファイルの `dest` は `components/<slug>/` 配下か（`templates/` に `.tsx` を置いていないか）
 2. `@/` エイリアスや `echarts` / `@tanstack/*` の直接 import、`Placeholder` / `Sparkline` のローカル import が残っていないか
-3. 相対 import に `.js` 拡張子が付いているか
+3. 相対 import に `.js` 拡張子が残っていないか（v0.2.0 で規約廃止）
 4. 薄いチャートラッパ component を作っていないか
 5. `mock-data.ts` / `types.ts` は分離され `relabel:false` が付いているか
 6. 未使用の関数・型・import が残っていないか

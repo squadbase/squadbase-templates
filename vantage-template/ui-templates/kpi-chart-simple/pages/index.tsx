@@ -23,17 +23,17 @@ import {
 } from "@squadbase/vantage/components"
 import type { EChartsOption } from "@squadbase/vantage/components"
 
-import { TopItemsTable } from "./components/kpi-chart-simple/top-items-table.js"
+import { TopItemsTable } from "./components/kpi-chart-simple/top-items-table"
 import {
   headerKpis,
   topItems,
   trendSeries,
-} from "./components/kpi-chart-simple/mock-data.js"
+} from "./components/kpi-chart-simple/mock-data"
 import type {
   DashboardFilters,
   KpiItem,
   TrendPoint,
-} from "./components/kpi-chart-simple/types.js"
+} from "./components/kpi-chart-simple/types"
 
 export const page = definePage({
   title: "KPI + Chart (Simple)",

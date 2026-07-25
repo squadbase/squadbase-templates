@@ -23,9 +23,9 @@ import {
 import type { DateRange, EChartsOption } from "@squadbase/vantage/components"
 import { ToggleGroup, ToggleGroupItem } from "@squadbase/vantage/ui"
 
-import { StageTable } from "./components/funnel/stage-table.js"
-import { funnelStages, stageRows } from "./components/funnel/mock-data.js"
-import type { FunnelStage } from "./components/funnel/types.js"
+import { StageTable } from "./components/funnel/stage-table"
+import { funnelStages, stageRows } from "./components/funnel/mock-data"
+import type { FunnelStage } from "./components/funnel/types"
 
 export const page = definePage({
   title: "Funnel",

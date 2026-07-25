@@ -121,7 +121,6 @@ vantage add block sales-overview # → components/blocks/sales-overview.tsx
   import { Button, Loading, ErrorState } from "@squadbase/vantage/ui"
   import { DashboardCardPreset, DataTablePreset, EChart } from "@squadbase/vantage/components"
   ```
-- コピーしたソースの相対 import は**ランタイムの `.js` 指定子**で書く(`./cn.js` など)。
 - **props は `vantage docs <name>` で確認してから書く**(`vantage docs button`・
   `vantage docs parts/data-table`。名前が分からなければ `vantage search <やりたいこと>` で
   探してから `vantage docs` に渡す)。

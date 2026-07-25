@@ -9,8 +9,8 @@ import {
   ToggleGroupItem,
 } from "@squadbase/vantage/ui"
 
-import { categoryRows, detailRows } from "./mock-data.js"
-import type { CategoryRow, DetailRow } from "./types.js"
+import { categoryRows, detailRows } from "./mock-data"
+import type { CategoryRow, DetailRow } from "./types"
 
 function formatCurrency(n: number, opts: { short?: boolean } = {}): string {
   const sign = n < 0 ? "-" : ""

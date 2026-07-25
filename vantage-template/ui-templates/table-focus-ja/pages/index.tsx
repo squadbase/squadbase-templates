@@ -17,13 +17,13 @@ import {
 } from "@squadbase/vantage/components"
 import { Button, Input, ToggleGroup, ToggleGroupItem } from "@squadbase/vantage/ui"
 
-import { DetailTable } from "./components/table-focus/detail-table.js"
+import { DetailTable } from "./components/table-focus/detail-table"
 import {
   detailRows,
   summaryRows,
   trendSeries,
-} from "./components/table-focus/mock-data.js"
-import type { DetailRow, TrendPoint } from "./components/table-focus/types.js"
+} from "./components/table-focus/mock-data"
+import type { DetailRow, TrendPoint } from "./components/table-focus/types"
 
 export const page = definePage({
   title: "レコード",

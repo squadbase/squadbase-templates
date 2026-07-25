@@ -4,7 +4,7 @@ import type {
   BreakdownSlice,
   TrendPoint,
   CampaignRow,
-} from "./types.js"
+} from "./types"
 
 export const trendSeries: TrendPoint[] = [
   { date: "2024-03-02", value: 25537 },

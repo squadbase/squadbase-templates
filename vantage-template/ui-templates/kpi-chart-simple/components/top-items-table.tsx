@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import { DataTablePreset, Placeholder } from "@squadbase/vantage/components"
 import type { ColumnDef } from "@squadbase/vantage/components"
 
-import type { TopItemRow } from "./types.js"
+import type { TopItemRow } from "./types"
 
 function formatCurrency(n: number, opts: { short?: boolean } = {}): string {
   const sign = n < 0 ? "-" : ""

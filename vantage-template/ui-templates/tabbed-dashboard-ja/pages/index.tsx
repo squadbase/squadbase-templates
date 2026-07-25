@@ -15,8 +15,8 @@ import {
 import type { DateRange } from "@squadbase/vantage/components"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@squadbase/vantage/ui"
 
-import { OverviewTab } from "./components/tabbed-dashboard/overview-tab.js"
-import { DetailTab } from "./components/tabbed-dashboard/detail-tab.js"
+import { OverviewTab } from "./components/tabbed-dashboard/overview-tab"
+import { DetailTab } from "./components/tabbed-dashboard/detail-tab"
 
 export const page = definePage({
   title: "タブ付きダッシュボード",

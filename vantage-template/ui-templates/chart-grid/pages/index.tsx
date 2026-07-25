@@ -24,7 +24,7 @@ import {
   heatmapCells,
   HEATMAP_X_AXIS,
   HEATMAP_Y_AXIS,
-} from "./components/chart-grid/mock-data.js"
+} from "./components/chart-grid/mock-data"
 import type {
   TimePoint,
   BarPoint,
@@ -32,7 +32,7 @@ import type {
   RadarPoint,
   HeatmapCell,
   DashboardFilters,
-} from "./components/chart-grid/types.js"
+} from "./components/chart-grid/types"
 
 export const page = definePage({
   title: "Charts overview",
