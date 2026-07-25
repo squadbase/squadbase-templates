@@ -92,10 +92,10 @@ EN/JA は `<name>` と `<name>-ja` のペアで、`files[].dest` は EN/JA で�
 
 `chart <preset>` は `chart-presets/<preset>.css` の `--chart-1..5` を、プロジェクトの `styles.css` にマーカーで囲んだブロックとして書き込む。マーカー内だけを差し替えるので、ユーザーが同じファイルに書いた他の override は壊れない。再実行しても積み上がらない。
 
-**このコマンドは `@squadbase/vantage` v0.2.1 以上が前提**。v0.2.0 までの `EChart` は薄いラッパーでトークンを読まず、書き換えてもチャートの配色は 1 ピクセルも変わらなかった（そのため一度削除した）。v0.2.1 で `EChart` が init 時に `getComputedStyle` で `--chart-1..5`（系列色）と文字色/境界色トークン（軸・凡例・ツールチップ）を解決し、`class` / `style` / `data-theme` の変化と `prefers-color-scheme` を MutationObserver で追うようになったため、プリセットが実際に効くようになった。
+**このコマンドは `@squadbase/vantage` v0.2.1 以上が前提**（v0.2.2 以上を推奨）。v0.2.0 までの `EChart` は薄いラッパーでトークンを読まず、書き換えてもチャートの配色は 1 ピクセルも変わらなかった（そのため一度削除した）。v0.2.1 で `EChart` が init 時に `getComputedStyle` で `--chart-1..5`（系列色）と文字色/境界色トークン（軸・凡例・ツールチップ）を解決し、`class` / `style` / `data-theme` の変化と `prefers-color-scheme` を MutationObserver で追うようになったため、プリセットが実際に効くようになった。v0.2.2 でスタイルシート自体の差し替えも監視対象に入った。
 
 - 各プリセットは `:root` と `.dark, [data-theme="dark"]` の両方を定義する（フレームワークの `theme.css` と同じセレクタ）。片方だけだとダークモードで既定に落ちる。
-- **`dev` 中に適用したら、ブラウザをリロードする。** `EChart` がトークンを読み直すのは `class` / `style` / `data-theme` の変化と `prefers-color-scheme` を見た時で、Vite が CSS だけ差し替える HMR ではどれも動かない。DOM のトークン値は変わっているのにチャートだけ前の色、という状態になる（テーマ切り替えボタンでの明暗変更は class が変わるので即反映される）。
+- **`dev` 中の適用も v0.2.2 以降はリロード不要。** `EChart` が `document.head` のスタイルシート変化（`<style>` / `<link>` の追加・差し替え・`href` / `media` / `disabled` の変化）も監視するようになり、Vite が CSS だけ差し替える HMR でも読み直す。トークンの実値が変わった時だけ再描画するので、無関係な CSS 更新でチラつくこともない。v0.2.1 では HMR が拾われず「DOM のトークンは変わっているのにチャートだけ前の色」になっていた。
 - 個別のチャートだけ配色を変えたいときは `EChartsOption` の `color` を渡す。option はテーマより優先され、軸まわりのトークン追従は残る。
 - `theme` プロップを渡すとトークン追従は完全に止まる。ui-templates では使わない。
 

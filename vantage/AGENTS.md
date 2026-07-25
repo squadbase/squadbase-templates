@@ -309,8 +309,10 @@ pnpm preview   # 本番ビルドをローカル実行
 ```
 
 `vantage-manifest.json` の `mode`(`spa` / `fullstack`)は `server/` の有無から自動で決まる
-(手で書かない)。`vantage check --json` / `vantage routes --json` はエージェント向けの機械
-可読出力。`console.*` とランタイムエラーは開発ターミナルに `[browser:…]` として転送される。
+(手で書かない)。`vantage routes` は `--pages` / `--apis` で片側だけに絞れ、`--detail` を足すと
+各ルートの静的な仕様(ページ: パスパラメータ + `definePage` のメタ / API: メソッド・query・
+body・レスポンスの status と形)まで出る。`vantage check --json` / `vantage routes --json` は
+エージェント向けの機械可読出力。`console.*` とランタイムエラーは開発ターミナルに `[browser:…]` として転送される。
 
 ## さらに詳しく(同梱 Skill)
 
@@ -318,18 +320,20 @@ pnpm preview   # 本番ビルドをローカル実行
 - **`vantage-add-feature`** — 既存アプリに page / api / ui を 1 つ足す定型
 - **`vantage-pitfalls`** — Base UI(≠ Radix)の癖など、静かに壊れる落とし穴のリファレンス
 
-**まず、このアプリに配置済みかを探す。** 手順書の本体は SKILL.md というファイルで、置き場所は
-アプリによって違う:
+手順書の本体は `SKILL.md` というファイルで、置き場所はアプリによって違う(ルート直下・
+`.claude/skills/`・`.squadbase/skills/` など)。**探す必要はない ― CLI が探す:**
 
 ```bash
-ls .claude/skills          # よくある置き場所
-ls -d vantage-*            # ルート直下に置くのが既定
+vantage add skill          # 同梱 skill の一覧と、それぞれの配置場所
 ```
 
-見つかったらその `SKILL.md` を読む(`vantage add skill` を再実行する必要はない)。**無いときだけ**
-配置する ― 一覧は名前を省いて実行すると出る:
+配置済みならその場所が出るので、その `SKILL.md` を読む。`not placed` のものだけ配置する:
 
 ```bash
-vantage add skill                              # 同梱されている skill 名の一覧
-vantage add skill --all --dir .claude/skills   # 配置(--dir を省くとルート直下)
+vantage add skill --all                        # 配置済みはスキップ(場所を報告するだけ)
+vantage add skill --all --dir .claude/skills   # 置き場所を指定(既定はルート直下)
 ```
+
+`add skill` はプロジェクト内を走査してから動くので、**再実行しても二重に配置されない**。
+配置済みのコピーを新しいバージョンに更新したいときだけ `--force` を付ける(見つかった場所を
+そのまま書き換える)。

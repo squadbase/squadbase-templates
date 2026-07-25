@@ -63,7 +63,10 @@ npm run dev      # vantage dev — dev server + API on :5173 (HMR)
 npm run build    # vantage build → dist/ (client + server)
 npm start        # Run production server
 npm run check    # vantage check — static diagnostics (routes, boundaries, forbidden files)
+npm run routes   # vantage routes — page/API route map
 ```
+
+Since v0.2.3 `vantage routes` takes `--pages` / `--apis` to show one side only, and `--detail` to print each route's static spec (page metadata and path params; API methods, query keys, request body, response status/shape). Both compose with `--json`.
 
 **Scaffolding CLI** — [`@squadbase/vantage-template`](./vantage-template/) initializes a project and applies UI-pattern templates:
 
@@ -76,9 +79,9 @@ npx @squadbase/vantage-template chart ocean   # Switch the chart color preset
 
 ## Documentation
 
-For detailed documentation on each template, refer to the skill files in `skills/source/`. The Vantage template bundles its own agent guidance in `vantage/AGENTS.md` and `vantage/.squadbase/skills/` — both originate from the framework. `npx vantage upgrade` re-syncs `AGENTS.md`, and `npx vantage add skill --all --dir .squadbase/skills` re-syncs the skills.
+For detailed documentation on each template, refer to the skill files in `skills/source/`. The Vantage template bundles its own agent guidance in `vantage/AGENTS.md` and `vantage/.squadbase/skills/` — both originate from the framework. `npx vantage upgrade` re-syncs `AGENTS.md`, and `npx vantage add skill --all --force` re-syncs the skills.
 
-> Since v0.2.1 `AGENTS.md` tells agents to look for already-placed skills before running `vantage add skill` — but the two places it suggests looking are `.claude/skills/` and the project root, not `.squadbase/skills/`. **The skills are already checked in under `.squadbase/skills/`**, so check there before running the command or you end up with two copies of the same three skills.
+> Since v0.2.2 `vantage add skill` scans the project before copying, so it finds the checked-in copies under `.squadbase/skills/` and reports their location instead of placing a second set. Run it with no arguments to list the bundled skills and where each one currently lives; `--force` updates them in place, so `--dir` is only needed for a first placement.
 
 For Squadbase platform documentation, visit [Squadbase Docs](https://www.squadbase.dev/en/docs).
 

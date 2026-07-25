@@ -51,7 +51,7 @@ function areaOption(data: TimePoint[]): EChartsOption {
 
 チャート整形ヘルパ（`getBaseGrid` / `formatNumber` 等）も同様に `index.tsx` 内へ inline する。
 
-**チャートに色をハードコードしない。** `@squadbase/vantage` v0.2.1 以降、`EChart` は init 時に `--chart-1..5`（系列色）と文字色/境界色トークン（軸・凡例・ツールチップ）を読み、light / dark の切り替えにも追従する。`option.color` / `itemStyle.color` / ラベルの `color` を書くと、その分だけテンプレがテーマ差し替え（`vantage-template chart <preset>` や `styles.css` の override）から外れる。**ui-templates では書かない**のが既定 — 意味色（成功=緑・失敗=赤など）を出したいときだけ、その series に限って指定する。`theme` プロップは使わない（渡した時点でトークン追従が完全に止まる）。
+**チャートに色をハードコードしない。** `@squadbase/vantage` v0.2.1 以降、`EChart` は init 時に `--chart-1..5`（系列色）と文字色/境界色トークン（軸・凡例・ツールチップ）を読み、light / dark の切り替えにも追従する。v0.2.2 からはスタイルシートの差し替え（`chart <preset>` の適用や `styles.css` の HMR）も拾い、トークンの実値が変わった時だけ再描画する。`option.color` / `itemStyle.color` / ラベルの `color` を書くと、その分だけテンプレがテーマ差し替え（`vantage-template chart <preset>` や `styles.css` の override）から外れる。**ui-templates では書かない**のが既定 — 意味色（成功=緑・失敗=赤など）を出したいときだけ、その series に限って指定する。`theme` プロップは使わない（渡した時点でトークン追従が完全に止まる）。
 
 ### 3. データ層（mock-data / types）は分離する
 

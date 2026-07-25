@@ -57,7 +57,7 @@ API export・env 誤用)はユーザーコードを実行しないので速く�
 vantage routes     # 既にあるページと API の URL マップ
 vantage check      # いま壊れていないか(これから出すエラーと切り分ける)
 ls server/         # あれば fullstack モード。無ければ SPA
-ls .claude/skills  # 配置済みの skill(このファイルの仲間)
+vantage add skill  # 配置済みの skill(このファイルの仲間)と、その場所
 ```
 
 ## Step 2 — ルートを決める

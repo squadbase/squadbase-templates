@@ -90,7 +90,10 @@ npm run dev      # vantage dev — 開発サーバー + API を :5173 で起動�
 npm run build    # vantage build → dist/（クライアント + サーバー）
 npm start        # プロダクションサーバーを起動
 npm run check    # vantage check — 静的診断（ルート・境界・禁止ファイル）
+npm run routes   # vantage routes — ページ / API のルートマップ
 ```
+
+v0.2.3 以降、`vantage routes` は `--pages` / `--apis` で片側だけに絞れ、`--detail` を足すと各ルートの静的な仕様（ページ: メタ情報とパスパラメータ / API: メソッド・query キー・リクエストボディ・レスポンスの status と形）まで出ます。どちらも `--json` と併用できます。
 
 **開発手順（[`@squadbase/vantage-template`](./vantage-template/) CLI）:**
 
@@ -105,9 +108,9 @@ npx @squadbase/vantage-template chart ocean   # チャート配色プリセッ�
 
 ## ドキュメント
 
-各テンプレートの詳細なドキュメントは、`skills/source/` 配下の Skill ファイルを参照してください。Vantage テンプレートはエージェント向けガイダンスを `vantage/AGENTS.md` と `vantage/.squadbase/skills/` に同梱しています（どちらもフレームワーク由来。`AGENTS.md` は `npx vantage upgrade`、Skill は `npx vantage add skill --all --dir .squadbase/skills` で再同期されます）。
+各テンプレートの詳細なドキュメントは、`skills/source/` 配下の Skill ファイルを参照してください。Vantage テンプレートはエージェント向けガイダンスを `vantage/AGENTS.md` と `vantage/.squadbase/skills/` に同梱しています（どちらもフレームワーク由来。`AGENTS.md` は `npx vantage upgrade`、Skill は `npx vantage add skill --all --force` で再同期されます）。
 
-> v0.2.1 以降、`AGENTS.md` は `vantage add skill` を実行する前に配置済みの Skill を探すよう指示しますが、探索先として挙げるのは `.claude/skills/` とプロジェクトルート直下の2つで、`.squadbase/skills/` は含まれません。**本テンプレートの Skill 実体は `.squadbase/skills/` にコミット済み**なので、コマンドを実行する前にそちらを確認してください。実行すると同じ Skill が二重に配置されます。
+> v0.2.2 以降、`vantage add skill` はコピー前にプロジェクト内を走査するため、`.squadbase/skills/` にコミット済みの実体を見つけて場所を報告するだけで済み、二重配置は起きません。引数なしで実行すると同梱 Skill と現在の配置先が一覧できます。`--force` は見つかった場所をそのまま更新するので、`--dir` が要るのは初回配置のときだけです。
 
 Squadbase プラットフォームのドキュメントは [Squadbase Docs](https://www.squadbase.dev/ja/docs) をご覧ください。
 

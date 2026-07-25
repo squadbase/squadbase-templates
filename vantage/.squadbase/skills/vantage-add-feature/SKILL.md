@@ -133,11 +133,21 @@ vantage check     # 規約違反が無いか(exit 1 ならエラーあり)
 vantage dev       # 実際に動くか(console は開発ターミナルに [browser:…] で転送)
 ```
 
+`vantage routes` は `--pages` / `--apis` で片側だけに絞れる。`--detail` を足すと各ルートの静的な
+仕様(ページ: パスパラメータ + `definePage` のメタ / API: メソッド・`searchParams` のキー・
+リクエストボディ・レスポンスの status と形・`HttpError`)まで出るので、**既存 API の呼び方を
+確かめる**ときはこれが速い(ソースを読むだけの推定で、実行はしない)。
+
+```bash
+vantage routes --apis --detail   # 既存 API のメソッド/入出力を確認
+```
+
 エージェントで自動処理するなら機械可読出力を使う:
 
 ```bash
-vantage routes --json   # { pages, layouts, notFound, error, apis, hasServer }
-vantage check --json    # { ok, errorCount, warningCount, diagnostics[] }
+vantage routes --json            # { pages, layouts, notFound, error, apis, hasServer }
+vantage routes --apis --detail --json  # { apis: [{ route, file, params, spec }], hasServer }
+vantage check --json             # { ok, errorCount, warningCount, diagnostics[] }
 ```
 
 `vantage check` が出しうる診断コード(参考):
