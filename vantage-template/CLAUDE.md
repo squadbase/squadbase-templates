@@ -2,7 +2,7 @@
 
 Squadbase Vantage プロジェクトの初期化・カスタマイズ用 CLI ツール（`@squadbase/vantage-template`）。ランタイム依存なし — Node.js 組み込みモジュールのみ使用（AI カスタマイズ時のみ `ai` / `@ai-sdk/*` を動的 import）。
 
-> **Skill の置き場所**: ベーステンプレート同梱の Skill 実体は `base-template/.squadbase/skills/`（`../vantage/.squadbase/skills/` から同期）。`AGENTS.md` は v0.2.1 で「まず配置済みの Skill を探し、無いときだけ配置する」に変わったが、そこが挙げる探索先は `ls .claude/skills` と `ls -d vantage-*` の2つで、**`.squadbase/skills/` は挙がらない**。`vantage add skill` を実行する前に `ls .squadbase/skills` を確認すること — 実行すると同じ Skill が二重になる。
+> **Skill の置き場所**: ベーステンプレート同梱の Skill 実体は `base-template/.squadbase/skills/`（`../vantage/.squadbase/skills/` から同期）。v0.2.2 以降の `vantage add skill` はコピー前にプロジェクト内を走査するので、この場所を検出して二重配置を避ける（配置済みの内容を更新したいときだけ `--force`）。
 
 `vite-template` の Vantage 版。フレームワークが `@squadbase/vite-server` + 手書きの `src/routes.tsx` から [`@squadbase/vantage`](https://vantage-framework-vantage.vercel.app/) に変わったことで、下記の差分がある。
 
@@ -55,15 +55,34 @@ vantage-template/
 
 `npm run build` は以下を順番に実行:
 
-1. **`sync-base`** — `rsync -a --delete ../vantage/ base-template/`（node_modules, dist, .vantage, package-lock.json, *.tsbuildinfo, *.log を除外）
+1. **`sync-base`** — `rsync -a --delete ../vantage/ base-template/`（node_modules, dist, .vantage, package-lock.json, *.tsbuildinfo, *.log を除外）。続けて `base-template/.gitignore` を `base-template/_gitignore` にリネームする（下記）。
 2. **`tsup`** — `src/index.ts` を `dist/index.js` にバンドル（ESM 単一ファイル + shebang）
 
+### `_gitignore` リネーム
+
+**npm は tarball から `.gitignore` を必ず落とす**（`files` に含めても、`.npmignore` を書いても復活しない）。素直に同期すると、publish 後の `init` で生成されるプロジェクトに `.gitignore` が無い状態になり、`node_modules/` や `dist/` が丸ごと Git の管理対象に見える。
+
+対策として `sync-base` が `_gitignore` にリネームし、`init` がコピー時に `.gitignore` へ戻す（`src/commands/init.ts` の `RENAME_ON_COPY`）。`.gitignore` の実体は `../vantage/.gitignore` のままなので、編集はそちらに対して行う。同じ扱いが必要なファイルが増えたら `RENAME_ON_COPY` に足す。
+
 ### npm に公開される内容
+
+`package.json` の `files` で指定（`README.md` / `package.json` は npm が常に含める）:
 
 - `dist/` — コンパイル済み CLI
 - `ui-templates/` — UIパターン別テンプレートデータ
 - `chart-presets/` — チャート配色プリセット
 - `base-template/` — Vantage ベースプロジェクトのフルコピー（`init` コマンド用）
+
+### publish 手順
+
+```bash
+cd vantage-template
+npm publish --@squadbase:registry=https://registry.npmjs.org   # = npm run release
+```
+
+`prepublishOnly` が `npm run build` を回すので、`base-template/`（gitignore 対象で、`../vantage/` の内容がそのまま出荷される）が古いまま publish されることはない。**publish 前に `../vantage/` 側がビルド・型検査を通っていることを確認する**こと — ベーステンプレートの不具合はそのまま `init` の出力になる。
+
+publish 後の tarball の中身は `npm pack --dry-run` で事前に確認できる。
 
 ### パス解決
 

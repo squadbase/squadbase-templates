@@ -8,6 +8,12 @@ import { log } from "../logger.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// npm strips `.gitignore` from published tarballs, so the base template ships it
+// under a placeholder name (see the `sync-base` script) and init restores it.
+const RENAME_ON_COPY: Record<string, string> = {
+  _gitignore: ".gitignore",
+};
+
 function getBaseTemplateDir(): string {
   return join(__dirname, "..", "base-template");
 }
@@ -56,21 +62,22 @@ export function initProject(options: {
   const entries = readdirSync(baseTemplateDir, { withFileTypes: true });
 
   for (const entry of entries) {
+    const destName = RENAME_ON_COPY[entry.name] ?? entry.name;
     const src = join(baseTemplateDir, entry.name);
-    const dest = join(targetDir, entry.name);
+    const dest = join(targetDir, destName);
 
     if (entry.isDirectory()) {
       mkdirSync(dest, { recursive: true });
       cpSync(src, dest, { recursive: true, force: options.force });
     } else {
       if (!options.force && existsSync(dest)) {
-        log("yellow", `  skipped (exists): ${entry.name}`);
+        log("yellow", `  skipped (exists): ${destName}`);
         continue;
       }
       cpSync(src, dest);
     }
 
-    log("cyan", `  ${entry.name}`);
+    log("cyan", `  ${destName}`);
   }
 
   if (options.chart) {
