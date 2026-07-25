@@ -53,6 +53,24 @@ function areaOption(data: TimePoint[]): EChartsOption {
 
 `mock-data.ts` と `types.ts` は `index.tsx` に inline せず、`components/<slug>/` の別ファイルに保つ。表示ラベル（KPI名・軸名・stage名など）は描画側（`index.tsx`）の literal/const に置き、データ配列には値・id・generic な sample text のみ置く。
 
+### 3-b. API 版テンプレ（`server/api` から配信する場合）
+
+`kpi-chart-simple` はモック配列を直読みせず、**`server/api` から `useApiQuery` で取る**構成になっている。実データ接続までの導線を1本コードで示すためのもので、この構成を採るテンプレは dest の置き場が変わる:
+
+```
+index.tsx                                # useApiQuery + useSearchParam
+components/<slug>/*.tsx                  # 表示コンポーネント
+lib/<slug>/types.ts                      # ★ client と server が共有する型（relabel:false）
+server/api/<endpoint>.ts                 # ★ サンプルデータ + GET ハンドラ（relabel:false）
+```
+
+- **共有型は `components/` ではなく `lib/`** に置く。クライアントは `server/` を import できない（`CLIENT_IMPORTS_SERVER`）ので、両者が参照できる中立な場所が要る。`lib/` もルート走査対象外なので安全。
+- **サンプルデータはサーバー側に置く。** 「実装者が差し替える場所」がハンドラ1箇所に集約され、`KpiSummary` のような payload 型さえ保てばページを触らずに実データへ移行できる。
+- **絞り込みは `useSearchParam` + `useApiQuery` の `search`** で組む。`search` はクエリ文字列とキャッシュキーの両方に入るので、URL を変えれば再取得される。
+- クライアントに見せたいエラーは `HttpError(status, msg)` を throw する。`useApiQuery` の `error` は `ApiError` なのでキャスト不要で `.message` が読める。
+
+新しくテンプレを足すときにこの構成を必須にはしない（UI 骨格の見本市なのでモックのままでよい）。ただし**モックを使うテンプレでも絞り込み状態は `useState` のままでよい** — URL 化は実データに繋ぐ段階の話で、`kpi-chart-simple` がその見本になっている。
+
 ### 4. デッドコードを残さない
 
 テンプレに未使用の関数・型・import を残さない。
@@ -126,7 +144,10 @@ ui-templates/<slug>/
   lib/mock-data.ts      → dest: components/<slug>/mock-data.ts     (add, relabel:false)
   lib/types.ts          → dest: components/<slug>/types.ts         (add, relabel:false)
   components/*.tsx      → dest: components/<slug>/*.tsx            (add)  ※分割した場合のみ
+  server/*.ts           → dest: server/api/*.ts                    (add, relabel:false) ※API 版のみ
 ```
+
+API 版（`kpi-chart-simple`）では `lib/types.ts` の dest が `lib/<slug>/types.ts` になり、`lib/mock-data.ts` は無く、代わりに `server/*.ts` を持つ。上の「3-b」を参照。
 
 ## manifest.json
 
@@ -166,7 +187,8 @@ ui-templates/<slug>/
 2. `@/` エイリアスや `echarts` / `@tanstack/*` の直接 import、`Placeholder` / `Sparkline` のローカル import が残っていないか
 3. 相対 import に `.js` 拡張子が残っていないか（v0.2.0 で規約廃止）
 4. 薄いチャートラッパ component を作っていないか
-5. `mock-data.ts` / `types.ts` は分離され `relabel:false` が付いているか
+5. `mock-data.ts` / `types.ts` / `server/*.ts` は分離され `relabel:false` が付いているか
 6. 未使用の関数・型・import が残っていないか
 7. 適用先で `npx vantage check` と `npx tsc --noEmit` が通るか
 8. EN/JA 両方を同じ構成に揃えたか
+9. レイアウトを変えたなら `preview-wide.png` (1600x900) / `preview-square.png` (1200x1200) を撮り直したか

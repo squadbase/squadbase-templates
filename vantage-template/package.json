@@ -8,8 +8,7 @@
   "files": [
     "dist",
     "ui-templates",
-    "base-template",
-    "chart-presets"
+    "base-template"
   ],
   "publishConfig": {
     "access": "public"

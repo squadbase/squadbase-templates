@@ -1,4 +1,3 @@
-import { getChartPresetDescription, listChartPresetNames } from "../chart-presets.js";
 import { log } from "../logger.js";
 import { listTemplateNames, loadManifest, type TemplateSource } from "../manifest.js";
 
@@ -62,19 +61,6 @@ export function listTemplates(options: ListTemplatesOptions = {}): void {
         log("dim", `    imageSquare: ${urls.imageSquare}`);
       } catch {
         log("dim", `  ${name} (invalid manifest)`);
-      }
-    }
-  }
-
-  const presets = listChartPresetNames();
-  if (presets.length > 0) {
-    log("green", "\nAvailable chart presets:");
-    for (const name of presets) {
-      const description = getChartPresetDescription(name);
-      if (description) {
-        log("cyan", `  ${name} — ${description}`);
-      } else {
-        log("cyan", `  ${name}`);
       }
     }
   }

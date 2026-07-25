@@ -3,7 +3,6 @@ import { cpSync, existsSync, mkdirSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { applyChartPreset, listChartPresetNames } from "../chart-presets.js";
 import { log } from "../logger.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -12,28 +11,13 @@ function getBaseTemplateDir(): string {
   return join(__dirname, "..", "base-template");
 }
 
-export function initProject(options: {
-  force: boolean;
-  skipInstall: boolean;
-  chart?: string;
-}): void {
+export function initProject(options: { force: boolean; skipInstall: boolean }): void {
   const targetDir = process.cwd();
   const baseTemplateDir = getBaseTemplateDir();
 
   if (!existsSync(baseTemplateDir)) {
     log("red", "Base template not found. The package may be corrupted.");
     process.exit(1);
-  }
-
-  if (options.chart) {
-    const available = listChartPresetNames();
-    if (!available.includes(options.chart)) {
-      log("red", `Chart preset "${options.chart}" not found.`);
-      if (available.length > 0) {
-        log("yellow", `Available presets: ${available.join(", ")}`);
-      }
-      process.exit(1);
-    }
   }
 
   // Check target directory is not already a Squadbase project
@@ -71,11 +55,6 @@ export function initProject(options: {
     }
 
     log("cyan", `  ${entry.name}`);
-  }
-
-  if (options.chart) {
-    applyChartPreset(targetDir, options.chart);
-    log("cyan", `  chart preset: ${options.chart}`);
   }
 
   if (options.skipInstall) {

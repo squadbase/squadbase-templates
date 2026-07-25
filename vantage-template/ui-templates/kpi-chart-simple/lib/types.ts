@@ -1,9 +1,21 @@
+/**
+ * Shared between the page and `server/api/kpi-summary.ts`.
+ *
+ * These live in `lib/` rather than `components/` because the client may never
+ * import from `server/` (`vantage check` reports `CLIENT_IMPORTS_SERVER`), so
+ * anything both sides need has to sit in neutral ground.
+ */
+
+export type RangeKey = "7d" | "30d" | "90d"
+
+export type KpiId = "total-revenue" | "active-users" | "conversion-rate" | "aov"
+
+/** Raw numbers only — labels and formatting belong to the page. */
 export interface KpiItem {
-  id: "total-revenue" | "active-users" | "conversion-rate" | "aov"
-  value: string
+  id: KpiId
+  value: number
+  /** Percent change against the preceding window of the same length. */
   change: number
-  changeLabel: string
-  positiveIsGood: boolean
   sparklineData: number[]
 }
 
@@ -11,6 +23,7 @@ export interface TrendPoint {
   date: string
   revenue: number
   orders: number
+  visitors: number
 }
 
 export interface TopItemRow {
@@ -22,6 +35,10 @@ export interface TopItemRow {
   share: number
 }
 
-export interface DashboardFilters {
-  dateRange: { from: Date | undefined; to: Date | undefined }
+/** The payload `GET /api/kpi-summary` returns. */
+export interface KpiSummary {
+  range: RangeKey
+  kpis: KpiItem[]
+  trend: TrendPoint[]
+  topItems: TopItemRow[]
 }

@@ -4,7 +4,12 @@ import { join } from "node:path";
 import { customizeWithAI, type CustomizeOptions } from "../ai/index.js";
 import { applyTemplate, type ApplyOptions } from "../apply.js";
 import { log } from "../logger.js";
-import { getTemplateDir, listTemplateNames, loadManifest } from "../manifest.js";
+import {
+  getTemplateDir,
+  listTemplateNames,
+  loadManifest,
+  type TemplateSource,
+} from "../manifest.js";
 
 export interface AddOptions extends ApplyOptions {
   ai?: CustomizeOptions;
@@ -27,6 +32,40 @@ function isVantageProject(projectRoot: string): boolean {
   } catch {
     return false;
   }
+}
+
+/**
+ * Files a *previously applied* template left behind.
+ *
+ * `apply` only ever copies, and every template overwrites `index.tsx`, so
+ * switching templates orphans the earlier one's `components/<slug>/` and
+ * `server/api/*` files: nothing imports them, `vantage check` is happy, and an
+ * agent reading the project has to work out that they are dead. Reporting them
+ * is enough — deleting files the user may have edited is not ours to decide.
+ */
+function findStaleTemplateFiles(
+  projectRoot: string,
+  appliedTemplate: string,
+  source: TemplateSource,
+): string[] {
+  const stale: string[] = [];
+  for (const name of listTemplateNames(source)) {
+    // EN/JA pairs share every dest, so the counterpart is not leftovers.
+    if (name === appliedTemplate) continue;
+    if (name.replace(/-ja$/, "") === appliedTemplate.replace(/-ja$/, "")) continue;
+
+    let manifest;
+    try {
+      manifest = loadManifest(name, source);
+    } catch {
+      continue;
+    }
+    for (const file of manifest.files) {
+      if (file.action !== "add") continue;
+      if (existsSync(join(projectRoot, file.dest))) stale.push(file.dest);
+    }
+  }
+  return [...new Set(stale)].sort();
 }
 
 export async function addTemplate(templateName: string, options: AddOptions): Promise<void> {
@@ -57,9 +96,25 @@ export async function addTemplate(templateName: string, options: AddOptions): Pr
     if (options.dryRun) {
       log("yellow", "(dry run — no files will be changed)");
     }
+
+    // `index.tsx` is declared `replace`, so it is not treated as a conflict and
+    // goes even without --force. Say so before it happens.
+    const entry = manifest.files.find((f) => f.action === "replace");
+    if (entry && existsSync(join(projectRoot, entry.dest))) {
+      log("yellow", `  ${entry.dest} will be overwritten — commit first if it holds your work.`);
+    }
   }
 
   applyTemplate(projectRoot, manifest, options);
+
+  if (!options.ai?.json) {
+    const stale = findStaleTemplateFiles(projectRoot, templateName, source);
+    if (stale.length > 0) {
+      log("yellow", "\nLeftovers from a previously applied template (nothing imports them):");
+      for (const dest of stale) log("dim", `  ${dest}`);
+      log("dim", "  Delete them so they stop showing up in searches.");
+    }
+  }
 
   if (options.ai) {
     const result = await customizeWithAI(projectRoot, manifest, templateDir, options.ai);

@@ -100,12 +100,13 @@ npm run check    # vantage check — 静的診断（ルート・境界・禁止�
 npx @squadbase/vantage-template init          # ベーステンプレートを展開
 npx @squadbase/vantage-template list          # 利用可能な UI テンプレートを列挙
 npx @squadbase/vantage-template add funnel    # 適用
-npx @squadbase/vantage-template chart ocean   # チャート配色プリセットを切り替え
 ```
 
 ## ドキュメント
 
 各テンプレートの詳細なドキュメントは、`skills/source/` 配下の Skill ファイルを参照してください。Vantage テンプレートはエージェント向けガイダンスを `vantage/AGENTS.md` と `vantage/.squadbase/skills/` に同梱しています（どちらもフレームワーク由来。`AGENTS.md` は `npx vantage upgrade`、Skill は `npx vantage add skill --all --dir .squadbase/skills` で再同期されます）。
+
+> `AGENTS.md` の末尾は `vantage add skill --all --dir .claude/skills` と書いてあります。これはフレームワーク側の既定で、`vantage upgrade` のたびに書き戻されます。**本テンプレートの Skill 実体は `.squadbase/skills/` にコミット済み**なので、この記述どおりに実行すると同じ Skill が二重に配置されます。実行しないでください。
 
 Squadbase プラットフォームのドキュメントは [Squadbase Docs](https://www.squadbase.dev/ja/docs) をご覧ください。
 

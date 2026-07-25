@@ -1,11 +1,11 @@
 {
   "name": "kpi-chart-simple-ja",
-  "description": "[日本語] KPI + チャート (シンプル) — KPIカード4個・トレンドライン1本・上位アイテムテーブルの最小ダッシュボード構成",
-  "version": "0.1.0",
+  "description": "[日本語] KPI + チャート (シンプル) — KPIカード4個・トレンドライン1本・上位アイテムテーブル。server/api から取得し、期間は URL で切り替える最小ダッシュボード構成",
+  "version": "0.2.0",
   "files": [
     { "src": "pages/index.tsx", "dest": "index.tsx", "action": "replace" },
     { "src": "components/top-items-table.tsx", "dest": "components/kpi-chart-simple/top-items-table.tsx", "action": "add" },
-    { "src": "lib/mock-data.ts", "dest": "components/kpi-chart-simple/mock-data.ts", "action": "add", "relabel": false },
-    { "src": "lib/types.ts", "dest": "components/kpi-chart-simple/types.ts", "action": "add", "relabel": false }
+    { "src": "lib/types.ts", "dest": "lib/kpi-chart-simple/types.ts", "action": "add", "relabel": false },
+    { "src": "server/kpi-summary.ts", "dest": "server/api/kpi-summary.ts", "action": "add", "relabel": false }
   ]
 }
