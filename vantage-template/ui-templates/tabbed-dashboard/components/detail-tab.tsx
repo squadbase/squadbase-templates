@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
 import { Download, Search } from "lucide-react"
-import { DashboardCardPreset, DataTablePreset } from "@squadbase/vantage/components"
+import { DashboardCardPreset, DataTablePreset, Placeholder } from "@squadbase/vantage/components"
 import type { ColumnDef } from "@squadbase/vantage/components"
 import {
   Button,
@@ -9,7 +9,6 @@ import {
   ToggleGroupItem,
 } from "@squadbase/vantage/ui"
 
-import { Placeholder } from "../placeholder.js"
 import { categoryRows, detailRows } from "./mock-data.js"
 import type { CategoryRow, DetailRow } from "./types.js"
 

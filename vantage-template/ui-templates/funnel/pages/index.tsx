@@ -18,11 +18,11 @@ import {
   PageShellDescription,
   PageShellHeaderEnd,
   PageShellContent,
+  Placeholder,
 } from "@squadbase/vantage/components"
 import type { DateRange, EChartsOption } from "@squadbase/vantage/components"
 import { ToggleGroup, ToggleGroupItem } from "@squadbase/vantage/ui"
 
-import { Placeholder } from "./components/placeholder.js"
 import { StageTable } from "./components/funnel/stage-table.js"
 import { funnelStages, stageRows } from "./components/funnel/mock-data.js"
 import type { FunnelStage } from "./components/funnel/types.js"

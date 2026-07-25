@@ -72,9 +72,33 @@ import { RevenueChart } from "./components/revenue-chart.js"  // ← .tsx では
 
 ## ページ:`definePage` の値はリテラルで書く
 
-title/description は**ビルド時に静的抽出**される。変数・関数呼び出し・テンプレート補間を使うと
-抽出できない。`export const page = definePage({ title: "…" })` の右辺はリテラルにする。
+title/description/navLabel は**ビルド時に静的抽出**される。変数・関数呼び出し・テンプレート補間を
+使うと抽出できない。`export const page = definePage({ title: "…" })` の右辺はリテラルにする。
 なお `page` エクスポートはランタイムでは読まれない(抽出専用)。
+
+## ナビ:`useRoutes()` は動的ルートも返す
+
+`/sales/:customerId` のような動的ルートは URL が 1 つに定まらない。ナビに出すなら
+`useRoutes().filter((r) => !r.dynamic)` で外す。リンク先は `r.path`(`:id` 形式)ではなく
+**`r.to`**(`$id` 形式)を `Link` に渡す。表示名は `r.label`(`navLabel` → `title` → `path` の順)。
+
+`useCurrentRoute()` は 404 のとき `undefined` を返す。動的ルートを開いているときに親を
+アクティブにしたいなら `current?.path.startsWith("/sales")` のように前方一致で判定する。
+
+## URL 状態:`useSearchParam` の値は常に string、既定値はURLから消える
+
+- TanStack は `?year=2024` を数値としてパースするが、`useSearchParam` は必ず `string` に戻す
+  (数値が欲しければ自分で `Number(...)`)。配列やオブジェクトは `useSearchState` を使う。
+- **デフォルト値または `null` を書き込むとキーが URL から消える**。「明示的に既定値を選んだ」
+  状態を URL に残すことはできない。
+- 履歴は既定で `replace`。戻るボタンで1手ずつ戻したいときだけ `{ replace: false }`。
+
+## API 呼び出し:`useApiQuery` のエラーは `ApiError`
+
+`(q.error as Error)` のキャストは要らない。`q.error` は `ApiError | null` で、`message` には
+サーバーが `HttpError` で明示したメッセージが入る(それ以外は汎用のステータス文言)。
+`status`・`body`・`requestId` も持つ。クエリキーは `["api", url]` なので、
+`invalidateQueries({ queryKey: ["api"] })` で API 由来のキャッシュを一括で捨てられる。
 
 ## API:見せたいエラーは `HttpError` を throw する
 

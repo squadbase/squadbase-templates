@@ -15,16 +15,16 @@ vantage-template/
 │   │   ├── add.ts            # add コマンド — プロジェクト検証、manifest 読み込み、apply 呼び出し
 │   │   ├── chart.ts          # chart コマンド — styles.css の chart トークンを差し替え
 │   │   └── list.ts           # list コマンド — ui-templates/ を走査して manifest を表示
-│   ├── apply.ts              # ファイルコピー + lib/navigation.ts パッチ
+│   ├── apply.ts              # ファイルコピー（それだけ — パッチ処理は無い）
 │   ├── chart-presets.ts      # chart-presets/*.css の読み込みと styles.css への適用
-│   ├── manifest.ts           # 型定義 (TemplateManifest, FileEntry, NavEntry) + ローダー
+│   ├── manifest.ts           # 型定義 (TemplateManifest, FileEntry) + ローダー
 │   ├── ai/                   # add --prompt の AI relabel パス
 │   └── logger.ts             # ANSI カラーログ
 ├── ui-templates/             # UIパターン別テンプレート (kpi-chart-simple, funnel, etc.)
 │   ├── CLAUDE.md             # ★ファイル構成ルール・import 規約。テンプレを触る前に必読
 │   └── <template-name>/
 │       ├── manifest.json
-│       ├── pages/            # home.tsx → 適用先の index.tsx
+│       ├── pages/            # index.tsx → 適用先の index.tsx
 │       ├── lib/              # mock-data.ts / types.ts (relabel:false のデータ層)
 │       └── components/       # 分割した場合のみ
 ├── chart-presets/            # chart コマンド用の --chart-* トークン CSS
@@ -42,7 +42,7 @@ vantage-template/
 |---|---|---|
 | テンプレのエントリ dest | `src/pages/home.tsx` | **`index.tsx`**（ルート直下。Vantage のファイルベースルーティングの `/`） |
 | テンプレ固有ファイルの dest | `src/templates/<slug>/` | **`components/<slug>/`**（`templates/` に `.tsx` を置くと意図しないルートが生える） |
-| ルート追加 | `src/routes.tsx` を文字列パッチ | **ルート追加は無い**（ファイル追加＝ルート）。代わりに `manifest.nav[]` が `lib/navigation.ts` をパッチ |
+| ルート追加 | `src/routes.tsx` を文字列パッチ | **パッチ処理は無い**（ファイル追加＝ルート。ナビもベーステンプレートが `useRoutes()` から組む） |
 | chart preset の適用先 | `src/themes/theme-default.css` を全置換 | **`styles.css` のマーカーブロック**を差し替え（ユーザーの他の override を壊さない） |
 | プロジェクト検証 | `src/routes.tsx` の存在 | **`package.json` の `@squadbase/vantage` 依存** |
 | テンプレ種別 | `templates/` + `ui-templates/`（`--ui` フラグ） | **`ui-templates/` のみ**（フラグ不要） |
@@ -85,24 +85,19 @@ npx @squadbase/vantage-template chart ocean             # チャート配色を�
 
 EN/JA は `<name>` と `<name>-ja` のペアで、`files[].dest` は EN/JA で同一（上書き = 相互排他）、`name` だけ異なる。EN/JA を同時に add してはいけない。
 
-## `lib/navigation.ts` パッチの仕組み
+## `apply.ts` はファイルをコピーするだけ
 
-Vantage にはルートテーブルが無いので、テンプレートが寄与できるのは**ナビの項目**だけ。`manifest.nav[]` が空でないとき、`apply.ts` が文字列操作（AST ではなく）で `lib/navigation.ts` をパッチする:
+vite-template の `src/routes.tsx` 文字列パッチに相当する処理は**無い**。Vantage ではファイル追加がそのままルート追加で、ベーステンプレートの `_layout.tsx` が `useRoutes()`（`@squadbase/vantage` v0.1.1〜）からナビを組むため、ページを 1 枚コピーすればルートにもナビにも載る。`manifest` に `nav[]` は存在しない。
 
-1. `lib/navigation.ts` を読み込み
-2. `href: "<href>"` で重複をチェック
-3. lucide アイコンが未 import なら `import { ... } from "lucide-react"` に追記
-4. 最後の `]`（`NAV_ITEMS` 配列の閉じ括弧）の手前にエントリを挿入
-
-`navigation.ts` はベーステンプレートが管理する固定構造のため、この方式で動作する。現行の ui-templates はすべて 1 ルート設計なので `nav` は空配列で、このパスは通らない。
+ナビの表示名は `definePage({ navLabel })` で調整する（未指定なら `title`、それも無ければパス）。
 
 ## テンプレートの追加方法
 
 **ファイル構成ルール・import 規約は [`ui-templates/CLAUDE.md`](./ui-templates/CLAUDE.md) を参照**（このセクションより優先）。要点:
 
 1. `ui-templates/<name>/` ディレクトリを作成
-2. `manifest.json` に `name`, `description`, `version`, `files[]`（`pages/home.tsx` → `index.tsx` を `action: "replace"`、他は `components/<name>/` へ `action: "add"`）, `nav[]`（空）を定義
-3. `pages/home.tsx` をエントリポイントとし、`definePage` でタイトル/説明を宣言（**リテラルのみ**）
+2. `manifest.json` に `name`, `description`, `version`, `files[]`（`pages/index.tsx` → `index.tsx` を `action: "replace"`、他は `components/<name>/` へ `action: "add"`）を定義
+3. `pages/index.tsx` をエントリポイントとし、`definePage` でタイトル/説明を宣言（**リテラルのみ**）
 4. `lib/mock-data.ts` / `lib/types.ts` は `relabel: false` を付ける
 5. `node dist/index.js add <name> --dry-run` で適用レイアウトを確認
 6. 実際に適用して `npx vantage check` と `npx tsc --noEmit` が通ることを確認
@@ -144,7 +139,6 @@ npx @squadbase/vantage-template add kpi-chart-simple \
 **制約**:
 - AI が書き換えるのは **文字列リテラル（表示コピー）の改名のみ**。数値・配列長・データ形状・`import` 行・ロジック・型・JSX 構造は変更しない
 - AI が編集できるのは **manifest.files のうち `relabel !== false` の dest のみ**
-- `lib/navigation.ts` は触らない（ui-templates は 1 ルート設計）
 - `old_content` は **ファイル内で一意** である必要がある
 
 **依存**: `ai` / `@ai-sdk/*` は `optionalDependencies`。`--prompt` 指定時のみ動的 import される。未 install 時は親切な `npm install` ガイダンスを表示して exit 1。

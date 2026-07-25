@@ -18,11 +18,11 @@ import {
   PageShellHeaderEnd,
   PageShellHeading,
   PageShellTitle,
+  Placeholder,
+  Sparkline,
 } from "@squadbase/vantage/components"
 import type { EChartsOption } from "@squadbase/vantage/components"
 
-import { Placeholder } from "./components/placeholder.js"
-import { Sparkline } from "./components/sparkline.js"
 import { TopItemsTable } from "./components/kpi-chart-simple/top-items-table.js"
 import {
   headerKpis,
@@ -36,9 +36,9 @@ import type {
 } from "./components/kpi-chart-simple/types.js"
 
 export const page = definePage({
-  title: "KPI + チャート (シンプル)",
+  title: "KPI + Chart (Simple)",
   description:
-    "KPIカード4個・トレンドライン1本・上位アイテムテーブルの最小ダッシュボード構成",
+    "4 KPI cards, a single trend line, and a ranked-items table. The minimal headline-metrics dashboard layout.",
 })
 
 // ── chart helpers ───────────────────────────────────────────────────────────
@@ -50,9 +50,9 @@ function getBaseGrid() {
 function formatNumber(n: number): string {
   const sign = n < 0 ? "-" : ""
   const abs = Math.abs(n)
-  if (abs >= 100_000_000) return `${sign}${(abs / 100_000_000).toFixed(1)}億`
-  if (abs >= 10_000) return `${sign}${(abs / 10_000).toFixed(0)}万`
-  return n.toLocaleString("ja-JP")
+  if (abs >= 1_000_000) return `${sign}${(abs / 1_000_000).toFixed(1)}M`
+  if (abs >= 1_000) return `${sign}${(abs / 1_000).toFixed(1)}K`
+  return n.toLocaleString("en-US")
 }
 
 // ── chart options ────────────────────────────────────────────────────────────
@@ -76,7 +76,7 @@ function trendOption(data: TrendPoint[]): EChartsOption {
     },
     series: [
       {
-        name: "系列A",
+        name: "Series A",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -97,12 +97,12 @@ const initialFilters: DashboardFilters = {
   },
 }
 
-/** 表示ラベルはデータ層ではなく描画側に置く。 */
+/** Display labels live here, not in the data layer. */
 const KPI_META: Record<KpiItem["id"], { label: string; icon: typeof DollarSign }> = {
-  "total-revenue": { label: "指標1", icon: DollarSign },
-  "active-users": { label: "指標2", icon: Users },
-  "conversion-rate": { label: "指標3", icon: Activity },
-  aov: { label: "指標4", icon: ShoppingCart },
+  "total-revenue": { label: "Metric 1", icon: DollarSign },
+  "active-users": { label: "Metric 2", icon: Users },
+  "conversion-rate": { label: "Metric 3", icon: Activity },
+  aov: { label: "Metric 4", icon: ShoppingCart },
 }
 
 export default function HomePage() {
@@ -112,9 +112,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>[テンプレート] パフォーマンス概要</PageShellTitle>
+          <PageShellTitle>[Template] Performance overview</PageShellTitle>
           <PageShellDescription>
-            選択期間の主要指標とトレンド。
+            Key metrics and trends for the selected period.
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd>
@@ -163,11 +163,14 @@ export default function HomePage() {
           })}
         </div>
 
-        <DashboardCardPreset title="トレンド" description="選択期間の値">
+        <DashboardCardPreset
+          title="Trend"
+          description="Values over the selected period"
+        >
           <EChart option={trendOption(trendSeries)} height="320px" />
         </DashboardCardPreset>
 
-        <DashboardCardPreset title="上位項目" description="値で並べ替え">
+        <DashboardCardPreset title="Top items" description="Ranked by value">
           <TopItemsTable data={topItems} />
         </DashboardCardPreset>
       </PageShellContent>

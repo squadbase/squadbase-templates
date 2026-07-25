@@ -30,8 +30,8 @@ Tailwind・UI キット・開発サーバー・API サーバー・ビルドは�
 | import 元 | 提供するもの |
 | --- | --- |
 | `@squadbase/vantage` | `definePage`(ページ設定) |
-| `@squadbase/vantage/router` | `Link`・`Outlet`・`useParams`・`useSearch`・`useNavigate`・`redirect`・`notFound` |
-| `@squadbase/vantage/query` | `useQuery`・`useMutation`・`apiFetch`・`apiUrl` ほか TanStack Query の再エクスポート |
+| `@squadbase/vantage/router` | `Link`・`Outlet`・`useParams`・`useSearch`・`useNavigate`・`redirect`・`notFound`・`useRoutes`・`useCurrentRoute`・`useSearchParam`・`useSearchState` |
+| `@squadbase/vantage/query` | `useApiQuery`・`useApiMutation`・`apiJson`・`apiFetch`・`apiUrl`・`ApiError`、ほか `useQuery`/`useMutation` など TanStack Query の再エクスポート |
 | `@squadbase/vantage/ui` | shadcn/ui 系プリミティブ(`Button`・`Loading`・`ErrorState`・`Empty` ほか) |
 | `@squadbase/vantage/components` | 複合パーツ(`PageShell`・`DashboardCardPreset`・`DataTablePreset`・`EChart` ほか) |
 | `@squadbase/vantage/markdown` | `MarkdownRenderer`(Shiki を隔離するため専用サブパス) |
@@ -114,27 +114,39 @@ pnpm routes   # ページ/API の URL マップ
 ```tsx
 import { definePage } from "@squadbase/vantage"
 
-export const page = definePage({ title: "Monthly Analysis" })
+// navLabel は useRoutes() で組むナビの表示名(省略時は title)
+export const page = definePage({ title: "Monthly Analysis · Acme", navLabel: "Monthly" })
 
 export default function MonthlyAnalysis() {
   return <main className="p-6">…</main>
 }
 ```
 
-> `page` エクスポートはランタイムでは読まれない。title/description はビルド時に**静的抽出**される
-> ので、値はリテラルで書く(変数や関数呼び出しにしない)。
+> `page` エクスポートはランタイムでは読まれない。title/description/navLabel はビルド時に
+> **静的抽出**されるので、値はリテラルで書く(変数や関数呼び出しにしない)。
 
 ### ネストレイアウトと特殊ページ
 
-`_layout.tsx` は `Outlet` で子ルートを描く:
+`_layout.tsx` は `Outlet` で子ルートを描く。ナビは `useRoutes()` から組むと、ページファイルを
+足すだけでリンクが増える(手で持つリンク配列を作らない):
 
 ```tsx
-import { Outlet } from "@squadbase/vantage/router"
+import { Link, Outlet, useCurrentRoute, useRoutes } from "@squadbase/vantage/router"
 
 export default function RootLayout() {
+  // 動的ルート(/sales/:id)は URL が定まらないので外す。label は navLabel → title → path
+  const routes = useRoutes().filter((r) => !r.dynamic)
+  const current = useCurrentRoute()
+
   return (
     <div className="min-h-screen">
-      <header>…</header>
+      <header>
+        {routes.map((r) => (
+          <Link key={r.path} to={r.to} activeClassName="font-semibold">
+            {r.label}
+          </Link>
+        ))}
+      </header>
       <Outlet />
     </div>
   )
@@ -182,8 +194,25 @@ if (q.isPending) return <Loading />
 if (q.isError) return <ErrorState message={(q.error as Error).message} />
 ```
 
-`QueryClient` は Vantage が1つだけ管理する(staleTime 30s・retry 1・refetchOnWindowFocus false)。
-挙動を変えたいときはクエリ側のオプションで上書きする(クライアントごと差し替える口は無い)。
+`QueryClient` は Vantage が1つだけ管理する(staleTime 30s・retry 1・refetchOnWindowFocus false・
+networkMode "always" = ブラウザのオフライン判定に従わず必ず投げる)。挙動を変えたいときは
+クエリ側のオプションで上書きする(クライアントごと差し替える口は無い)。
+自分の `server/api` を叩くときは `useQuery` ではなく `useApiQuery`(→ Step 4)。
+
+### フィルタ状態は URL に置く
+
+ダッシュボードの絞り込みは `useState` ではなく `useSearchParam` にする。リロードで消えず、
+URL をそのまま共有できる:
+
+```tsx
+import { useSearchParam, useSearchState } from "@squadbase/vantage/router"
+
+const [region, setRegion] = useSearchParam("region", "all")              // 値は常に string
+const [segments, setSegments] = useSearchState<string[]>("segments", []) // 配列・オブジェクト
+```
+
+デフォルト値(または `null`)を書き込むとキーは URL から消える。履歴は既定で `replace`
+(`{ replace: false }` で push)。動的ルートの上でもパスパラメータは保たれる。
 
 ## Step 4 — fullstack へ拡張(server/api を足す)
 
@@ -208,20 +237,24 @@ export async function GET(_ctx: ApiContext) {
   ログに記録され汎用の 500 になる。
 - **シークレットは `ApiContext.env` にだけ届く**(クライアントには決して届かない)。
 
-クライアント側からは `apiFetch` で同一オリジンの `/api/*` を叩く:
+クライアント側からは `useApiQuery` で `/api/*` を叩く(ベース URL 解決・JSON パース・非 2xx の
+`ApiError` 化・クエリキー `["api", url]` が入っている):
 
 ```tsx
-import { apiFetch, useQuery } from "@squadbase/vantage/query"
+import { useApiQuery, useApiMutation } from "@squadbase/vantage/query"
 
-const q = useQuery({
-  queryKey: ["customer", customerId],
-  queryFn: async () => {
-    const res = await apiFetch(`/api/customers/${customerId}`)
-    if (!res.ok) throw new Error(`Customer ${customerId} not found`)
-    return res.json()
-  },
-})
+const q = useApiQuery<Customer>(`/api/customers/${customerId}`)
+if (q.isError) return <ErrorState message={q.error.message} />  // HttpError のメッセージが入る
+
+// クエリ文字列は search で渡す(undefined の項目は落ちる → URL にもキーにも出ない)
+const rows = useApiQuery<Row[]>("/api/customers", { search: { segment } })
+
+// 書き込み。変数がそのまま JSON ボディになる
+const save = useApiMutation<Customer, Payload>("/api/customers", { method: "POST" })
 ```
+
+`ApiError` は `message`・`status`・`body`・`requestId`(dev ターミナルのログと突き合わせられる)を
+持つ。hook が使えない場所では `apiJson(path, init)`、生の `Response` が要るときは `apiFetch`。
 
 ### server/ とクライアントの境界(絶対に守る)
 

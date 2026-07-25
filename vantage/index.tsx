@@ -7,13 +7,13 @@ import {
   PageShellHeader,
   PageShellHeading,
   PageShellTitle,
+  Placeholder,
 } from "@squadbase/vantage/components"
-
-import { Placeholder } from "./components/placeholder.js"
 
 export const page = definePage({
   title: "Dashboard",
   description: "Sample data — replace with your own to get started.",
+  navLabel: "Home",
 })
 
 const METRICS = [

@@ -43,7 +43,9 @@ vantage add page "sales/[customerId]"    # → 動的ルート /sales/:customerI
 チェックリスト:
 
 1. **デフォルトエクスポートは必須**(無いと `MISSING_DEFAULT_EXPORT` エラー)。
-2. `definePage({ title })` の値は**リテラル**で書く(ビルド時に静的抽出されるため)。
+2. `definePage({ title })` の値は**リテラル**で書く(ビルド時に静的抽出されるため)。ナビに出す
+   短い名前が要るなら `navLabel` も足す(`useRoutes()` が読む。既定は `title`)。
+   `_layout.tsx` のナビを `useRoutes()` で組んでいれば、ページを足すだけでリンクも増える。
 3. 動的ページなら **3つの綴りを同期**:
    - ファイル `foo/[id].tsx`
    - 表示ルート `/foo/:id`
@@ -88,19 +90,20 @@ export async function GET({ request, params }: ApiContext) {
 6. サーバー専用の共有コードは `server/utils.ts` 等に置く。**クライアントから `server/` を
    import しない**(`CLIENT_IMPORTS_SERVER` エラー。共有は `lib/` に置く)。
 
-クライアント側から叩くときは `apiFetch`:
+クライアント側から叩くときは `useApiQuery`(ベース URL 解決・JSON パース・非 2xx の `ApiError`
+化・クエリキー `["api", url]` が入っている):
 
 ```tsx
-import { apiFetch, useQuery } from "@squadbase/vantage/query"
-const q = useQuery({
-  queryKey: ["customer", id],
-  queryFn: async () => {
-    const res = await apiFetch(`/api/customers/${id}`)
-    if (!res.ok) throw new Error("not found")
-    return res.json()
-  },
-})
+import { useApiQuery } from "@squadbase/vantage/query"
+
+const q = useApiQuery<Customer>(`/api/customers/${id}`)
+if (q.isError) return <ErrorState message={q.error.message} />  // HttpError のメッセージ
+
+// クエリ文字列は search で(undefined の項目は落ちる)
+const rows = useApiQuery<Row[]>("/api/customers", { search: { segment } })
 ```
+
+書き込みは `useApiMutation(path, { method: "POST" })` — 変数がそのまま JSON ボディになる。
 
 ## UI コンポーネント / ブロックを追加する
 

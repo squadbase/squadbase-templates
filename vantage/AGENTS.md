@@ -39,16 +39,17 @@ UI キット・開発サーバー・API サーバー・ビルドはすべて Van
   `ApiContext.env`(server/ 内)にだけ届く。
 - **`.vantage/` と `dist/` は生成物。** 編集しない・読みにいかない(gitignore 済み)。任意の CLI
   コマンド、または `vantage upgrade` で再生成される。
-- **`definePage` の値はリテラルで書く。** title/description はビルド時に静的抽出されるため、
-  変数・関数呼び出し・テンプレート補間は使わない。`page` エクスポートはランタイムでは読まれない。
+- **`definePage` の値はリテラルで書く。** title/description/navLabel はビルド時に静的抽出される
+  ため、変数・関数呼び出し・テンプレート補間は使わない。`page` エクスポートはランタイムでは
+  読まれない。
 
 ## import サブパスの地図
 
 | import 元 | 提供するもの |
 | --- | --- |
 | `@squadbase/vantage` | `definePage`(ページ設定) |
-| `@squadbase/vantage/router` | `Link`・`Outlet`・`useParams`・`useSearch`・`useNavigate`・`redirect`・`notFound` |
-| `@squadbase/vantage/query` | `useQuery`・`useMutation`・`apiFetch`・`apiUrl` ほか TanStack Query の再エクスポート |
+| `@squadbase/vantage/router` | `Link`・`Outlet`・`useParams`・`useSearch`・`useNavigate`・`redirect`・`notFound`・`useRoutes`・`useCurrentRoute`・`useSearchParam`・`useSearchState` |
+| `@squadbase/vantage/query` | `useApiQuery`・`useApiMutation`・`apiJson`・`apiFetch`・`apiUrl`・`ApiError`、ほか `useQuery`/`useMutation` など TanStack Query の再エクスポート |
 | `@squadbase/vantage/ui` | shadcn/ui(Base UI バリアント)プリミティブ(`Button`・`Loading`・`ErrorState`・`Empty` ほか) |
 | `@squadbase/vantage/components` | 複合パーツ(`PageShell`・`DashboardCardPreset`・`DataTablePreset`・`EChart` ほか) |
 | `@squadbase/vantage/markdown` | `MarkdownRenderer`(Shiki を隔離するための専用サブパス) |
@@ -121,12 +122,49 @@ pnpm routes   # ページ/API の URL マップ
 ```tsx
 import { definePage } from "@squadbase/vantage"
 
-export const page = definePage({ title: "Monthly Analysis" })
+// title は document.title、navLabel は useRoutes() で組むナビの表示名(既定は title)
+export const page = definePage({ title: "Monthly Analysis · Acme", navLabel: "Monthly" })
 
 export default function MonthlyAnalysis() {
   return <main className="p-6">…</main>
 }
 ```
+
+### ナビはルート一覧から組む
+
+`useRoutes()` がページルート一覧(スキャン順)を返すので、リンク配列を手で持たない。
+`useCurrentRoute()` は現在のルート(404 なら `undefined`)。
+
+```tsx
+import { Link, useCurrentRoute, useRoutes } from "@squadbase/vantage/router"
+
+// 動的ルートは URL が定まらないので外す。label は navLabel → title → path の順
+const routes = useRoutes().filter((r) => !r.dynamic)
+const current = useCurrentRoute()
+
+routes.map((r) => (
+  <Link key={r.path} to={r.to} activeClassName="font-semibold">
+    {r.label}
+  </Link>
+))
+```
+
+`RouteInfo`: `path`(`/sales/:id`)・`to`(`/sales/$id`)・`params`・`dynamic`・`index`・`label`・
+`title`・`description`・`navLabel`。
+
+### フィルタ状態は URL に置く
+
+リロードで消えず、URL をそのまま共有できる。`useState` と同じ形。
+
+```tsx
+import { useSearchParam, useSearchState } from "@squadbase/vantage/router"
+
+const [region, setRegion] = useSearchParam("region", "all")   // 常に string
+const [segments, setSegments] = useSearchState<string[]>("segments", []) // JSON になる値
+```
+
+デフォルト値(または `null`)を書くとキーは URL から消える。履歴は既定で `replace`
+(`{ replace: false }` で push)。
 
 ### 動的パラメータの「3 つの綴り」を同期させる
 
@@ -159,7 +197,10 @@ if (q.isError) return <ErrorState message={(q.error as Error).message} />
 ```
 
 `QueryClient` は Vantage が 1 つだけ管理する(staleTime 30s・retry 1・
-refetchOnWindowFocus false)。挙動を変えたいときはクエリ側のオプションで上書きする。
+refetchOnWindowFocus false・networkMode "always")。挙動を変えたいときはクエリ側のオプションで
+上書きする。
+自分の `server/api` を叩くときは `useQuery` ではなく `useApiQuery`(→「API を足して fullstack に
+する」)。
 
 ## API を足して fullstack にする
 
@@ -186,20 +227,24 @@ export async function GET({ params, env }: ApiContext) {
   ログに記録され汎用の 500 に丸められる。
 - **シークレットは `ApiContext.env` にだけ届く**(クライアントには決して届かない)。
 
-クライアント側からは `apiFetch` で同一オリジンの `/api/*` を叩く:
+クライアント側からは `useApiQuery` で `/api/*` を叩く。ベース URL の解決・JSON パース・
+非 2xx の `ApiError` 化・クエリキー(`["api", url]`)が入っている:
 
 ```tsx
-import { apiFetch, useQuery } from "@squadbase/vantage/query"
+import { useApiQuery, useApiMutation } from "@squadbase/vantage/query"
 
-const q = useQuery({
-  queryKey: ["customer", customerId],
-  queryFn: async () => {
-    const res = await apiFetch(`/api/customers/${customerId}`)
-    if (!res.ok) throw new Error(`Customer ${customerId} not found`)
-    return res.json()
-  },
-})
+const q = useApiQuery<Customer>(`/api/customers/${customerId}`)
+if (q.isError) return <ErrorState message={q.error.message} />  // HttpError のメッセージ
+
+// クエリ文字列は search で。undefined の項目は落ちる
+const rows = useApiQuery<Row[]>("/api/customers", { search: { segment } })
+
+// 書き込み。変数がそのまま JSON ボディになる
+const save = useApiMutation<Customer, Payload>("/api/customers", { method: "POST" })
 ```
+
+`ApiError` は `message`・`status`・`body`・`requestId` を持つ。hook が使えない場所では
+`apiJson(path, init)`、生の `Response` が要るときは `apiFetch`。
 
 ## 環境変数
 

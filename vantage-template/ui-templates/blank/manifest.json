@@ -3,7 +3,6 @@
   "description": "Blank — Empty PageShell with title and description. The minimal scaffold for building a dashboard from scratch.",
   "version": "0.1.0",
   "files": [
-    { "src": "pages/home.tsx", "dest": "index.tsx", "action": "replace" }
-  ],
-  "nav": []
+    { "src": "pages/index.tsx", "dest": "index.tsx", "action": "replace" }
+  ]
 }

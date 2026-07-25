@@ -12,11 +12,11 @@ import {
   PageShellHeaderEnd,
   PageShellHeading,
   PageShellTitle,
+  Placeholder,
   type EChartsOption,
 } from "@squadbase/vantage/components"
 import { Button, Input, ToggleGroup, ToggleGroupItem } from "@squadbase/vantage/ui"
 
-import { Placeholder } from "./components/placeholder.js"
 import { DetailTable } from "./components/table-focus/detail-table.js"
 import {
   detailRows,
@@ -26,9 +26,9 @@ import {
 import type { DetailRow, TrendPoint } from "./components/table-focus/types.js"
 
 export const page = definePage({
-  title: "レコード",
+  title: "Records",
   description:
-    "ヘッダーに検索+エクスポート、ステータスフィルタチップ、ソート可能な詳細テーブルを主役とし、右サイドにトレンドチャートとセグメント内訳を配置する作業画面構成。",
+    "Workbench layout: header search + Export, status filter chips, a sortable detail table as the main element, with a trend chart and segment breakdown in a right sidebar.",
 })
 
 // ── chart helpers ───────────────────────────────────────────────────────────
@@ -40,9 +40,9 @@ function getBaseGrid() {
 function formatNumber(n: number): string {
   const sign = n < 0 ? "-" : ""
   const abs = Math.abs(n)
-  if (abs >= 100_000_000) return `${sign}${(abs / 100_000_000).toFixed(1)}億`
-  if (abs >= 10_000) return `${sign}${(abs / 10_000).toFixed(0)}万`
-  return n.toLocaleString("ja-JP")
+  if (abs >= 1_000_000) return `${sign}${(abs / 1_000_000).toFixed(1)}M`
+  if (abs >= 1_000) return `${sign}${(abs / 1_000).toFixed(1)}K`
+  return n.toLocaleString("en-US")
 }
 
 // ── chart options ────────────────────────────────────────────────────────────
@@ -61,7 +61,7 @@ function trendOption(data: TrendPoint[]): EChartsOption {
     yAxis: { type: "value", axisLabel: { formatter: (v: number) => formatNumber(v) } },
     series: [
       {
-        name: "系列A",
+        name: "Series A",
         type: "line",
         smooth: true,
         showSymbol: false,
@@ -93,9 +93,9 @@ export default function HomePage() {
     <PageShell>
       <PageShellHeader>
         <PageShellHeading>
-          <PageShellTitle>[テンプレート] レコード</PageShellTitle>
+          <PageShellTitle>[Template] Records</PageShellTitle>
           <PageShellDescription>
-            全レコードを閲覧・絞り込み・検索できます。
+            Browse, filter, and search the full record list.
           </PageShellDescription>
         </PageShellHeading>
         <PageShellHeaderEnd className="flex-row items-center gap-2">
@@ -104,7 +104,7 @@ export default function HomePage() {
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="検索..."
+              placeholder="Search..."
               className="h-9 w-64 pl-8"
             />
           </div>
@@ -116,7 +116,7 @@ export default function HomePage() {
 
       <PageShellContent className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          {/* Base UI の ToggleGroup は単一選択でも value が配列 */}
+          {/* Base UI ToggleGroup is array-valued even for single select. */}
           <ToggleGroup
             value={[status]}
             onValueChange={(values) => {
@@ -126,40 +126,40 @@ export default function HomePage() {
             variant="outline"
             size="sm"
           >
-            <ToggleGroupItem value="all">すべて</ToggleGroupItem>
-            <ToggleGroupItem value="active">選択肢A</ToggleGroupItem>
-            <ToggleGroupItem value="paused">選択肢B</ToggleGroupItem>
-            <ToggleGroupItem value="draft">選択肢C</ToggleGroupItem>
+            <ToggleGroupItem value="all">All</ToggleGroupItem>
+            <ToggleGroupItem value="active">Option A</ToggleGroupItem>
+            <ToggleGroupItem value="paused">Option B</ToggleGroupItem>
+            <ToggleGroupItem value="draft">Option C</ToggleGroupItem>
           </ToggleGroup>
           <span className="text-xs text-muted-foreground">
-            {filtered.length} 件
+            {filtered.length} results
           </span>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <DashboardCardPreset
-              title="レコード"
-              description="現在のフィルタに該当する行"
+              title="Records"
+              description="Detailed rows for the current filter"
             >
               <DetailTable data={filtered} />
             </DashboardCardPreset>
           </div>
           <div className="space-y-4">
             <DashboardCardPreset
-              title="トレンド"
-              description="選択期間の値"
+              title="Trend"
+              description="Values over the selected period"
             >
               <EChart option={trendOption(trendSeries)} height="220px" />
             </DashboardCardPreset>
-            <DashboardCardPreset title="セグメント別" description="全体に占める割合">
+            <DashboardCardPreset title="By segment" description="Share of total">
               <div className="space-y-3">
                 {summaryRows.map((row) => (
                   <div key={row.segment} className="space-y-1.5">
                     <div className="flex items-baseline justify-between">
                       <span className="text-sm font-medium">{row.segment}</span>
                       <Placeholder className="text-sm">
-                        {row.revenue.toLocaleString("ja-JP")}
+                        {row.revenue.toLocaleString("en-US")}
                       </Placeholder>
                     </div>
                     <div className="h-1.5 overflow-hidden rounded-full bg-muted">

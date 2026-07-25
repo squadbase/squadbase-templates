@@ -4,7 +4,7 @@ UIパターン別テンプレート（KPI重視・チャート格子・テーブ
 
 このファイルは `vantage-template/ui-templates/` 配下のファイル構成ルールを定義する。デザイン要件・AI relabel・EN/JA・CLI の挙動は親 [`../CLAUDE.md`](../CLAUDE.md) に従う。
 
-> **Vite 版との差分**: 適用先が Vantage アプリ（`@squadbase/vantage`）になったため、(1) エントリは `src/pages/home.tsx` ではなく **ルートの `index.tsx`**、(2) テンプレ固有ファイルは `src/templates/<slug>/` ではなく **`components/<slug>/`**、(3) 全ての building block を `@squadbase/vantage/*` から import する。
+> **Vite 版との差分**: 適用先が Vantage アプリ（`@squadbase/vantage`）になったため、(1) エントリは `src/pages/home.tsx` ではなく **ルートの `index.tsx`**、(2) テンプレ固有ファイルは `src/templates/<slug>/` ではなく **`components/<slug>/`**、(3) 全ての building block を `@squadbase/vantage/*` から import する（ローカルコピーは持たない）。
 
 ## 設計目標
 
@@ -67,13 +67,12 @@ function areaOption(data: TimePoint[]): EChartsOption {
 
 | 用途 | import 元 |
 | --- | --- |
-| `PageShell*` / `DashboardCard*` / `EChart` / `EChartsOption` / `DataTable*` / `ColumnDef` / `DateRangePicker` / `FilterBar*` / `FunnelSteps` / `MetricValue` / `TrendIndicator` / `StatusBadge` / `SegmentedControl` / `MultiSelect` / `SearchableSelect` / `SectionHeader` / `AppShell` | `@squadbase/vantage/components` |
+| `PageShell*` / `DashboardCard*` / `EChart` / `EChartsOption` / `DataTable*` / `ColumnDef` / `DateRangePicker` / `FilterBar*` / `FunnelSteps` / `MetricValue` / `TrendIndicator` / `StatusBadge` / `SegmentedControl` / `MultiSelect` / `SearchableSelect` / `SectionHeader` / `AppShell` / `Placeholder` / `Sparkline` | `@squadbase/vantage/components` |
 | `Button` / `Input` / `Badge` / `Tabs*` / `ToggleGroup*` / `Table*` / `Select*` / `Dialog*` / `cn` ほか shadcn プリミティブ | `@squadbase/vantage/ui` |
 | `definePage` | `@squadbase/vantage` |
-| `Link` / `Outlet` / `useParams` / `useSearch` / `useNavigate` | `@squadbase/vantage/router` |
-| `useQuery` / `useMutation` / `apiFetch` | `@squadbase/vantage/query` |
+| `Link` / `Outlet` / `useParams` / `useSearch` / `useNavigate` / `useRoutes` / `useCurrentRoute` / `useSearchParam` / `useSearchState` | `@squadbase/vantage/router` |
+| `useApiQuery` / `useApiMutation` / `useQuery` / `useMutation` / `apiFetch` | `@squadbase/vantage/query` |
 | `MarkdownRenderer` | `@squadbase/vantage/markdown` |
-| `Placeholder` / `Sparkline` | ベーステンプレート同梱のローカル component（下記） |
 
 **禁止**: `echarts` / `@tanstack/*` / `@base-ui/react` / `hono` / `vite` / `tailwindcss` の直接 import。`EChartsOption` は `@squadbase/vantage/components` から、`ColumnDef` も同じくそこから取る。`lucide-react` と `date-fns` の直接 import は可（ベーステンプレートの dependencies に入っている）。
 
@@ -81,14 +80,13 @@ function areaOption(data: TimePoint[]): EChartsOption {
 
 ```tsx
 // index.tsx から
-import { Placeholder } from "./components/placeholder.js"
-import { Sparkline } from "./components/sparkline.js"
 import { MOCK_SERIES } from "./components/<slug>/mock-data.js"
 
 // components/<slug>/detail-table.tsx から
-import { Placeholder } from "../placeholder.js"
 import type { Row } from "./types.js"
 ```
+
+`Placeholder` / `Sparkline` はローカルコピーではなく `@squadbase/vantage/components` から取る（v0.1.1 でフレームワークに入った）。
 
 ### Base UI と Radix の差分（`vantage-pitfalls` skill も参照）
 
@@ -109,6 +107,8 @@ import { definePage } from "@squadbase/vantage"
 export const page = definePage({
   title: "KPI + Chart",
   description: "...",
+  // ナビの表示名。省略時は title が使われる
+  navLabel: "KPI",
 })
 
 export default function Home() { /* ... */ }
@@ -122,7 +122,7 @@ export default function Home() { /* ... */ }
 ui-templates/<slug>/
   manifest.json
   preview-square.png / preview-wide.png
-  pages/home.tsx        → dest: index.tsx                          (replace)
+  pages/index.tsx       → dest: index.tsx                          (replace)
   lib/mock-data.ts      → dest: components/<slug>/mock-data.ts     (add, relabel:false)
   lib/types.ts          → dest: components/<slug>/types.ts         (add, relabel:false)
   components/*.tsx      → dest: components/<slug>/*.tsx            (add)  ※分割した場合のみ
@@ -136,15 +136,14 @@ ui-templates/<slug>/
   "description": "...",
   "version": "0.1.0",
   "files": [
-    { "src": "pages/home.tsx", "dest": "index.tsx", "action": "replace" },
+    { "src": "pages/index.tsx", "dest": "index.tsx", "action": "replace" },
     { "src": "lib/mock-data.ts", "dest": "components/<slug>/mock-data.ts", "action": "add", "relabel": false },
     { "src": "lib/types.ts", "dest": "components/<slug>/types.ts", "action": "add", "relabel": false }
-  ],
-  "nav": []
+  ]
 }
 ```
 
-- `nav[]` は **常に空**（ui-templates は 1 ルート設計。`index.tsx` を起点にする）
+- `files[]` が manifest の全て（`nav[]` は無い）。ベーステンプレートのナビは `useRoutes()` からルート一覧を組むので、ページファイルをコピーすればナビにも載る
 - データファイルには `"relabel": false` を必ず付ける
 
 ## 見本市の例外ルール
@@ -164,7 +163,7 @@ ui-templates/<slug>/
 ## チェックリスト（テンプレ追加・改修時）
 
 1. テンプレ固有ファイルの `dest` は `components/<slug>/` 配下か（`templates/` に `.tsx` を置いていないか）
-2. `@/` エイリアスや `echarts` / `@tanstack/*` の直接 import が残っていないか
+2. `@/` エイリアスや `echarts` / `@tanstack/*` の直接 import、`Placeholder` / `Sparkline` のローカル import が残っていないか
 3. 相対 import に `.js` 拡張子が付いているか
 4. 薄いチャートラッパ component を作っていないか
 5. `mock-data.ts` / `types.ts` は分離され `relabel:false` が付いているか

@@ -13,25 +13,15 @@ export interface FileEntry {
 }
 
 /**
- * A navigation entry to append to `lib/navigation.ts`.
- *
- * Vantage derives routes from the filesystem, so — unlike the Vite template —
- * there is no route table to patch. What a template *can* contribute is the
- * label/order/icon of the page in the app shell nav.
+ * Templates only declare files. Vantage derives routes from the filesystem and
+ * the base template's nav from `useRoutes()`, so copying a page file is the
+ * whole of "registering" it — there is no route table or nav list to patch.
  */
-export interface NavEntry {
-  label: string;
-  href: string;
-  /** A `lucide-react` icon name, e.g. "BarChart3". Omitted entries render without an icon. */
-  icon?: string;
-}
-
 export interface TemplateManifest {
   name: string;
   description: string;
   version: string;
   files: FileEntry[];
-  nav?: NavEntry[];
 }
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

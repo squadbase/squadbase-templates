@@ -1,8 +1,7 @@
 import { useMemo } from "react"
 
-import { DataTablePreset, type ColumnDef } from "@squadbase/vantage/components"
+import { DataTablePreset, Placeholder, type ColumnDef } from "@squadbase/vantage/components"
 
-import { Placeholder } from "../placeholder.js"
 import type { CampaignRow } from "./types.js"
 
 function formatCurrency(n: number, opts: { short?: boolean } = {}): string {

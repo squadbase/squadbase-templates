@@ -7,11 +7,11 @@ import {
   DashboardCardContent,
   DashboardCardPreset,
   EChart,
+  Placeholder,
+  Sparkline,
 } from "@squadbase/vantage/components"
 import type { EChartsOption } from "@squadbase/vantage/components"
 
-import { Placeholder } from "../placeholder.js"
-import { Sparkline } from "../sparkline.js"
 import { overviewKpis, trendSeries, categoryRows } from "./mock-data.js"
 
 function getBaseGrid() {

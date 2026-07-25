@@ -30,6 +30,8 @@ import {
   PageShellSummary,
   PageShellSummaryCard,
   PageShellTitle,
+  Placeholder,
+  Sparkline,
   type EChartsOption,
 } from "@squadbase/vantage/components"
 
@@ -47,8 +49,6 @@ import type {
   DashboardFilters,
   TrendPoint,
 } from "./components/kpi-chart-advanced/types.js"
-import { Placeholder } from "./components/placeholder.js"
-import { Sparkline } from "./components/sparkline.js"
 
 export const page = definePage({
   title: "KPI + Chart (Advanced)",
