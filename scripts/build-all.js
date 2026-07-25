@@ -20,7 +20,7 @@ function log(color, message) {
 const repoRoot = join(__dirname, "..");
 
 // Build target directories
-const templateDirs = [join(repoRoot, "vite")].filter((dir) =>
+const templateDirs = [join(repoRoot, "vite"), join(repoRoot, "vantage")].filter((dir) =>
   existsSync(join(dir, "package.json"))
 );
 

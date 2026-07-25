@@ -58,13 +58,6 @@ tsup が全てを `dist/index.js` にバンドルするため、`__dirname` は�
 
 `manifest.ts` の `TemplateSource` 型 (`"templates" | "ui-templates"`) で切替する。`add` / `list` コマンドの `--ui` フラグが `source = "ui-templates"` を渡す。
 
-## 開発コマンド
-
-```bash
-npm run build      # ../vite/ からベーステンプレートを同期 + tsup でビルド
-npm run release    # npm に公開（@squadbase:registry）
-```
-
 ## routes.tsx パッチの仕組み
 
 `add` コマンドは文字列操作（AST ではなく）で `src/routes.tsx` をパッチする:
