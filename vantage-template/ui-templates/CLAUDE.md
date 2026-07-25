@@ -51,6 +51,8 @@ function areaOption(data: TimePoint[]): EChartsOption {
 
 チャート整形ヘルパ（`getBaseGrid` / `formatNumber` 等）も同様に `index.tsx` 内へ inline する。
 
+**チャートに色をハードコードしない。** `@squadbase/vantage` v0.2.1 以降、`EChart` は init 時に `--chart-1..5`（系列色）と文字色/境界色トークン（軸・凡例・ツールチップ）を読み、light / dark の切り替えにも追従する。`option.color` / `itemStyle.color` / ラベルの `color` を書くと、その分だけテンプレがテーマ差し替え（`vantage-template chart <preset>` や `styles.css` の override）から外れる。**ui-templates では書かない**のが既定 — 意味色（成功=緑・失敗=赤など）を出したいときだけ、その series に限って指定する。`theme` プロップは使わない（渡した時点でトークン追従が完全に止まる）。
+
 ### 3. データ層（mock-data / types）は分離する
 
 `mock-data.ts` と `types.ts` は `index.tsx` に inline せず、`components/<slug>/` の別ファイルに保つ。表示ラベル（KPI名・軸名・stage名など）は描画側（`index.tsx`）の literal/const に置き、データ配列には値・id・generic な sample text のみ置く。
@@ -116,6 +118,8 @@ Vantage の UI キットは Radix ではなく **Base UI** ベース。移植時
 - `ToggleGroup` の `value` は**配列**（単一選択でも `string[]`）
 - `Select` の `onValueChange` は `string | null` を返す
 - `Checkbox` の中間状態は `indeterminate` prop
+
+`Select` の value/label は v0.2.1 で Vantage 側が `SelectItem` の children から集めるようになったので、`items` は書かなくてよい（`SelectItem` を別コンポーネントが返している場合だけ明示する）。
 
 ## エントリの必須要件
 
@@ -188,7 +192,7 @@ API 版（`kpi-chart-simple`）では `lib/types.ts` の dest が `lib/<slug>/ty
 1. テンプレ固有ファイルの `dest` は `components/<slug>/` 配下か（`templates/` に `.tsx` を置いていないか）
 2. `@/` エイリアスや `echarts` / `@tanstack/*` の直接 import、`Placeholder` / `Sparkline` のローカル import が残っていないか
 3. 相対 import に `.js` 拡張子が残っていないか（v0.2.0 で規約廃止）
-4. 薄いチャートラッパ component を作っていないか
+4. 薄いチャートラッパ component を作っていないか。チャートに色をハードコードしていないか（`option.color` / `itemStyle.color` / `theme`）
 5. `mock-data.ts` / `types.ts` / `server/*.ts` は分離され `relabel:false` が付いているか
 6. 未使用の関数・型・import が残っていないか
 7. 適用先で `npx vantage check` と `npx tsc --noEmit` が通るか

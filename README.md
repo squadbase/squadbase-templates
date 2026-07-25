@@ -71,13 +71,14 @@ npm run check    # vantage check — static diagnostics (routes, boundaries, for
 npx @squadbase/vantage-template init          # Scaffold the base template
 npx @squadbase/vantage-template list          # List available UI templates
 npx @squadbase/vantage-template add funnel    # Apply one
+npx @squadbase/vantage-template chart ocean   # Switch the chart color preset
 ```
 
 ## Documentation
 
 For detailed documentation on each template, refer to the skill files in `skills/source/`. The Vantage template bundles its own agent guidance in `vantage/AGENTS.md` and `vantage/.squadbase/skills/` — both originate from the framework. `npx vantage upgrade` re-syncs `AGENTS.md`, and `npx vantage add skill --all --dir .squadbase/skills` re-syncs the skills.
 
-> `AGENTS.md` closes with `vantage add skill --all --dir .claude/skills` — that is the framework's own default, and `vantage upgrade` keeps rewriting it. **The skills are already checked in under `.squadbase/skills/`**; do not run that command as written or you end up with two copies of the same three skills.
+> Since v0.2.1 `AGENTS.md` tells agents to look for already-placed skills before running `vantage add skill` — but the two places it suggests looking are `.claude/skills/` and the project root, not `.squadbase/skills/`. **The skills are already checked in under `.squadbase/skills/`**, so check there before running the command or you end up with two copies of the same three skills.
 
 For Squadbase platform documentation, visit [Squadbase Docs](https://www.squadbase.dev/en/docs).
 

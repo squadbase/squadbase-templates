@@ -3,14 +3,14 @@
  * file, so anything declared here wins.
  *
  * There is no `tailwind.config.*` in a Vantage app — theme tokens are plain CSS
- * variables. Override the ones below to rebrand the dashboard: the UI kit and
- * every Tailwind utility (`bg-primary`, `bg-chart-1`, …) resolve through them.
+ * variables. Override the ones below to rebrand the dashboard: the UI kit, every
+ * Tailwind utility (`bg-primary`, `bg-chart-1`, …) and `EChart` all resolve
+ * through them.
  *
- * Charts are the exception. `EChart` draws to a canvas and cannot read CSS
- * variables, so it does NOT pick up `--chart-*`. Pass an explicit palette on
- * the option instead:
- *
- *   <EChart option={{ color: ["#2563eb", "#0d9488"], … }} />
+ * Charts included: since v0.2.1 `EChart` reads `--chart-1..5` for series colours
+ * and the foreground/border tokens for axes, legend and tooltip, in both light
+ * and dark mode. Override `--chart-*` here and the charts follow. Pass
+ * `option.color` only when one chart needs its own palette.
  */
 :root {
   /* --primary: hsl(221 83% 53%); */

@@ -1,51 +1,32 @@
 ---
 name: vantage-app
-description: Vantage(@squadbase/vantage)ダッシュボードアプリの新規作成と、index.tsx 1ファイルの SPA から server/api・ネストレイアウト・動的ルート・404/error を備えた fullstack への拡張手順。Vantage アプリを一から作る/構成を広げるとき、ルーティング規約や definePage の書き方に迷ったときに使う。
+description: Vantage(@squadbase/vantage)ダッシュボードアプリを一から作る / 既存アプリの構成を広げるときの進め方。骨組みの用意、ルートの決め方、データ取得の選択(外部 API か自前の server/api か)、どこで手を止めて検証するかの順序を扱う。規約そのものはアプリルートの AGENTS.md が正本。
 ---
 
-# Vantage アプリの作成と fullstack 拡張
+# Vantage アプリの作り方 — 進め方と検証の順序
 
-Vantage は設定ファイル不要(config-free)な React ダッシュボードフレームワーク。アプリ作者が
-書くのは `index.tsx`(と任意の追加ファイル)だけで、Vite・ルーティング・TanStack Query・
-Tailwind・UI キット・開発サーバー・API サーバー・ビルドはすべて Vantage が所有する。
+規約・不変条件・import サブパスの一覧・各 API の書式は、アプリルートの **`AGENTS.md`** が正本。
+**先にそれを読む**(無ければ `vantage add agents` で置ける)。このスキルは「どの順で作り、どこで
+手を止めて検証するか」だけを扱い、AGENTS.md の内容は繰り返さない。
 
-このスキルは「アプリを一から作る」「最小の SPA を fullstack に広げる」ワークフローを扱う。
-個別のページ/API/UI の追加は `vantage-add-feature` スキル、実装中に踏みやすい落とし穴は
-`vantage-pitfalls` スキルを参照。
+- ページ / API / UI を 1 つ足すだけなら → `vantage-add-feature`
+- 実装したのに静かに壊れたら → `vantage-pitfalls`
 
-## 大原則(先に頭に入れる)
+## 全体の流れ
 
-- **設定ファイルを作らない。** `vite.config.*`・`tailwind.config.*`・`postcss.config.*`・
-  `components.json`・`vantage.config.*` はすべて禁止。存在すると `vantage check` がエラーにする。
-  設定は「ファイル名の規約」で表現する。
-- **import は必ず `@squadbase/vantage` のサブパス経由。** `@tanstack/*`・`@base-ui/react`・
-  `echarts`・`hono`・`vite`・`tailwindcss` を直接 import しない。`lucide-react` のアイコンだけは
-  直接 import してよい。
-- **`.vantage/` と `dist/` は生成物。** 編集しない・読みにいかない(gitignore 済み)。
+1. **骨組み** — `pnpm dev` が上がるところまで
+2. **ルートを決める** — ページファイルを置き、`vantage routes` で URL を確認
+3. **データを繋ぐ** — 外部 API か、自前の `server/api` か
+4. **仕上げ** — `check` → `build` → `preview`
 
-## サブパスの地図
+**各段階の終わりに `vantage check` を通す。** 静的診断(禁止ファイル・ルート衝突・境界違反・
+API export・env 誤用)はユーザーコードを実行しないので速く、エラーがあれば exit 1 になる。
+まとめて最後に回すと、原因の切り分けが難しくなる。
 
-| import 元 | 提供するもの |
-| --- | --- |
-| `@squadbase/vantage` | `definePage`(ページ設定) |
-| `@squadbase/vantage/router` | `Link`・`Outlet`・`useParams`・`useSearch`・`useNavigate`・`redirect`・`notFound`・`useRoutes`・`useCurrentRoute`・`useSearchParam`・`useSearchState` |
-| `@squadbase/vantage/query` | `useApiQuery`・`useApiMutation`・`apiJson`・`apiFetch`・`apiUrl`・`ApiError`、ほか `useQuery`/`useMutation` など TanStack Query の再エクスポート |
-| `@squadbase/vantage/ui` | shadcn/ui 系プリミティブ(`Button`・`Loading`・`ErrorState`・`Empty` ほか) |
-| `@squadbase/vantage/components` | 複合パーツ(`PageShell`・`DashboardCardPreset`・`DataTablePreset`・`EChart` ほか) |
-| `@squadbase/vantage/markdown` | `MarkdownRenderer`(Shiki を隔離するため専用サブパス) |
-| `@squadbase/vantage/server` | `ApiContext`・`HttpError`(server/ 側でのみ使う) |
+## Step 1 — 骨組み
 
-どのコンポーネントがあるか、props が何かは **`vantage docs` で引く**(パッケージ同梱。
-`vantage docs` で一覧、`vantage docs button` / `vantage docs parts/data-table` で個別ページ、
-`--json` で機械可読)。**props を推測で書かない。** 名前が分からないときは
-**`vantage search <やりたいこと>`**(例: `vantage search 期間を選ぶ UI が欲しい`)で探し、
-出てきた slug を `vantage docs` に渡す。
-
-## Step 1 — 最小アプリ(SPA モード)
-
-`package.json` と `index.tsx` の2ファイルだけで動く。
-
-`package.json`:
+新規なら `package.json` と `index.tsx` の 2 ファイルだけ。設定ファイルは**作らない**
+(`vite.config.*` 等は `vantage check` がエラーにする)。
 
 ```json
 {
@@ -67,223 +48,73 @@ Tailwind・UI キット・開発サーバー・API サーバー・ビルドは�
 }
 ```
 
-`index.tsx`(ルートのデフォルトエクスポートが `/` ページになる):
+`index.tsx` はデフォルトエクスポートの React コンポーネント 1 つ(これが `/` になる)。あとは
+`pnpm install && pnpm dev` で http://localhost:5173 が上がる。
 
-```tsx
-export default function Dashboard() {
-  return (
-    <main className="p-6">
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
-    </main>
-  )
-}
-```
-
-起動と検証:
+**既存アプリに合流したときは、作る前に現状を読む:**
 
 ```bash
-pnpm install
-pnpm dev      # → http://localhost:5173(HMR)
-pnpm check    # 静的診断。エラーがあれば exit 1
-pnpm routes   # ページ/API の URL マップ
+vantage routes     # 既にあるページと API の URL マップ
+vantage check      # いま壊れていないか(これから出すエラーと切り分ける)
+ls server/         # あれば fullstack モード。無ければ SPA
+ls .claude/skills  # 配置済みの skill(このファイルの仲間)
 ```
 
-`server/` ディレクトリが無いので、この時点では **SPA モード**(`vantage-manifest.json` の
-`mode: "spa"`)。
+## Step 2 — ルートを決める
 
-## Step 2 — ページを足してファイルベースルーティングにする
+ファイル名がそのままルートになる(対応表は AGENTS.md「ルーティング規約」)。**ルーターを設定
+する場所は無い**ので、決めるのは「どんなファイル名で置くか」だけ。
 
-ルートディレクトリ直下の `.tsx`/`.jsx` がそのままページになる。規約:
+- ページを置いたら `vantage routes` で URL を確かめる。意図と違うなら**ファイル名が違う**。
+- ナビゲーションはリンク配列を手で持たず、`useRoutes()` から組む。この形にしておくと以後は
+  ページファイルを足すだけでナビが増える(AGENTS.md「ナビはルート一覧から組む」)。
+- 共通の枠(ヘッダ・サイドバー)は `_layout.tsx`、Not Found と例外は `_404.tsx` / `_error.tsx`。
+- 一覧 → 詳細を作るなら、**動的パラメータの「3 つの綴り」を先に決めてから**両方のファイルを
+  書く。後から変えると静かにマッチしなくなる。
 
-| ファイル | ルート |
-| --- | --- |
-| `index.tsx` | `/` |
-| `monthly-analysis.tsx` | `/monthly-analysis` |
-| `sales/index.tsx` | `/sales` |
-| `sales/[customerId].tsx` | `/sales/:customerId`(動的パラメータ) |
-| `_layout.tsx` | そのディレクトリ配下を包むネストレイアウト |
-| `_404.tsx` | Not Found ページ |
-| `_error.tsx` | ルートが throw したときのエラーページ |
+## Step 3 — データを繋ぐ
 
-`components/`・`hooks/`・`lib/`・`server/`・`public/` はルート走査の対象外(ページにならない)。
+**どちらの経路かを先に決める。** ここを間違えると後で全部書き直しになる:
 
-各ページは **デフォルトエクスポートの React コンポーネントが必須**。タイトル等は `definePage`:
+| データ元 | 使うもの | `server/` |
+| --- | --- | --- |
+| ブラウザから直接叩ける公開 API | `useQuery` + `fetch` | 不要 |
+| DB / シークレットが要る / CORS で叩けない | `server/api/*.ts` + `useApiQuery` | 必要 |
 
-```tsx
-import { definePage } from "@squadbase/vantage"
+**API キーが要る時点で後者しかない** — クライアントに届く env は `PUBLIC_*` だけで、
+シークレットは `ApiContext.env`(= `server/` の中)にしか届かない。
 
-// navLabel は useRoutes() で組むナビの表示名(省略時は title)
-export const page = definePage({ title: "Monthly Analysis · Acme", navLabel: "Monthly" })
+後者の手順:
 
-export default function MonthlyAnalysis() {
-  return <main className="p-6">…</main>
-}
-```
+1. `server/api/<name>.ts` に `GET` を書く。**このディレクトリを作った時点で fullstack モード**
+   になる(設定変更は不要)。
+2. `vantage routes` に `/api/<name>` が出ることを確認する。
+3. dev サーバーか `curl` で叩き、**返す JSON の形を確定させてから** UI を書く。エラー応答は
+   `HttpError(status, msg)` を throw して作る。
+4. クライアントから `useApiQuery<T>("/api/<name>")` で受ける。`isPending` / `isError` の分岐を
+   最初から書く(`Loading` / `ErrorState` が `ui/` にある)。
 
-> `page` エクスポートはランタイムでは読まれない。title/description/navLabel はビルド時に
-> **静的抽出**されるので、値はリテラルで書く(変数や関数呼び出しにしない)。
+ダッシュボードの**絞り込みは `useState` ではなく `useSearchParam` / `useSearchState`** に置く。
+リロードで消えず、URL をそのまま共有できる。これも後から差し替えると全ページに波及するので、
+最初のフィルタを作る時点で決める。
 
-### ネストレイアウトと特殊ページ
-
-`_layout.tsx` は `Outlet` で子ルートを描く。ナビは `useRoutes()` から組むと、ページファイルを
-足すだけでリンクが増える(手で持つリンク配列を作らない):
-
-```tsx
-import { Link, Outlet, useCurrentRoute, useRoutes } from "@squadbase/vantage/router"
-
-export default function RootLayout() {
-  // 動的ルート(/sales/:id)は URL が定まらないので外す。label は navLabel → title → path
-  const routes = useRoutes().filter((r) => !r.dynamic)
-  const current = useCurrentRoute()
-
-  return (
-    <div className="min-h-screen">
-      <header>
-        {routes.map((r) => (
-          <Link key={r.path} to={r.to} activeClassName="font-semibold">
-            {r.label}
-          </Link>
-        ))}
-      </header>
-      <Outlet />
-    </div>
-  )
-}
-```
-
-`_404.tsx` / `_error.tsx` は `ui/` の状態コンポーネントを使うと早い:
-
-```tsx
-// _error.tsx
-import { ErrorState } from "@squadbase/vantage/ui"
-export default function RouteError({ error }: { error: unknown }) {
-  const message = error instanceof Error ? error.message : String(error)
-  return <ErrorState title="This page failed to render" message={message} />
-}
-```
-
-### 動的パラメータの「3つの綴り」を必ず同期させる
-
-これは崩すと壊れる不変条件:
-
-- ファイル名 `sales/[customerId].tsx`
-- 表示ルート `/sales/:customerId`
-- リンク: `to="/sales/$customerId"` + `params={{ customerId }}`
-
-```tsx
-import { Link, useParams } from "@squadbase/vantage/router"
-
-// 一覧側のリンク
-<Link to="/sales/$customerId" params={{ customerId: row.id }}>{row.name}</Link>
-
-// 詳細ページ側で取り出す
-const { customerId } = useParams()
-```
-
-## Step 3 — サーバー状態(API を持たない fetch)
-
-外部 API を叩くだけなら `server/` は不要。`@squadbase/vantage/query` の `useQuery` を使う:
-
-```tsx
-import { useQuery } from "@squadbase/vantage/query"
-
-const q = useQuery({ queryKey: ["stats"], queryFn: () => fetch("/…").then((r) => r.json()) })
-if (q.isPending) return <Loading />
-if (q.isError) return <ErrorState message={(q.error as Error).message} />
-```
-
-`QueryClient` は Vantage が1つだけ管理する(staleTime 30s・retry 1・refetchOnWindowFocus false・
-networkMode "always" = ブラウザのオフライン判定に従わず必ず投げる)。挙動を変えたいときは
-クエリ側のオプションで上書きする(クライアントごと差し替える口は無い)。
-自分の `server/api` を叩くときは `useQuery` ではなく `useApiQuery`(→ Step 4)。
-
-### フィルタ状態は URL に置く
-
-ダッシュボードの絞り込みは `useState` ではなく `useSearchParam` にする。リロードで消えず、
-URL をそのまま共有できる:
-
-```tsx
-import { useSearchParam, useSearchState } from "@squadbase/vantage/router"
-
-const [region, setRegion] = useSearchParam("region", "all")              // 値は常に string
-const [segments, setSegments] = useSearchState<string[]>("segments", []) // 配列・オブジェクト
-```
-
-デフォルト値(または `null`)を書き込むとキーは URL から消える。履歴は既定で `replace`
-(`{ replace: false }` で push)。動的ルートの上でもパスパラメータは保たれる。
-
-## Step 4 — fullstack へ拡張(server/api を足す)
-
-**`server/` ディレクトリを作った瞬間に fullstack モードになる。** `server/api/**` の各ファイルが
-API ルートになり、ビルドは client + server バンドル + `mode: "fullstack"` の manifest を出す。
-
-`server/api/monthly-analysis.ts` → `GET /api/monthly-analysis`:
-
-```ts
-import type { ApiContext } from "@squadbase/vantage/server"
-
-export async function GET(_ctx: ApiContext) {
-  return Response.json({ ok: true })
-}
-```
-
-- API モジュールは大文字の HTTP メソッド(`GET`/`POST`/`PUT`/`PATCH`/`DELETE`/`OPTIONS`)を
-  エクスポートする。それ以外の名前は `INVALID_API_EXPORT` エラー。
-- 動的 API も `[id].ts` 記法: `server/api/customers/[id].ts` → `GET /api/customers/:id`。
-  `params.id` で取り出す(`noUncheckedIndexedAccess` が効くので `params.id!` 等で narrowing)。
-- クライアントに見せたいエラーは `HttpError(status, msg)` を throw する。それ以外の throw は
-  ログに記録され汎用の 500 になる。
-- **シークレットは `ApiContext.env` にだけ届く**(クライアントには決して届かない)。
-
-クライアント側からは `useApiQuery` で `/api/*` を叩く(ベース URL 解決・JSON パース・非 2xx の
-`ApiError` 化・クエリキー `["api", url]` が入っている):
-
-```tsx
-import { useApiQuery, useApiMutation } from "@squadbase/vantage/query"
-
-const q = useApiQuery<Customer>(`/api/customers/${customerId}`)
-if (q.isError) return <ErrorState message={q.error.message} />  // HttpError のメッセージが入る
-
-// クエリ文字列は search で渡す(undefined の項目は落ちる → URL にもキーにも出ない)
-const rows = useApiQuery<Row[]>("/api/customers", { search: { segment } })
-
-// 書き込み。変数がそのまま JSON ボディになる
-const save = useApiMutation<Customer, Payload>("/api/customers", { method: "POST" })
-```
-
-`ApiError` は `message`・`status`・`body`・`requestId`(dev ターミナルのログと突き合わせられる)を
-持つ。hook が使えない場所では `apiJson(path, init)`、生の `Response` が要るときは `apiFetch`。
-
-### server/ とクライアントの境界(絶対に守る)
-
-- **クライアントコードは `server/` を import してはならない。** 共有したいコードは `lib/` に置く。
-  違反は `CLIENT_IMPORTS_SERVER` エラー(静的にもビルド時にも弾かれる)。
-- サーバー専用のデータ/ヘルパは `server/utils.ts` などに置き、`server/api/**` からのみ import する。
-
-## Step 5 — 環境変数
-
-- **クライアントに届くのは `PUBLIC_` 接頭辞の付いた env のみ**。`import.meta.env.PUBLIC_FOO`。
-  `VITE_` 系の API は無い。それ以外を `import.meta.env` で読むと `PUBLIC_ENV_MISUSE` 警告。
-- サーバー側のシークレットは `ApiContext.env.MY_SECRET` で読む(`server/` 内のみ)。
-
-## Step 6 — 検証・ビルド・プレビュー
+## Step 4 — 仕上げ
 
 ```bash
-pnpm check     # 静的診断(禁止ファイル・ルート衝突・境界・API export・env 誤用)
-pnpm routes    # ページ + API の URL マップを確認
+pnpm check     # エラーが残っていないか(exit 1 なら残っている)
+pnpm routes    # 公開される URL の最終確認
 pnpm build     # dist/ に client(+ server)+ vantage-manifest.json
-pnpm preview   # 本番ビルドをローカル実行(fullstack:4173 / spa は Vite preview)
+pnpm preview   # 本番ビルドをローカルで動かす
 ```
 
 `vantage-manifest.json` の `mode` は `server/` の有無から自動で決まる(手で書かない)。
-デプロイまでの詳細は別途デプロイ手順を参照。
+`preview` まで通れば、そのまま同じ成果物がデプロイされる。
 
 ## 詰まったら
 
-- `console.*` とランタイムエラーは開発ターミナルに `[browser:…]` として転送される。
-- `vantage check --json` / `vantage routes --json` はエージェント向けの機械可読出力。
-- 規約や props を確かめたいときは `vantage docs <name>`(ガイドは `vantage docs routing` など、
-  一覧は `vantage docs`)。名前が思い出せないときは `vantage search <やりたいこと>`、
-  綴りを横断で確かめたいときは `vantage search "<regex>" --regex`。
-- Base UI(≠ Radix)固有の罠、`SelectValue` の挙動、EChart のテーマ非追従などは
-  `vantage-pitfalls` スキルにまとまっている。
+- ブラウザの `console.*` とランタイムエラーは、**開発ターミナルに `[browser:…]` として転送
+  される**。ブラウザの devtools を開かなくても読める。
+- `vantage check --json` / `vantage routes --json` は機械可読出力。
+- props や規約を確かめたいときは `vantage docs <name>`、名前が思い出せないときは
+  `vantage search <やりたいこと>`。**推測で props を書かない。**
+- Base UI(≠ Radix)の癖など、静かに壊れる系は `vantage-pitfalls` にまとまっている。

@@ -30,25 +30,12 @@ import type { FunnelStage } from "./components/funnel/types"
 export const page = definePage({
   title: "ファネル",
   description:
-    "パイプライン中心のレイアウト。サマリ KPI、単色グラデーションのファネルとステージ別サイドバー、ステージ別パフォーマンステーブル。",
+    "パイプライン中心のレイアウト。サマリ KPI、テーマ配色のファネルとステージ別サイドバー、ステージ別パフォーマンステーブル。",
 })
 
 const today = new Date()
 
 const STAGE_NAMES = ["ステージ1", "ステージ2", "ステージ3", "ステージ4", "ステージ5"]
-
-/**
- * ECharts はキャンバス描画で CSS 変数を読めないため、ファネルの配色はここに実値で
- * 持たせる。ブランドカラーに合わせて差し替える。
- */
-const FUNNEL_COLORS = [
-  "rgba(59, 130, 246, 1)",
-  "rgba(59, 130, 246, 0.82)",
-  "rgba(59, 130, 246, 0.66)",
-  "rgba(59, 130, 246, 0.5)",
-  "rgba(59, 130, 246, 0.36)",
-]
-const LABEL_COLOR = "#71717a"
 
 type DisplayMode = "count" | "percent"
 
@@ -90,29 +77,18 @@ function funnelOption(
             return `{name|${params.name}}\n{value|${main}}`
           },
           rich: {
-            name: {
-              fontSize: 12,
-              fontWeight: 600,
-              color: LABEL_COLOR,
-              lineHeight: 16,
-              align: "center",
-            },
-            value: {
-              fontSize: 11,
-              color: LABEL_COLOR,
-              opacity: 0.6,
-              lineHeight: 14,
-              align: "center",
-            },
+            name: { fontSize: 12, fontWeight: 600, lineHeight: 16, align: "center" },
+            value: { fontSize: 11, opacity: 0.6, lineHeight: 14, align: "center" },
           },
         },
         labelLine: { show: false },
+        // itemStyle.color も option.color も持たせない: ステージは --chart-1..5、
+        // ラベルは文字色トークンで描かれ、テーマ差し替えに追従する (v0.2.1〜)。
         data: data.map((d, i) => ({
           name: labels[i] ?? "",
           value: d.value,
           conversionRate: d.conversionRate,
           share: (d.value / Math.max(1, max)) * 100,
-          itemStyle: { color: FUNNEL_COLORS[i % FUNNEL_COLORS.length] },
         })),
       },
     ] as EChartsOption["series"],

@@ -1,6 +1,6 @@
 ---
 name: vantage-pitfalls
-description: Vantage(@squadbase/vantage)アプリを書くときに静かに壊れる落とし穴のリファレンス。Base UI は Radix ではない(asChild 無し・render プロップ)、SelectValue は value を描く、クライアントから server/ を import しない、EChart はテーマ非追従、動的パラメータの3綴り同期、PUBLIC_ env、HttpError など。Vantage の UI コンポーネントやルーティングが思った通りに動かないとき、ビルドやスタイルが静かに欠落するときに参照する。
+description: Vantage(@squadbase/vantage)アプリを書くときに静かに壊れる落とし穴のリファレンス。Base UI は Radix ではない(asChild 無し・render プロップ)、Select の value/label、クライアントから server/ を import しない、EChart の配色と高さ、動的パラメータの3綴り同期、PUBLIC_ env、HttpError など。Vantage の UI コンポーネントやルーティングが思った通りに動かないとき、ビルドやスタイルが静かに欠落するときに参照する。
 ---
 
 # Vantage アプリの落とし穴リファレンス
@@ -19,26 +19,33 @@ Vantage の UI キットは shadcn/ui の **Base UI バリアント**。Radix �
 - **`Checkbox` の `checked` は `boolean` のみ。** 中間状態は `indeterminate` プロップ。
 - **`ToggleGroup` の `value` は配列。**
 
-### `SelectValue` は「選択中の value」を描く。`SelectItem` の children は見ない
+### `SelectValue` の value/label は Vantage 側が吸収済み(残る 1 ケースだけ注意)
 
-値とラベルが違うと、トリガーに `kanto` や `/sales` といった**生の値**が出てしまう。ラベルを
-出したいときは `items`(value→label のマップ)を渡す:
+Base UI の `SelectValue` は選択中の **value をそのまま描き**、`SelectItem` の children を見ない
+部品。Vantage の `Select` は children から `value` → ラベルを集めて渡すので、普通に書けば
+トリガーに「関東」と出る。**手当てが要るのは 1 ケースだけ** — `SelectItem` を別のコンポーネント
+が返している場合は集められないので、`items` を明示する:
 
 ```tsx
-<Select items={{ kanto: "関東", kansai: "関西" }} … />
+// SelectItem がこの場に無い(<RegionItems /> の中で作られる)ときだけ必要
+<Select items={{ kanto: "関東", kansai: "関西" }} …>
+  <SelectContent><RegionItems /></SelectContent>
+</Select>
 ```
 
-`FilterBarSelect` / `AppShell` の header variant / `DataTablePagination` は内部でこの `items` を
-組み立てている。自前で `Select` を使うときは忘れやすい。
+トリガーに `kanto` や `/sales` と生の値が出たら、まずこれを疑う。
 
-## チャート:`EChart` はテーマに自動追従しない
+## チャート:`EChart` の配色はトークン追従。上書きは `option.color`
 
-`EChart` は薄いラッパー(init/resize/dispose・loading・`onEvents`・PNG コピー/ダウンロードだけ)。
-配色は**各アプリが `option.color`** で決める(または `theme` に echarts テーマを渡す)。
+系列色は `--chart-1..5`、軸・凡例・ツールチップは文字色/境界色のトークンから組まれ、
+ライト / ダークの切り替えにも追従する(init 時にトークンの実値を解決している)。
 
-- `--chart-1..5` を読んで明暗テーマを自動で組む機構は**意図的に無い**(ECharts はキャンバス
-  描画で CSS 変数を読めない)。ダークモード追従が要るなら自前で色を切り替える。
-- キャンバス系なので、コンテナに高さを与えないと何も見えない。
+- **`theme` プロップを渡すと追従は完全に止まる。** 系列の色だけ変えたいなら `option.color` を
+  使う ― option はテーマより優先されるので、軸まわりの追従は残る。
+- キャンバス系なので、**コンテナに高さを与えないと何も見えない**(既定は `h-[400px]`。
+  `h-full` を使うなら親に確定した高さが要る)。
+- `option` は `EChartsOption` を annotate するか `satisfies` を付ける。付けないと
+  `type: "category"` が `string` に広がってビルドが落ちる。
 
 ## 境界:クライアントから `server/` を import しない
 
@@ -108,7 +115,7 @@ throw new Error("boom")                 // → ログに出て汎用 500 に丸�
 - `vite.config.*` — Vite 設定は Vantage が所有
 - `tailwind.config.*` — テーマは `styles.css` のトークンで調整
 - `postcss.config.*` — Vantage が管理
-- `components.json` — UI は `vantage add ui <name>` でコピー
+- `components.json` — shadcn CLI は使わない。UI は `@squadbase/vantage/ui` から import する
 - `vantage.config.*` — v1 に設定ファイルは無い(規約で表現)
 
 ## Markdown:`MarkdownRenderer` は `@squadbase/vantage/markdown` から

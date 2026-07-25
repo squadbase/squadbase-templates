@@ -9,10 +9,9 @@
 > `vantage upgrade` を実行するとフレームワーク同梱の正本から再同期されて上書きされます。
 > アプリ固有のメモは別ファイル(例: `README.md`)に書いてください。
 >
-> 手順を伴う踏み込んだワークフローは、同梱の Claude Code Skill に分かれています
-> (`vantage add skill --all --dir .claude/skills` で配置)。このファイルは「地図」、Skill は
-> 「手順書」という役割分担です。詰まったら `vantage-app` / `vantage-add-feature` /
-> `vantage-pitfalls` を参照してください。
+> 手順を伴う踏み込んだワークフローは、同梱の Claude Code Skill に分かれています。このファイルは
+> 「地図」、Skill は「手順書」という役割分担です。**配置済みの Skill を先に探す**手順は
+> 末尾の「さらに詳しく(同梱 Skill)」にあります。
 
 ## Vantage とは
 
@@ -50,9 +49,21 @@ UI キット・開発サーバー・API サーバー・ビルドはすべて Van
 | `@squadbase/vantage/ui` | shadcn/ui(Base UI バリアント)プリミティブ(`Button`・`Loading`・`ErrorState`・`Empty` ほか) |
 | `@squadbase/vantage/components` | 複合パーツ(`PageShell`・`DashboardCardPreset`・`DataTablePreset`・`EChart` ほか) |
 | `@squadbase/vantage/markdown` | `MarkdownRenderer`(Shiki を隔離するための専用サブパス) |
-| `@squadbase/vantage/server` | `ApiContext`・`HttpError`(server/ 側でのみ使う) |
+| `@squadbase/vantage/server` | `ApiContext`・`ApiHandler`・`HttpError`・`isHttpError`・`json`(server/ 側でのみ使う) |
 
-## 最小アプリ(SPA モード)
+## モードは 2 つ、切り替えるのは `server/` の有無だけ
+
+`server/` ディレクトリがあれば **fullstack**、無ければ **SPA**。`vantage-manifest.json` の
+`mode` はここから自動で決まり、手で書く設定は無い。**SPA から始めて fullstack へ「昇格」する
+必要はない** ― テンプレートから始めた場合は最初から `server/` があり、その時点で fullstack。
+下の 2 節は段階ではなく、いま自分がどちらにいるかを確かめるための地図として読む。
+
+- `server/` が**ある** → 「API を持つ(fullstack モード)」を見る。データは自前の `/api/*` から
+  `useApiQuery` で取る。
+- `server/` が**無い** → 「最小アプリ(2 ファイル)」の構成。外部 API を直接叩くなら `useQuery`。
+  自前の API が要るようになったら `server/api/*.ts` を足すだけでよい(設定変更は不要)。
+
+## 最小アプリ(2 ファイル)
 
 `package.json` と `index.tsx` の 2 ファイルだけで動く。
 
@@ -97,7 +108,7 @@ pnpm check    # 静的診断(エラーがあれば exit 1)
 pnpm routes   # ページ/API の URL マップ
 ```
 
-`server/` ディレクトリが無いので、この時点では **SPA モード**。
+`server/` ディレクトリが無いので、この構成は **SPA モード**。
 
 ## ルーティング規約(ファイル名 → ルート)
 
@@ -196,13 +207,13 @@ if (q.isError) return <ErrorState message={(q.error as Error).message} />
 `QueryClient` は Vantage が 1 つだけ管理する(staleTime 30s・retry 1・
 refetchOnWindowFocus false・networkMode "always")。挙動を変えたいときはクエリ側のオプションで
 上書きする。
-自分の `server/api` を叩くときは `useQuery` ではなく `useApiQuery`(→「API を足して fullstack に
-する」)。
+自分の `server/api` を叩くときは `useQuery` ではなく `useApiQuery`(→「API を持つ(fullstack
+モード)」)。
 
-## API を足して fullstack にする
+## API を持つ(fullstack モード)
 
-**`server/` ディレクトリを作った瞬間に fullstack モードになる。** `server/api/**` の各ファイルが
-API ルートになる。
+**`server/` ディレクトリがあれば fullstack モード**(無いアプリに足せば、その時点で切り替わる)。
+`server/api/**` の各ファイルが API ルートになる。
 
 `server/api/monthly-analysis.ts` → `GET /api/monthly-analysis`:
 
@@ -252,15 +263,16 @@ const save = useApiMutation<Customer, Payload>("/api/customers", { method: "POST
 ## 組み込み UI / コンポーネントの入口
 
 - **プリミティブ**は `@squadbase/vantage/ui` から import する(`Button`・`Loading`・
-  `ErrorState`・`Empty`・`Select`・`Checkbox` ほか)。編集したいコピーが要るなら
-  `vantage add ui <name>` で `components/ui/` に取り出す。
+  `ErrorState`・`Empty`・`Select`・`Checkbox` ほか)。
 - **複合パーツ**は `@squadbase/vantage/components` から(`PageShell`・`DashboardCardPreset`・
-  `DataTablePreset`・`EChart` ほか)。ブロックは `vantage add block <name>` で取り出す。
+  `DataTablePreset`・`EChart` ほか)。
 - **どの名前が import 可能か / props の詳細は `vantage docs` で引く。** ガイドとコンポーネント
   リファレンスはパッケージに同梱されていて、オフラインでも読める(→「ドキュメントを引く」)。
   **名前が分からないとき**はやりたいことで `vantage search` する(→ 同節)。
-- `vantage add ui`・`vantage add block` でコピーできる名前は、未知名で実行すると候補が一覧表示
-  される。
+- **UI は import して使うのが既定。取り出す(eject)必要はない。** `vantage add ui|block` は
+  ソースを手元にコピーして**改造したいとき専用**のコマンドで、取り出せるのは
+  `ui: data-table` と `block: sales-overview` の 2 つだけ。それ以外の名前は import 専用で
+  `add` の対象ではない(未知名で実行すると候補が一覧表示される)。
 
 ## ドキュメントを引く(`vantage docs` / `vantage search`)
 
@@ -302,9 +314,22 @@ pnpm preview   # 本番ビルドをローカル実行
 
 ## さらに詳しく(同梱 Skill)
 
-`vantage add skill --all --dir .claude/skills` で配置される(`--dir` を省くとルート直下):
+- **`vantage-app`** — アプリを一から作る / 構成を広げるときの進め方と検証の順序
+- **`vantage-add-feature`** — 既存アプリに page / api / ui を 1 つ足す定型
+- **`vantage-pitfalls`** — Base UI(≠ Radix)の癖など、静かに壊れる落とし穴のリファレンス
 
-- **`vantage-app`** — アプリを一から作る / SPA を fullstack に広げる手順
-- **`vantage-add-feature`** — 既存アプリに page / api / ui / block を 1 つ足す定型
-- **`vantage-pitfalls`** — Base UI(≠ Radix)の癖、`SelectValue` の挙動、EChart のテーマ
-  非追従など、静かに壊れる落とし穴のリファレンス
+**まず、このアプリに配置済みかを探す。** 手順書の本体は SKILL.md というファイルで、置き場所は
+アプリによって違う:
+
+```bash
+ls .claude/skills          # よくある置き場所
+ls -d vantage-*            # ルート直下に置くのが既定
+```
+
+見つかったらその `SKILL.md` を読む(`vantage add skill` を再実行する必要はない)。**無いときだけ**
+配置する ― 一覧は名前を省いて実行すると出る:
+
+```bash
+vantage add skill                              # 同梱されている skill 名の一覧
+vantage add skill --all --dir .claude/skills   # 配置(--dir を省くとルート直下)
+```

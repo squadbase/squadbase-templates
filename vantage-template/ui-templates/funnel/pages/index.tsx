@@ -30,25 +30,12 @@ import type { FunnelStage } from "./components/funnel/types"
 export const page = definePage({
   title: "Funnel",
   description:
-    "Pipeline-centric layout: summary KPIs, a single-tone funnel chart with a per-stage sidebar, and a stage-performance table.",
+    "Pipeline-centric layout: summary KPIs, a theme-coloured funnel chart with a per-stage sidebar, and a stage-performance table.",
 })
 
 const today = new Date()
 
 const STAGE_NAMES = ["Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5"]
-
-/**
- * ECharts draws on a canvas and cannot read CSS variables, so the funnel
- * palette is spelled out here. Swap these for your brand colours.
- */
-const FUNNEL_COLORS = [
-  "rgba(59, 130, 246, 1)",
-  "rgba(59, 130, 246, 0.82)",
-  "rgba(59, 130, 246, 0.66)",
-  "rgba(59, 130, 246, 0.5)",
-  "rgba(59, 130, 246, 0.36)",
-]
-const LABEL_COLOR = "#71717a"
 
 type DisplayMode = "count" | "percent"
 
@@ -90,29 +77,19 @@ function funnelOption(
             return `{name|${params.name}}\n{value|${main}}`
           },
           rich: {
-            name: {
-              fontSize: 12,
-              fontWeight: 600,
-              color: LABEL_COLOR,
-              lineHeight: 16,
-              align: "center",
-            },
-            value: {
-              fontSize: 11,
-              color: LABEL_COLOR,
-              opacity: 0.6,
-              lineHeight: 14,
-              align: "center",
-            },
+            name: { fontSize: 12, fontWeight: 600, lineHeight: 16, align: "center" },
+            value: { fontSize: 11, opacity: 0.6, lineHeight: 14, align: "center" },
           },
         },
         labelLine: { show: false },
+        // No `itemStyle.color` and no `option.color`: the stages take
+        // `--chart-1..5`, and the labels the foreground token, so the chart
+        // rebrands with the theme (v0.2.1+).
         data: data.map((d, i) => ({
           name: labels[i] ?? "",
           value: d.value,
           conversionRate: d.conversionRate,
           share: (d.value / Math.max(1, max)) * 100,
-          itemStyle: { color: FUNNEL_COLORS[i % FUNNEL_COLORS.length] },
         })),
       },
     ] as EChartsOption["series"],

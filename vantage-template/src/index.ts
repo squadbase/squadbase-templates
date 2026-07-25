@@ -1,6 +1,7 @@
 import { parseArgs } from "node:util";
 
 import { addTemplate } from "./commands/add.js";
+import { setChartPreset } from "./commands/chart.js";
 import { initProject } from "./commands/init.js";
 import { listTemplates } from "./commands/list.js";
 import { log } from "./logger.js";
@@ -11,12 +12,14 @@ Usage: npx @squadbase/vantage-template <command> [options]
 Commands:
   init                  Initialize a new Squadbase Vantage project
   add <template-name>   Apply a UI template to the current project
-  list                  List available templates
+  chart <preset-name>   Switch the chart color preset
+  list                  List available templates and chart presets
 
 Options:
   --force              Overwrite existing files
   --dry-run            Show what would be done without making changes
   --skip-install       Skip dependency installation after init
+  --chart <preset>     Apply a chart preset during init (e.g. --chart sunset)
   --json               Output as JSON (for the list / add commands)
   --lang <code>        Filter list by language (e.g. --lang ja)
   --help               Show this help message
@@ -44,6 +47,7 @@ async function main(): Promise<void> {
       force: { type: "boolean", default: false },
       "dry-run": { type: "boolean", default: false },
       "skip-install": { type: "boolean", default: false },
+      chart: { type: "string" },
       json: { type: "boolean", default: false },
       lang: { type: "string" },
       help: { type: "boolean", default: false },
@@ -69,6 +73,7 @@ async function main(): Promise<void> {
     initProject({
       force: values.force ?? false,
       skipInstall: values["skip-install"] ?? false,
+      chart: values.chart,
     });
   } else if (command === "list") {
     listTemplates({
@@ -125,6 +130,16 @@ async function main(): Promise<void> {
       dryRun: values["dry-run"] ?? false,
       source: "ui-templates",
       ai,
+    });
+  } else if (command === "chart") {
+    const presetName = positionals[1];
+    if (!presetName) {
+      log("red", "Missing chart preset name.");
+      log("dim", "Usage: npx @squadbase/vantage-template chart <preset-name>");
+      process.exit(1);
+    }
+    setChartPreset(presetName, {
+      dryRun: values["dry-run"] ?? false,
     });
   } else {
     log("red", `Unknown command: "${command}"`);

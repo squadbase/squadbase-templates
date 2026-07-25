@@ -2,7 +2,7 @@
 
 Squadbase Vantage プロジェクトの初期化・カスタマイズ用 CLI ツール（`@squadbase/vantage-template`）。ランタイム依存なし — Node.js 組み込みモジュールのみ使用（AI カスタマイズ時のみ `ai` / `@ai-sdk/*` を動的 import）。
 
-> **Skill の置き場所**: ベーステンプレート同梱の Skill 実体は `base-template/.squadbase/skills/`（`../vantage/.squadbase/skills/` から同期）。`AGENTS.md` はフレームワーク所有で末尾に `vantage add skill --all --dir .claude/skills` と書くが、これは framework 側の既定であり `vantage upgrade` のたびに書き戻される。**このコマンドを実行しない** — 同じ Skill が `.claude/skills/` にも増えるだけ。
+> **Skill の置き場所**: ベーステンプレート同梱の Skill 実体は `base-template/.squadbase/skills/`（`../vantage/.squadbase/skills/` から同期）。`AGENTS.md` は v0.2.1 で「まず配置済みの Skill を探し、無いときだけ配置する」に変わったが、そこが挙げる探索先は `ls .claude/skills` と `ls -d vantage-*` の2つで、**`.squadbase/skills/` は挙がらない**。`vantage add skill` を実行する前に `ls .squadbase/skills` を確認すること — 実行すると同じ Skill が二重になる。
 
 `vite-template` の Vantage 版。フレームワークが `@squadbase/vite-server` + 手書きの `src/routes.tsx` から [`@squadbase/vantage`](https://vantage-framework-vantage.vercel.app/) に変わったことで、下記の差分がある。
 
@@ -15,8 +15,10 @@ vantage-template/
 │   ├── commands/
 │   │   ├── init.ts           # init コマンド — base-template/ を cwd にコピー
 │   │   ├── add.ts            # add コマンド — プロジェクト検証、manifest 読み込み、apply 呼び出し
+│   │   ├── chart.ts          # chart コマンド — styles.css の chart トークンを差し替え
 │   │   └── list.ts           # list コマンド — ui-templates/ を走査して manifest を表示
 │   ├── apply.ts              # ファイルコピー（それだけ — パッチ処理は無い）
+│   ├── chart-presets.ts      # chart-presets/*.css の読み込みと styles.css への適用
 │   ├── manifest.ts           # 型定義 (TemplateManifest, FileEntry) + ローダー
 │   ├── ai/                   # add --prompt の AI relabel パス
 │   └── logger.ts             # ANSI カラーログ
@@ -28,6 +30,7 @@ vantage-template/
 │       ├── lib/              # mock-data.ts / types.ts (relabel:false のデータ層)
 │       ├── server/           # server/api/*.ts（API から配信するテンプレのみ）
 │       └── components/       # 分割した場合のみ
+├── chart-presets/            # chart コマンド用の --chart-* トークン CSS
 ├── base-template/            # ビルド時に ../vantage/ からコピー（gitignore 対象）
 ├── tsup.config.ts            # dist/index.js にバンドル（#!/usr/bin/env node バナー付き）
 ├── tsconfig.json
@@ -43,7 +46,7 @@ vantage-template/
 | テンプレのエントリ dest | `src/pages/home.tsx` | **`index.tsx`**（ルート直下。Vantage のファイルベースルーティングの `/`） |
 | テンプレ固有ファイルの dest | `src/templates/<slug>/` | **`components/<slug>/`**（`templates/` に `.tsx` を置くと意図しないルートが生える） |
 | ルート追加 | `src/routes.tsx` を文字列パッチ | **パッチ処理は無い**（ファイル追加＝ルート。ナビもベーステンプレートが `useRoutes()` から組む） |
-| chart preset | `src/themes/theme-default.css` を全置換 | **無し**（下記「chart コマンドを持たない理由」） |
+| chart preset の適用先 | `src/themes/theme-default.css` を全置換 | **`styles.css` のマーカーブロック**を差し替え（ユーザーの他の override を壊さない） |
 | プロジェクト検証 | `src/routes.tsx` の存在 | **`package.json` の `@squadbase/vantage` 依存** |
 | テンプレ種別 | `templates/` + `ui-templates/`（`--ui` フラグ） | **`ui-templates/` のみ**（フラグ不要） |
 | import | `@/components/...` エイリアス | **`@squadbase/vantage/{ui,components,router,query}`** |
@@ -59,6 +62,7 @@ vantage-template/
 
 - `dist/` — コンパイル済み CLI
 - `ui-templates/` — UIパターン別テンプレートデータ
+- `chart-presets/` — チャート配色プリセット
 - `base-template/` — Vantage ベースプロジェクトのフルコピー（`init` コマンド用）
 
 ### パス解決
@@ -66,27 +70,34 @@ vantage-template/
 tsup が全てを `dist/index.js` にバンドルするため、`__dirname` は常に `dist/` に解決される。アセットディレクトリは1階層上で参照:
 
 - `join(__dirname, "..", "ui-templates")` → `vantage-template/ui-templates/`
+- `join(__dirname, "..", "chart-presets")` → `vantage-template/chart-presets/`
 - `join(__dirname, "..", "base-template")` → `vantage-template/base-template/`
 
 ## CLI
 
 ```bash
 npx @squadbase/vantage-template init                    # ベーステンプレートを cwd に展開 + npm install
-npx @squadbase/vantage-template init --skip-install
+npx @squadbase/vantage-template init --skip-install --chart sunset
 npx @squadbase/vantage-template list                    # UI テンプレートを列挙
 npx @squadbase/vantage-template list --lang ja          # JA バリアントだけ列挙
 npx @squadbase/vantage-template list --json             # JSON で取得 (preview 画像 URL 含む)
 npx @squadbase/vantage-template add kpi-chart-simple    # UI テンプレートを適用
 npx @squadbase/vantage-template add kpi-chart-simple --dry-run
+npx @squadbase/vantage-template chart ocean             # チャート配色を差し替え
 ```
 
 EN/JA は `<name>` と `<name>-ja` のペアで、`files[].dest` は EN/JA で同一（上書き = 相互排他）、`name` だけ異なる。EN/JA を同時に add してはいけない。
 
-## chart コマンドを持たない理由
+## chart コマンド
 
-vite-template には `chart <preset>` があり、`--chart-1..5` トークンを差し替えていた。vantage-template には**無い**。vite 版の `EChart` は `getComputedStyle` で `--chart-*` を読んで light/dark の echarts テーマを組み立てていたが、`@squadbase/vantage` の `EChart` は薄いラッパーで、**CSS 変数を読まない**（canvas 描画なので読めない。`vantage-pitfalls` skill 参照）。トークンを書き換えてもチャートの配色は 1 ピクセルも変わらないため、「効くように見えて効かない」コマンドごと落とした。
+`chart <preset>` は `chart-presets/<preset>.css` の `--chart-1..5` を、プロジェクトの `styles.css` にマーカーで囲んだブロックとして書き込む。マーカー内だけを差し替えるので、ユーザーが同じファイルに書いた他の override は壊れない。再実行しても積み上がらない。
 
-配色を変えたいときは `EChartsOption` の `color` に明示的なパレットを渡す。`--chart-*` は Tailwind の `bg-chart-1` などのユーティリティとしては生きている（`@squadbase/vantage/theme.css` が定義）ので、そちらは `styles.css` の override で変えられる。
+**このコマンドは `@squadbase/vantage` v0.2.1 以上が前提**。v0.2.0 までの `EChart` は薄いラッパーでトークンを読まず、書き換えてもチャートの配色は 1 ピクセルも変わらなかった（そのため一度削除した）。v0.2.1 で `EChart` が init 時に `getComputedStyle` で `--chart-1..5`（系列色）と文字色/境界色トークン（軸・凡例・ツールチップ）を解決し、`class` / `style` / `data-theme` の変化と `prefers-color-scheme` を MutationObserver で追うようになったため、プリセットが実際に効くようになった。
+
+- 各プリセットは `:root` と `.dark, [data-theme="dark"]` の両方を定義する（フレームワークの `theme.css` と同じセレクタ）。片方だけだとダークモードで既定に落ちる。
+- **`dev` 中に適用したら、ブラウザをリロードする。** `EChart` がトークンを読み直すのは `class` / `style` / `data-theme` の変化と `prefers-color-scheme` を見た時で、Vite が CSS だけ差し替える HMR ではどれも動かない。DOM のトークン値は変わっているのにチャートだけ前の色、という状態になる（テーマ切り替えボタンでの明暗変更は class が変わるので即反映される）。
+- 個別のチャートだけ配色を変えたいときは `EChartsOption` の `color` を渡す。option はテーマより優先され、軸まわりのトークン追従は残る。
+- `theme` プロップを渡すとトークン追従は完全に止まる。ui-templates では使わない。
 
 ## `apply.ts` はファイルをコピーするだけ
 
