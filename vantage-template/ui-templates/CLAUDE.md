@@ -6,7 +6,7 @@ UIパターン別テンプレート（KPI重視・チャート格子・テーブ
 
 このファイルは `vantage-template/ui-templates/` 配下のファイル構成ルールを定義する。デザイン要件・AI relabel・EN/JA・CLI の挙動は親 [`../CLAUDE.md`](../CLAUDE.md) に従う。
 
-> **Vite 版との差分**: 適用先が Vantage アプリ（`@squadbase/vantage`）になったため、(1) エントリは `src/pages/home.tsx` ではなく **ルートの `index.tsx`**、(2) テンプレ固有ファイルは `src/templates/<slug>/` ではなく **`components/<slug>/`**、(3) 全ての building block を `@squadbase/vantage/*` から import する（ローカルコピーは持たない）。
+> **Vite 版との差分**: 適用先が Vantage アプリ（`@squadbase/vantage`）になったため、(1) エントリは `src/pages/home.tsx` ではなく **`src/index.tsx`**、(2) テンプレ固有ファイルは `src/templates/<slug>/` ではなく **`src/components/<slug>/`**、(3) 全ての building block を `@squadbase/vantage/*` から import する（ローカルコピーは持たない）。
 
 ## 設計目標
 
@@ -20,21 +20,23 @@ UIパターン別テンプレート（KPI重視・チャート格子・テーブ
 
 ### 1. 1テンプレ = 1ディレクトリ（コロケーション）
 
-適用先では、`index.tsx`（エントリ）以外のテンプレ固有ファイルを **`components/<slug>/` 1ディレクトリに集約** する。
+適用先では、`src/index.tsx`（エントリ）以外のテンプレ固有ファイルを **`src/components/<slug>/` 1ディレクトリに集約** する。
 
 ```
 # 適用先（dest）レイアウト
-index.tsx                             # エントリ（ルート "/"）
-components/<slug>/
+src/index.tsx                         # エントリ（ルート "/"）
+src/components/<slug>/
   mock-data.ts                        # データ層（relabel:false / 差し替え対象）
   types.ts                            # 型（index と data で共有）
   ...（分割した場合のみ追加ファイル）
 ```
 
-- **探索**: `components/<slug>/` を見ればテンプレ由来が一覧完結
-- **削除**: `rm -rf components/<slug>/` で一掃
+- **探索**: `src/components/<slug>/` を見ればテンプレ由来が一覧完結
+- **削除**: `rm -rf src/components/<slug>/` で一掃
 
-**`components/` を使う理由（重要）**: Vantage は**ファイルベースルーティング**で、`.tsx` ファイルは原則すべてページ扱いになる。`components/` / `hooks/` / `lib/` / `server/` / `public/` だけがルート走査から除外される（`NON_ROUTE_DIRS`）ため、`templates/<slug>/` のようなディレクトリに `.tsx` を置くと **`/templates/<slug>/...` という意図しないルートが生え、`vantage check` が `MISSING_DEFAULT_EXPORT` で落ちる**。データファイル（`.ts`）も同じディレクトリに置いてコロケーションを保つ。
+**`src/` を使う理由（v0.3.0 以降）**: ページ探索ルートは `src/` の有無だけで決まる。ベーステンプレートは `src/` を持つので、ページとそれが import するものは**すべて `src/` の中**に置く。ルート直下に `.tsx` や `styles.css` を残すと `vantage check` が `SRC_DIR_SPLIT` エラーにする。**例外は `server/` と `public/` で、これらは常にプロジェクトルート直下**（`src/server/` はスキャンされない）。
+
+**`components/` を使う理由（重要）**: Vantage は**ファイルベースルーティング**で、`.tsx` ファイルは原則すべてページ扱いになる。`components/` / `hooks/` / `lib/` / `server/` / `public/` だけがルート走査から除外される（`NON_ROUTE_DIRS`）ため、`src/templates/<slug>/` のようなディレクトリに `.tsx` を置くと **`/templates/<slug>/...` という意図しないルートが生え、`vantage check` が `MISSING_DEFAULT_EXPORT` で落ちる**（`SUSPICIOUS_ROUTE_DIR` 警告も出る）。データファイル（`.ts`）も同じディレクトリに置いてコロケーションを保つ。
 
 ### 2. インライン優先 — 薄いラッパ component を作らない
 
@@ -55,20 +57,21 @@ function areaOption(data: TimePoint[]): EChartsOption {
 
 ### 3. データ層（mock-data / types）は分離する
 
-`mock-data.ts` と `types.ts` は `index.tsx` に inline せず、`components/<slug>/` の別ファイルに保つ。表示ラベル（KPI名・軸名・stage名など）は描画側（`index.tsx`）の literal/const に置き、データ配列には値・id・generic な sample text のみ置く。
+`mock-data.ts` と `types.ts` は `src/index.tsx` に inline せず、`src/components/<slug>/` の別ファイルに保つ。表示ラベル（KPI名・軸名・stage名など）は描画側（`index.tsx`）の literal/const に置き、データ配列には値・id・generic な sample text のみ置く。
 
 ### 3-b. API 版テンプレ（`server/api` から配信する場合）
 
 `kpi-chart-simple` はモック配列を直読みせず、**`server/api` から `useApiQuery` で取る**構成になっている。実データ接続までの導線を1本コードで示すためのもので、この構成を採るテンプレは dest の置き場が変わる:
 
 ```
-index.tsx                                # useApiQuery + useSearchParam
-components/<slug>/*.tsx                  # 表示コンポーネント
-lib/<slug>/types.ts                      # ★ client と server が共有する型（relabel:false）
-server/api/<endpoint>.ts                 # ★ サンプルデータ + GET ハンドラ（relabel:false）
+src/index.tsx                            # useApiQuery + useSearchParam
+src/components/<slug>/*.tsx              # 表示コンポーネント
+src/lib/<slug>/types.ts                  # ★ client と server が共有する型（relabel:false）
+server/api/<endpoint>.ts                 # ★ サンプルデータ + GET ハンドラ（relabel:false）※ルート直下
 ```
 
-- **共有型は `components/` ではなく `lib/`** に置く。クライアントは `server/` を import できない（`CLIENT_IMPORTS_SERVER`）ので、両者が参照できる中立な場所が要る。`lib/` もルート走査対象外なので安全。
+- **共有型は `components/` ではなく `src/lib/`** に置く。クライアントは `server/` を import できない（`CLIENT_IMPORTS_SERVER`）ので、両者が参照できる中立な場所が要る。`lib/` もルート走査対象外なので安全。
+- **`server/` は `src/` の外**なので、ハンドラからの相対 import は `src/` を跨ぐ: `server/api/<endpoint>.ts` からは `../../src/lib/<slug>/types`。`src/components/<slug>/*.tsx` からは `../../lib/<slug>/types`（どちらも `src/` の中なので `src/` は出てこない）。
 - **サンプルデータはサーバー側に置く。** 「実装者が差し替える場所」がハンドラ1箇所に集約され、`KpiSummary` のような payload 型さえ保てばページを触らずに実データへ移行できる。
 - **絞り込みは `useSearchParam` + `useApiQuery` の `search`** で組む。`search` はクエリ文字列とキャッシュキーの両方に入るので、URL を変えれば再取得される。
 - クライアントに見せたいエラーは `HttpError(status, msg)` を throw する。`useApiQuery` の `error` は `ApiError` なのでキャスト不要で `.message` が読める。
@@ -81,7 +84,7 @@ server/api/<endpoint>.ts                 # ★ サンプルデータ + GET ハ�
 
 ### 分割してよい例外
 
-**再利用される** / **内部 state・interaction を持つ** / **`index.tsx` が 400〜500 行を超える** のいずれかに当てはまる UI のみ、`components/<slug>/` 配下に切り出してよい。迷ったら inline。
+**再利用される** / **内部 state・interaction を持つ** / **`index.tsx` が 400〜500 行を超える** のいずれかに当てはまる UI のみ、`src/components/<slug>/` 配下に切り出してよい。迷ったら inline。
 
 ## import 規約（Vantage）
 
@@ -101,11 +104,14 @@ server/api/<endpoint>.ts                 # ★ サンプルデータ + GET ハ�
 **相対 import は拡張子なしで書く**（`@squadbase/vantage` v0.2.0 で `.js` 指定子の規約は廃止。既存の `.js` 付き import も動くが、新規テンプレでは付けない）。
 
 ```tsx
-// index.tsx から
+// src/index.tsx から
 import { MOCK_SERIES } from "./components/<slug>/mock-data"
 
-// components/<slug>/detail-table.tsx から
+// src/components/<slug>/detail-table.tsx から
 import type { Row } from "./types"
+
+// server/api/<endpoint>.ts から（src/ の外なので src/ を跨ぐ）
+import type { Payload } from "../../src/lib/<slug>/types"
 ```
 
 `Placeholder` / `Sparkline` はローカルコピーではなく `@squadbase/vantage/components` から取る（v0.1.1 でフレームワークに入った）。
@@ -123,7 +129,7 @@ Vantage の UI キットは Radix ではなく **Base UI** ベース。移植時
 
 ## エントリの必須要件
 
-`index.tsx` は **default export の React component** が必須（無いと `vantage check` が `MISSING_DEFAULT_EXPORT`）。加えてタイトル/説明を `definePage` で宣言する:
+`src/index.tsx` は **default export の React component** が必須（無いと `vantage check` が `MISSING_DEFAULT_EXPORT`）。加えてタイトル/説明を `definePage` で宣言する:
 
 ```tsx
 import { definePage } from "@squadbase/vantage"
@@ -146,14 +152,16 @@ export default function Home() { /* ... */ }
 ui-templates/<slug>/
   manifest.json
   preview-square.png / preview-wide.png
-  pages/index.tsx       → dest: index.tsx                          (replace)
-  lib/mock-data.ts      → dest: components/<slug>/mock-data.ts     (add, relabel:false)
-  lib/types.ts          → dest: components/<slug>/types.ts         (add, relabel:false)
-  components/*.tsx      → dest: components/<slug>/*.tsx            (add)  ※分割した場合のみ
-  server/*.ts           → dest: server/api/*.ts                    (add, relabel:false) ※API 版のみ
+  pages/index.tsx       → dest: src/index.tsx                          (replace)
+  lib/mock-data.ts      → dest: src/components/<slug>/mock-data.ts     (add, relabel:false)
+  lib/types.ts          → dest: src/components/<slug>/types.ts         (add, relabel:false)
+  components/*.tsx      → dest: src/components/<slug>/*.tsx            (add)  ※分割した場合のみ
+  server/*.ts           → dest: server/api/*.ts                        (add, relabel:false) ※API 版のみ・ルート直下
 ```
 
-API 版（`kpi-chart-simple`）では `lib/types.ts` の dest が `lib/<slug>/types.ts` になり、`lib/mock-data.ts` は無く、代わりに `server/*.ts` を持つ。上の「3-b」を参照。
+**オーサリング側のディレクトリ名（`pages/` `lib/` `components/` `server/`）は適用先の dest と一致しない。** dest だけが真実で、`manifest.json` に書く。
+
+API 版（`kpi-chart-simple`）では `lib/types.ts` の dest が `src/lib/<slug>/types.ts` になり、`lib/mock-data.ts` は無く、代わりに `server/*.ts` を持つ。上の「3-b」を参照。
 
 ## manifest.json
 
@@ -163,9 +171,9 @@ API 版（`kpi-chart-simple`）では `lib/types.ts` の dest が `lib/<slug>/ty
   "description": "...",
   "version": "0.1.0",
   "files": [
-    { "src": "pages/index.tsx", "dest": "index.tsx", "action": "replace" },
-    { "src": "lib/mock-data.ts", "dest": "components/<slug>/mock-data.ts", "action": "add", "relabel": false },
-    { "src": "lib/types.ts", "dest": "components/<slug>/types.ts", "action": "add", "relabel": false }
+    { "src": "pages/index.tsx", "dest": "src/index.tsx", "action": "replace" },
+    { "src": "lib/mock-data.ts", "dest": "src/components/<slug>/mock-data.ts", "action": "add", "relabel": false },
+    { "src": "lib/types.ts", "dest": "src/components/<slug>/types.ts", "action": "add", "relabel": false }
   ]
 }
 ```
@@ -189,7 +197,7 @@ API 版（`kpi-chart-simple`）では `lib/types.ts` の dest が `lib/<slug>/ty
 
 ## チェックリスト（テンプレ追加・改修時）
 
-1. テンプレ固有ファイルの `dest` は `components/<slug>/` 配下か（`templates/` に `.tsx` を置いていないか）
+1. テンプレ固有ファイルの `dest` は `src/components/<slug>/` 配下か（`src/templates/` に `.tsx` を置いていないか）。`server/*` の dest だけはルート直下の `server/api/`
 2. `@/` エイリアスや `echarts` / `@tanstack/*` の直接 import、`Placeholder` / `Sparkline` のローカル import が残っていないか
 3. 相対 import に `.js` 拡張子が残っていないか（v0.2.0 で規約廃止）
 4. 薄いチャートラッパ component を作っていないか。チャートに色をハードコードしていないか（`option.color` / `itemStyle.color` / `theme`）

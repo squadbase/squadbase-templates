@@ -16,8 +16,8 @@ CLI は雛形を出すだけで、規約の遵守はこちらの責任。**追�
 ```bash
 vantage add page  <name>    # ルートページ(.tsx)
 vantage add api   <name>    # server/api/**.ts の API モジュール
-vantage add ui    <name>    # registry から UI ソースを components/ui/ にコピー
-vantage add block <name>    # registry からブロックを components/blocks/ にコピー
+vantage add ui    <name>    # registry から UI ソースを components/ui/ にコピー(src/ があればその中)
+vantage add block <name>    # registry からブロックを components/blocks/ にコピー(同上)
 ```
 
 `--force` で既存ファイルを上書き。`add` の雛形は import に `@squadbase/vantage` を焼き込む。
@@ -25,12 +25,18 @@ vantage add block <name>    # registry からブロックを components/blocks/ 
 ## ページを追加する
 
 ```bash
-vantage add page monthly-analysis        # → ./monthly-analysis.tsx  → ルート /monthly-analysis
-vantage add page sales/index             # → ./sales/index.tsx       → ルート /sales
+vantage add page monthly-analysis        # → monthly-analysis.tsx  → ルート /monthly-analysis
+vantage add page sales/index             # → sales/index.tsx       → ルート /sales
 vantage add page "sales/[customerId]"    # → 動的ルート /sales/:customerId
 ```
 
-出力される雛形は `definePage` + デフォルトエクスポートのコンポーネント。ファイル名の規約:
+**引数はページルートからの相対パス**(= ルートそのもの)。`add` は置き場所を自分で判断する ―
+プロジェクトに `src/` があれば `src/monthly-analysis.tsx`、無ければ直下に書く。手でファイルを
+作るときも同じ規則で、**混ぜてはならない**(`src/` があるのに直下に置くと `SRC_DIR_SPLIT`
+エラー。詳細は AGENTS.md の「ディレクトリ構造」)。
+
+出力される雛形は `definePage` + デフォルトエクスポートのコンポーネント。ファイル名の規約
+(ページルートからの相対パス):
 
 | ファイル | ルート | 用途 |
 | --- | --- | --- |
@@ -51,6 +57,9 @@ vantage add page "sales/[customerId]"    # → 動的ルート /sales/:customerI
    - 表示ルート `/foo/:id`
    - リンク `to="/foo/$id"` + `params={{ id }}`、取り出しは `const { id } = useParams()`
 4. `components/`・`hooks/`・`lib/`・`server/`・`public/` はページにならない(ルート走査対象外)。
+   **それ以外のディレクトリ名はそのまま URL のセグメントになる** ― `pages/`・`app/`・`utils/`
+   のような足場ディレクトリを切ると `/pages/report` のような URL ができる
+   (`SUSPICIOUS_ROUTE_DIR` 警告)。ページでないモジュールは上の 3 つに置く。
 
 ## API を追加する(fullstack)
 

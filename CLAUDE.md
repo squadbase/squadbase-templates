@@ -22,10 +22,10 @@ Both are React dashboard templates, but they hand off responsibility differently
 | | `vite/` + `vite-template/` | `vantage/` + `vantage-template/` |
 |---|---|---|
 | Framework | App owns `vite.config.ts`, `main.tsx`, `routes.tsx` | `@squadbase/vantage` owns all of it; config files are forbidden |
-| Routing | Explicit table in `src/routes.tsx` | File-based (`index.tsx` → `/`, `sales/[id].tsx` → `/sales/:id`) |
+| Routing | Explicit table in `src/routes.tsx` | File-based (`src/index.tsx` → `/`, `src/sales/[id].tsx` → `/sales/:id`) |
 | Building blocks | Copied into `src/components/` (editable) | Imported from `@squadbase/vantage/{ui,components}` (managed) |
 | Import style | `@/` alias | Package subpaths + extensionless relative specifiers |
-| Backend | `@squadbase/vite-server` + `server-logic/` | `server/api/**` handlers built into the framework |
+| Backend | `@squadbase/vite-server` + `server-logic/` | `server/api/**` handlers built into the framework — **at the project root, not under `src/`** |
 | UI primitives | Radix (`asChild`) | Base UI (`render` prop) |
 
 When working in either tree, read that directory's own guidance file first (上記「Directory Structure」参照)。

@@ -14,7 +14,7 @@ npx @squadbase/vantage-template <command> [options]
 
 #### `init`
 
-Initialize a new Vantage project in the current directory. Copies the base template — `index.tsx`, `_layout.tsx`, `_404.tsx`, `_error.tsx`, `server/api/`, `styles.css`, `tsconfig.json`, `squadbase.yml`, plus the agent guidance in `AGENTS.md` and `.squadbase/skills/` — and installs dependencies.
+Initialize a new Vantage project in the current directory. Copies the base template — `src/index.tsx`, `src/_layout.tsx`, `src/_404.tsx`, `src/_error.tsx`, `src/styles.css`, `server/api/`, `tsconfig.json`, `squadbase.yml`, plus the agent guidance in `AGENTS.md` and `.squadbase/skills/` — and installs dependencies.
 
 ```bash
 npx @squadbase/vantage-template init
@@ -32,11 +32,13 @@ npm run check    # vantage check — static diagnostics
 npm run routes   # vantage routes — page/API route map
 ```
 
-There is no `vite.config.ts`, no `main.tsx`, and no route table: adding a file adds a route (`index.tsx` → `/`, `sales/[id].tsx` → `/sales/:id`), and `_layout.tsx` builds the nav from `useRoutes()`.
+There is no `vite.config.ts`, no `main.tsx`, and no route table: adding a file under `src/` adds a route (`src/index.tsx` → `/`, `src/sales/[id].tsx` → `/sales/:id`), and `src/_layout.tsx` builds the nav from `useRoutes()`.
+
+Since `@squadbase/vantage` v0.3.0, `src/` is the page-scan root and does not appear in URLs. `server/` and `public/` stay at the project root — `src/server/` is never scanned.
 
 #### `add <template-name>`
 
-Apply a UI-pattern template to an existing Vantage project. The entry page lands on `index.tsx`, and template-owned files go under `components/<slug>/` (plus `server/api/` for API-backed templates).
+Apply a UI-pattern template to an existing Vantage project. The entry page lands on `src/index.tsx`, and template-owned files go under `src/components/<slug>/` (plus `server/api/` at the project root for API-backed templates).
 
 ```bash
 npx @squadbase/vantage-template add kpi-chart-simple
@@ -44,11 +46,11 @@ npx @squadbase/vantage-template add funnel --dry-run    # Preview without writin
 npx @squadbase/vantage-template add funnel --force      # Overwrite existing files
 ```
 
-`add` replaces `index.tsx`, so it warns before overwriting it, and it lists leftover files from a previously applied template (it never deletes them — you may have edited them).
+`add` replaces `src/index.tsx`, so it warns before overwriting it, and it lists leftover files from a previously applied template (it never deletes them — you may have edited them). A project that predates v0.3.0 and still keeps its pages at the project root is refused with the list of files to move into `src/` first.
 
 #### `chart <preset-name>`
 
-Switch the chart color preset. Rewrites a marked block of `--chart-1`–`--chart-5` inside the project's `styles.css`, leaving any other overrides in that file intact. Re-running replaces the block rather than stacking.
+Switch the chart color preset. Rewrites a marked block of `--chart-1`–`--chart-5` inside the project's `src/styles.css`, leaving any other overrides in that file intact. Re-running replaces the block rather than stacking.
 
 ```bash
 npx @squadbase/vantage-template chart ocean

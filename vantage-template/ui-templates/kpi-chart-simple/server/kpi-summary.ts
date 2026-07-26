@@ -7,7 +7,7 @@ import type {
   RangeKey,
   TopItemRow,
   TrendPoint,
-} from "../../lib/kpi-chart-simple/types"
+} from "../../src/lib/kpi-chart-simple/types"
 
 /**
  * `GET /api/kpi-summary?range=7d|30d|90d`

@@ -15,10 +15,11 @@ vantage-template/
 │   ├── commands/
 │   │   ├── init.ts           # init コマンド — base-template/ を cwd にコピー
 │   │   ├── add.ts            # add コマンド — プロジェクト検証、manifest 読み込み、apply 呼び出し
-│   │   ├── chart.ts          # chart コマンド — styles.css の chart トークンを差し替え
+│   │   ├── chart.ts          # chart コマンド — src/styles.css の chart トークンを差し替え
 │   │   └── list.ts           # list コマンド — ui-templates/ を走査して manifest を表示
 │   ├── apply.ts              # ファイルコピー（それだけ — パッチ処理は無い）
-│   ├── chart-presets.ts      # chart-presets/*.css の読み込みと styles.css への適用
+│   ├── chart-presets.ts      # chart-presets/*.css の読み込みと src/styles.css への適用
+│   ├── project.ts            # 適用先プロジェクトのレイアウト判定（src/ の有無）
 │   ├── manifest.ts           # 型定義 (TemplateManifest, FileEntry) + ローダー
 │   ├── ai/                   # add --prompt の AI relabel パス
 │   └── logger.ts             # ANSI カラーログ
@@ -26,7 +27,7 @@ vantage-template/
 │   ├── CLAUDE.md             # ★ファイル構成ルール・import 規約。テンプレを触る前に必読
 │   └── <template-name>/
 │       ├── manifest.json
-│       ├── pages/            # index.tsx → 適用先の index.tsx
+│       ├── pages/            # index.tsx → 適用先の src/index.tsx
 │       ├── lib/              # mock-data.ts / types.ts (relabel:false のデータ層)
 │       ├── server/           # server/api/*.ts（API から配信するテンプレのみ）
 │       └── components/       # 分割した場合のみ
@@ -43,13 +44,34 @@ vantage-template/
 
 | | vite-template | vantage-template |
 |---|---|---|
-| テンプレのエントリ dest | `src/pages/home.tsx` | **`index.tsx`**（ルート直下。Vantage のファイルベースルーティングの `/`） |
-| テンプレ固有ファイルの dest | `src/templates/<slug>/` | **`components/<slug>/`**（`templates/` に `.tsx` を置くと意図しないルートが生える） |
+| テンプレのエントリ dest | `src/pages/home.tsx` | **`src/index.tsx`**（Vantage のファイルベースルーティングの `/`） |
+| テンプレ固有ファイルの dest | `src/templates/<slug>/` | **`src/components/<slug>/`**（`templates/` に `.tsx` を置くと意図しないルートが生える） |
 | ルート追加 | `src/routes.tsx` を文字列パッチ | **パッチ処理は無い**（ファイル追加＝ルート。ナビもベーステンプレートが `useRoutes()` から組む） |
-| chart preset の適用先 | `src/themes/theme-default.css` を全置換 | **`styles.css` のマーカーブロック**を差し替え（ユーザーの他の override を壊さない） |
-| プロジェクト検証 | `src/routes.tsx` の存在 | **`package.json` の `@squadbase/vantage` 依存** |
+| chart preset の適用先 | `src/themes/theme-default.css` を全置換 | **`src/styles.css` のマーカーブロック**を差し替え（ユーザーの他の override を壊さない） |
+| プロジェクト検証 | `src/routes.tsx` の存在 | **`package.json` の `@squadbase/vantage` 依存** + `src/` レイアウトであること |
 | テンプレ種別 | `templates/` + `ui-templates/`（`--ui` フラグ） | **`ui-templates/` のみ**（フラグ不要） |
 | import | `@/components/...` エイリアス | **`@squadbase/vantage/{ui,components,router,query}`** |
+
+## 適用先のレイアウト（`src/` — v0.3.0 以降）
+
+`@squadbase/vantage` v0.3.0 から、**ページ探索ルートは `src/` の有無だけで決まる**。`src/` があれば
+ページはその中だけで、`src/` は URL に出ない（`src/sales/index.tsx` → `/sales`）。設定は無く検出のみ。
+ベーステンプレート（`../vantage/`）は `src/` を持つので、**このパッケージが扱う適用先は常に `src/` レイアウト**。
+
+| 置き場所 | 何を置くか |
+|---|---|
+| `src/` | ページ（`index.tsx` / `_layout.tsx` / `_404.tsx` / `_error.tsx`）・`styles.css`・`components/`・`hooks/`・`lib/` |
+| プロジェクトルート直下 | `server/`・`public/`・`package.json`・`tsconfig.json`・`squadbase.yml`・`AGENTS.md`・`.squadbase/` |
+
+- **`server/` を `src/` の中に置いてはならない** — `src/server/` はスキャンされず `vantage check` が
+  `SRC_DIR_SPLIT` エラーにする。ルート直下に残したページ・`styles.css` も同じエラー。
+- **両者にまたがる相対 import は `src/` を跨ぐ。** `kpi-chart-simple` の
+  `server/api/kpi-summary.ts` は共有型を `../../src/lib/kpi-chart-simple/types` から取る。
+- レイアウト判定は `src/project.ts` に集約（`resolvePageRoot` / `resolveStylesPath` /
+  `findRootLayoutFiles`）。パスを直に組み立てず、ここを経由する。
+- **`add` は旧レイアウトのプロジェクトを拒否する**（`refuseSplitLayout`）。`src/` が無いのにルート直下に
+  `index.tsx` / `_layout.tsx` / `_404.tsx` / `_error.tsx` / `styles.css` が残っているとき、何も書かずに
+  移動すべきファイルを列挙して exit 1。空のプロジェクト（どちらも無い）は `src/` を作って続行する。
 
 ## ビルドプロセス
 
@@ -109,7 +131,7 @@ EN/JA は `<name>` と `<name>-ja` のペアで、`files[].dest` は EN/JA で�
 
 ## chart コマンド
 
-`chart <preset>` は `chart-presets/<preset>.css` の `--chart-1..5` を、プロジェクトの `styles.css` にマーカーで囲んだブロックとして書き込む。マーカー内だけを差し替えるので、ユーザーが同じファイルに書いた他の override は壊れない。再実行しても積み上がらない。
+`chart <preset>` は `chart-presets/<preset>.css` の `--chart-1..5` を、プロジェクトの `src/styles.css`（v0.3.0 以降、`styles.css` はページと同じ側にある）にマーカーで囲んだブロックとして書き込む。マーカー内だけを差し替えるので、ユーザーが同じファイルに書いた他の override は壊れない。再実行しても積み上がらない。
 
 **このコマンドは `@squadbase/vantage` v0.2.1 以上が前提**（v0.2.2 以上を推奨）。v0.2.0 までの `EChart` は薄いラッパーでトークンを読まず、書き換えてもチャートの配色は 1 ピクセルも変わらなかった（そのため一度削除した）。v0.2.1 で `EChart` が init 時に `getComputedStyle` で `--chart-1..5`（系列色）と文字色/境界色トークン（軸・凡例・ツールチップ）を解決し、`class` / `style` / `data-theme` の変化と `prefers-color-scheme` を MutationObserver で追うようになったため、プリセットが実際に効くようになった。v0.2.2 でスタイルシート自体の差し替えも監視対象に入った。
 
@@ -126,15 +148,15 @@ vite-template の `src/routes.tsx` 文字列パッチに相当する処理は**�
 
 コピーしかしない結果として `add` は2つの警告を出す（`--json` 時は抑制）:
 
-- **`index.tsx` の上書き予告** — エントリは `action: "replace"` なので `checkConflicts` の対象外で、`--force` 無しでも消える。
-- **旧テンプレの残留ファイル検出** — 全 manifest の `add` dest を走査し、今回適用したテンプレ（と、その EN/JA 対）以外の dest がディスク上に残っていれば列挙する。テンプレを乗り換えると前のテンプレの `components/<slug>/` や `server/api/*` が誰からも import されないまま残るため。削除はしない（ユーザーが編集済みかもしれない）。
+- **`src/index.tsx` の上書き予告** — エントリは `action: "replace"` なので `checkConflicts` の対象外で、`--force` 無しでも消える。
+- **旧テンプレの残留ファイル検出** — 全 manifest の `add` dest を走査し、今回適用したテンプレ（と、その EN/JA 対）以外の dest がディスク上に残っていれば列挙する。テンプレを乗り換えると前のテンプレの `src/components/<slug>/` や `server/api/*` が誰からも import されないまま残るため。削除はしない（ユーザーが編集済みかもしれない）。
 
 ## テンプレートの追加方法
 
 **ファイル構成ルール・import 規約は [`ui-templates/CLAUDE.md`](./ui-templates/CLAUDE.md) を参照**（このセクションより優先）。要点:
 
 1. `ui-templates/<name>/` ディレクトリを作成
-2. `manifest.json` に `name`, `description`, `version`, `files[]`（`pages/index.tsx` → `index.tsx` を `action: "replace"`、他は `components/<name>/` へ `action: "add"`）を定義
+2. `manifest.json` に `name`, `description`, `version`, `files[]`（`pages/index.tsx` → `src/index.tsx` を `action: "replace"`、他は `src/components/<name>/` へ `action: "add"`。`server/*` だけはルート直下の `server/api/`）を定義
 3. `pages/index.tsx` をエントリポイントとし、`definePage` でタイトル/説明を宣言（**リテラルのみ**）
 4. `lib/mock-data.ts` / `lib/types.ts` は `relabel: false` を付ける
 5. `node dist/index.js add <name> --dry-run` で適用レイアウトを確認

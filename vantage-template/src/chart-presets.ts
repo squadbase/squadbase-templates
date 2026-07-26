@@ -1,6 +1,8 @@
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { resolveStylesPath } from "./project.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -57,6 +59,9 @@ export interface ApplyChartPresetResult {
  * A Vantage app has no theme file of its own — the framework owns `theme.css`
  * and auto-imports `styles.css` after it, so overriding the tokens there is the
  * supported way to restyle charts.
+ *
+ * Since `@squadbase/vantage` v0.3.0 that file sits next to the pages, so it is
+ * `src/styles.css` in a `src/` project and `styles.css` otherwise.
  */
 export function applyChartPreset(
   projectRoot: string,
@@ -68,9 +73,9 @@ export function applyChartPreset(
     throw new Error(`Chart preset "${presetName}" not found.`);
   }
 
-  const targetPath = join(projectRoot, "styles.css");
+  const targetPath = resolveStylesPath(projectRoot);
   if (!existsSync(targetPath)) {
-    throw new Error("styles.css not found in project.");
+    throw new Error(`${relative(projectRoot, targetPath)} not found in project.`);
   }
 
   const preset = readFileSync(presetPath, "utf-8").trimEnd();
