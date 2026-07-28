@@ -122,7 +122,7 @@ root/
     "routes": "vantage routes"
   },
   "dependencies": {
-    "@squadbase/vantage": "^0.3.0",
+    "@squadbase/vantage": "^0.4.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }
