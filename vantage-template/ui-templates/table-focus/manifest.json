@@ -3,9 +3,9 @@
   "description": "Table-Focused — Workbench layout: header search + Export, status filter chips, detail table (24+ rows, sortable) as the main element, with a trend chart and segment breakdown in a right sidebar. For data-heavy operational dashboards.",
   "version": "0.1.0",
   "files": [
-    { "src": "pages/index.tsx", "dest": "index.tsx", "action": "replace" },
-    { "src": "components/detail-table.tsx", "dest": "components/table-focus/detail-table.tsx", "action": "add" },
-    { "src": "lib/mock-data.ts", "dest": "components/table-focus/mock-data.ts", "action": "add", "relabel": false },
-    { "src": "lib/types.ts", "dest": "components/table-focus/types.ts", "action": "add", "relabel": false }
+    { "src": "pages/index.tsx", "dest": "src/index.tsx", "action": "replace" },
+    { "src": "components/detail-table.tsx", "dest": "src/components/table-focus/detail-table.tsx", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/components/table-focus/mock-data.ts", "action": "add", "relabel": false },
+    { "src": "lib/types.ts", "dest": "src/components/table-focus/types.ts", "action": "add", "relabel": false }
   ]
 }

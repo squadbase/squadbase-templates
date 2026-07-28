@@ -79,7 +79,7 @@ cd vite && npx @squadbase/skills --clean
 
 ### Vantage テンプレート
 
-設定ファイル不要（config-free）な React フレームワーク [`@squadbase/vantage`](https://vantage-framework-vantage.vercel.app/) の上に構築したダッシュボードテンプレートです。`vite.config.ts` も `main.tsx` もルートテーブルもありません。書くのは `index.tsx` だけで、ルーティング・TanStack Query・Tailwind v4・UI キット・開発サーバー・API サーバー・ビルドはすべてフレームワークが所有します。
+設定ファイル不要（config-free）な React フレームワーク [`@squadbase/vantage`](https://vantage-framework-vantage.vercel.app/) の上に構築したダッシュボードテンプレートです。`vite.config.ts` も `main.tsx` もルートテーブルもありません。書くのは `src/index.tsx` だけで、ルーティング・TanStack Query・Tailwind v4・UI キット・開発サーバー・API サーバー・ビルドはすべてフレームワークが所有します。
 
 **スタック:** @squadbase/vantage（Vite 8 · React 19 · TanStack Router/Query · Tailwind CSS v4 · Base UI · Apache ECharts）
 
@@ -94,6 +94,8 @@ npm run routes   # vantage routes — ページ / API のルートマップ
 ```
 
 v0.2.3 以降、`vantage routes` は `--pages` / `--apis` で片側だけに絞れ、`--detail` を足すと各ルートの静的な仕様（ページ: メタ情報とパスパラメータ / API: メソッド・query キー・リクエストボディ・レスポンスの status と形）まで出ます。どちらも `--json` と併用できます。
+
+v0.3.0 以降、ページ探索ルートは `src/` です（`src/` は URL に現れません: `src/sales/[id].tsx` → `/sales/:id`）。`server/` と `public/` はプロジェクトルート直下のままで、ページを両側に置くと `vantage check` が `SRC_DIR_SPLIT` エラーにします。
 
 **開発手順（[`@squadbase/vantage-template`](./vantage-template/) CLI）:**
 

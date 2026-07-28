@@ -10,6 +10,7 @@ import {
   loadManifest,
   type TemplateSource,
 } from "../manifest.js";
+import { findRootLayoutFiles } from "../project.js";
 
 export interface AddOptions extends ApplyOptions {
   ai?: CustomizeOptions;
@@ -35,10 +36,33 @@ function isVantageProject(projectRoot: string): boolean {
 }
 
 /**
+ * Every template writes its pages to `src/`, which is where `@squadbase/vantage`
+ * v0.3.0 scans once that directory exists. A project still keeping its pages at
+ * the root would end up split across both layouts — the copied page would be the
+ * only one Vantage sees and `vantage check` would fail with `SRC_DIR_SPLIT` — so
+ * stop before writing anything and name the files that have to move.
+ *
+ * An empty project (no `src/`, no root pages) is fine: applying a template
+ * creates `src/` and that becomes the page root.
+ */
+function refuseSplitLayout(projectRoot: string): void {
+  const rootPages = findRootLayoutFiles(projectRoot);
+  if (rootPages.length === 0) return;
+
+  log("red", "This project keeps its pages at the project root, but templates now write to src/.");
+  log("yellow", "  Move these into src/ first, then re-run:");
+  for (const name of rootPages) log("dim", `    ${name}`);
+  log("dim", "  Any components/ hooks/ lib/ directories holding page code move with them.");
+  log("dim", "  server/ and public/ stay at the project root.");
+  log("dim", "  Mixing the two layouts fails `vantage check` with SRC_DIR_SPLIT.");
+  process.exit(1);
+}
+
+/**
  * Files a *previously applied* template left behind.
  *
- * `apply` only ever copies, and every template overwrites `index.tsx`, so
- * switching templates orphans the earlier one's `components/<slug>/` and
+ * `apply` only ever copies, and every template overwrites `src/index.tsx`, so
+ * switching templates orphans the earlier one's `src/components/<slug>/` and
  * `server/api/*` files: nothing imports them, `vantage check` is happy, and an
  * agent reading the project has to work out that they are dead. Reporting them
  * is enough — deleting files the user may have edited is not ours to decide.
@@ -78,6 +102,8 @@ export async function addTemplate(templateName: string, options: AddOptions): Pr
     process.exit(1);
   }
 
+  refuseSplitLayout(projectRoot);
+
   // Validate template exists
   const available = listTemplateNames(source);
   if (!available.includes(templateName)) {
@@ -97,8 +123,8 @@ export async function addTemplate(templateName: string, options: AddOptions): Pr
       log("yellow", "(dry run — no files will be changed)");
     }
 
-    // `index.tsx` is declared `replace`, so it is not treated as a conflict and
-    // goes even without --force. Say so before it happens.
+    // `src/index.tsx` is declared `replace`, so it is not treated as a conflict
+    // and goes even without --force. Say so before it happens.
     const entry = manifest.files.find((f) => f.action === "replace");
     if (entry && existsSync(join(projectRoot, entry.dest))) {
       log("yellow", `  ${entry.dest} will be overwritten — commit first if it holds your work.`);

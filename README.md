@@ -52,7 +52,7 @@ cd vite && npx @squadbase/skills --clean
 
 ### Vantage Template
 
-A dashboard template built on [`@squadbase/vantage`](https://vantage-framework-vantage.vercel.app/), a config-free React framework. There is no `vite.config.ts`, no `main.tsx`, and no route table — you write `index.tsx` and the framework owns routing, TanStack Query, Tailwind v4, the UI kit, the dev server, the optional API server, and the build.
+A dashboard template built on [`@squadbase/vantage`](https://vantage-framework-vantage.vercel.app/), a config-free React framework. There is no `vite.config.ts`, no `main.tsx`, and no route table — you write `src/index.tsx` and the framework owns routing, TanStack Query, Tailwind v4, the UI kit, the dev server, the optional API server, and the build.
 
 **Stack:** @squadbase/vantage (Vite 8 · React 19 · TanStack Router/Query · Tailwind CSS v4 · Base UI · Apache ECharts)
 
@@ -67,6 +67,8 @@ npm run routes   # vantage routes — page/API route map
 ```
 
 Since v0.2.3 `vantage routes` takes `--pages` / `--apis` to show one side only, and `--detail` to print each route's static spec (page metadata and path params; API methods, query keys, request body, response status/shape). Both compose with `--json`.
+
+Since v0.3.0 `src/` is the page-scan root and does not appear in URLs (`src/sales/[id].tsx` → `/sales/:id`); `server/` and `public/` stay at the project root. Keeping pages on both sides fails `vantage check` with `SRC_DIR_SPLIT`.
 
 **Scaffolding CLI** — [`@squadbase/vantage-template`](./vantage-template/) initializes a project and applies UI-pattern templates:
 

@@ -4,6 +4,9 @@ import { fileURLToPath } from "node:url";
 
 export interface FileEntry {
   src: string;
+  // Project-root-relative. Pages and everything they import go under `src/`,
+  // which is the page-scan root since `@squadbase/vantage` v0.3.0; `server/`
+  // and `public/` stay at the project root (`src/server/` is never scanned).
   dest: string;
   action: "add" | "replace";
   // When false, the file is still copied/applied but excluded from the AI

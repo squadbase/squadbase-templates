@@ -3,9 +3,9 @@
   "description": "KPI + Chart (Advanced) — Hero KPI (1 large + 4 small in 2×2 grid), bar+line comparison, donut breakdown, daily trend, and a detail table. KPI-led analytics dashboard layout.",
   "version": "0.1.0",
   "files": [
-    { "src": "pages/index.tsx", "dest": "index.tsx", "action": "replace" },
-    { "src": "components/campaign-table.tsx", "dest": "components/kpi-chart-advanced/campaign-table.tsx", "action": "add" },
-    { "src": "lib/mock-data.ts", "dest": "components/kpi-chart-advanced/mock-data.ts", "action": "add", "relabel": false },
-    { "src": "lib/types.ts", "dest": "components/kpi-chart-advanced/types.ts", "action": "add", "relabel": false }
+    { "src": "pages/index.tsx", "dest": "src/index.tsx", "action": "replace" },
+    { "src": "components/campaign-table.tsx", "dest": "src/components/kpi-chart-advanced/campaign-table.tsx", "action": "add" },
+    { "src": "lib/mock-data.ts", "dest": "src/components/kpi-chart-advanced/mock-data.ts", "action": "add", "relabel": false },
+    { "src": "lib/types.ts", "dest": "src/components/kpi-chart-advanced/types.ts", "action": "add", "relabel": false }
   ]
 }

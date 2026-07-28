@@ -19,14 +19,17 @@ description: Vantage(@squadbase/vantage)ダッシュボードアプリを一か�
 3. **データを繋ぐ** — 外部 API か、自前の `server/api` か
 4. **仕上げ** — `check` → `build` → `preview`
 
-**各段階の終わりに `vantage check` を通す。** 静的診断(禁止ファイル・ルート衝突・境界違反・
-API export・env 誤用)はユーザーコードを実行しないので速く、エラーがあれば exit 1 になる。
+**各段階の終わりに `vantage check` を通す。** 静的診断(禁止ファイル・`src/` の分裂・ルート
+衝突・境界違反・API export・env 誤用)はユーザーコードを実行しないので速く、エラーがあれば
+exit 1 になる。
 まとめて最後に回すと、原因の切り分けが難しくなる。
 
 ## Step 1 — 骨組み
 
 新規なら `package.json` と `index.tsx` の 2 ファイルだけ。設定ファイルは**作らない**
-(`vite.config.*` 等は `vantage check` がエラーにする)。
+(`vite.config.*` 等は `vantage check` がエラーにする)。ページを `src/` にまとめたいなら
+`src/index.tsx` にする ― **`src/` があればページ走査はその中だけ**になり、直下に残した `.tsx`
+は無視される(`SRC_DIR_SPLIT` エラー)。どちらか一方に寄せること。
 
 ```json
 {
@@ -41,7 +44,7 @@ API export・env 誤用)はユーザーコードを実行しないので速く�
     "routes": "vantage routes"
   },
   "dependencies": {
-    "@squadbase/vantage": "^0.2.0",
+    "@squadbase/vantage": "^0.4.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }
@@ -54,8 +57,9 @@ API export・env 誤用)はユーザーコードを実行しないので速く�
 **既存アプリに合流したときは、作る前に現状を読む:**
 
 ```bash
-vantage routes     # 既にあるページと API の URL マップ
+vantage routes     # 既にあるページと API の URL マップ(file 列がページの置き場所)
 vantage check      # いま壊れていないか(これから出すエラーと切り分ける)
+ls src/            # あればページは src/ の中だけ。無ければプロジェクトルート直下
 ls server/         # あれば fullstack モード。無ければ SPA
 vantage add skill  # 配置済みの skill(このファイルの仲間)と、その場所
 ```

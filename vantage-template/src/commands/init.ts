@@ -49,9 +49,13 @@ export function initProject(options: {
     process.exit(1);
   }
 
-  // Check for an existing entry page
-  if (!options.force && existsSync(join(targetDir, "index.tsx"))) {
-    log("red", "This directory already contains an index.tsx.");
+  // Check for an existing entry page. Vantage reads it from `src/` when that
+  // directory exists and from the root otherwise, so both spellings count.
+  const existingEntry = ["src/index.tsx", "index.tsx"].find((rel) =>
+    existsSync(join(targetDir, rel)),
+  );
+  if (!options.force && existingEntry) {
+    log("red", `This directory already contains a ${existingEntry}.`);
     log("yellow", "Use --force to overwrite.");
     process.exit(1);
   }

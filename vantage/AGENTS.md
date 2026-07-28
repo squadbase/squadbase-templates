@@ -22,6 +22,9 @@ UI キット・開発サーバー・API サーバー・ビルドはすべて Van
 
 ## 不変条件(破ると静かに壊れる)
 
+- **ページは `src/` の中か、プロジェクトルート直下か、どちらか一方。** `src/` があれば走査は
+  `src/` だけになり、ルート直下に残した `.tsx` は無視される(`SRC_DIR_SPLIT` エラー)。
+  新しいファイルは既にある側に置く(→「ディレクトリ構造」)。
 - **設定ファイルを作らない。** `vite.config.*`・`tailwind.config.*`・`postcss.config.*`・
   `components.json`・`vantage.config.*` はすべて禁止。存在すると `vantage check` がエラーにする
   (`FORBIDDEN_FILE`)。テーマ調整は `styles.css` のトークンで行う。
@@ -38,6 +41,43 @@ UI キット・開発サーバー・API サーバー・ビルドはすべて Van
 - **`definePage` の値はリテラルで書く。** title/description/navLabel はビルド時に静的抽出される
   ため、変数・関数呼び出し・テンプレート補間は使わない。`page` エクスポートはランタイムでは
   読まれない。
+
+## ディレクトリ構造(ページをどこに置くか)
+
+**ページの置き場所は 2 通りあり、`src/` があるかどうかだけで決まる。混ぜてはならない。**
+
+- `src/` が**ある** → ページは `src/` の中だけ。ルート直下に置いた `.tsx` はルートにならず、
+  `SRC_DIR_SPLIT` エラーになる。
+- `src/` が**無い** → ページはプロジェクトルート直下。
+
+**ファイルを足す前に `src/` の有無を確認し、既にある側に置く**(`ls` するだけでよい)。URL は
+どちらでも同じで、`src/` は URL に現れない(`src/sales/index.tsx` → `/sales`)。
+
+```text
+root/
+├── src/                    # ある場合、ページはこの中だけ(無ければ以下が root 直下)
+│   ├── index.tsx           # /
+│   ├── monthly-analysis.tsx  # /monthly-analysis
+│   ├── sales/index.tsx     # /sales
+│   ├── _layout.tsx         # ルートレイアウト
+│   ├── components/         # ページ走査の対象外(URL にならない)
+│   ├── hooks/  lib/        # 同上
+│   └── styles.css          # 任意のグローバル CSS
+├── server/                 # 常にプロジェクトルート直下。src/ の中ではない
+│   ├── api/…               # /api/*
+│   └── utils.ts
+├── public/                 # 静的ファイル。常にプロジェクトルート直下
+├── package.json            # managed
+└── tsconfig.json           # managed
+```
+
+- **`server/` と `public/` は常にプロジェクトルート直下。** `src/server/` は決してスキャン
+  されない(`SRC_DIR_SPLIT` エラー)。
+- **`styles.css` はページと同じ側**に置く(`src/` があれば `src/styles.css`)。
+- **ディレクトリ名はそのまま URL のセグメントになる。** `pages/`・`app/`・`utils/` のような
+  足場ディレクトリを切ると、その名前が URL に出る(`pages/report.tsx` → `/pages/report`)。
+  `SUSPICIOUS_ROUTE_DIR` 警告で知らされる。ページでないモジュールは `components/`・`hooks/`・
+  `lib/` に置く ― この 3 つ(と `server/`・`public/`)はどの階層でも走査されない。
 
 ## import サブパスの地図
 
@@ -82,7 +122,7 @@ UI キット・開発サーバー・API サーバー・ビルドはすべて Van
     "routes": "vantage routes"
   },
   "dependencies": {
-    "@squadbase/vantage": "^0.2.0",
+    "@squadbase/vantage": "^0.4.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }
@@ -108,12 +148,15 @@ pnpm check    # 静的診断(エラーがあれば exit 1)
 pnpm routes   # ページ/API の URL マップ
 ```
 
-`server/` ディレクトリが無いので、この構成は **SPA モード**。
+`server/` ディレクトリが無いので、この構成は **SPA モード**。ページを直下に置く形だが、
+`src/` を作ってその中に集めてもよい(テンプレートから始めた場合は最初から `src/` がある)。
+どちらか一方に寄せること(→「ディレクトリ構造」)。
 
 ## ルーティング規約(ファイル名 → ルート)
 
-ルートディレクトリ直下の `.tsx`/`.jsx` がそのままページになる。各ページは**デフォルト
-エクスポートの React コンポーネントが必須**(無いと `MISSING_DEFAULT_EXPORT`)。
+ページルート(`src/` があればその中、無ければプロジェクトルート)からの相対パスが、そのまま
+URL になる。各ページは**デフォルトエクスポートの React コンポーネントが必須**(無いと
+`MISSING_DEFAULT_EXPORT`)。以下の「ファイル」列はページルートからの相対パス。
 
 | ファイル | ルート |
 | --- | --- |
@@ -125,7 +168,8 @@ pnpm routes   # ページ/API の URL マップ
 | `_404.tsx` | Not Found ページ |
 | `_error.tsx` | ルートが throw したときのエラーページ |
 
-`components/`・`hooks/`・`lib/`・`server/`・`public/` はルート走査の対象外(ページにならない)。
+`components/`・`hooks/`・`lib/`・`server/`・`public/` はどの階層でもルート走査の対象外
+(ページにならない)。それ以外のディレクトリ名は URL のセグメントになる(→「ディレクトリ構造」)。
 
 ```tsx
 import { definePage } from "@squadbase/vantage"
@@ -302,7 +346,7 @@ vantage search テーブル --limit 5 --json    # 機械可読(slug + score + sn
 ## 検証・ビルド・プレビュー
 
 ```bash
-pnpm check     # 静的診断(禁止ファイル・ルート衝突・境界・API export・env 誤用)
+pnpm check     # 静的診断(禁止ファイル・src/ の分裂・ルート衝突・境界・API export・env 誤用)
 pnpm routes    # ページ + API の URL マップ
 pnpm build     # dist/ に client(+ server)+ vantage-manifest.json
 pnpm preview   # 本番ビルドをローカル実行
