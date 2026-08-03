@@ -122,7 +122,7 @@ root/
     "routes": "vantage routes"
   },
   "dependencies": {
-    "@squadbase/vantage": "^0.4.0",
+    "@squadbase/vantage": "^0.5.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }
@@ -356,7 +356,8 @@ pnpm preview   # 本番ビルドをローカル実行
 (手で書かない)。`vantage routes` は `--pages` / `--apis` で片側だけに絞れ、`--detail` を足すと
 各ルートの静的な仕様(ページ: パスパラメータ + `definePage` のメタ / API: メソッド・query・
 body・レスポンスの status と形)まで出る。`vantage check --json` / `vantage routes --json` は
-エージェント向けの機械可読出力。`console.*` とランタイムエラーは開発ターミナルに `[browser:…]` として転送される。
+エージェント向けの機械可読出力。dev では `console.warn` / `console.error` とランタイムエラーが開発ターミナルへ
+転送される(`console.log` は転送されない)。エラーの全画面オーバーレイは `vantage dev --no-overlay` で消せる。
 
 ## さらに詳しく(同梱 Skill)
 

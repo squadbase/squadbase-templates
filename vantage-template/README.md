@@ -26,7 +26,7 @@ npx @squadbase/vantage-template init --chart sunset           # Apply a chart pr
 After initialization:
 
 ```bash
-npm run dev      # vantage dev — dev server + API on :5173
+npm run dev      # vantage dev --no-overlay — dev server + API on :5173
 npm run build    # vantage build → dist/
 npm run check    # vantage check — static diagnostics
 npm run routes   # vantage routes — page/API route map
@@ -35,6 +35,8 @@ npm run routes   # vantage routes — page/API route map
 There is no `vite.config.ts`, no `main.tsx`, and no route table: adding a file under `src/` adds a route (`src/index.tsx` → `/`, `src/sales/[id].tsx` → `/sales/:id`), and `src/_layout.tsx` builds the nav from `useRoutes()`.
 
 Since `@squadbase/vantage` v0.3.0, `src/` is the page-scan root and does not appear in URLs. `server/` and `public/` stay at the project root — `src/server/` is never scanned.
+
+Since `@squadbase/vantage` v0.5.0, the dev terminal receives only `console.warn` / `console.error` and uncaught errors (with source-mapped positions and a code frame) — `console.log` is not forwarded. The generated `dev` script passes `--no-overlay`, keeping errors in the terminal instead of behind the full-screen browser overlay; remove the flag (or pass `--overlay`) to restore it.
 
 #### `add <template-name>`
 

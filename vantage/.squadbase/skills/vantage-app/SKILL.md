@@ -44,7 +44,7 @@ exit 1 になる。
     "routes": "vantage routes"
   },
   "dependencies": {
-    "@squadbase/vantage": "^0.4.0",
+    "@squadbase/vantage": "^0.5.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }
@@ -116,8 +116,9 @@ pnpm preview   # 本番ビルドをローカルで動かす
 
 ## 詰まったら
 
-- ブラウザの `console.*` とランタイムエラーは、**開発ターミナルに `[browser:…]` として転送
-  される**。ブラウザの devtools を開かなくても読める。
+- ブラウザの `console.warn` / `console.error` とランタイムエラーは、**開発ターミナルへ転送
+  される**(`[console.warn] …` / `[Unhandled error] …` + コードフレーム)。devtools を開かずに
+  読める。`console.log` は転送されないので、**ターミナルで見たいログは `console.warn`** で出す。
 - `vantage check --json` / `vantage routes --json` は機械可読出力。
 - props や規約を確かめたいときは `vantage docs <name>`、名前が思い出せないときは
   `vantage search <やりたいこと>`。**推測で props を書かない。**

@@ -86,7 +86,7 @@ cd vite && npx @squadbase/skills --clean
 **コマンド:**
 
 ```bash
-npm run dev      # vantage dev — 開発サーバー + API を :5173 で起動（HMR）
+npm run dev      # vantage dev --no-overlay — 開発サーバー + API を :5173 で起動（HMR）
 npm run build    # vantage build → dist/（クライアント + サーバー）
 npm start        # プロダクションサーバーを起動
 npm run check    # vantage check — 静的診断（ルート・境界・禁止ファイル）
@@ -96,6 +96,8 @@ npm run routes   # vantage routes — ページ / API のルートマップ
 v0.2.3 以降、`vantage routes` は `--pages` / `--apis` で片側だけに絞れ、`--detail` を足すと各ルートの静的な仕様（ページ: メタ情報とパスパラメータ / API: メソッド・query キー・リクエストボディ・レスポンスの status と形）まで出ます。どちらも `--json` と併用できます。
 
 v0.3.0 以降、ページ探索ルートは `src/` です（`src/` は URL に現れません: `src/sales/[id].tsx` → `/sales/:id`）。`server/` と `public/` はプロジェクトルート直下のままで、ページを両側に置くと `vantage check` が `SRC_DIR_SPLIT` エラーにします。
+
+v0.5.0 以降、ブラウザから開発ターミナルへの転送は Vite の `server.forwardConsole` に置き換わりました。転送されるのは `console.warn` / `console.error` と未捕捉のエラーだけで（`console.log` は転送されないので、ターミナルで見たいログは `console.warn` で出します）、未捕捉のエラーはソースマップを解決した位置とコードフレーム付きで出ます。テンプレートの `dev` スクリプトは `--no-overlay` を渡していて、エラーが全画面のオーバーレイで画面を覆わずターミナル側だけに出ます。オーバーレイを戻したいときはフラグを外す（または `--overlay` を渡す）だけです。
 
 **開発手順（[`@squadbase/vantage-template`](./vantage-template/) CLI）:**
 
