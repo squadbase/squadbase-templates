@@ -30,8 +30,14 @@ vantage-template/
 │       ├── pages/            # index.tsx → 適用先の src/index.tsx
 │       ├── lib/              # mock-data.ts / types.ts (relabel:false のデータ層)
 │       ├── server/           # server/api/*.ts（API から配信するテンプレのみ）
-│       └── components/       # 分割した場合のみ
+│       ├── components/       # 分割した場合のみ
+│       └── preview-*.png     # プレビュー画像（scripts/screenshot.mjs が生成）
+├── scripts/                  # 開発用（publish されない）
+│   ├── dev-setup.mjs         # dev/ を組み立てる — ../vantage/ を rsync + テンプレを symlink
+│   ├── dev.mjs               # dev/ で vantage dev を起動（テンプレを編集しながら確認）
+│   └── screenshot.mjs        # preview-wide / preview-square を撮って ui-templates/ に配置
 ├── chart-presets/            # chart コマンド用の --chart-* トークン CSS
+├── dev/                      # scripts/ が作る使い捨てプレビュー環境（gitignore 対象）
 ├── base-template/            # ビルド時に ../vantage/ からコピー（gitignore 対象）
 ├── tsup.config.ts            # dist/index.js にバンドル（#!/usr/bin/env node バナー付き）
 ├── tsconfig.json
@@ -128,6 +134,35 @@ npx @squadbase/vantage-template chart ocean             # チャート配色を�
 ```
 
 EN/JA は `<name>` と `<name>-ja` のペアで、`files[].dest` は EN/JA で同一（上書き = 相互排他）、`name` だけ異なる。EN/JA を同時に add してはいけない。
+
+## ローカルプレビューとプレビュー画像（`scripts/`）
+
+```bash
+npm run dev kpi-chart-simple                # dev/ を作って vantage dev を起動
+npm run dev funnel -- --chart ocean         # チャートプリセットを当てて確認
+npm run screenshot                          # 全テンプレの preview-*.png を撮り直す
+npm run screenshot funnel funnel-ja         # 指定したテンプレだけ
+```
+
+`scripts/dev-setup.mjs` は毎回 `rsync -a --delete ../vantage/ dev/` してから manifest の
+`files[]` を dev/ に**コピー**する。
+
+- **symlink にしてはいけない。** Vantage のルート走査は dirent を `isFile()` / `isDirectory()` で
+  振り分けるため、symlink はどちらでもない扱いになって**丸ごと無視される**。`src/index.tsx` を
+  symlink にすると `vantage routes` の Pages が空になり、`/` が 404 ページを描画する
+  （見た目は正常に動いているので、プレビュー画像が全部 404 になって初めて気付く）。
+  `screenshot.mjs` はこれを検知して失敗するようになっている。
+- **`dev/` は使い捨て。** 直接編集しても次回の rsync で消える。編集は `ui-templates/<name>/` 側に対して行う — `dev.mjs` が `fs.watch` で dev/ に書き戻すので HMR には載る（**ファイルを追加**したときは manifest を読み直すため再起動が要る）。
+- **rsync が毎回 `--delete` する**ので、前に見ていたテンプレの `src/components/<slug>/` や `server/api/*` が残って謎のルートになることがない。
+- `node_modules` は `../vantage/node_modules` への symlink（rsync の除外対象なので消えない）。**先に `../vantage/` で `npm install` しておくこと。**
+- `scripts/` と `dev/` は `package.json` の `files` に無いので npm には publish されない。
+
+`screenshot.mjs` は Playwright で **viewport そのままのサイズ**を撮る（`deviceScaleFactor: 1`）。
+`preview-wide.png` = 1600x900、`preview-square.png` = 1200x1200 で、これは Squadbase のギャラリーが
+`list --json` の URL から参照する契約なのでファイル名もピクセルサイズも変えない。引数なしで走らせると
+`blank` / `blank-ja` も含めた全テンプレを撮る（vite-template は blank のプレビューを持たないが、
+Vantage 側はギャラリーで欠けた枠にならないよう撮る）。初回は
+`node node_modules/playwright/cli.js install chromium` が必要。
 
 ## chart コマンド
 

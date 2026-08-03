@@ -205,4 +205,4 @@ API 版（`kpi-chart-simple`）では `lib/types.ts` の dest が `src/lib/<slug
 6. 未使用の関数・型・import が残っていないか
 7. 適用先で `npx vantage check` と `npx tsc --noEmit` が通るか
 8. EN/JA 両方を同じ構成に揃えたか
-9. レイアウトを変えたなら `preview-wide.png` (1600x900) / `preview-square.png` (1200x1200) を撮り直したか
+9. レイアウトを変えたなら `preview-wide.png` (1600x900) / `preview-square.png` (1200x1200) を撮り直したか — `cd vantage-template && npm run screenshot <slug> <slug>-ja`（全部撮り直すなら引数なし）
