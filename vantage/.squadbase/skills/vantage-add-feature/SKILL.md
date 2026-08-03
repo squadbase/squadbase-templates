@@ -139,7 +139,7 @@ vantage add block sales-overview # → components/blocks/sales-overview.tsx
 ```bash
 vantage routes    # 追加したページ/API が意図した URL に出ているか
 vantage check     # 規約違反が無いか(exit 1 ならエラーあり)
-vantage dev       # 実際に動くか(console は開発ターミナルに [browser:…] で転送)
+vantage dev       # 実際に動くか(warn/error と未捕捉エラーは開発ターミナルへ転送される)
 ```
 
 `vantage routes` は `--pages` / `--apis` で片側だけに絞れる。`--detail` を足すと各ルートの静的な

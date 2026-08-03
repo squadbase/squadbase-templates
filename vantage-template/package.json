@@ -39,10 +39,13 @@
     "sync-base": "rsync -a --delete --exclude='node_modules' --exclude='dist' --exclude='.vantage' --exclude='package-lock.json' --exclude='*.tsbuildinfo' --exclude='*.log' ../vantage/ base-template/ && mv base-template/.gitignore base-template/_gitignore",
     "build": "npm run sync-base && tsup",
     "prepublishOnly": "npm run build",
-    "release": "npm publish --@squadbase:registry=https://registry.npmjs.org"
+    "release": "npm publish --@squadbase:registry=https://registry.npmjs.org",
+    "dev": "node scripts/dev.mjs",
+    "screenshot": "node scripts/screenshot.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",
+    "playwright": "^1.49.0",
     "tsup": "^8.4.0",
     "typescript": "~5.7.0"
   },
