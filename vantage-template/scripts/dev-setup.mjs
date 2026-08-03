@@ -97,7 +97,11 @@ export function setupDev(templateName, { chartPreset } = {}) {
     if (!existsSync(srcPath)) {
       throw new Error(`${name}: manifest lists ${file.src}, which does not exist`);
     }
-    return { srcPath, destPath: join(devDir, file.dest) };
+    // Mirrors `resolveDest` in src/project.ts. Manifest dests are relative to
+    // the page-scan root; only `scope: "root"` entries (server/, public/) sit at
+    // the project root. dev/ is an rsync of ../vantage/, which has src/.
+    const destRel = file.scope === "root" ? file.dest : join("src", file.dest);
+    return { srcPath, destPath: join(devDir, destRel) };
   });
 
   for (const { srcPath, destPath } of files) {

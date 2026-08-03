@@ -34,7 +34,9 @@ src/components/<slug>/
 - **探索**: `src/components/<slug>/` を見ればテンプレ由来が一覧完結
 - **削除**: `rm -rf src/components/<slug>/` で一掃
 
-**`src/` を使う理由（v0.3.0 以降）**: ページ探索ルートは `src/` の有無だけで決まる。ベーステンプレートは `src/` を持つので、ページとそれが import するものは**すべて `src/` の中**に置く。ルート直下に `.tsx` や `styles.css` を残すと `vantage check` が `SRC_DIR_SPLIT` エラーにする。**例外は `server/` と `public/` で、これらは常にプロジェクトルート直下**（`src/server/` はスキャンされない）。
+**`src/` を使う理由（v0.3.0 以降）**: ページ探索ルートは `src/` の有無だけで決まる。ベーステンプレートは `src/` を持つので、ページとそれが import するものは**すべて `src/` の中**に置く。`src/` があるのにルート直下に `.tsx` や `styles.css` を残すと `vantage check` が `SRC_DIR_SPLIT` エラーにする。**例外は `server/` と `public/` で、これらは常にプロジェクトルート直下**（`src/server/` はスキャンされない）。
+
+**ただし manifest の `dest` に `src/` は書かない。** `dest` は**ページ探索ルート相対**（`index.tsx` / `components/<slug>/x.tsx`）で、`src/` を付けるかどうかは適用先のレイアウトを見て CLI が決める（ルート直下にページを置くプロジェクトにも適用できる）。`server/` `public/` だけ `"scope": "root"` を付けてプロジェクトルート固定にする。オーサリング側のファイルは**常に `src/` レイアウト前提**で書き、`src/` を跨ぐ相対 import は適用時に CLI が張り替える。
 
 **`components/` を使う理由（重要）**: Vantage は**ファイルベースルーティング**で、`.tsx` ファイルは原則すべてページ扱いになる。`components/` / `hooks/` / `lib/` / `server/` / `public/` だけがルート走査から除外される（`NON_ROUTE_DIRS`）ため、`src/templates/<slug>/` のようなディレクトリに `.tsx` を置くと **`/templates/<slug>/...` という意図しないルートが生え、`vantage check` が `MISSING_DEFAULT_EXPORT` で落ちる**（`SUSPICIOUS_ROUTE_DIR` 警告も出る）。データファイル（`.ts`）も同じディレクトリに置いてコロケーションを保つ。
 
@@ -61,7 +63,7 @@ function areaOption(data: TimePoint[]): EChartsOption {
 
 ### 3-b. API 版テンプレ（`server/api` から配信する場合）
 
-`kpi-chart-simple` はモック配列を直読みせず、**`server/api` から `useApiQuery` で取る**構成になっている。実データ接続までの導線を1本コードで示すためのもので、この構成を採るテンプレは dest の置き場が変わる:
+`kpi-chart-simple` はモック配列を直読みせず、**`server/api` から `useApiQuery` で取る**構成になっている。実データ接続までの導線を1本コードで示すためのもので、この構成を採るテンプレは置き場が変わる（以下は `src/` レイアウトに適用したときの実配置。manifest の `dest` は `src/` を除いた形で書く）:
 
 ```
 src/index.tsx                            # useApiQuery + useSearchParam
@@ -152,16 +154,16 @@ export default function Home() { /* ... */ }
 ui-templates/<slug>/
   manifest.json
   preview-square.png / preview-wide.png
-  pages/index.tsx       → dest: src/index.tsx                          (replace)
-  lib/mock-data.ts      → dest: src/components/<slug>/mock-data.ts     (add, relabel:false)
-  lib/types.ts          → dest: src/components/<slug>/types.ts         (add, relabel:false)
-  components/*.tsx      → dest: src/components/<slug>/*.tsx            (add)  ※分割した場合のみ
-  server/*.ts           → dest: server/api/*.ts                        (add, relabel:false) ※API 版のみ・ルート直下
+  pages/index.tsx       → dest: index.tsx                          (replace)
+  lib/mock-data.ts      → dest: components/<slug>/mock-data.ts     (add, relabel:false)
+  lib/types.ts          → dest: components/<slug>/types.ts         (add, relabel:false)
+  components/*.tsx      → dest: components/<slug>/*.tsx            (add)  ※分割した場合のみ
+  server/*.ts           → dest: server/api/*.ts, scope: "root"     (add, relabel:false) ※API 版のみ
 ```
 
-**オーサリング側のディレクトリ名（`pages/` `lib/` `components/` `server/`）は適用先の dest と一致しない。** dest だけが真実で、`manifest.json` に書く。
+**オーサリング側のディレクトリ名（`pages/` `lib/` `components/` `server/`）は適用先の dest と一致しない。** dest だけが真実で、`manifest.json` に書く。**dest はページ探索ルート相対なので `src/` は付けない**（`scope: "root"` のものだけプロジェクトルート相対）。
 
-API 版（`kpi-chart-simple`）では `lib/types.ts` の dest が `src/lib/<slug>/types.ts` になり、`lib/mock-data.ts` は無く、代わりに `server/*.ts` を持つ。上の「3-b」を参照。
+API 版（`kpi-chart-simple`）では `lib/types.ts` の dest が `lib/<slug>/types.ts` になり、`lib/mock-data.ts` は無く、代わりに `server/*.ts` を持つ。上の「3-b」を参照。
 
 ## manifest.json
 
@@ -171,15 +173,16 @@ API 版（`kpi-chart-simple`）では `lib/types.ts` の dest が `src/lib/<slug
   "description": "...",
   "version": "0.1.0",
   "files": [
-    { "src": "pages/index.tsx", "dest": "src/index.tsx", "action": "replace" },
-    { "src": "lib/mock-data.ts", "dest": "src/components/<slug>/mock-data.ts", "action": "add", "relabel": false },
-    { "src": "lib/types.ts", "dest": "src/components/<slug>/types.ts", "action": "add", "relabel": false }
+    { "src": "pages/index.tsx", "dest": "index.tsx", "action": "replace" },
+    { "src": "lib/mock-data.ts", "dest": "components/<slug>/mock-data.ts", "action": "add", "relabel": false },
+    { "src": "lib/types.ts", "dest": "components/<slug>/types.ts", "action": "add", "relabel": false }
   ]
 }
 ```
 
 - `files[]` が manifest の全て（`nav[]` は無い）。ベーステンプレートのナビは `useRoutes()` からルート一覧を組むので、ページファイルをコピーすればナビにも載る
 - データファイルには `"relabel": false` を必ず付ける
+- `dest` に `src/` を書かない。`server/` `public/` にだけ `"scope": "root"` を付ける
 
 ## 見本市の例外ルール
 
@@ -197,7 +200,7 @@ API 版（`kpi-chart-simple`）では `lib/types.ts` の dest が `src/lib/<slug
 
 ## チェックリスト（テンプレ追加・改修時）
 
-1. テンプレ固有ファイルの `dest` は `src/components/<slug>/` 配下か（`src/templates/` に `.tsx` を置いていないか）。`server/*` の dest だけはルート直下の `server/api/`
+1. テンプレ固有ファイルの `dest` は `components/<slug>/` 配下か（`templates/` に `.tsx` を置いていないか）。`dest` に `src/` を書いていないか。`server/*` だけ `dest: server/api/*` + `"scope": "root"` か
 2. `@/` エイリアスや `echarts` / `@tanstack/*` の直接 import、`Placeholder` / `Sparkline` のローカル import が残っていないか
 3. 相対 import に `.js` 拡張子が残っていないか（v0.2.0 で規約廃止）
 4. 薄いチャートラッパ component を作っていないか。チャートに色をハードコードしていないか（`option.color` / `itemStyle.color` / `theme`）

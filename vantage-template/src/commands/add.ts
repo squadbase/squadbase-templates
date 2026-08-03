@@ -10,7 +10,7 @@ import {
   loadManifest,
   type TemplateSource,
 } from "../manifest.js";
-import { findRootLayoutFiles } from "../project.js";
+import { findSplitLayoutFiles, resolveDest, resolvePagePrefix } from "../project.js";
 
 export interface AddOptions extends ApplyOptions {
   ai?: CustomizeOptions;
@@ -36,25 +36,26 @@ function isVantageProject(projectRoot: string): boolean {
 }
 
 /**
- * Every template writes its pages to `src/`, which is where `@squadbase/vantage`
- * v0.3.0 scans once that directory exists. A project still keeping its pages at
- * the root would end up split across both layouts — the copied page would be the
- * only one Vantage sees and `vantage check` would fail with `SRC_DIR_SPLIT` — so
- * stop before writing anything and name the files that have to move.
+ * Templates follow whichever layout the project already uses — `resolveDest`
+ * puts pages under `src/` when it exists and at the project root otherwise. The
+ * one case we cannot follow is a project with pages on *both* sides: Vantage
+ * scans only `src/`, so the root files are already dead and `vantage check`
+ * reports `SRC_DIR_SPLIT`. Writing a template on top would bury the problem
+ * under a working-looking page, so stop and name the files that have to move.
  *
  * An empty project (no `src/`, no root pages) is fine: applying a template
  * creates `src/` and that becomes the page root.
  */
 function refuseSplitLayout(projectRoot: string): void {
-  const rootPages = findRootLayoutFiles(projectRoot);
+  const rootPages = findSplitLayoutFiles(projectRoot);
   if (rootPages.length === 0) return;
 
-  log("red", "This project keeps its pages at the project root, but templates now write to src/.");
-  log("yellow", "  Move these into src/ first, then re-run:");
+  log("red", "This project has pages both in src/ and at the project root.");
+  log("yellow", "  Vantage scans only src/ once it exists. Move these into src/, then re-run:");
   for (const name of rootPages) log("dim", `    ${name}`);
   log("dim", "  Any components/ hooks/ lib/ directories holding page code move with them.");
   log("dim", "  server/ and public/ stay at the project root.");
-  log("dim", "  Mixing the two layouts fails `vantage check` with SRC_DIR_SPLIT.");
+  log("dim", "  Leaving both sides in place fails `vantage check` with SRC_DIR_SPLIT.");
   process.exit(1);
 }
 
@@ -71,6 +72,7 @@ function findStaleTemplateFiles(
   projectRoot: string,
   appliedTemplate: string,
   source: TemplateSource,
+  pagePrefix: string,
 ): string[] {
   const stale: string[] = [];
   for (const name of listTemplateNames(source)) {
@@ -86,7 +88,8 @@ function findStaleTemplateFiles(
     }
     for (const file of manifest.files) {
       if (file.action !== "add") continue;
-      if (existsSync(join(projectRoot, file.dest))) stale.push(file.dest);
+      const dest = resolveDest(file, pagePrefix);
+      if (existsSync(join(projectRoot, dest))) stale.push(dest);
     }
   }
   return [...new Set(stale)].sort();
@@ -103,6 +106,11 @@ export async function addTemplate(templateName: string, options: AddOptions): Pr
   }
 
   refuseSplitLayout(projectRoot);
+
+  // Resolved once, before anything is written: applying a template can create
+  // `src/`, and every dest reported afterwards has to name where files actually
+  // went, not where a re-detection would put them.
+  const pagePrefix = resolvePagePrefix(projectRoot);
 
   // Validate template exists
   const available = listTemplateNames(source);
@@ -123,18 +131,19 @@ export async function addTemplate(templateName: string, options: AddOptions): Pr
       log("yellow", "(dry run — no files will be changed)");
     }
 
-    // `src/index.tsx` is declared `replace`, so it is not treated as a conflict
+    // The entry page is declared `replace`, so it is not treated as a conflict
     // and goes even without --force. Say so before it happens.
     const entry = manifest.files.find((f) => f.action === "replace");
-    if (entry && existsSync(join(projectRoot, entry.dest))) {
-      log("yellow", `  ${entry.dest} will be overwritten — commit first if it holds your work.`);
+    const entryDest = entry ? resolveDest(entry, pagePrefix) : undefined;
+    if (entryDest && existsSync(join(projectRoot, entryDest))) {
+      log("yellow", `  ${entryDest} will be overwritten — commit first if it holds your work.`);
     }
   }
 
   applyTemplate(projectRoot, manifest, options);
 
   if (!options.ai?.json) {
-    const stale = findStaleTemplateFiles(projectRoot, templateName, source);
+    const stale = findStaleTemplateFiles(projectRoot, templateName, source, pagePrefix);
     if (stale.length > 0) {
       log("yellow", "\nLeftovers from a previously applied template (nothing imports them):");
       for (const dest of stale) log("dim", `  ${dest}`);
@@ -143,7 +152,13 @@ export async function addTemplate(templateName: string, options: AddOptions): Pr
   }
 
   if (options.ai) {
-    const result = await customizeWithAI(projectRoot, manifest, templateDir, options.ai);
+    const result = await customizeWithAI(
+      projectRoot,
+      manifest,
+      templateDir,
+      options.ai,
+      pagePrefix,
+    );
 
     if (options.ai.json) {
       console.log(

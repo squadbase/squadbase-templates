@@ -3,8 +3,8 @@
   "description": "[日本語] チャート格子 — エリア/折れ線/棒/散布/レーダー/ヒートマップの6チャート格子。ヘッダーにカテゴリフィルタチップを配置。チャートだけで構成する可視化重視のダッシュボード",
   "version": "0.1.0",
   "files": [
-    { "src": "pages/index.tsx", "dest": "src/index.tsx", "action": "replace" },
-    { "src": "lib/mock-data.ts", "dest": "src/components/chart-grid/mock-data.ts", "action": "add", "relabel": false },
-    { "src": "lib/types.ts", "dest": "src/components/chart-grid/types.ts", "action": "add", "relabel": false }
+    { "src": "pages/index.tsx", "dest": "index.tsx", "action": "replace" },
+    { "src": "lib/mock-data.ts", "dest": "components/chart-grid/mock-data.ts", "action": "add", "relabel": false },
+    { "src": "lib/types.ts", "dest": "components/chart-grid/types.ts", "action": "add", "relabel": false }
   ]
 }

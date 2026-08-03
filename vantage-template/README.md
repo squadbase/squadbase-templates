@@ -42,17 +42,19 @@ Since `@squadbase/vantage` v0.5.0, the dev terminal receives only `console.warn`
 
 Apply a UI-pattern template to an existing Vantage project. The entry page lands on `src/index.tsx`, and template-owned files go under `src/components/<slug>/` (plus `server/api/` at the project root for API-backed templates).
 
+Both layouts are supported: Vantage scans `src/` when that directory exists and the project root otherwise, and `add` follows whichever one the project already uses — a project keeping its pages at the root gets `index.tsx` and `components/<slug>/` there instead, with relative imports that cross the boundary rewritten to match. `server/` and `public/` always stay at the project root.
+
 ```bash
 npx @squadbase/vantage-template add kpi-chart-simple
 npx @squadbase/vantage-template add funnel --dry-run    # Preview without writing
 npx @squadbase/vantage-template add funnel --force      # Overwrite existing files
 ```
 
-`add` replaces `src/index.tsx`, so it warns before overwriting it, and it lists leftover files from a previously applied template (it never deletes them — you may have edited them). A project that predates v0.3.0 and still keeps its pages at the project root is refused with the list of files to move into `src/` first.
+`add` replaces the entry page, so it warns before overwriting it, and it lists leftover files from a previously applied template (it never deletes them — you may have edited them). A project with pages on *both* sides — `src/` present but `index.tsx` / `_layout.tsx` / `styles.css` still at the root — is refused with the list of files to move into `src/` first: Vantage ignores the root ones, so `vantage check` already fails there with `SRC_DIR_SPLIT`.
 
 #### `chart <preset-name>`
 
-Switch the chart color preset. Rewrites a marked block of `--chart-1`–`--chart-5` inside the project's `src/styles.css`, leaving any other overrides in that file intact. Re-running replaces the block rather than stacking.
+Switch the chart color preset. Rewrites a marked block of `--chart-1`–`--chart-5` inside the project's `styles.css` (under `src/` when that layout is in use), leaving any other overrides in that file intact. Re-running replaces the block rather than stacking.
 
 ```bash
 npx @squadbase/vantage-template chart ocean

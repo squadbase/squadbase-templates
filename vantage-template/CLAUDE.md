@@ -50,34 +50,42 @@ vantage-template/
 
 | | vite-template | vantage-template |
 |---|---|---|
-| テンプレのエントリ dest | `src/pages/home.tsx` | **`src/index.tsx`**（Vantage のファイルベースルーティングの `/`） |
-| テンプレ固有ファイルの dest | `src/templates/<slug>/` | **`src/components/<slug>/`**（`templates/` に `.tsx` を置くと意図しないルートが生える） |
+| テンプレのエントリ dest | `src/pages/home.tsx` | **`index.tsx`**（ページ探索ルート相対。Vantage のファイルベースルーティングの `/`） |
+| テンプレ固有ファイルの dest | `src/templates/<slug>/` | **`components/<slug>/`**（`templates/` に `.tsx` を置くと意図しないルートが生える） |
 | ルート追加 | `src/routes.tsx` を文字列パッチ | **パッチ処理は無い**（ファイル追加＝ルート。ナビもベーステンプレートが `useRoutes()` から組む） |
 | chart preset の適用先 | `src/themes/theme-default.css` を全置換 | **`src/styles.css` のマーカーブロック**を差し替え（ユーザーの他の override を壊さない） |
-| プロジェクト検証 | `src/routes.tsx` の存在 | **`package.json` の `@squadbase/vantage` 依存** + `src/` レイアウトであること |
+| プロジェクト検証 | `src/routes.tsx` の存在 | **`package.json` の `@squadbase/vantage` 依存** + `src/` とルートにページが割れていないこと |
 | テンプレ種別 | `templates/` + `ui-templates/`（`--ui` フラグ） | **`ui-templates/` のみ**（フラグ不要） |
 | import | `@/components/...` エイリアス | **`@squadbase/vantage/{ui,components,router,query}`** |
 
-## 適用先のレイアウト（`src/` — v0.3.0 以降）
+## 適用先のレイアウト（`src/` ネスト / ルート直下の両対応）
 
 `@squadbase/vantage` v0.3.0 から、**ページ探索ルートは `src/` の有無だけで決まる**。`src/` があれば
 ページはその中だけで、`src/` は URL に出ない（`src/sales/index.tsx` → `/sales`）。設定は無く検出のみ。
-ベーステンプレート（`../vantage/`）は `src/` を持つので、**このパッケージが扱う適用先は常に `src/` レイアウト**。
+ベーステンプレート（`../vantage/`）は `src/` を持つので `init` 由来のプロジェクトは常に `src/` レイアウトだが、
+**`add` / `chart` は手書きのルートレイアウトのプロジェクトにも適用できる**。
 
 | 置き場所 | 何を置くか |
 |---|---|
-| `src/` | ページ（`index.tsx` / `_layout.tsx` / `_404.tsx` / `_error.tsx`）・`styles.css`・`components/`・`hooks/`・`lib/` |
-| プロジェクトルート直下 | `server/`・`public/`・`package.json`・`tsconfig.json`・`squadbase.yml`・`AGENTS.md`・`.squadbase/` |
+| ページ探索ルート（`src/` またはプロジェクトルート） | ページ（`index.tsx` / `_layout.tsx` / `_404.tsx` / `_error.tsx`）・`styles.css`・`components/`・`hooks/`・`lib/` |
+| 常にプロジェクトルート直下 | `server/`・`public/`・`package.json`・`tsconfig.json`・`squadbase.yml`・`AGENTS.md`・`.squadbase/` |
 
 - **`server/` を `src/` の中に置いてはならない** — `src/server/` はスキャンされず `vantage check` が
-  `SRC_DIR_SPLIT` エラーにする。ルート直下に残したページ・`styles.css` も同じエラー。
-- **両者にまたがる相対 import は `src/` を跨ぐ。** `kpi-chart-simple` の
-  `server/api/kpi-summary.ts` は共有型を `../../src/lib/kpi-chart-simple/types` から取る。
-- レイアウト判定は `src/project.ts` に集約（`resolvePageRoot` / `resolveStylesPath` /
-  `findRootLayoutFiles`）。パスを直に組み立てず、ここを経由する。
-- **`add` は旧レイアウトのプロジェクトを拒否する**（`refuseSplitLayout`）。`src/` が無いのにルート直下に
-  `index.tsx` / `_layout.tsx` / `_404.tsx` / `_error.tsx` / `styles.css` が残っているとき、何も書かずに
-  移動すべきファイルを列挙して exit 1。空のプロジェクト（どちらも無い）は `src/` を作って続行する。
+  `SRC_DIR_SPLIT` エラーにする。`src/` があるのにルート直下に残したページ・`styles.css` も同じエラー。
+- **manifest の `dest` はページ探索ルート相対**（`index.tsx` / `components/<slug>/x.tsx`）。
+  `server/` `public/` だけ `"scope": "root"` を付けてプロジェクトルート固定にする。
+  実際の書き込み先は適用時に `resolveDest(entry, pagePrefix)` が決める。
+- レイアウト判定は `src/project.ts` に集約（`resolvePagePrefix` / `resolveDest` / `resolvePageRoot` /
+  `resolveStylesPath` / `findSplitLayoutFiles`）。パスを直に組み立てず、ここを経由する。
+  空のプロジェクト（`src/` もルートページも無い）は `src/` 扱い。
+- **`add` が拒否するのは「両方にページがある」プロジェクトだけ**（`refuseSplitLayout`）。`src/` があるのに
+  ルート直下に `index.tsx` / `_layout.tsx` / `_404.tsx` / `_error.tsx` / `styles.css` が残っているとき、
+  何も書かずに移動すべきファイルを列挙して exit 1（適用前から `SRC_DIR_SPLIT` で壊れている状態なので、
+  テンプレを被せると問題が隠れる）。
+- **`src/` を跨ぐ相対 import は `apply.ts` が張り替える。** テンプレは `src/` レイアウト前提で書かれており
+  （`server/api/kpi-summary.ts` → `../../src/lib/kpi-chart-simple/types`）、ルートレイアウトに適用すると
+  両端の実配置から相対パスを計算し直す（→ `../../lib/kpi-chart-simple/types`）。`src/` レイアウトへの
+  適用ではバイト同一のままコピーされる。詳細は `retargetRelativeImports`。
 
 ## ビルドプロセス
 
@@ -175,23 +183,25 @@ Vantage 側はギャラリーで欠けた枠にならないよう撮る）。初
 - 個別のチャートだけ配色を変えたいときは `EChartsOption` の `color` を渡す。option はテーマより優先され、軸まわりのトークン追従は残る。
 - `theme` プロップを渡すとトークン追従は完全に止まる。ui-templates では使わない。
 
-## `apply.ts` はファイルをコピーするだけ
+## `apply.ts` はコピー + import の張り替えだけ
 
 vite-template の `src/routes.tsx` 文字列パッチに相当する処理は**無い**。Vantage ではファイル追加がそのままルート追加で、ベーステンプレートの `_layout.tsx` が `useRoutes()`（`@squadbase/vantage` v0.1.1〜）からナビを組むため、ページを 1 枚コピーすればルートにもナビにも載る。`manifest` に `nav[]` は存在しない。
+
+内容に手を入れるのは**ルートレイアウトのプロジェクトに適用したときの相対 import だけ**（`retargetRelativeImports`。上の「適用先のレイアウト」参照）。`src/` レイアウトへの適用では全ファイルがバイト同一でコピーされる。
 
 ナビの表示名は `definePage({ navLabel })` で調整する（未指定なら `title`、それも無ければパス）。
 
 コピーしかしない結果として `add` は2つの警告を出す（`--json` 時は抑制）:
 
-- **`src/index.tsx` の上書き予告** — エントリは `action: "replace"` なので `checkConflicts` の対象外で、`--force` 無しでも消える。
-- **旧テンプレの残留ファイル検出** — 全 manifest の `add` dest を走査し、今回適用したテンプレ（と、その EN/JA 対）以外の dest がディスク上に残っていれば列挙する。テンプレを乗り換えると前のテンプレの `src/components/<slug>/` や `server/api/*` が誰からも import されないまま残るため。削除はしない（ユーザーが編集済みかもしれない）。
+- **エントリページの上書き予告** — エントリは `action: "replace"` なので `checkConflicts` の対象外で、`--force` 無しでも消える。
+- **旧テンプレの残留ファイル検出** — 全 manifest の `add` dest を走査し、今回適用したテンプレ（と、その EN/JA 対）以外の dest がディスク上に残っていれば列挙する。テンプレを乗り換えると前のテンプレの `components/<slug>/` や `server/api/*` が誰からも import されないまま残るため。削除はしない（ユーザーが編集済みかもしれない）。
 
 ## テンプレートの追加方法
 
 **ファイル構成ルール・import 規約は [`ui-templates/CLAUDE.md`](./ui-templates/CLAUDE.md) を参照**（このセクションより優先）。要点:
 
 1. `ui-templates/<name>/` ディレクトリを作成
-2. `manifest.json` に `name`, `description`, `version`, `files[]`（`pages/index.tsx` → `src/index.tsx` を `action: "replace"`、他は `src/components/<name>/` へ `action: "add"`。`server/*` だけはルート直下の `server/api/`）を定義
+2. `manifest.json` に `name`, `description`, `version`, `files[]` を定義。`dest` は**ページ探索ルート相対**（`pages/index.tsx` → `index.tsx` を `action: "replace"`、他は `components/<name>/` へ `action: "add"`）。`server/*` だけは `dest: "server/api/*"` + `"scope": "root"`
 3. `pages/index.tsx` をエントリポイントとし、`definePage` でタイトル/説明を宣言（**リテラルのみ**）
 4. `lib/mock-data.ts` / `lib/types.ts` は `relabel: false` を付ける
 5. `node dist/index.js add <name> --dry-run` で適用レイアウトを確認
