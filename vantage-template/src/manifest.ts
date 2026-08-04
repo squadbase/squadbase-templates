@@ -4,10 +4,15 @@ import { fileURLToPath } from "node:url";
 
 export interface FileEntry {
   src: string;
-  // Project-root-relative. Pages and everything they import go under `src/`,
-  // which is the page-scan root since `@squadbase/vantage` v0.3.0; `server/`
-  // and `public/` stay at the project root (`src/server/` is never scanned).
+  // Relative to the *page-scan root* — `index.tsx`, `components/<slug>/x.tsx`.
+  // `@squadbase/vantage` v0.3.0 puts that root at `src/` when the directory
+  // exists and at the project root otherwise, so the prefix is decided per
+  // project at apply time (`resolveDest`), not written here.
   dest: string;
+  // `"root"` pins the entry to the project root regardless of layout. Use it
+  // for `server/` and `public/`, which are never part of the page scan
+  // (`src/server/` is not scanned at all). Defaults to `"page"`.
+  scope?: "page" | "root";
   action: "add" | "replace";
   // When false, the file is still copied/applied but excluded from the AI
   // relabel pass. Use for data files (mock data, types) whose dense literals

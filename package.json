@@ -3,6 +3,8 @@
   "private": true,
   "scripts": {
     "build:all": "node scripts/build-all.js",
+    "agents": "node scripts/build-agents.js",
+    "agents:check": "node scripts/build-agents.js --check",
     "skills-prepublish": "node skills/scripts/prepublish.cjs",
     "prepare": "husky"
   },

@@ -3,9 +3,9 @@
   "description": "KPI + Chart (Simple) — 4 KPI cards, a single trend line, and a ranked-items table, served by server/api and filtered through the URL. The minimal headline-metrics dashboard layout.",
   "version": "0.2.0",
   "files": [
-    { "src": "pages/index.tsx", "dest": "src/index.tsx", "action": "replace" },
-    { "src": "components/top-items-table.tsx", "dest": "src/components/kpi-chart-simple/top-items-table.tsx", "action": "add" },
-    { "src": "lib/types.ts", "dest": "src/lib/kpi-chart-simple/types.ts", "action": "add", "relabel": false },
-    { "src": "server/kpi-summary.ts", "dest": "server/api/kpi-summary.ts", "action": "add", "relabel": false }
+    { "src": "pages/index.tsx", "dest": "index.tsx", "action": "replace" },
+    { "src": "components/top-items-table.tsx", "dest": "components/kpi-chart-simple/top-items-table.tsx", "action": "add" },
+    { "src": "lib/types.ts", "dest": "lib/kpi-chart-simple/types.ts", "action": "add", "relabel": false },
+    { "src": "server/kpi-summary.ts", "dest": "server/api/kpi-summary.ts", "scope": "root", "action": "add", "relabel": false }
   ]
 }

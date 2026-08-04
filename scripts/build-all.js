@@ -82,6 +82,15 @@ async function main() {
     process.exit(1);
   }
 
+  // vantage/AGENTS.md は agents/vantage/ + フレームワーク正本から生成される。
+  // ここまで来れば vantage/node_modules は必ずあるので、正本を読んで stale を検出できる。
+  try {
+    await runCommand("node", [join(__dirname, "build-agents.js"), "--check"], repoRoot);
+  } catch {
+    log("red", "vantage/AGENTS.md is stale. Commit aborted.");
+    process.exit(1);
+  }
+
   log("green", "All builds passed!");
   process.exit(0);
 }

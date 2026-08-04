@@ -3,6 +3,7 @@ import { join } from "node:path";
 
 import { log } from "../logger.js";
 import type { FileEntry, TemplateManifest } from "../manifest.js";
+import { resolveDest } from "../project.js";
 import { diffStats, unifiedDiff } from "./diff.js";
 import { resolveModel } from "./provider.js";
 import { SYSTEM_PROMPT } from "./system-prompt.js";
@@ -113,15 +114,18 @@ function readInputFiles(
   projectRoot: string,
   templateDir: string,
   entries: FileEntry[],
+  pagePrefix: string,
   fromTemplate: boolean,
 ): Map<string, string> {
   const files = new Map<string, string>();
   for (const entry of entries) {
-    const path = fromTemplate
-      ? join(templateDir, entry.src)
-      : join(projectRoot, entry.dest);
+    const dest = resolveDest(entry, pagePrefix);
+    // On a dry run nothing has been written yet, so the template source stands
+    // in for the applied file. Only its import specifiers can differ, and the
+    // relabel pass never touches those.
+    const path = fromTemplate ? join(templateDir, entry.src) : join(projectRoot, dest);
     try {
-      files.set(entry.dest, readFileSync(path, "utf-8"));
+      files.set(dest, readFileSync(path, "utf-8"));
     } catch (err) {
       throw new Error(
         `Failed to read ${path}: ${err instanceof Error ? err.message : String(err)}`,
@@ -251,13 +255,15 @@ export async function customizeWithAI(
   manifest: TemplateManifest,
   templateDir: string,
   options: CustomizeOptions,
+  pagePrefix: string,
 ): Promise<CustomizeResult> {
   const relabelFiles = manifest.files.filter((f) => f.relabel !== false);
-  const allowedPaths = relabelFiles.map((f) => f.dest);
+  const allowedPaths = relabelFiles.map((f) => resolveDest(f, pagePrefix));
   const inputFiles = readInputFiles(
     projectRoot,
     templateDir,
     relabelFiles,
+    pagePrefix,
     options.dryRun,
   );
 
