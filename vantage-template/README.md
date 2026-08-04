@@ -56,6 +56,8 @@ npx @squadbase/vantage-template add funnel --force      # Overwrite existing fil
 
 Switch the chart color preset. Rewrites a marked block of `--chart-1`–`--chart-5` inside the project's `styles.css` (under `src/` when that layout is in use), leaving any other overrides in that file intact. Re-running replaces the block rather than stacking.
 
+A new project starts on the `blue` preset — the base template ships that block already written, so `init` and the gallery previews show the same colors. This command swaps it for another preset.
+
 ```bash
 npx @squadbase/vantage-template chart ocean
 npx @squadbase/vantage-template chart forest --dry-run

@@ -178,6 +178,8 @@ Vantage 側はギャラリーで欠けた枠にならないよう撮る）。初
 
 **このコマンドは `@squadbase/vantage` v0.2.1 以上が前提**（v0.2.2 以上を推奨）。v0.2.0 までの `EChart` は薄いラッパーでトークンを読まず、書き換えてもチャートの配色は 1 ピクセルも変わらなかった（そのため一度削除した）。v0.2.1 で `EChart` が init 時に `getComputedStyle` で `--chart-1..5`（系列色）と文字色/境界色トークン（軸・凡例・ツールチップ）を解決し、`class` / `style` / `data-theme` の変化と `prefers-color-scheme` を MutationObserver で追うようになったため、プリセットが実際に効くようになった。v0.2.2 でスタイルシート自体の差し替えも監視対象に入った。
 
+- **ベーステンプレートは `blue` を焼き込んで出荷する。** `../vantage/src/styles.css` にマーカーブロックが入っており、`sync-base` 経由で `base-template/` に載る。つまり `init` した時点で `--chart-*` は `blue`（`blue-600` / `teal-500` / `fuchsia-500` / `violet-500` / `gray-400`）であって、フレームワークの `theme.css` の既定値（青・エメラルド・橙・紫・桃）ではない。`ui-templates/*/preview-*.png` も同じ状態で撮っている — **`../vantage/src/styles.css` のプリセットを差し替えたら全テンプレのプレビューを撮り直すこと**（`npm run screenshot`）。撮り直さないとギャラリーの見た目と実際に生成されるプロジェクトの配色がズレる。
+- `init --chart <preset>` / `chart <preset>` は焼き込み済みのブロックをマーカーごと差し替えるので、既定が `blue` でも他プリセットへの切り替えは今までどおり効く（積み上がらない）。
 - 各プリセットは `:root` と `.dark, [data-theme="dark"]` の両方を定義する（フレームワークの `theme.css` と同じセレクタ）。片方だけだとダークモードで既定に落ちる。
 - **`dev` 中の適用も v0.2.2 以降はリロード不要。** `EChart` が `document.head` のスタイルシート変化（`<style>` / `<link>` の追加・差し替え・`href` / `media` / `disabled` の変化）も監視するようになり、Vite が CSS だけ差し替える HMR でも読み直す。トークンの実値が変わった時だけ再描画するので、無関係な CSS 更新でチラつくこともない。v0.2.1 では HMR が拾われず「DOM のトークンは変わっているのにチャートだけ前の色」になっていた。
 - 個別のチャートだけ配色を変えたいときは `EChartsOption` の `color` を渡す。option はテーマより優先され、軸まわりのトークン追従は残る。
