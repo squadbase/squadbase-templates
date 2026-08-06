@@ -1,0 +1,251 @@
+# CLAUDE.md — vantage-template
+
+Squadbase Vantage プロジェクトの初期化・カスタマイズ用 CLI ツール（`@squadbase/vantage-template`）。ランタイム依存なし — Node.js 組み込みモジュールのみ使用（AI カスタマイズ時のみ `ai` / `@ai-sdk/*` を動的 import）。
+
+> **Skill の置き場所**: ベーステンプレート同梱の Skill 実体は `base-template/.squadbase/skills/`（`../vantage/.squadbase/skills/` から同期）。v0.2.2 以降の `vantage add skill` はコピー前にプロジェクト内を走査するので、この場所を検出して二重配置を避ける（配置済みの内容を更新したいときだけ `--force`）。
+
+`vite-template` の Vantage 版。フレームワークが `@squadbase/vite-server` + 手書きの `src/routes.tsx` から [`@squadbase/vantage`](https://vantage-framework-vantage.vercel.app/) に変わったことで、下記の差分がある。
+
+## ディレクトリ構成
+
+```
+vantage-template/
+├── src/
+│   ├── index.ts              # CLI エントリ — parseArgs + コマンドルーティング
+│   ├── commands/
+│   │   ├── init.ts           # init コマンド — base-template/ を cwd にコピー
+│   │   ├── add.ts            # add コマンド — プロジェクト検証、manifest 読み込み、apply 呼び出し
+│   │   ├── chart.ts          # chart コマンド — src/styles.css の chart トークンを差し替え
+│   │   └── list.ts           # list コマンド — ui-templates/ を走査して manifest を表示
+│   ├── apply.ts              # ファイルコピー（それだけ — パッチ処理は無い）
+│   ├── chart-presets.ts      # chart-presets/*.css の読み込みと src/styles.css への適用
+│   ├── project.ts            # 適用先プロジェクトのレイアウト判定（src/ の有無）
+│   ├── manifest.ts           # 型定義 (TemplateManifest, FileEntry) + ローダー
+│   ├── ai/                   # add --prompt の AI relabel パス
+│   └── logger.ts             # ANSI カラーログ
+├── ui-templates/             # UIパターン別テンプレート (kpi-chart-simple, funnel, etc.)
+│   ├── CLAUDE.md             # ★ファイル構成ルール・import 規約。テンプレを触る前に必読
+│   └── <template-name>/
+│       ├── manifest.json
+│       ├── pages/            # index.tsx → 適用先の src/index.tsx
+│       ├── lib/              # mock-data.ts / types.ts (relabel:false のデータ層)
+│       ├── server/           # server/api/*.ts（API から配信するテンプレのみ）
+│       ├── components/       # 分割した場合のみ
+│       └── preview-*.png     # プレビュー画像（scripts/screenshot.mjs が生成）
+├── scripts/                  # 開発用（publish されない）
+│   ├── dev-setup.mjs         # dev/ を組み立てる — ../vantage/ を rsync + テンプレを symlink
+│   ├── dev.mjs               # dev/ で vantage dev を起動（テンプレを編集しながら確認）
+│   └── screenshot.mjs        # preview-wide / preview-square を撮って ui-templates/ に配置
+├── chart-presets/            # chart コマンド用の --chart-* トークン CSS
+├── dev/                      # scripts/ が作る使い捨てプレビュー環境（gitignore 対象）
+├── base-template/            # ビルド時に ../vantage/ からコピー（gitignore 対象）
+├── tsup.config.ts            # dist/index.js にバンドル（#!/usr/bin/env node バナー付き）
+├── tsconfig.json
+├── package.json
+├── .gitignore
+└── .npmignore
+```
+
+## vite-template との差分（重要）
+
+| | vite-template | vantage-template |
+|---|---|---|
+| テンプレのエントリ dest | `src/pages/home.tsx` | **`index.tsx`**（ページ探索ルート相対。Vantage のファイルベースルーティングの `/`） |
+| テンプレ固有ファイルの dest | `src/templates/<slug>/` | **`components/<slug>/`**（`templates/` に `.tsx` を置くと意図しないルートが生える） |
+| ルート追加 | `src/routes.tsx` を文字列パッチ | **パッチ処理は無い**（ファイル追加＝ルート。ナビもベーステンプレートが `useRoutes()` から組む） |
+| chart preset の適用先 | `src/themes/theme-default.css` を全置換 | **`src/styles.css` のマーカーブロック**を差し替え（ユーザーの他の override を壊さない） |
+| プロジェクト検証 | `src/routes.tsx` の存在 | **`package.json` の `@squadbase/vantage` 依存** + `src/` とルートにページが割れていないこと |
+| テンプレ種別 | `templates/` + `ui-templates/`（`--ui` フラグ） | **`ui-templates/` のみ**（フラグ不要） |
+| import | `@/components/...` エイリアス | **`@squadbase/vantage/{ui,components,router,query}`** |
+
+## 適用先のレイアウト（`src/` ネスト / ルート直下の両対応）
+
+`@squadbase/vantage` v0.3.0 から、**ページ探索ルートは `src/` の有無だけで決まる**。`src/` があれば
+ページはその中だけで、`src/` は URL に出ない（`src/sales/index.tsx` → `/sales`）。設定は無く検出のみ。
+ベーステンプレート（`../vantage/`）は `src/` を持つので `init` 由来のプロジェクトは常に `src/` レイアウトだが、
+**`add` / `chart` は手書きのルートレイアウトのプロジェクトにも適用できる**。
+
+| 置き場所 | 何を置くか |
+|---|---|
+| ページ探索ルート（`src/` またはプロジェクトルート） | ページ（`index.tsx` / `_layout.tsx` / `_404.tsx` / `_error.tsx`）・`styles.css`・`components/`・`hooks/`・`lib/` |
+| 常にプロジェクトルート直下 | `server/`・`public/`・`package.json`・`tsconfig.json`・`squadbase.yml`・`AGENTS.md`・`.squadbase/` |
+
+- **`server/` を `src/` の中に置いてはならない** — `src/server/` はスキャンされず `vantage check` が
+  `SRC_DIR_SPLIT` エラーにする。`src/` があるのにルート直下に残したページ・`styles.css` も同じエラー。
+- **manifest の `dest` はページ探索ルート相対**（`index.tsx` / `components/<slug>/x.tsx`）。
+  `server/` `public/` だけ `"scope": "root"` を付けてプロジェクトルート固定にする。
+  実際の書き込み先は適用時に `resolveDest(entry, pagePrefix)` が決める。
+- レイアウト判定は `src/project.ts` に集約（`resolvePagePrefix` / `resolveDest` / `resolvePageRoot` /
+  `resolveStylesPath` / `findSplitLayoutFiles`）。パスを直に組み立てず、ここを経由する。
+  空のプロジェクト（`src/` もルートページも無い）は `src/` 扱い。
+- **`add` が拒否するのは「両方にページがある」プロジェクトだけ**（`refuseSplitLayout`）。`src/` があるのに
+  ルート直下に `index.tsx` / `_layout.tsx` / `_404.tsx` / `_error.tsx` / `styles.css` が残っているとき、
+  何も書かずに移動すべきファイルを列挙して exit 1（適用前から `SRC_DIR_SPLIT` で壊れている状態なので、
+  テンプレを被せると問題が隠れる）。
+- **`src/` を跨ぐ相対 import は `apply.ts` が張り替える。** テンプレは `src/` レイアウト前提で書かれており
+  （`server/api/kpi-summary.ts` → `../../src/lib/kpi-chart-simple/types`）、ルートレイアウトに適用すると
+  両端の実配置から相対パスを計算し直す（→ `../../lib/kpi-chart-simple/types`）。`src/` レイアウトへの
+  適用ではバイト同一のままコピーされる。詳細は `retargetRelativeImports`。
+
+## ビルドプロセス
+
+`npm run build` は以下を順番に実行:
+
+1. **`sync-base`** — `rsync -a --delete ../vantage/ base-template/`（node_modules, dist, .vantage, package-lock.json, *.tsbuildinfo, *.log を除外）。続けて `base-template/.gitignore` を `base-template/_gitignore` にリネームする（下記）。
+2. **`tsup`** — `src/index.ts` を `dist/index.js` にバンドル（ESM 単一ファイル + shebang）
+
+### `_gitignore` リネーム
+
+**npm は tarball から `.gitignore` を必ず落とす**（`files` に含めても、`.npmignore` を書いても復活しない）。素直に同期すると、publish 後の `init` で生成されるプロジェクトに `.gitignore` が無い状態になり、`node_modules/` や `dist/` が丸ごと Git の管理対象に見える。
+
+対策として `sync-base` が `_gitignore` にリネームし、`init` がコピー時に `.gitignore` へ戻す（`src/commands/init.ts` の `RENAME_ON_COPY`）。`.gitignore` の実体は `../vantage/.gitignore` のままなので、編集はそちらに対して行う。同じ扱いが必要なファイルが増えたら `RENAME_ON_COPY` に足す。
+
+### npm に公開される内容
+
+`package.json` の `files` で指定（`README.md` / `package.json` は npm が常に含める）:
+
+- `dist/` — コンパイル済み CLI
+- `ui-templates/` — UIパターン別テンプレートデータ
+- `chart-presets/` — チャート配色プリセット
+- `base-template/` — Vantage ベースプロジェクトのフルコピー（`init` コマンド用）
+
+### publish 手順
+
+```bash
+cd vantage-template
+npm publish --@squadbase:registry=https://registry.npmjs.org   # = npm run release
+```
+
+`prepublishOnly` が `npm run build` を回すので、`base-template/`（gitignore 対象で、`../vantage/` の内容がそのまま出荷される）が古いまま publish されることはない。**publish 前に `../vantage/` 側がビルド・型検査を通っていることを確認する**こと — ベーステンプレートの不具合はそのまま `init` の出力になる。
+
+publish 後の tarball の中身は `npm pack --dry-run` で事前に確認できる。
+
+### パス解決
+
+tsup が全てを `dist/index.js` にバンドルするため、`__dirname` は常に `dist/` に解決される。アセットディレクトリは1階層上で参照:
+
+- `join(__dirname, "..", "ui-templates")` → `vantage-template/ui-templates/`
+- `join(__dirname, "..", "chart-presets")` → `vantage-template/chart-presets/`
+- `join(__dirname, "..", "base-template")` → `vantage-template/base-template/`
+
+## CLI
+
+```bash
+npx @squadbase/vantage-template init                    # ベーステンプレートを cwd に展開 + npm install
+npx @squadbase/vantage-template init --skip-install --chart sunset
+npx @squadbase/vantage-template list                    # UI テンプレートを列挙
+npx @squadbase/vantage-template list --lang ja          # JA バリアントだけ列挙
+npx @squadbase/vantage-template list --json             # JSON で取得 (preview 画像 URL 含む)
+npx @squadbase/vantage-template add kpi-chart-simple    # UI テンプレートを適用
+npx @squadbase/vantage-template add kpi-chart-simple --dry-run
+npx @squadbase/vantage-template chart ocean             # チャート配色を差し替え
+```
+
+EN/JA は `<name>` と `<name>-ja` のペアで、`files[].dest` は EN/JA で同一（上書き = 相互排他）、`name` だけ異なる。EN/JA を同時に add してはいけない。
+
+## ローカルプレビューとプレビュー画像（`scripts/`）
+
+```bash
+npm run dev kpi-chart-simple                # dev/ を作って vantage dev を起動
+npm run dev funnel -- --chart ocean         # チャートプリセットを当てて確認
+npm run screenshot                          # 全テンプレの preview-*.png を撮り直す
+npm run screenshot funnel funnel-ja         # 指定したテンプレだけ
+```
+
+`scripts/dev-setup.mjs` は毎回 `rsync -a --delete ../vantage/ dev/` してから manifest の
+`files[]` を dev/ に**コピー**する。
+
+- **symlink にしてはいけない。** Vantage のルート走査は dirent を `isFile()` / `isDirectory()` で
+  振り分けるため、symlink はどちらでもない扱いになって**丸ごと無視される**。`src/index.tsx` を
+  symlink にすると `vantage routes` の Pages が空になり、`/` が 404 ページを描画する
+  （見た目は正常に動いているので、プレビュー画像が全部 404 になって初めて気付く）。
+  `screenshot.mjs` はこれを検知して失敗するようになっている。
+- **`dev/` は使い捨て。** 直接編集しても次回の rsync で消える。編集は `ui-templates/<name>/` 側に対して行う — `dev.mjs` が `fs.watch` で dev/ に書き戻すので HMR には載る（**ファイルを追加**したときは manifest を読み直すため再起動が要る）。
+- **rsync が毎回 `--delete` する**ので、前に見ていたテンプレの `src/components/<slug>/` や `server/api/*` が残って謎のルートになることがない。
+- `node_modules` は `../vantage/node_modules` への symlink（rsync の除外対象なので消えない）。**先に `../vantage/` で `npm install` しておくこと。**
+- `scripts/` と `dev/` は `package.json` の `files` に無いので npm には publish されない。
+
+`screenshot.mjs` は Playwright で **viewport そのままのサイズ**を撮る（`deviceScaleFactor: 1`）。
+`preview-wide.png` = 1600x900、`preview-square.png` = 1200x1200 で、これは Squadbase のギャラリーが
+`list --json` の URL から参照する契約なのでファイル名もピクセルサイズも変えない。引数なしで走らせると
+`blank` / `blank-ja` も含めた全テンプレを撮る（vite-template は blank のプレビューを持たないが、
+Vantage 側はギャラリーで欠けた枠にならないよう撮る）。初回は
+`node node_modules/playwright/cli.js install chromium` が必要。
+
+## chart コマンド
+
+`chart <preset>` は `chart-presets/<preset>.css` の `--chart-1..5` を、プロジェクトの `src/styles.css`（v0.3.0 以降、`styles.css` はページと同じ側にある）にマーカーで囲んだブロックとして書き込む。マーカー内だけを差し替えるので、ユーザーが同じファイルに書いた他の override は壊れない。再実行しても積み上がらない。
+
+**このコマンドは `@squadbase/vantage` v0.2.1 以上が前提**（v0.2.2 以上を推奨）。v0.2.0 までの `EChart` は薄いラッパーでトークンを読まず、書き換えてもチャートの配色は 1 ピクセルも変わらなかった（そのため一度削除した）。v0.2.1 で `EChart` が init 時に `getComputedStyle` で `--chart-1..5`（系列色）と文字色/境界色トークン（軸・凡例・ツールチップ）を解決し、`class` / `style` / `data-theme` の変化と `prefers-color-scheme` を MutationObserver で追うようになったため、プリセットが実際に効くようになった。v0.2.2 でスタイルシート自体の差し替えも監視対象に入った。
+
+- **ベーステンプレートは `blue` を焼き込んで出荷する。** `../vantage/src/styles.css` にマーカーブロックが入っており、`sync-base` 経由で `base-template/` に載る。つまり `init` した時点で `--chart-*` は `blue`（`blue-600` / `teal-500` / `fuchsia-500` / `violet-500` / `gray-400`）であって、フレームワークの `theme.css` の既定値（青・エメラルド・橙・紫・桃）ではない。`ui-templates/*/preview-*.png` も同じ状態で撮っている — **`../vantage/src/styles.css` のプリセットを差し替えたら全テンプレのプレビューを撮り直すこと**（`npm run screenshot`）。撮り直さないとギャラリーの見た目と実際に生成されるプロジェクトの配色がズレる。
+- `init --chart <preset>` / `chart <preset>` は焼き込み済みのブロックをマーカーごと差し替えるので、既定が `blue` でも他プリセットへの切り替えは今までどおり効く（積み上がらない）。
+- 各プリセットは `:root` と `.dark, [data-theme="dark"]` の両方を定義する（フレームワークの `theme.css` と同じセレクタ）。片方だけだとダークモードで既定に落ちる。
+- **`dev` 中の適用も v0.2.2 以降はリロード不要。** `EChart` が `document.head` のスタイルシート変化（`<style>` / `<link>` の追加・差し替え・`href` / `media` / `disabled` の変化）も監視するようになり、Vite が CSS だけ差し替える HMR でも読み直す。トークンの実値が変わった時だけ再描画するので、無関係な CSS 更新でチラつくこともない。v0.2.1 では HMR が拾われず「DOM のトークンは変わっているのにチャートだけ前の色」になっていた。
+- 個別のチャートだけ配色を変えたいときは `EChartsOption` の `color` を渡す。option はテーマより優先され、軸まわりのトークン追従は残る。
+- `theme` プロップを渡すとトークン追従は完全に止まる。ui-templates では使わない。
+
+## `apply.ts` はコピー + import の張り替えだけ
+
+vite-template の `src/routes.tsx` 文字列パッチに相当する処理は**無い**。Vantage ではファイル追加がそのままルート追加で、ベーステンプレートの `_layout.tsx` が `useRoutes()`（`@squadbase/vantage` v0.1.1〜）からナビを組むため、ページを 1 枚コピーすればルートにもナビにも載る。`manifest` に `nav[]` は存在しない。
+
+内容に手を入れるのは**ルートレイアウトのプロジェクトに適用したときの相対 import だけ**（`retargetRelativeImports`。上の「適用先のレイアウト」参照）。`src/` レイアウトへの適用では全ファイルがバイト同一でコピーされる。
+
+ナビの表示名は `definePage({ navLabel })` で調整する（未指定なら `title`、それも無ければパス）。
+
+コピーしかしない結果として `add` は2つの警告を出す（`--json` 時は抑制）:
+
+- **エントリページの上書き予告** — エントリは `action: "replace"` なので `checkConflicts` の対象外で、`--force` 無しでも消える。
+- **旧テンプレの残留ファイル検出** — 全 manifest の `add` dest を走査し、今回適用したテンプレ（と、その EN/JA 対）以外の dest がディスク上に残っていれば列挙する。テンプレを乗り換えると前のテンプレの `components/<slug>/` や `server/api/*` が誰からも import されないまま残るため。削除はしない（ユーザーが編集済みかもしれない）。
+
+## テンプレートの追加方法
+
+**ファイル構成ルール・import 規約は [`ui-templates/CLAUDE.md`](./ui-templates/CLAUDE.md) を参照**（このセクションより優先）。要点:
+
+1. `ui-templates/<name>/` ディレクトリを作成
+2. `manifest.json` に `name`, `description`, `version`, `files[]` を定義。`dest` は**ページ探索ルート相対**（`pages/index.tsx` → `index.tsx` を `action: "replace"`、他は `components/<name>/` へ `action: "add"`）。`server/*` だけは `dest: "server/api/*"` + `"scope": "root"`
+3. `pages/index.tsx` をエントリポイントとし、`definePage` でタイトル/説明を宣言（**リテラルのみ**）
+4. `lib/mock-data.ts` / `lib/types.ts` は `relabel: false` を付ける
+5. `node dist/index.js add <name> --dry-run` で適用レイアウトを確認
+6. 実際に適用して `npx vantage check` と `npx tsc --noEmit` が通ることを確認
+
+## AI カスタマイズ (`add --prompt`)
+
+`add` コマンドに `--prompt` を渡すと、テンプレート適用直後に **Vercel AI SDK 経由で AI が画面コピー（表示文言）を最小限ドメインに寄せる（見た目アライン）**。完成済みテンプレの構造・データ・ロジックはそのままに、表示文言だけを軽く相対替えする軽量パスで、コーディングエージェントが Read/Edit を多段で繰り返すよりはるかに高速。
+
+> **設計前提（重要）**: 表示ラベルは component / page の **プレーンな文字列リテラル** に置き、`lib/*.ts` のデータ配列（mock-data, types）は `manifest.files[].relabel: false` で **relabel 対象から除外** する。これにより AI は数値・構造が密に混在するデータ配列を一切開かず、構文破壊や数値改変を構造的に防ぐ。
+
+```bash
+npx @squadbase/vantage-template add kpi-chart-simple \
+  --prompt "SaaS の MRR / ARR / 解約率 / 新規MRR ダッシュボード化" \
+  --provider openai \
+  --model gpt-4o \
+  --apiKey $OPENAI_API_KEY
+```
+
+| Flag | 説明 |
+|---|---|
+| `--prompt <text>` | カスタマイズ意図。**未指定なら AI を起動せず従来挙動**。 |
+| `--provider <name>` | `openai` / `anthropic` / `google` / `mistral` / `xai` / `groq` 等。`open-ai` 表記も正規化。 |
+| `--model <id>` | モデル ID。provider ごとにデフォルトあり。 |
+| `--apiKey <key>` | 省略時は `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GOOGLE_GENERATIVE_AI_API_KEY` 等の環境変数 fallback。 |
+| `--env-file <path>` | 指定した .env ファイルを読み込んでから AI を起動。既存 `process.env` を優先。Node.js 20.12+ 必須。`--prompt` 併用必須。 |
+| `--base-url <url>` | OpenAI 互換エンドポイント（任意）。 |
+| `--dry-run` | AI 出力を unified diff で表示するだけ、disk 書き込みなし。 |
+| `--json` | 結果（edits, unchanged, skipped, failedVerification, aiError, notes）を JSON で stdout 出力。エージェント呼び出し用。 |
+
+**動作**:
+1. `applyTemplate()` でテンプレートを通常通りコピー（全ファイル。`relabel: false` も**コピーはされる**）
+2. `manifest.files` のうち **`relabel !== false` のファイルだけ**を relabel 対象集合とし、内容を読み込む
+3. **ファイル 1 つにつき 1 回の `generateObject` を並列実行**（上限 `RELABEL_CONCURRENCY=4`）
+4. AI は各 call で `{ edits: [{ path, old_content, new_content, rationale }], notes }` を返す（search/replace 方式）
+5. **失敗隔離**: あるファイルの call が失敗しても `aiError[]` に積んで継続。他ファイルは巻き添えにならない
+6. 各 edit を適用前に **`old_content` を現在のファイル内容と照合**。見つからない / 非一意ならそのファイルの全 edits を破棄して `failedVerification[]` に積む
+7. 検証成功した edits をファイル単位で適用し disk に書き戻し（dry-run なら unified diff 表示のみ）
+
+**制約**:
+- AI が書き換えるのは **文字列リテラル（表示コピー）の改名のみ**。数値・配列長・データ形状・`import` 行・ロジック・型・JSX 構造は変更しない
+- AI が編集できるのは **manifest.files のうち `relabel !== false` の dest のみ**
+- `old_content` は **ファイル内で一意** である必要がある
+
+**依存**: `ai` / `@ai-sdk/*` は `optionalDependencies`。`--prompt` 指定時のみ動的 import される。未 install 時は親切な `npm install` ガイダンスを表示して exit 1。

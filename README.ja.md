@@ -16,6 +16,7 @@ Squadbase にはいくつかのデータ接続が標準搭載されています�
 |----------|-------------|
 | [Core Template](./core/) | Squadbase のコアテンプレート |
 | [Vite Template](./vite/) | フルスタックテンプレート: Vite 8 + React 19 + @squadbase/vite-server + TypeScript + Tailwind CSS v4 + shadcn/ui |
+| [Vantage Template](./vantage/) | @squadbase/vantage ベースの設定ファイル不要テンプレート — ファイルベースルーティング + マネージド UI キット |
 
 ### Vite テンプレート
 
@@ -76,9 +77,44 @@ Skill ファイルを `vite/skills/` に同期するには:
 cd vite && npx @squadbase/skills --clean
 ```
 
+### Vantage テンプレート
+
+設定ファイル不要（config-free）な React フレームワーク [`@squadbase/vantage`](https://vantage-framework-vantage.vercel.app/) の上に構築したダッシュボードテンプレートです。`vite.config.ts` も `main.tsx` もルートテーブルもありません。書くのは `src/index.tsx` だけで、ルーティング・TanStack Query・Tailwind v4・UI キット・開発サーバー・API サーバー・ビルドはすべてフレームワークが所有します。
+
+**スタック:** @squadbase/vantage（Vite 8 · React 19 · TanStack Router/Query · Tailwind CSS v4 · Base UI · Apache ECharts）
+
+**コマンド:**
+
+```bash
+npm run dev      # vantage dev --no-overlay — 開発サーバー + API を :5173 で起動（HMR）
+npm run build    # vantage build → dist/（クライアント + サーバー）
+npm start        # プロダクションサーバーを起動
+npm run check    # vantage check — 静的診断（ルート・境界・禁止ファイル）
+npm run routes   # vantage routes — ページ / API のルートマップ
+```
+
+v0.2.3 以降、`vantage routes` は `--pages` / `--apis` で片側だけに絞れ、`--detail` を足すと各ルートの静的な仕様（ページ: メタ情報とパスパラメータ / API: メソッド・query キー・リクエストボディ・レスポンスの status と形）まで出ます。どちらも `--json` と併用できます。
+
+v0.3.0 以降、ページ探索ルートは `src/` です（`src/` は URL に現れません: `src/sales/[id].tsx` → `/sales/:id`）。`server/` と `public/` はプロジェクトルート直下のままで、ページを両側に置くと `vantage check` が `SRC_DIR_SPLIT` エラーにします。
+
+v0.5.0 以降、ブラウザから開発ターミナルへの転送は Vite の `server.forwardConsole` に置き換わりました。転送されるのは `console.warn` / `console.error` と未捕捉のエラーだけで（`console.log` は転送されないので、ターミナルで見たいログは `console.warn` で出します）、未捕捉のエラーはソースマップを解決した位置とコードフレーム付きで出ます。テンプレートの `dev` スクリプトは `--no-overlay` を渡していて、エラーが全画面のオーバーレイで画面を覆わずターミナル側だけに出ます。オーバーレイを戻したいときはフラグを外す（または `--overlay` を渡す）だけです。
+
+**開発手順（[`@squadbase/vantage-template`](./vantage-template/) CLI）:**
+
+プロジェクトの初期化と、UI パターン別テンプレートの適用を行います。
+
+```bash
+npx @squadbase/vantage-template init          # ベーステンプレートを展開
+npx @squadbase/vantage-template list          # 利用可能な UI テンプレートを列挙
+npx @squadbase/vantage-template add funnel    # 適用
+npx @squadbase/vantage-template chart ocean   # チャート配色プリセットを切り替え
+```
+
 ## ドキュメント
 
-各テンプレートの詳細なドキュメントは、`skills/source/` 配下の Skill ファイルを参照してください。
+各テンプレートの詳細なドキュメントは、`skills/source/` 配下の Skill ファイルを参照してください。Vantage テンプレートはエージェント向けガイダンスを `vantage/AGENTS.md` と `vantage/.squadbase/skills/` に同梱しています（どちらもフレームワーク由来。`AGENTS.md` は `npx vantage upgrade`、Skill は `npx vantage add skill --all --force` で再同期されます）。
+
+> v0.2.2 以降、`vantage add skill` はコピー前にプロジェクト内を走査するため、`.squadbase/skills/` にコミット済みの実体を見つけて場所を報告するだけで済み、二重配置は起きません。引数なしで実行すると同梱 Skill と現在の配置先が一覧できます。`--force` は見つかった場所をそのまま更新するので、`--dir` が要るのは初回配置のときだけです。
 
 Squadbase プラットフォームのドキュメントは [Squadbase Docs](https://www.squadbase.dev/ja/docs) をご覧ください。
 

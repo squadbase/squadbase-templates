@@ -20,7 +20,7 @@ function log(color, message) {
 const repoRoot = join(__dirname, "..");
 
 // Build target directories
-const templateDirs = [join(repoRoot, "vite")].filter((dir) =>
+const templateDirs = [join(repoRoot, "vite"), join(repoRoot, "vantage")].filter((dir) =>
   existsSync(join(dir, "package.json"))
 );
 
@@ -79,6 +79,15 @@ async function main() {
 
   if (failed.length > 0) {
     log("red", "One or more builds failed. Commit aborted.");
+    process.exit(1);
+  }
+
+  // vantage/AGENTS.md は agents/vantage/ + フレームワーク正本から生成される。
+  // ここまで来れば vantage/node_modules は必ずあるので、正本を読んで stale を検出できる。
+  try {
+    await runCommand("node", [join(__dirname, "build-agents.js"), "--check"], repoRoot);
+  } catch {
+    log("red", "vantage/AGENTS.md is stale. Commit aborted.");
     process.exit(1);
   }
 

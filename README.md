@@ -16,6 +16,7 @@ While Squadbase comes with several built-in data connections, this repository of
 |----------|-------------|
 | [Core Template](./core/) | A core template for squadbase |
 | [Vite Template](./vite/) | Full-stack template: Vite 8 + React 19 + @squadbase/vite-server + TypeScript + Tailwind CSS v4 + shadcn/ui |
+| [Vantage Template](./vantage/) | Config-free dashboard template built on @squadbase/vantage — file-based routing, managed UI kit |
 
 ### Vite Template
 
@@ -49,9 +50,42 @@ To sync skill files to `vite/skills/`:
 cd vite && npx @squadbase/skills --clean
 ```
 
+### Vantage Template
+
+A dashboard template built on [`@squadbase/vantage`](https://vantage-framework-vantage.vercel.app/), a config-free React framework. There is no `vite.config.ts`, no `main.tsx`, and no route table — you write `src/index.tsx` and the framework owns routing, TanStack Query, Tailwind v4, the UI kit, the dev server, the optional API server, and the build.
+
+**Stack:** @squadbase/vantage (Vite 8 · React 19 · TanStack Router/Query · Tailwind CSS v4 · Base UI · Apache ECharts)
+
+**Commands:**
+
+```bash
+npm run dev      # vantage dev --no-overlay — dev server + API on :5173 (HMR)
+npm run build    # vantage build → dist/ (client + server)
+npm start        # Run production server
+npm run check    # vantage check — static diagnostics (routes, boundaries, forbidden files)
+npm run routes   # vantage routes — page/API route map
+```
+
+Since v0.2.3 `vantage routes` takes `--pages` / `--apis` to show one side only, and `--detail` to print each route's static spec (page metadata and path params; API methods, query keys, request body, response status/shape). Both compose with `--json`.
+
+Since v0.3.0 `src/` is the page-scan root and does not appear in URLs (`src/sales/[id].tsx` → `/sales/:id`); `server/` and `public/` stay at the project root. Keeping pages on both sides fails `vantage check` with `SRC_DIR_SPLIT`.
+
+Since v0.5.0 browser-to-terminal forwarding runs on Vite's own `server.forwardConsole`: only `console.warn` / `console.error` and uncaught errors reach the dev terminal (`console.log` no longer does — use `console.warn` for logs you want there), and uncaught errors print with source-mapped positions and a code frame. The template's `dev` script passes `--no-overlay` so an error stays in the terminal instead of covering the page with the full-screen overlay; drop the flag (or pass `--overlay`) to get it back.
+
+**Scaffolding CLI** — [`@squadbase/vantage-template`](./vantage-template/) initializes a project and applies UI-pattern templates:
+
+```bash
+npx @squadbase/vantage-template init          # Scaffold the base template
+npx @squadbase/vantage-template list          # List available UI templates
+npx @squadbase/vantage-template add funnel    # Apply one
+npx @squadbase/vantage-template chart ocean   # Switch the chart color preset
+```
+
 ## Documentation
 
-For detailed documentation on each template, refer to the skill files in `skills/source/`.
+For detailed documentation on each template, refer to the skill files in `skills/source/`. The Vantage template bundles its own agent guidance in `vantage/AGENTS.md` and `vantage/.squadbase/skills/` — both originate from the framework. `npx vantage upgrade` re-syncs `AGENTS.md`, and `npx vantage add skill --all --force` re-syncs the skills.
+
+> Since v0.2.2 `vantage add skill` scans the project before copying, so it finds the checked-in copies under `.squadbase/skills/` and reports their location instead of placing a second set. Run it with no arguments to list the bundled skills and where each one currently lives; `--force` updates them in place, so `--dir` is only needed for a first placement.
 
 For Squadbase platform documentation, visit [Squadbase Docs](https://www.squadbase.dev/en/docs).
 
