@@ -4,6 +4,7 @@ import { Link, Outlet, useCurrentRoute, useRoutes } from "@squadbase/vantage/rou
 import { AppShell } from "@squadbase/vantage/components"
 import type { NavGroup } from "@squadbase/vantage/components"
 
+import { BuildRecovery } from "./components/build-recovery"
 import { UserCard } from "./components/user-card"
 
 /**
@@ -43,6 +44,10 @@ function useNavGroups(): NavGroup[] {
  * the React root, so there is no `main.tsx` to wrap. `SquadbaseProvider` supplies
  * the signed-in user to `useUser()`; the QueryClient provider is already
  * installed by the runtime.
+ *
+ * `BuildRecovery` は構築中の一時的なエラーを「進行中」表示に見せて自動復帰させる
+ * (→ `components/build-recovery.tsx`)。外すと、書き込み途中の一瞬のエラーが
+ * 「Something went wrong」のままリロードするまで残る。
  */
 export default function RootLayout() {
   return (
@@ -53,7 +58,9 @@ export default function RootLayout() {
         actions={<UserCard />}
         linkComponent={RouterLink}
       >
-        <Outlet />
+        <BuildRecovery>
+          <Outlet />
+        </BuildRecovery>
       </AppShell>
     </SquadbaseProvider>
   )
