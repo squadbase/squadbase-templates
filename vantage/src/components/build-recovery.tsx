@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react"
+import { Check, Copy } from "lucide-react"
 import { Button, Spinner } from "@squadbase/vantage/ui"
 
 /**
@@ -41,6 +42,14 @@ const DEGRADE_AFTER_MS = 6000
 const SETTLE_MS = 5000
 
 const RELOAD_COUNT_KEY = "vantage:build-recovery-reloads"
+
+/** コピーしたことが伝わればいいので、確認表示はすぐ元に戻す。 */
+const COPIED_FEEDBACK_MS = 2000
+
+function errorMessage(error: unknown): string {
+  if (error == null) return ""
+  return error instanceof Error ? (error.stack ?? error.message) : String(error)
+}
 
 function readReloadCount(): number {
   try {
@@ -104,21 +113,57 @@ export function RecoveringState({ error }: { error?: unknown }) {
     )
   }
 
+  const message = errorMessage(error)
+
   return (
-    <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-8 text-center">
-      <p className="text-base text-muted-foreground">
+    <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-8">
+      <p className="text-center text-base text-muted-foreground">
         This view is taking longer than expected to update.
       </p>
-      <Button onClick={() => window.location.reload()}>Reload</Button>
-      {import.meta.env.DEV && error != null ? (
-        <details className="max-w-lg text-left">
-          <summary className="cursor-pointer text-xs text-muted-foreground">Details</summary>
-          <pre className="mt-2 max-w-lg overflow-auto rounded bg-muted p-4 text-xs">
-            {error instanceof Error ? error.message : String(error)}
-          </pre>
-        </details>
+      <div className="flex items-center gap-2">
+        <Button onClick={() => window.location.reload()}>Reload</Button>
+        {message ? <CopyLogButton message={message} /> : null}
+      </div>
+      {/*
+        ここまで来た人はエラー本文を AI に貼り戻して直してもらう。畳んでおくと辿り着けない
+        ので開いたまま出す。フレームワークの既定エラー画面も同じ本文を隠さず出しているので、
+        これで新しく何かが露出するわけではない。
+      */}
+      {message ? (
+        <pre className="max-h-64 w-full max-w-2xl select-text overflow-auto whitespace-pre-wrap break-words rounded-md border border-border bg-muted p-4 text-left text-xs text-muted-foreground">
+          {message}
+        </pre>
       ) : null}
     </div>
+  )
+}
+
+/**
+ * エラー本文をクリップボードへ。`<pre>` は選択できるので、これが失敗しても手で
+ * コピーする道は残る — 失敗しても黙って何もしない。
+ */
+function CopyLogButton({ message }: { message: string }) {
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    if (!copied) return
+    const timer = setTimeout(() => setCopied(false), COPIED_FEEDBACK_MS)
+    return () => clearTimeout(timer)
+  }, [copied])
+
+  return (
+    <Button
+      variant="outline"
+      onClick={() => {
+        navigator.clipboard?.writeText(message).then(
+          () => setCopied(true),
+          () => {},
+        )
+      }}
+    >
+      {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+      {copied ? "Copied" : "Copy log"}
+    </Button>
   )
 }
 
@@ -128,7 +173,9 @@ export function RecoveringState({ error }: { error?: unknown }) {
  */
 export function BuildRecovery({ children }: { children: ReactNode }) {
   const hostRef = useRef<HTMLDivElement>(null)
-  const [crashed, setCrashed] = useState(false)
+  // エラー本文。`null` は「壊れていない」を兼ねる。既定エラー画面は throw された値を
+  // 保持していないので、DOM に描かれた本文を読み取るのが唯一の入手経路になる。
+  const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
     const host = hostRef.current
@@ -139,13 +186,16 @@ export function BuildRecovery({ children }: { children: ReactNode }) {
       // 「Something went wrong」がそのまま読み上げられてしまう。属性は observe の
       // 対象外(childList / subtree のみ)なので、この書き換えでは再入しない。
       heading?.closest('[role="alert"]')?.setAttribute("aria-hidden", "true")
-      setCrashed(heading !== null)
+      // 既定エラー画面は見出しの直後の段落に本文を描く。取れなくても覆う判断は変えない。
+      setMessage(heading === null ? null : (heading.nextElementSibling?.textContent ?? ""))
     }
     sync()
     const observer = new MutationObserver(sync)
     observer.observe(host, { childList: true, subtree: true })
     return () => observer.disconnect()
   }, [])
+
+  const crashed = message !== null
 
   useEffect(() => {
     if (crashed) return
@@ -160,8 +210,8 @@ export function BuildRecovery({ children }: { children: ReactNode }) {
     <div ref={hostRef} className={crashed ? "relative min-h-[50vh]" : "relative"}>
       {children}
       {crashed ? (
-        <div className="absolute inset-0 z-10 bg-background">
-          <RecoveringState />
+        <div className="absolute inset-0 z-10 overflow-auto bg-background">
+          <RecoveringState error={message} />
         </div>
       ) : null}
     </div>
