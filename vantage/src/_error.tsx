@@ -1,14 +1,10 @@
-import { Button, ErrorState } from "@squadbase/vantage/ui"
+import { RecoveringState } from "./components/build-recovery"
 
+/**
+ * ルートルート(= `_layout.tsx`)が throw したときの画面。ページのレンダリングエラーは
+ * ここには来ない — フレームワークの既定エラー画面が受け止め、その上を `BuildRecovery` が
+ * 覆う(→ `components/build-recovery.tsx`)。どちらも見た目と復帰の仕方は揃えてある。
+ */
 export default function RouteError({ error }: { error: unknown }) {
-  const message = error instanceof Error ? error.message : String(error)
-  return (
-    <div className="flex min-h-[50vh] items-center justify-center">
-      <ErrorState
-        title="This page failed to render"
-        message={message}
-        action={<Button onClick={() => window.location.reload()}>Reload</Button>}
-      />
-    </div>
-  )
+  return <RecoveringState error={error} />
 }
