@@ -36,6 +36,11 @@ UI キット・開発サーバー・API サーバー・ビルドはすべて Van
 - **クライアントに届く env は `PUBLIC_` 接頭辞のものだけ。** `import.meta.env.PUBLIC_FOO`。
   それ以外を `import.meta.env` で読むと `PUBLIC_ENV_MISUSE` 警告。シークレットは
   `ApiContext.env`(server/ 内)にだけ届く。
+- **色はセマンティックトークンで書く。** `text-foreground`・`text-muted-foreground`・`bg-card`・
+  `border-border`。トークンがライト / ダークの両方を持つので `dark:` を並べる必要が無い。
+  素のパレット + `dark:`(`text-slate-900 dark:text-slate-100`)を混ぜると、その 1 か所だけ
+  手動で 2 モードを管理することになる(→「ダークモードは opt-in」)。`--muted`・`--accent`・
+  `--secondary`・`--border` は背景・境界用で、文字色に使うと読めない。
 - **`.vantage/` と `dist/` は生成物。** 編集しない・読みにいかない(gitignore 済み)。任意の CLI
   コマンド、または `vantage upgrade` で再生成される。
 - **`definePage` の値はリテラルで書く。** title/description/navLabel はビルド時に静的抽出される
@@ -317,6 +322,16 @@ const save = useApiMutation<Customer, Payload>("/api/customers", { method: "POST
   ソースを手元にコピーして**改造したいとき専用**のコマンドで、取り出せるのは
   `ui: data-table` と `block: sales-overview` の 2 つだけ。それ以外の名前は import 専用で
   `add` の対象ではない(未知名で実行すると候補が一覧表示される)。
+
+### ダークモードは opt-in
+
+ダークのトークンが効くのは、祖先に `.dark` か `[data-theme="dark"]` が付いているときだけ。
+**OS / ブラウザの設定(`prefers-color-scheme`)は見ない。** `dark:` ユーティリティも同じ
+スイッチに繋いであるので(`theme.css` の `@custom-variant dark`)、自分でクラスを付けない限り
+アプリは常にライトで描かれる ― `dark:` を書いてもそこだけダークになることはない。
+
+明暗を切り替えたいときは、レイアウトのルート要素などに `.dark` / `data-theme="dark"` を
+自分で付ける。
 
 ## ドキュメントを引く(`vantage docs` / `vantage search`)
 
