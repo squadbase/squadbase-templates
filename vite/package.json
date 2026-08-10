@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@squadbase/react": "^0.1.0",
-    "@squadbase/vite-server": "0.1.20",
+    "@squadbase/vite-server": "0.1.21",
     "@streamdown/code": "^1.1.1",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query": "^5.0.0",
@@ -23,10 +23,10 @@
     "echarts": "^6.0.0",
     "lucide-react": "^0.468.0",
     "radix-ui": "^1.4.3",
-    "react": "^19.0.0",
+    "react": "^19.2.7",
     "react-day-picker": "^10.0.1",
-    "react-dom": "^19.0.0",
-    "react-router": "^7.0.0",
+    "react-dom": "^19.2.7",
+    "react-router": "^8.3.0",
     "streamdown": "^2.5.0",
     "tailwind-merge": "^3.0.0",
     "vaul": "^1.1.2"
@@ -47,5 +47,11 @@
     "typescript": "~5.7.0",
     "typescript-eslint": "^8.57.2",
     "vite": "^8.0.0"
+  },
+  "overrides": {
+    "uuid": "^11.1.1",
+    "@hono/vite-dev-server": {
+      "@hono/node-server": "~2.0.12"
+    }
   }
 }
