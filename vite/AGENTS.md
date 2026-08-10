@@ -11,7 +11,7 @@ Routes are explicit in `src/routes.tsx` — the single source of route truth. To
 3. Nav entries in `App.tsx` are generated from `routes` — no manual nav edit needed.
 
 - **The page component MUST be a default export, dynamically imported via `lazy(() => import(...))`.** `RouteConfig.component` is typed `LazyExoticComponent<ComponentType>`; a static or named import fails type-checking and disables route-level code splitting.
-- Import the router from `react-router` (v7) — **not** `react-router-dom` (wrong package; runtime and type errors).
+- Import the router from `react-router` (v8) — **not** `react-router-dom` (the package was removed in v8; runtime and type errors).
 
 ### Where to implement
 

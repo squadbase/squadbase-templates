@@ -35,6 +35,28 @@ Base UI の `SelectValue` は選択中の **value をそのまま描き**、`Sel
 
 トリガーに `kanto` や `/sales` と生の値が出たら、まずこれを疑う。
 
+## 配色:素のパレット + `dark:` ではなく、セマンティックトークンで書く
+
+色は `text-foreground` / `text-muted-foreground` / `bg-card` / `border-border` などの
+トークンで書く。トークンはライト / ダークの両方を持っているので、`dark:` を並べる必要が無い。
+
+`text-slate-900 dark:text-slate-100` のような素の Tailwind パレット + `dark:` の組は、
+**トークンで塗られた周囲と食い違う**。ダークトークンが効くのは祖先に `.dark` /
+`[data-theme="dark"]` が付いているときだけで、`dark:` ユーティリティも同じスイッチに
+繋がっている(`theme.css` の `@custom-variant dark`)。つまり自分でクラスを付けない限り
+アプリは常にライトで動くのに、素のパレットを使うとその 1 か所だけ手動で両モードを
+管理することになる。
+
+```tsx
+// ✗ 手動で 2 モードを管理することになる
+<div className="font-medium text-slate-900 dark:text-slate-100">{name}</div>
+// ✓ トークンなら 1 つで済む
+<div className="font-medium text-foreground">{name}</div>
+```
+
+`--muted` / `--accent` / `--secondary` / `--border` は**背景・境界用**で、ライトではほぼ白。
+文字色に使うと読めなくなる ― 弱い文字色は `text-muted-foreground`。
+
 ## チャート:`EChart` の配色はトークン追従。上書きは `option.color`
 
 系列色は `--chart-1..5`、軸・凡例・ツールチップは文字色/境界色のトークンから組まれる
