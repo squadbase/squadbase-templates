@@ -379,6 +379,7 @@ body・レスポンスの status と形)まで出る。`vantage check --json` / 
 - **`vantage-app`** — アプリを一から作る / 構成を広げるときの進め方と検証の順序
 - **`vantage-add-feature`** — 既存アプリに page / api / ui を 1 つ足す定型
 - **`vantage-pitfalls`** — Base UI(≠ Radix)の癖など、静かに壊れる落とし穴のリファレンス
+- **`project-storage`** — Squadbase の Project Storage(アップロード済みファイル)をブラウザから読み書きする
 
 手順書の本体は `SKILL.md` というファイルで、置き場所はアプリによって違う(ルート直下・
 `.claude/skills/`・`.squadbase/skills/` など)。**探す必要はない ― CLI が探す:**
