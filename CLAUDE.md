@@ -6,6 +6,42 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repository contains templates for [Squadbase](https://www.squadbase.dev/) — a platform where users create projects, get a template deployed to an editor environment, and build dashboards and data apps with Squadbase AI (a coding agent).
 
+## ブランチ運用
+
+**ブランチ = 環境**です。新規プロジェクトの scaffold はこのリポジトリのブランチを直接 remix するため（front-dashboard が env ごとに `github.com/squadbase/squadbase-templates/tree/{branch}/vantage` を引く）、ブランチにコミットが載った時点でその環境の新規プロジェクトに反映されます。publish もビルドも挟みません。
+
+| ブランチ | 環境 |
+|---|---|
+| `dev1` | DEV1（開発） |
+| `dev2` | DEV2（検証） |
+| `main` | 本番 |
+
+変更は **`dev1` → `dev2` → `main` の一方向**に流します。
+
+```
+feature/xxx ──PR──> dev1 ──PR──> dev2 ──PR──> main
+```
+
+1. `dev1` から `feature/xxx` を切り、`dev1` へ PR を出す
+2. DEV1 で確認できたら `dev1` → `dev2` の PR を出す（昇格。head が `dev1`、base が `dev2`）
+3. DEV2 で確認できたら `dev2` → `main` の PR を出す
+
+**PR はすべて merge commit でマージします（squash / rebase 禁止）。** 昇格 PR が squash されると、同じ変更が別コミットとして各ブランチに積まれ、次の昇格で merge-base が進まず conflict します。
+
+### 禁止事項
+
+- **`dev2` / `main` を直接の変更先にしない。** これらのブランチへ入る変更は、必ず一つ手前のブランチからの昇格 PR 経由にすること。`feature/xxx` → `main` の直行や、同じ変更を 3 ブランチへ別々の PR で入れることはしない
+- 本番だけを直したい場合も同じで、**`dev1` から流す**。緊急時に順序を飛ばさないこと
+
+同じ変更を各ブランチへ別々に適用すると、内容は同じでもコミットが別 SHA になり、以後の昇格 PR がすべて conflict します。3 ブランチの内容は常に一致している（`main` は `dev2` の、`dev2` は `dev1` の祖先である）状態を保ってください。
+
+```bash
+git diff --stat origin/dev2 origin/dev1   # 差分が無ければ揃っている
+git diff --stat origin/main origin/dev2
+```
+
+ずれてしまった場合は、内容を揃えたうえで昇格 merge を 2 本通せば祖先関係が復活します（内容が同じであれば merge は素通りします）。
+
 ## Directory Structure
 
 `vite/` と `vantage/` の指針は各ディレクトリの `AGENTS.md`、
