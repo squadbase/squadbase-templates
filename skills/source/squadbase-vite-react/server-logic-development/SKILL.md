@@ -186,6 +186,17 @@ interface ParameterMeta {
 
 Missing param → uses `default` if set, else `null`.
 
+### Value shapes (SQL)
+
+The server checks a SQL server logic's `params` before running the query (and before the cache):
+
+- Allowed values: string, finite number, boolean, `null`, or an array of those (e.g. `[1, 2, 3]` for `IN ({{ids}})`).
+- Objects, nested arrays, arrays holding objects, and non-finite numbers → `400 { "error": "...", "invalidKeys": [...] }`. Send one scalar (or one flat array) per key instead.
+- Keys that are neither in `parameters` nor used as a `{{name}}` placeholder in the query are ignored.
+- A value whose type differs from its declared `type` (e.g. `"10"` for `number`) is passed through unchanged; the server logs a warning.
+
+TypeScript handlers read the body themselves — their `params` are not checked.
+
 ---
 
 ## Cache
